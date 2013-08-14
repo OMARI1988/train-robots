@@ -3,8 +3,11 @@
 
 <page:applyDecorator name="/sitemesh/template.jsp" encoding="utf-8">
 	<html>
+	<head>
+	<title>Train Robots - Play Game</title>
+	</head>
 	<body>
-	<p>Welcome to Train Robots!</p>
+	<p>Play as guest or sign in?</p>
 	</body>
 	</html>
 </page:applyDecorator>

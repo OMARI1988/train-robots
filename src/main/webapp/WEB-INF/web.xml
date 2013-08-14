@@ -1,1 +1,36 @@
-This is a placeholder.
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+	<display-name>train-robots-web</display-name>
+
+	<context-param>
+		<param-name>database-url</param-name>
+		<param-value>jdbc:mysql://localhost/train_robots?user=train_robots&amp;password=masked</param-value>
+	</context-param>
+
+	<welcome-file-list>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+	   <error-code>404</error-code>
+	   <location>/404.jsp</location>
+	</error-page>
+
+	<!--  TODO:> REGISTER SERVLETS -->
+	<!--
+	<servlet>
+		<servlet-name>downloadFile</servlet-name>
+		<servlet-class>com.trainrobots.web.servlets.DownloadFileServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>downloadFile</servlet-name>
+		<url-pattern>/downloadFile</url-pattern>
+	</servlet-mapping>
+	-->
+
+</web-app>
