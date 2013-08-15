@@ -57,7 +57,7 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>8.1.12.v20130726</version>
 				<configuration>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
+					<!--<scanIntervalSeconds>1</scanIntervalSeconds>-->
 					<webApp>
 						<contextPath>/</contextPath>
 						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">

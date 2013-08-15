@@ -30,10 +30,21 @@ import com.trainrobots.web.services.ServiceContext;
 public class GameServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		response.setContentType("text/html");
+
 		PrintWriter out = response.getWriter();
-		out.println("<html><body><p>Turn... ["
-				+ ServiceContext.get().imageService().status()
-				+ "]</p></body></html>");
+		out.print("<html><body>");
+		out.print("<p>What do you think?</p><p><a href=\"/game\">NEXT</a></p>");
+
+		String r1 = ServiceContext.get().imageService().random();
+		String r2 = ServiceContext.get().imageService().random();
+
+		out.print("<table><tr>");
+		out.print("<td><img src=\"" + r1 + "\"/></td>");
+		out.print("<td><img src=\"" + r2 + "\"/></td>");
+		out.print("</tr></table>");
+
+		out.print("</body></html>");
 	}
 }
