@@ -1,1 +1,1 @@
-404 -- Oops. Did you get lost?
+<%response.sendRedirect("/");%>
