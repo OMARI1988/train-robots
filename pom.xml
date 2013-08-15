@@ -14,43 +14,33 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-    <dependency>
-	    <groupId>com.squareup</groupId>
-	    <artifactId>dagger-parent</artifactId>
-	    <version>0.9.1</version>
-    </dependency>
-	<dependency>
-      <groupId>javax.inject</groupId>
-		<artifactId>javax.inject</artifactId>
-	<version>1</version>
-    </dependency>
-<dependency>
-<groupId>opensymphony</groupId>
-<artifactId>sitemesh</artifactId>
-<version>2.4.1</version>
-</dependency>
-<dependency>
-<groupId>javax.servlet</groupId>
-<artifactId>servlet-api</artifactId>
-<version>2.3</version>
-<scope>provided</scope>
-</dependency>
-<dependency>
-<groupId>joda-time</groupId>
-<artifactId>joda-time</artifactId>
-<version>1.6</version>
-</dependency>
-<dependency>
-<groupId>mysql</groupId>
-<artifactId>mysql-connector-java</artifactId>
-<version>5.1.10</version>
-</dependency>
-<dependency>
-<groupId>javax.mail</groupId>
-<artifactId>mail</artifactId>
-<version>1.4</version>
-</dependency>
-  </dependencies>
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>sitemesh</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<finalName>train-robots</finalName>
 		<plugins>
@@ -74,7 +64,7 @@
 							<resourcesAsCSV>src/main/webapp,data</resourcesAsCSV>
 						</baseResource>
 					</webApp>
-    			</configuration>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
