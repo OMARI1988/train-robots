@@ -34,7 +34,9 @@ public class GameServlet extends HttpServlet {
 		response.setContentType("text/html");
 
 		PrintWriter out = response.getWriter();
-		out.print("<html><body>");
+		out.print("<html>");
+		out.print("<head><title>Train Robots - Game</title></head>");
+		out.print("<body>");
 		out.print("<p>What do you think?</p><p><a href=\"/game\">NEXT</a></p>");
 
 		String r1 = ServiceContext.get().imageService().random();
