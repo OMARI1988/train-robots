@@ -19,6 +19,7 @@ package com.trainrobots.web.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +33,10 @@ public class GameServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		response.setContentType("text/html");
+		response.setHeader("Cache-Control",
+				"no-cache, no-store, must-revalidate"); // HTTP 1.1.
+		response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+		response.setDateHeader("Expires", 0); // Proxies.
 
 		PrintWriter out = response.getWriter();
 		out.print("<html>");
@@ -43,8 +48,8 @@ public class GameServlet extends HttpServlet {
 		String r2 = ServiceContext.get().imageService().random();
 
 		out.print("<table><tr>");
-		out.print("<td><img src=\"" + r1 + "\"/></td>");
-		out.print("<td><img src=\"" + r2 + "\"/></td>");
+		out.print("<td><img src=\"static/" + r1 + "\"/></td>");
+		out.print("<td><img src=\"static/" + r2 + "\"/></td>");
 		out.print("</tr></table>");
 
 		out.print("</body></html>");

@@ -58,7 +58,8 @@
 				<version>2.1</version>
 				<configuration>
 					<path>/</path>
-					<!--<serverXml>conf/server.xml</serverXml>-->
+					<username>dev-manager</username>
+					<password>dev</password>
 				</configuration>
 			</plugin>
 		</plugins>

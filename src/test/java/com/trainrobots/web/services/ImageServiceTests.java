@@ -17,30 +17,12 @@
 
 package com.trainrobots.web.services;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import org.junit.Test;
 
-public class ImageService {
+public class ImageServiceTests {
 
-	private static final String PATH = "c:/development/train-robots/data";
-	private static final String EXTENSION = ".jpg";
-
-	private final List<Integer> imageIds = new ArrayList<Integer>();
-
-	public ImageService() {
-		File dataFolder = new File(PATH);
-		for (File file : dataFolder.listFiles()) {
-			String name = file.getName();
-			if (name.endsWith(EXTENSION)) {
-				name = name.substring(0, name.length() - EXTENSION.length());
-				imageIds.add(Integer.parseInt(name));
-			}
-		}
-	}
-
-	public String random() {
-		return imageIds.get(new Random().nextInt(imageIds.size())) + EXTENSION;
+	@Test
+	public void shouldGetImage() {
+		System.out.println(new ImageService().random());
 	}
 }
