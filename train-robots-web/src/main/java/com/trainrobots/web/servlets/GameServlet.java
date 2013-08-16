@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.ServiceContext;
 
 public class GameServlet extends HttpServlet {
@@ -37,17 +38,37 @@ public class GameServlet extends HttpServlet {
 		response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 		response.setDateHeader("Expires", 0); // Proxies.
 
+		User user = (User) request.getSession().getAttribute("user");
+		if (user == null) {
+			user = new User();
+			request.getSession().setAttribute("user", user);
+			user.score = 1;
+			user.round = 1;
+			user.turn = 1;
+		} else {
+			user.score++;
+			user.turn++;
+			if (user.turn > 10) {
+				user.round++;
+				user.turn = 1;
+			}
+		}
+
 		PrintWriter out = response.getWriter();
 		out.print("<html>");
 		out.print("<head><title>Train Robots - Game</title></head>");
 		out.print("<body>");
+		out.print("<p>SCORE = " + user.score + "</p>");
+		out.print("<hr/>");
+		out.print("<p><b>Round " + user.round + " | Turn " + user.turn
+				+ "</b></p>");
 		out.print("<p>What do you think of the pictures below?</p>");
 		out.print("<p>");
-		out.print("<input name=\"q1\" type=\"radio\" value=\"1\"/>1. Command doesn't make sense for the picture - robot should have ignored the command and not moved.<br/>");
-		out.print("<input name=\"q1\" type=\"radio\" value=\"2\"/>2. Command was unclear so robot made the wrong move.<br/>");
-		out.print("<input name=\"q1\" type=\"radio\" value=\"3\"/>3. Command was unclear but robot managed to make the right move.<br/>");
-		out.print("<input name=\"q1\" type=\"radio\" value=\"4\"/>4. Command was clear but robot got it wrong.<br/>");
-		out.print("<input name=\"q1\" type=\"radio\" value=\"5\"/>5. Clear command and robot got it right.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"1\"/>1. Command doesn't make sense for the pictures - robot should have ignored the command and not moved.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"2\"/>2. Command was <span style='color:orange'>unclear</span> so robot made the <span style='color:orange'>wrong</span> move.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"3\"/>3. Command was <span style='color:orange'>unclear</span> but robot managed to make the <span style='color:blue'>right</span> move.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"4\"/>4. Command was <span style='color:blue'>clear</span> but robot got it <span style='color:orange'>wrong</span>.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"5\"/>5. <span style='color:blue'>Clear</span> command and robot got it <span style='color:blue'>right</span>.<br/>");
 		out.print("</p>");
 		out.print("<p><a href=\"/game\">NEXT</a></p>");
 

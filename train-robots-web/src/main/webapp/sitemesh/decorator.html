@@ -8,12 +8,21 @@
 <sitemesh:write property='head'/>
 </head>
 <body>
-<p>
-<a href="/">Home</a> | <a href="/play.jsp">Play</a> | <a href="/info.jsp">Info</a>
-</p>
-<hr/>
-<sitemesh:write property='body'/>
-<hr/>
-<p>Copyright &copy; Kais Dukes, 2013.</p>
+<table border="1">
+	<tr>
+		<td style="vertical-align: top">
+			<p>
+			<a href="/">Home</a><br/>
+			<a href="/play.jsp">Play</a><br/>
+			<a href="/info.jsp">Info</a>
+			</p>
+		</td>
+		<td style="vertical-align: top">
+			<sitemesh:write property='body'/>
+			<hr/>
+			<p>Copyright &copy; Kais Dukes, 2013.</p>
+		</td>
+	</tr>
+</table>
 </body>
 </html>

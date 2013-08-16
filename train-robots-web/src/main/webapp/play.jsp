@@ -4,9 +4,9 @@
 <title>Train Robots - Play Game</title>
 </head>
 <body>
-<p>Play as guest or sign in?</p>
+<p>Sign in or play as a guest?</p>
 <p>
-	<a href="game">START</a>
+	<a href="game">GUEST</a>
 </p>
 </body>
 </html>
