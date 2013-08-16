@@ -6,10 +6,18 @@
 
 	<display-name>train-robots-web</display-name>
 
+	<!--
 	<context-param>
 		<param-name>database-url</param-name>
 		<param-value>jdbc:mysql://localhost/train_robots?user=train_robots&amp;password=masked</param-value>
 	</context-param>
+	-->
+
+	<env-entry>
+		<env-entry-name>static-path</env-entry-name>
+		<env-entry-value>c:/development/train-robots/data</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
 
 	<welcome-file-list>
 		<welcome-file>default.jsp</welcome-file>

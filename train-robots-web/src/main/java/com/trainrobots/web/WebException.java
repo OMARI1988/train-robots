@@ -15,32 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.web.services;
+package com.trainrobots.web;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+public class WebException extends RuntimeException {
 
-public class ImageService {
-
-	private static final String PATH = "c:/development/train-robots/data";
-	private static final String EXTENSION = ".jpg";
-
-	private final List<Integer> imageIds = new ArrayList<Integer>();
-
-	public ImageService() {
-		File dataFolder = new File(PATH);
-		for (File file : dataFolder.listFiles()) {
-			String name = file.getName();
-			if (name.endsWith(EXTENSION)) {
-				name = name.substring(0, name.length() - EXTENSION.length());
-				imageIds.add(Integer.parseInt(name));
-			}
-		}
+	public WebException(String message) {
+		super(message);
 	}
 
-	public String random() {
-		return imageIds.get(new Random().nextInt(imageIds.size())) + EXTENSION;
+	public WebException(Exception exception) {
+		super(exception.getMessage(), exception);
+	}
+
+	public WebException(String message, Exception exception) {
+		super(message, exception);
 	}
 }
