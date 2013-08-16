@@ -41,7 +41,15 @@ public class GameServlet extends HttpServlet {
 		out.print("<html>");
 		out.print("<head><title>Train Robots - Game</title></head>");
 		out.print("<body>");
-		out.print("<p>What do you think?</p><p><a href=\"/game\">NEXT</a></p>");
+		out.print("<p>What do you think of the pictures below?</p>");
+		out.print("<p>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"1\"/>1. Command doesn't make sense for the picture - robot should have ignored the command and not moved.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"2\"/>2. Command was unclear so robot made the wrong move.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"3\"/>3. Command was unclear but robot managed to make the right move.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"4\"/>4. Command was clear but robot got it wrong.<br/>");
+		out.print("<input name=\"q1\" type=\"radio\" value=\"5\"/>5. Clear command and robot got it right.<br/>");
+		out.print("</p>");
+		out.print("<p><a href=\"/game\">NEXT</a></p>");
 
 		String r1 = ServiceContext.get().imageService().random();
 		String r2 = ServiceContext.get().imageService().random();
