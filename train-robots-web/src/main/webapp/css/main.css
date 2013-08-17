@@ -1,9 +1,11 @@
 body {
 	font-family: Arial;
+	color: white;
+	background-color: black;
 }
 
 a, a:visited {
-	color: Green;
+	color: lime;
 	text-decoration: none;
 	font-weight: bold;
 }

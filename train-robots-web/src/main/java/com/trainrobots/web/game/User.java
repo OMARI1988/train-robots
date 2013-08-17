@@ -19,8 +19,8 @@ package com.trainrobots.web.game;
 
 public class User {
 	public int score;
+	public int potential;
 	public int round;
-	public int turn;
 	public int state;
 	public int sceneNumber;
 }

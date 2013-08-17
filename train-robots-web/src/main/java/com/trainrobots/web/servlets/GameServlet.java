@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.GameService;
@@ -63,59 +64,58 @@ public class GameServlet extends HttpServlet {
 			request.getSession().setAttribute("user", user);
 			user.score = 5;
 			user.round = 1;
-			user.turn = 1;
 			user.state = 1;
 			user.sceneNumber = gameService.randomSceneNumber();
 		} else if (isPost) {
 
 			// Bad post?
 			String r = request.getParameter("round");
-			String t = request.getParameter("turn");
 			String s = request.getParameter("state");
 			if (!Integer.toString(user.round).equals(r)
-					|| !Integer.toString(user.turn).equals(t)
 					|| !Integer.toString(user.state).equals(s)) {
 				response.sendRedirect("/lost.jsp");
 				return;
 			}
 
-			// User voted?
+			// User action?
 			if (user.state == 1) {
-				int q1;
-				try {
-					q1 = Integer.parseInt(request.getParameter("q1"));
-				} catch (NumberFormatException exception) {
-					response.sendRedirect("/lost.jsp");
-					return;
-				}
-				if (q1 < 1 || q1 > 5) {
-					response.sendRedirect("/lost.jsp");
-					return;
-				}
-				user.state = 2;
-				int expected = gameService.scene(user.sceneNumber).mark;
-				if (expected == 0) {
-					feedback = "<b>+6 points!</b> You are the first player to vote ["
-							+ user.sceneNumber + " -->  " + q1 + "]";
-					user.score += 6;
-				} else if (expected == q1) {
-					feedback = "<b>+6 points!</b> You chose " + q1
-							+ ". That's what most players voted for as well.";
-					user.score += 6;
+
+				// Vote.
+				if (user.round % 4 != 0) {
+					int q1;
+					try {
+						q1 = Integer.parseInt(request.getParameter("q1"));
+					} catch (NumberFormatException exception) {
+						response.sendRedirect("/lost.jsp");
+						return;
+					}
+					if (q1 < 1 || q1 > 5) {
+						response.sendRedirect("/lost.jsp");
+						return;
+					}
+					user.state = 2;
+					int expected = gameService.scene(user.sceneNumber).mark;
+					if (expected == q1) {
+						feedback = "<span style='color:skyblue'>+20 points!</span> You chose "
+								+ q1
+								+ ". That's what most players voted for as well.";
+						user.score += 20;
+					} else {
+						feedback = "<span style='color:skyblue'>+1 point.</span> Nice try, but most players chose option "
+								+ expected + ".";
+						user.score++;
+					}
 				} else {
-					feedback = "<b>+1 point.</b> Nice try, but most players chose option "
-							+ expected + ".";
-					user.score++;
+					// String command = request.getParameter("command");
+					user.score += 20;
+					user.potential += 100;
+					user.state = 2;
 				}
 
 			} else if (user.state == 2) {
 				// New scene.
 				user.state = 1;
-				user.turn++;
-				if (user.turn > 10) {
-					user.round++;
-					user.turn = 1;
-				}
+				user.round++;
 				user.sceneNumber = gameService.randomSceneNumber();
 			} else {
 				response.sendRedirect("/lost.jsp");
@@ -125,63 +125,94 @@ public class GameServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		out.print("<html>");
-		out.print("<head><title>Train Robots - Game</title>");
-		out.print("<script type='text/javascript'>");
-		out.print("function rc() {document.getElementById('voteButton').disabled=false;}");
-		out.print("</script>");
-		out.print("</head>");
+		out.print("<head><title>Train Robots - Game</title></head>");
 		out.print("<body>");
 		out.print("<form method='post'>");
 		out.print("<p><i>Train Robots - Help us build the smartest robots on the web!</i></p>");
 		out.print("<hr/>");
-		out.print("<p><b>" + user.score + " points</b>");
-		out.print(" | round " + user.round + " | turn " + user.turn + "</p>");
-		out.print("<hr/>");
-		out.print("<p style='color:green'><b>What do you think of the pictures below?</b></p>");
-		out.print("<p>");
-		if (user.state == 1) {
-			out.print("<input name=\"q1\" type=\"radio\" value=\"1\" onclick=\"rc()\"/>");
+		out.print("<p>Round " + user.round + "&nbsp;&nbsp;&nbsp;&nbsp;"
+				+ user.score + " points");
+		if (user.potential > 0) {
+			out.print(" (+" + user.potential + " potential)");
 		}
-		out.print("1. Command doesn't make sense for the pictures - robot should have ignored the command and not moved.<br/>");
-		if (user.state == 1) {
-			out.print("<input name=\"q1\" type=\"radio\" value=\"2\" onclick=\"rc()\"/>");
-		}
-		out.print("2. Command was <span style='color:orange'>unclear</span> so robot made the <span style='color:orange'>wrong</span> move.<br/>");
-		if (user.state == 1) {
-			out.print("<input name=\"q1\" type=\"radio\" value=\"3\" onclick=\"rc()\"/>");
-		}
-		out.print("3. Command was <span style='color:orange'>unclear</span> but robot managed to make the <span style='color:blue'>right</span> move.<br/>");
-		if (user.state == 1) {
-			out.print("<input name=\"q1\" type=\"radio\" value=\"4\" onclick=\"rc()\"/>");
-		}
-		out.print("4. Command was <span style='color:blue'>clear</span> but robot got it <span style='color:orange'>wrong</span>.<br/>");
-		if (user.state == 1) {
-			out.print("<input name=\"q1\" type=\"radio\" value=\"5\" onclick=\"rc()\"/>");
-		}
-		out.print("5. <span style='color:blue'>Clear</span> command and robot got it <span style='color:blue'>right</span>.<br/>");
-		out.print("</p>");
+		out.print("</p><hr/>");
 
-		if (user.state == 1) {
-			out.print("<p><input id='voteButton' type='submit' value='Vote' disabled/></p>");
+		boolean addCommand = user.round % 4 == 0;
+
+		if (!addCommand) {
+			out.print("<p>");
+			if (user.state == 1) {
+				out.print("<input name=\"q1\" type=\"radio\" value=\"1\" onclick=\"form.submit();\"/>");
+			}
+			out.print("1. Robot should have ignored the command and not moved because the command doesn't make sense for the pictures.<br/>");
+			if (user.state == 1) {
+				out.print("<input name=\"q1\" type=\"radio\" value=\"2\" onclick=\"form.submit();\"/>");
+			}
+			out.print("2. Command was <span style='color:orange'>unclear</span> so robot made the <span style='color:orange'>wrong</span> move.<br/>");
+			if (user.state == 1) {
+				out.print("<input name=\"q1\" type=\"radio\" value=\"3\" onclick=\"form.submit();\"/>");
+			}
+			out.print("3. Command was <span style='color:orange'>unclear</span> but robot managed to make the <span style='color:skyblue'>right</span> move.<br/>");
+			if (user.state == 1) {
+				out.print("<input name=\"q1\" type=\"radio\" value=\"4\" onclick=\"form.submit();\"/>");
+			}
+			out.print("4. Command was <span style='color:skyblue'>clear</span> but robot got it <span style='color:orange'>wrong</span>.<br/>");
+			if (user.state == 1) {
+				out.print("<input name=\"q1\" type=\"radio\" value=\"5\" onclick=\"form.submit();\"/>");
+			}
+			out.print("5. <span style='color:skyblue'>Clear</span> command and robot got it <span style='color:skyblue'>right</span>.<br/>");
+			out.print("</p>");
+
+			if (user.state == 1) {
+				out.print("<p style='color:skyblue'>Take a look at the pictures below. Which option from 1 to 5 is correct?<br/>Get the most points by choosing the same as other players.</p>");
+			} else {
+				if (feedback != null) {
+					out.print("<p>" + feedback + "</p>");
+				}
+				out.print("<p><input name='command' type='submit' value='Continue'/></p>");
+			}
 		} else {
-			out.print("<p>" + feedback + "</p>");
-			out.print("<p><input id='nextButton' type='submit' value='Next'/></p>");
+			if (user.state == 1) {
+				out.print("<div style='width:700px'>");
+				out.print("<p>Now its your turn to help us make the robot smarter! The robot can learn from your commands.</p>");
+				out.print("<p>Look at the two pictures below and find out what's changed.</p>");
+				out.print("<p>What command what you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if it needs to be. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
+				out.print("<p>You will get <span style='color:skyblue'>bonus points</span> when your command gets voted as <span style='color:skyblue'>clear</span> and <span style='color:skyblue'>correct</span> for changing from the first picture below to the second one.</p>");
+				out.print("<p><input type='text' style='width:650px;'/></p>");
+				out.print("<p><input name='command' type='submit' value='Save'/></p>");
+				out.print("</div>");
+			} else {
+				out.print("<p>Thanks - your command has been saved.</p>");
+				out.print("<p><span style='color:skyblue'>+20 points!</span> You've also been awarded <span style='color:skyblue'>100 potential points!</span><br/>Your potential gets converted to real points if other players think your command is good.<br/>Be careful though. Bad commands means you will lose your points.</p>");
+				out.print("<p><input name='command' type='submit' value='Continue'/></p>");
+			}
 		}
 
 		Scene scene = gameService.scene(user.sceneNumber);
-		out.print("<p style='color:teal'><b>Command</b> &gt; " + scene.description + "</p>");
+		out.print("<hr>");
+		if (!addCommand) {
+			out.print("<p style='color:rgb(183, 255, 252)'>"
+					+ scene.description + "</p>");
+		}
 
 		out.print("<table><tr>");
-		out.print("<td><i>before</i><br/><img src=\"" + scene.image1 + "\"/></td>");
-		out.print("<td><i>after</i><br/><img src=\"" + scene.image2 + "\"/></td>");
+		out.print("<td><i>before</i><br/><img src=\"" + scene.image1
+				+ "\"/></td>");
+		out.print("<td><i>after</i><br/><img src=\"" + scene.image2
+				+ "\"/></td>");
 		out.print("</tr></table>");
 		out.print("<input type='hidden' name='round' value='" + user.round
-				+ "'/>");
-		out.print("<input type='hidden' name='turn' value='" + user.turn
 				+ "'/>");
 		out.print("<input type='hidden' name='state' value='" + user.state
 				+ "'/>");
 		out.print("</form>");
 		out.print("</body></html>");
+
+		// Simulate latency.
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			throw new WebException(e);
+		}
 	}
 }

@@ -30,22 +30,22 @@ public class GameService {
 	public GameService() {
 
 		// Add.
-		/* 1 */ add(5, "g1/x1", "g1/x2", "Put the small red circle above the blue circle.");
-		/* 2 */ add(5, "g1/x2", "g1/x1", "Move the small red circle to the top left of the orange square.");
-		/* 3 */ add(0, "g1/x1", "g1/x3", "I don't like this game");
-		/* 4 */ add(1, "g1/x3", "g1/x1", "This game is stupid");
-		/* 5 */ add(1, "g1/x1", "g1/x4", "Make me a cup of tea");
-		/* 6 */ add(4, "g1/x4", "g1/x1", "Move the red circle above blue one");
-		/* 7 */ add(0, "g1/x1", "g1/x5", "Move green circle to right edge");
-		/* 8 */ add(2, "g1/x5", "g1/x1", "Put orange square left");
-		/* 9 */ add(0, "g2/x1", "g2/x2", "Let the blue circle go bottom left of board but at one square to right.");
-		/* 10 */ add(4, "g2/x2", "g2/x1", "Move red circle right.");
-		/* 11 */ add(2, "g2/x1", "g2/x3", "Put green circle on red one.");
-		/* 12 */ add(0, "g2/x3", "g2/x1", "Move the green circle to bottom edge");
-		/* 13 */ add(4, "g2/x1", "g2/x4", "Move to the green circle to the top right of the board.");
-		/* 14 */ add(4, "g2/x4", "g2/x1", "Move the blue circle to the bottom of the board at the very left edge");
-		/* 15 */ add(0, "g2/x1", "g2/x5", "Position the orange shape two below greed circle");
-		/* 16 */ add(3, "g2/x5", "g2/x1", "Move orange top left");
+		add(5, "g1/x1", "g1/x2", "Put the small red circle above the blue circle.");
+		add(5, "g1/x2", "g1/x1", "Move the small red circle to the top left of the orange square.");
+		add(1, "g1/x1", "g1/x3", "I don't like this game");
+		add(1, "g1/x3", "g1/x1", "This game is stupid");
+		add(1, "g1/x1", "g1/x4", "Make me a cup of tea");
+		add(4, "g1/x4", "g1/x1", "Move the red circle above blue one");
+		add(5, "g1/x1", "g1/x5", "Move green circle to right edge");
+		add(2, "g1/x5", "g1/x1", "Put orange square left");
+		add(5, "g2/x1", "g2/x2", "Let the blue circle go bottom left of board but at one square to right.");
+		add(2, "g2/x2", "g2/x1", "Move red circle right.");
+		add(2, "g2/x1", "g2/x3", "Put green circle on red one.");
+		add(2, "g2/x3", "g2/x1", "Move the green circle to bottom edge");
+		add(1, "g2/x1", "g2/x4", "Move to the green circle to the top right of the board.");
+		add(4, "g2/x4", "g2/x1", "Move the blue circle to the bottom of the board at the very left edge");
+		add(3, "g2/x1", "g2/x5", "Position the orange shape two below greed circle");
+		add(3, "g2/x5", "g2/x1", "Move orange top left");
 	}
 
 	public int randomSceneNumber() {
