@@ -15,21 +15,11 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.web.services;
+package com.trainrobots.web.game;
 
-public class ServiceContext {
-
-	private final static ServiceContext context = new ServiceContext();
-	private final GameService gameService = new GameService();
-
-	private ServiceContext() {
-	}
-
-	public static ServiceContext get() {
-		return context;
-	}
-
-	public GameService gameService() {
-		return gameService;
-	}
+public class Scene {
+	public String image1;
+	public String image2;
+	public String description;
+	public int mark;
 }

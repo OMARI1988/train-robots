@@ -13,11 +13,13 @@
 	</context-param>
 	-->
 
+	<!--
 	<env-entry>
 		<env-entry-name>static-path</env-entry-name>
 		<env-entry-value>c:/development/train-robots/data</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
+	-->
 
 	<welcome-file-list>
 		<welcome-file>default.jsp</welcome-file>

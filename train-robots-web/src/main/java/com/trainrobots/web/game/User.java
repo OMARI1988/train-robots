@@ -21,4 +21,6 @@ public class User {
 	public int score;
 	public int round;
 	public int turn;
+	public int state;
+	public int sceneNumber;
 }
