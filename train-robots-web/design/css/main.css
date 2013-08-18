@@ -1,0 +1,62 @@
+body {
+	background: rgb(33, 33, 33);
+	font-family: Arial;
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	margin: auto;
+	width: 800px;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.footer {
+	color: rgb(200, 200, 200);
+	margin-top: 20em;
+	font-size: 10pt;
+}
+
+.footer a,.footer a:visited {
+	text-decoration: none;
+	color: skyblue;
+}
+
+.footer a:hover {
+	color: white;	
+}
+
+a, a:visited {
+	color: skyblue;
+	text-decoration: none;
+}
+
+a:hover {
+	color: white;
+}
+
+h1 {
+	color: white;
+	font-size: 24pt;
+	font-weight: normal;
+	margin-top: 1.2em;
+	margin-bottom: 0;
+}
+
+.tagline {
+	color: rgb(200, 200, 200);
+	margin-top: 0.2em;
+	font-size: 12pt;
+}
+
+table.menu {
+	margin-top: 0.9em;
+	font-size: 24pt;
+}
+
+table.menu td {
+	padding-top: 0.2em;
+	padding-right: 0.4em;
+	padding-bottom: 0.2em;
+}
