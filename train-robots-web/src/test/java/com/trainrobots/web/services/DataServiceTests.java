@@ -15,26 +15,24 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.web.game;
+package com.trainrobots.web.services;
 
-import org.joda.time.DateTime;
+import static org.junit.Assert.assertEquals;
 
-public class User {
-	
-	// Database fields.
-	public int userId;
-	public int status;
-	public int round;
-	public int score;
-	public int potential;
-	public String gameName;
-	public String email;
-	public String password;
-	public DateTime registrationUtc;
-	public DateTime lastScoreUtc;
-	public String signInMessage;
-	
-	// Game fields.
-	public int state;
-	public int sceneNumber;
+import javax.servlet.ServletContext;
+
+import org.junit.Test;
+
+import com.trainrobots.web.game.User;
+
+public class DataServiceTests {
+
+	@Test
+	public void shouldGetUser() {
+
+		ServletContext context = new MockServletContext();
+		DataService dataService = new DataService();
+		User user = dataService.getUser(context, "kais@kaisdukes.com");
+		assertEquals("Kais", user.gameName);
+	}
 }
