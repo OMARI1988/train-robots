@@ -196,6 +196,7 @@ public class SignInPage {
 
 		// Initiate game state.
 		user.round++;
+		user.state = 1;
 		user.sceneNumber = gameService.randomSceneNumber();
 	}
 

@@ -64,6 +64,7 @@
 				<version>2.1</version>
 				<configuration>
 					<path>/</path>
+					<url>http://localhost:8080/manager/text</url>
 					<username>dev-manager</username>
 					<password>dev</password>
 				</configuration>

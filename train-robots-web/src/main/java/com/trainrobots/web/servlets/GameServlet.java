@@ -20,6 +20,7 @@ package com.trainrobots.web.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
+import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
@@ -55,6 +57,8 @@ public class GameServlet extends HttpServlet {
 		response.setDateHeader("Expires", 0); // Proxies.
 
 		GameService gameService = ServiceContext.get().gameService();
+		DataService dataService = ServiceContext.get().dataService();
+		ServletContext context = request.getSession().getServletContext();
 
 		String feedback = null;
 
@@ -106,11 +110,20 @@ public class GameServlet extends HttpServlet {
 								+ expected + ".";
 						user.score++;
 					}
-				} else {
-					// String command = request.getParameter("command");
+					dataService.addRound(context, user.userId, user.round,
+							user.score, user.potential, user.sceneNumber,
+							expected, q1, request.getRemoteAddr(), null);
+				}
+
+				// Add command.
+				else {
+					String c = request.getParameter("command");
 					user.score += 20;
 					user.potential += 100;
 					user.state = 2;
+					dataService.addRound(context, user.userId, user.round,
+							user.score, user.potential, user.sceneNumber, 0, 0,
+							request.getRemoteAddr(), c);
 				}
 
 			} else if (user.state == 2) {
@@ -128,11 +141,11 @@ public class GameServlet extends HttpServlet {
 		out.print("<html>");
 		out.print("<head><title>Train Robots - Game</title></head>");
 		out.print("<body>");
-		out.print("<form method='post'>");
+		out.print("<form method='post' action='#play'>");
 		out.print("<p><i>Train Robots - Help us build the smartest robots on the web!</i></p>");
 		out.print("<hr/>");
-		out.print("<p>Round " + user.round + "&nbsp;&nbsp;&nbsp;&nbsp;"
-				+ user.score + " points");
+		out.print("<p id=\"play\">Round " + user.round
+				+ "&nbsp;&nbsp;&nbsp;&nbsp;" + user.score + " points");
 		if (user.potential > 0) {
 			out.print(" (+" + user.potential + " potential)");
 		}
@@ -179,8 +192,8 @@ public class GameServlet extends HttpServlet {
 				out.print("<p>Look at the two pictures below and find out what's changed.</p>");
 				out.print("<p>What command what you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if it needs to be. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
 				out.print("<p>You will get <span style='color:skyblue'>bonus points</span> when your command gets voted as <span style='color:skyblue'>clear</span> and <span style='color:skyblue'>correct</span> for changing from the first picture below to the second one.</p>");
-				out.print("<p><input type='text' style='width:650px;'/></p>");
-				out.print("<p><input name='command' type='submit' value='Save'/></p>");
+				out.print("<p><span style='color:skyblue'>Command</span><br/><input type='text' name='command' style='width:650px;'/></p>");
+				out.print("<p><input type='submit' value='Save'/></p>");
 				out.print("</div>");
 			} else {
 				out.print("<p>Thanks - your command has been saved.</p>");

@@ -83,4 +83,38 @@ public class DataService {
 			throw new WebException(exception);
 		}
 	}
+
+	public void addRound(ServletContext context, int userId, int round,
+			int score, int potential, int sceneNumber, int expectedOption,
+			int selectedOption, String ipAddress, String command) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call add_round(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+			statement.setInt(1, userId);
+			statement.setInt(2, round);
+			statement.setInt(3, score);
+			statement.setInt(4, potential);
+			statement.setInt(5, sceneNumber);
+			statement.setInt(6, expectedOption);
+			statement.setInt(7, selectedOption);
+			statement.setString(8, ipAddress);
+			statement.setString(9, command);
+
+			// Execute.
+			statement.executeUpdate();
+
+			// Close connection.
+			statement.close();
+			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
 }
