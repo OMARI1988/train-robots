@@ -58,15 +58,16 @@ public class GameServlet extends HttpServlet {
 
 		String feedback = null;
 
+		// Not signed in?
 		User user = (User) request.getSession().getAttribute("user");
-		if (user == null) {
-			user = new User();
-			request.getSession().setAttribute("user", user);
-			user.score = 5;
-			user.round = 1;
-			user.state = 1;
-			user.sceneNumber = gameService.randomSceneNumber();
-		} else if (isPost) {
+		if (user == null || !user.signedIn) {
+
+			response.sendRedirect("/signin.jsp");
+			return;
+
+		}
+
+		if (isPost) {
 
 			// Bad post?
 			String r = request.getParameter("round");

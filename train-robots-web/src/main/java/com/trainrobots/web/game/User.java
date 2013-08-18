@@ -20,7 +20,7 @@ package com.trainrobots.web.game;
 import org.joda.time.DateTime;
 
 public class User {
-	
+
 	// Database fields.
 	public int userId;
 	public int status;
@@ -33,8 +33,9 @@ public class User {
 	public DateTime registrationUtc;
 	public DateTime lastScoreUtc;
 	public String signInMessage;
-	
+
 	// Game fields.
+	public boolean signedIn;
 	public int state;
 	public int sceneNumber;
 }

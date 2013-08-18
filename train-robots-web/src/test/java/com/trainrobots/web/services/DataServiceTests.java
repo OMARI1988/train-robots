@@ -34,5 +34,6 @@ public class DataServiceTests {
 		DataService dataService = new DataService();
 		User user = dataService.getUser(context, "kais@kaisdukes.com");
 		assertEquals("Kais", user.gameName);
+		assertEquals(1, user.status);
 	}
 }

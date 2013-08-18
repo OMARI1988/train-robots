@@ -20,6 +20,7 @@ package com.trainrobots.web.services;
 public class ServiceContext {
 
 	private final static ServiceContext context = new ServiceContext();
+	private final DataService dataService = new DataService();
 	private final GameService gameService = new GameService();
 
 	private ServiceContext() {
@@ -27,6 +28,10 @@ public class ServiceContext {
 
 	public static ServiceContext get() {
 		return context;
+	}
+
+	public DataService dataService() {
+		return dataService;
 	}
 
 	public GameService gameService() {

@@ -32,6 +32,14 @@ import com.trainrobots.web.game.User;
 
 public class DataService {
 
+	public DataService() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException exception) {
+			throw new WebException(exception);
+		}
+	}
+
 	public User getUser(ServletContext context, String email) {
 		try {
 
