@@ -25,10 +25,10 @@ body {
 }
 
 .footer a:hover {
-	color: white;	
+	color: white;
 }
 
-a, a:visited {
+a,a:visited {
 	color: skyblue;
 	text-decoration: none;
 }
@@ -60,4 +60,30 @@ table.menu td {
 	padding-top: 0.2em;
 	padding-right: 0.4em;
 	padding-bottom: 0.2em;
+}
+
+input.textBox {
+	padding: 0.4em;
+	font-size: 11pt;
+	color: rgb(80, 80, 80);
+	width: 350px;
+}
+
+input.formButton {
+	border: 2px solid white;
+	background: rgb(21, 97, 222);
+	color: white;
+	padding: 0.32em;
+	padding-left: 1.2em;
+	padding-right: 1.2em;
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+input.formButton:hover {
+	background: rgb(60, 120, 255);
+}
+
+input.formButton:active {
+	background: skyblue;
 }
