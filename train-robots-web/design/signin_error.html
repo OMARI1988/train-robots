@@ -15,6 +15,11 @@ p.formRow {
 	margin-bottom: 0.6em;
 }
 
+p.error {
+	color: orange;
+	margin-top: 1.8em;
+}
+
 p.links {
 	margin-top: 3em;
 	line-height: 20pt;
@@ -26,6 +31,7 @@ p.links {
 	margin-top: 2em;
 	margin-bottom: 0.5em;
 	font-size: 11pt;
+	margin-bottom: 0.5em;
 }
 </style>
 
@@ -35,7 +41,7 @@ p.links {
 	<div id="container">
 		<h1>train robots</h1>
 		<p class="tagline">help teach robots to become smart as humans</p>
-		<form method="post" action="signin_error.html">
+		<form method="post">
 			<h2>Sign in</h2>
 			<p class="hint">Use your email address and game password</p>
 			<p class="formRow">
@@ -49,6 +55,9 @@ p.links {
 					class="formButton" value="Cancel" type="button"
 					style="margin-left: 0.8em;"
 					onclick="window.location='default.html'" />
+			</p>
+			<p class="error">
+				The email address or password is not recognized.
 			</p>
 			<p class="links">
 				<a href="register.html">Create a free account</a><br /> <a href="#">Forgot

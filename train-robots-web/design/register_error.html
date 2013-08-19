@@ -15,6 +15,11 @@ p.formRow {
 	margin-bottom: 0.6em;
 }
 
+p.error {
+	color: orange;
+	margin-top: 1.8em;
+}
+
 p.links {
 	margin-top: 3em;
 	line-height: 20pt;
@@ -23,36 +28,44 @@ p.links {
 .hint {
 	color: rgb(200, 200, 200);
 	margin: 0;
-	margin-top: 2em;
-	margin-bottom: 0.5em;
+	margin-top: 1.5em;
+	margin-bottom: 0.3em;
 	font-size: 11pt;
 }
 </style>
 
-<title>Train Robots - Sign In</title>
+<title>Train Robots - Register</title>
 </head>
 <body>
 	<div id="container">
 		<h1>train robots</h1>
 		<p class="tagline">help teach robots to become smart as humans</p>
-		<form method="post" action="signin_error.html">
-			<h2>Sign in</h2>
-			<p class="hint">Use your email address and game password</p>
+		<form method="post" action="registration_completed.html">
+			<h2>Create an account</h2>
+			<p class="hint" style="margin-top:2em">Email address</p>
 			<p class="formRow">
 				<input class="textBox" type="text" />
 			</p>
+			<p class="hint">Your name in the game (e.g. HappyBunny)</p>
+			<p class="formRow">
+				<input class="textBox" type="input" />
+			</p>
+			<p class="hint">Password for the game</p>
+			<p class="formRow">
+				<input class="textBox" type="password" />
+			</p>
+			<p class="hint">Confirm password</p>
 			<p class="formRow">
 				<input class="textBox" type="password" />
 			</p>
 			<p>
-				<input class="formButton" value="Sign in" type="submit" /> <input
-					class="formButton" value="Cancel" type="button"
-					style="margin-left: 0.8em;"
-					onclick="window.location='default.html'" />
+				<input class="formButton" value="Register" type="submit" />
+			</p>
+			<p class="error">
+				Email address not specified.<br/>
 			</p>
 			<p class="links">
-				<a href="register.html">Create a free account</a><br /> <a href="#">Forgot
-					your password?</a>
+				<a href="signin.html">Already have an account?</a>
 			</p>
 		</form>
 		<p class="footer">
