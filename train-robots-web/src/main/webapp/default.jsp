@@ -1,9 +1,59 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
+<style type="text/css">
+h2 {
+	color: white;
+	font-size: 14pt;
+	font-weight: normal;
+	margin-top: 4.2em;
+	margin-bottom: 0;
+}
+
+.player {
+	color: rgb(141, 244, 50);
+	margin: 0;
+	margin-top: 0.3em;
+}
+</style>
 <title>Train Robots - Robot Commands Annotation Game</title>
 </head>
 <body>
-<p>Welcome to Train Robots!</p>
+	<table id="main" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<h1>train robots</h1>
+				<p class="tagline">help teach robots to become smart as humans</p>
+				<table class="menu" cellspacing="0" cellpadding="0">
+					<tr>
+						<td><img src="images/next.png" width="39" height="39" /></td>
+						<td><a href="signin.jsp">play</a>
+						</td>
+					</tr>
+					<tr>
+						<td><img src="images/info.png" width="39" height="39" /></td>
+						<td><a href="instructions.jsp">instructions</a>
+						</td>
+					</tr>
+					<tr>
+						<td><img src="images/contact.png" width="39" height="39" />
+						</td>
+						<td><a href="contact.jsp">contact</a>
+						</td>
+					</tr>
+				</table>
+				<h2>robot intelligence at 87%</h2>
+				<p class="tagline" />327 players online
+				</p>
+				<p class="player" style="margin-top: 2.8em">today's best player
+					is</p>
+				<p class="player">
+					<b>itkonen513</b> with 17,321 points!
+				</p></td>
+			<td><img style="margin-left: 3em" src="images/arm-large.png"
+				width="282" height="288" />
+			</td>
+		</tr>
+	</table>
 </body>
 </html>

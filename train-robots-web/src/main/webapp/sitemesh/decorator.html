@@ -2,27 +2,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-<title><sitemesh:write property='title'/></title>
+<title><sitemesh:write property='title' />
+</title>
 <link href="/css/main.css" type="text/css" rel="stylesheet" />
-<!--<script type="text/javascript" src="/javascript/main.js"></script>-->
-<sitemesh:write property='head'/>
+<sitemesh:write property='head' />
 </head>
 <body>
-<table>
-	<tr>
-		<td style="vertical-align: top; padding-right: 1em;">
-			<p>
-			<a href="/">Home</a><br/>
-			<a href="/signin.jsp">Play</a><br/>
-			<a href="/info.jsp">Info</a>
-			</p>
-		</td>
-		<td style="vertical-align: top; padding-left: 1em;">
-			<p><img src="/images/logo.png"/></p>
-			<sitemesh:write property='body'/>
-			<p>Copyright &copy; Kais Dukes, 2013.</p>
-		</td>
-	</tr>
-</table>
+	<div id="container">
+		<sitemesh:write property='body' />
+		<p class="footer">
+			Copyright &copy; <a href="http://www.kaisdukes.com">Kais Dukes</a>,
+			2013. All rights reserved.
+		</p>
+	</div>
 </body>
 </html>
