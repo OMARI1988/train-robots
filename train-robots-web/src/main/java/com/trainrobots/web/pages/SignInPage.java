@@ -121,8 +121,8 @@ public class SignInPage {
 
 		// Not active?
 		if (user.status != 1) {
-			loginError = "You cannot sign in because the account <b>" + email
-					+ "</b> has not been activated.";
+			loginError = "You cannot sign in because the account " + email
+					+ " has not been activated.";
 			return false;
 		}
 

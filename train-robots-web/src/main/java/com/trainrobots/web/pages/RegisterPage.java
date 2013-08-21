@@ -52,11 +52,13 @@ public class RegisterPage {
 		this.confirmPassword = confirmPassword;
 
 		// Validate.
-		if (!validate(pageContext.getServletContext())) {
+		ServletContext context = pageContext.getServletContext();
+		if (!validate(context)) {
 			return;
 		}
-		
-		// TODO: CREATE ACCOUNT
+
+		// Create account.
+		dataService.addUser(context, email, name, password);
 
 		// Redirect.
 		try {

@@ -118,6 +118,34 @@ public class DataService {
 		}
 	}
 
+	public void addUser(ServletContext context, String email, String name,
+			String password) {
+
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call add_user(?, ?, ?)}");
+			statement.setString(1, email);
+			statement.setString(2, name);
+			statement.setString(3, password);
+
+			// Execute.
+			statement.executeUpdate();
+
+			// Close connection.
+			statement.close();
+			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
 	public void addRound(ServletContext context, int userId, int round,
 			int score, int potential, int sceneNumber, int expectedOption,
 			int selectedOption, String ipAddress, String command) {

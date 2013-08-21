@@ -56,7 +56,7 @@ CREATE TABLE `user` (
   `last_score_utc` datetime NOT NULL,
   `sign_in_message` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,6 +116,53 @@ BEGIN
 		_expected_option,
 		_selected_option,
 		_command);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_user` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_user`(
+	IN _email VARCHAR(32),
+	IN _game_name VARCHAR(16),
+	IN _password VARCHAR(32)
+)
+BEGIN
+	DECLARE _time_utc DATETIME;
+    SET _time_utc = UTC_TIMESTAMP();
+
+	INSERT INTO user (
+		status,
+		round,
+		score,
+		potential,
+		game_name,
+		email,
+		password,
+		registration_utc,
+		last_score_utc,
+		sign_in_message)
+	VALUES (
+		1,
+		0,
+		5,
+		0,
+		_game_name,
+		_email,
+		_password,
+		_time_utc,
+		_time_utc,
+		null);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -186,4 +233,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-21  8:27:35
+-- Dump completed on 2013-08-21 21:29:35
