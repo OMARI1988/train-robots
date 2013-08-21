@@ -7,7 +7,6 @@ p.info {
 	color: rgb(200, 200, 200);
 	font-size: 12pt;
 	line-height: 16pt;
-	width: 580px;
 }
 
 h2 {
@@ -30,17 +29,15 @@ p.next a {
 	margin-left: 0.4em;
 }
 </style>
-<title>Train Robots - Are you lost?</title>
+<title>Train Robots - Registration Completed</title>
 </head>
 <body>
 	<h1>train robots</h1>
 	<p class="tagline">help teach robots to become smart as humans</p>
-	<h2>Oops!</h2>
-	<p class="info">Did you press the buttons in the game too quickly?
-		Please don't press the refresh or back buttons in your browser while
-		playing the game. Use the game menu instead.</p>
+	<h2>Registration completed</h2>
+	<p class="info">Thanks - your account has been created. Sign in to play!</p>
 	<p class="next">
-		<img src="images/next-small.png" /><a href="/game">Continue</a>
+		<img src="images/next-small.png" /><a href="signin.jsp">Sign in</a>
 	</p>
 </body>
 </html>

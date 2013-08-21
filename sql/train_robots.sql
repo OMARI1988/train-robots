@@ -58,6 +58,124 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping routines for database 'train_robots'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `add_round` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_round`(
+	IN _user_id INT,
+	IN _round INT,
+	IN _score INT,
+	IN _potential INT,
+	IN _scene_number INT,
+	IN _expected_option INT,
+	IN _selected_option INT,
+	IN _ip_address VARCHAR(64),
+	IN _command VARCHAR(512)
+)
+BEGIN
+	DECLARE _time_utc DATETIME;
+    SET _time_utc = UTC_TIMESTAMP();
+
+	UPDATE user
+	SET round = _round,
+		score = _score,
+		potential = _potential,
+		last_score_utc = _time_utc
+	WHERE user_id = user_id;
+
+	INSERT INTO round (
+		user_id,
+		ip_address,
+		time_utc,
+		round,
+		score,
+		potential,
+		scene_number,
+		expected_option,
+		selected_option,
+		command)
+	VALUES (
+		_user_id,
+		_ip_address,
+		_time_utc,
+		_round,
+		_score,
+		_potential,
+		_scene_number,
+		_expected_option,
+		_selected_option,
+		_command);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `select_user` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_user`(IN _email VARCHAR(32))
+BEGIN
+        SELECT
+          user_id,
+          status,
+          round,
+			score,
+          potential,
+          game_name,
+          email,
+          password,
+		registration_utc,
+		last_score_utc,
+		sign_in_message
+        FROM user
+        WHERE email = _email;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `validate_registration` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `validate_registration`(IN _email VARCHAR(32), IN _game_name VARCHAR(16))
+BEGIN
+	IF EXISTS(SELECT * FROM user WHERE email = _email) THEN SELECT 1;
+	ELSEIF EXISTS(SELECT * FROM user WHERE game_name = _game_name) THEN SELECT 2;
+	ELSE SELECT 0;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -68,4 +186,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-18 16:10:18
+-- Dump completed on 2013-08-21  8:27:35

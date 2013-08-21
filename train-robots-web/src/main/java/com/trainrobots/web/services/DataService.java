@@ -84,6 +84,40 @@ public class DataService {
 		}
 	}
 
+	public int validateRegistration(ServletContext context, String email,
+			String name) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call validate_registration(?, ?)}");
+			statement.setString(1, email);
+			statement.setString(2, name);
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			if (resultSet.next()) {
+				return resultSet.getInt(1);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Invalid.
+			return -1;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
 	public void addRound(ServletContext context, int userId, int round,
 			int score, int potential, int sceneNumber, int expectedOption,
 			int selectedOption, String ipAddress, String command) {

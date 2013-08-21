@@ -21,57 +21,47 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.WebUtil;
-import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
-import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
-public class SignInPage {
+public class RegisterPage {
 
 	private final DataService dataService = ServiceContext.get().dataService();
-	private final GameService gameService = ServiceContext.get().gameService();
 	private String email;
+	private String name;
 	private String password;
-	private String loginError;
-	private User user;
+	private String confirmPassword;
+	private String error;
 
 	public void initiate(PageContext pageContext, String method, String email,
-			String password) {
+			String name, String password, String confirmPassword) {
 
 		// Not post back?
 		if (method == null || !method.equalsIgnoreCase("POST")) {
 			return;
 		}
 
-		// E-mail and password.
+		// Form.
 		this.email = email;
+		this.name = name;
 		this.password = password;
+		this.confirmPassword = confirmPassword;
 
 		// Validate.
 		if (!validate(pageContext.getServletContext())) {
 			return;
 		}
-
-		// Clear in-memory password for additional security.
-		if (user != null) {
-			user.password = null;
-		}
-
-		// Initiate.
-		HttpSession session = pageContext.getSession();
-
-		// Sign the user in.
-		signInUser(session, user);
+		
+		// TODO: CREATE ACCOUNT
 
 		// Redirect.
 		try {
 			((HttpServletResponse) pageContext.getResponse())
-					.sendRedirect("/game");
+					.sendRedirect("/registration_completed.jsp");
 		} catch (IOException exception) {
 			throw new WebException(exception);
 		}
@@ -81,64 +71,59 @@ public class SignInPage {
 		return email;
 	}
 
-	public String getLoginError() {
-		return loginError;
+	public String getName() {
+		return name;
+	}
+
+	public String getError() {
+		return error;
 	}
 
 	private boolean validate(ServletContext context) {
 
 		// Initiate.
-		loginError = null;
-		user = null;
+		error = null;
 
-		// Invalid e-mail?
+		// Email.
 		if (!WebUtil.isValidEmail(email)) {
-			loginError = "Please enter a valid email address.";
+			error = "Please enter a valid email address.";
+			return false;
 		}
 
-		// Invalid password?
+		// Name.
+		if (name == null || name.length() == 0) {
+			error = "You forgot to enter your name in the game.";
+			return false;
+		}
+		if (name.length() > 16 || name.indexOf(' ') >= 0) {
+			error = "Your name has to be 16 characters or under and contain no spaces.";
+			return false;
+		}
+
+		// Password.
 		if (!WebUtil.isValidPassword(password)) {
-			if (loginError != null) {
-				loginError = "Please enter a valid email address and password.";
-			} else {
-				loginError = "Please enter a valid password.";
-			}
-		}
-
-		// Failed initial validation?
-		if (loginError != null) {
+			error = "Please enter a valid password.";
 			return false;
 		}
 
-		// Get user from database.
-		user = dataService.getUser(context, email);
-
-		// Invalid e-mail or password?
-		if (user == null || !password.equals(user.password)) {
-			loginError = "The email address or password is not recognized.";
+		// Confirm password.
+		if (!password.equals(confirmPassword)) {
+			error = "The passwords you entered didn't match.";
 			return false;
 		}
 
-		// Not active?
-		if (user.status != 1) {
-			loginError = "You cannot sign in because the account <b>" + email
-					+ "</b> has not been activated.";
+		// Check database.
+		int result = dataService.validateRegistration(context, email, name);
+		if (result == 1) {
+			error = "An account with that email address already exists.";
+			return false;
+		}
+		if (result == 2) {
+			error = "Sorry - that name is taken. Please try a different name.";
 			return false;
 		}
 
-		// Valid?
-		return loginError == null;
-	}
-
-	private void signInUser(HttpSession session, User user) {
-
-		// Sign in.
-		session.setAttribute("user", user);
-		user.signedIn = true;
-
-		// Initiate game state.
-		user.round++;
-		user.state = 1;
-		user.sceneNumber = gameService.randomSceneNumber();
+		// Valid.
+		return true;
 	}
 }

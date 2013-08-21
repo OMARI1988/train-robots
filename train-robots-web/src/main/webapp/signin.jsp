@@ -4,73 +4,66 @@
 		pageContext,
 		request.getMethod(),
 		request.getParameter("emailTextBox"),
-		request.getParameter("passwordTextBox"),
-		request.getParameter("loginType"));%>
+		request.getParameter("passwordTextBox"));%>
 <html>
 <head>
 <title>Train Robots - Sign In</title>
 <style type="text/css">
-	table.loginTable td {
-		padding-top: 0.3em;
-		padding-bottom: 0.5em;
-	}
-	
-	table.loginTable td.section {
-		color: skyblue;
-	}
-	
-	table.loginTable td.detail {
-		padding-left: 1.5em;
-	}
-	
-	table.inputTable td {
-		padding: 0;
-	}
+h2 {
+	color: white;
+	font-size: 20pt;
+	font-weight: normal;
+	margin-top: 2.5em;
+	margin-bottom: 1em;
+}
 
-	td.error, span.error {
-		font-style: italic;
-		color: orange;
-	}
+p.formRow {
+	margin: 0;
+	margin-bottom: 0.6em;
+}
 
-	input.disabled {
-		background: rgb(224, 224, 224);
-	}
+p.error {
+	color: orange;
+	margin-top: 1.8em;
+}
 
-	input.enabled {
-		background: white;
-	}
+p.links {
+	margin-top: 3em;
+	line-height: 20pt;
+}
+
+.hint {
+	color: rgb(200, 200, 200);
+	margin: 0;
+	margin-top: 2em;
+	margin-bottom: 0.5em;
+	font-size: 11pt;
+}
 </style>
-<script type='text/javascript'>
-	function enablePassword(isEnabled) {
-		var passwordTextBox = document.getElementById("passwordTextBox");
-		passwordTextBox.disabled = !isEnabled;
-		passwordTextBox.value = "";
-		passwordTextBox.className = isEnabled  ? 'enabled' : 'disabled';
-	}
-</script>
 </head>
 <body>
+	<h1>train robots</h1>
+	<p class="tagline">help teach robots to become smart as humans</p>
 	<form method="post">
-	<p class="first">
-		Sign in to start playing! You need an account to play.
-	</p>
-	<table class="loginTable" cellpadding="0" cellspacing="0" border="0">
-		<tr><td class="section">What is your e-mail address?</td></tr>
-		<tr><td class="detail">
-			<table cellpadding="0" cellspacing="0" border="0" class="inputTable">
-				<tr><td>My e-mail address is:&nbsp;</td><td><input name="emailTextBox" style="width:250px" value="<%=signIn.getEmail() != null ? signIn.getEmail() : ""%>"/></td></tr>
-				<tr><td>&nbsp;</td><td class="error"><%=signIn.getEmailError() != null ? signIn.getEmailError() : "&nbsp;"%></td></tr>
-			</table>
-		</td></tr>
-		<tr><td class="section" style="padding-top: 1em;">Do you have a password with this game?</td></tr>
-		<tr><td class="detail"><input onClick="enablePassword(false);" name="loginType" type="radio" value="register" <%=signIn.isRegister() ? "checked" : ""%>/>No, I need to register for a new account.</td></tr>
-		<tr><td class="detail"><input onClick="enablePassword(true);"name="loginType" type="radio" value="login" <%=!signIn.isRegister() ? "checked" : ""%>/>Yes, my password is: <input id="passwordTextBox" name="passwordTextBox" type="password" style="width:100px" class="<%=signIn.isRegister() ? "disabled" : "enabled"%>"/> <span class="error"><%=signIn.getPasswordError() != null ? signIn.getPasswordError() : "&nbsp;"%></span></td></tr>
-		<tr><td class="detail"><input type="submit" value="Sign In"/></td></tr>
-		<tr><td style="padding-top: 2em; line-height: 1.5em;">
-			<% if (signIn.getLoginError() != null) { %><span class="error"><%=signIn.getLoginError()%></span><br/><%}%>
-			If you have forgotten your password, please <a href="/contact.jsp">contact us</a>.
-		</td></tr>
-	</table>
+		<h2>Sign in</h2>
+		<p class="hint">Use your email address and game password</p>
+		<p class="formRow">
+			<input class="textBox" type="text" name="emailTextBox" value="<%=signIn.getEmail() != null ? signIn.getEmail() : ""%>"/>
+		</p>
+		<p class="formRow">
+			<input class="textBox" type="password" name="passwordTextBox"/>
+		</p>
+		<p>
+			<input class="formButton" value="Sign in" type="submit" /> <input
+				class="formButton" value="Cancel" type="button"
+				style="margin-left: 0.8em;"
+				onclick="window.location='default.html'" />
+		</p>
+		<% if (signIn.getLoginError() != null) { %><p class="error"><%=signIn.getLoginError()%></p><br/><%}%>
+		<p class="links">
+			<a href="register.jsp">Create a free account</a><br /> <a href="forgot_password.html">Forgot
+				your password?</a>
+		</p>
 	</form>
 </body>
 </html>

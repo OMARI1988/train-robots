@@ -42,7 +42,7 @@ p.next a {
 		</tr>
 		<tr>
 			<td><img src="images/next.png" width="39" height="39" /></td>
-			<td><a href="signin.jsp">play</a>
+			<td><a href="/game">play</a>
 			</td>
 		</tr>
 		<tr>
