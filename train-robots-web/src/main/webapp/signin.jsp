@@ -57,11 +57,11 @@ p.links {
 			<input class="formButton" value="Sign in" type="submit" /> <input
 				class="formButton" value="Cancel" type="button"
 				style="margin-left: 0.8em;"
-				onclick="window.location='default.html'" />
+				onclick="window.location='/'" />
 		</p>
 		<% if (signIn.getLoginError() != null) { %><p class="error"><%=signIn.getLoginError()%></p><br/><%}%>
 		<p class="links">
-			<a href="register.jsp">Create a free account</a><br /> <a href="forgot_password.html">Forgot
+			<a href="register.jsp">Create a free account</a><br /> <a href="forgot_password.jsp">Forgot
 				your password?</a>
 		</p>
 	</form>
