@@ -99,10 +99,11 @@ public class DataService {
 			statement.setString(2, name);
 
 			// Execute.
+			int result = -1;
 			statement.execute();
 			ResultSet resultSet = statement.getResultSet();
 			if (resultSet.next()) {
-				return resultSet.getInt(1);
+				result = resultSet.getInt(1);
 			}
 
 			// Close connection.
@@ -110,8 +111,8 @@ public class DataService {
 			statement.close();
 			connection.close();
 
-			// Invalid.
-			return -1;
+			// Result.
+			return result;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);
@@ -140,6 +141,40 @@ public class DataService {
 			// Close connection.
 			statement.close();
 			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public String addPasswordResetToken(ServletContext context, String email) {
+
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call add_password_reset_token(?)}");
+			statement.setString(1, email);
+
+			// Execute.
+			String result = null;
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			if (resultSet.next()) {
+				result = resultSet.getString(1);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Result.
+			return result;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);

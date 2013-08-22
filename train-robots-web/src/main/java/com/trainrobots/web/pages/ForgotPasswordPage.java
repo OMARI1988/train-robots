@@ -25,10 +25,12 @@ import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.WebUtil;
+import com.trainrobots.web.services.DataService;
+import com.trainrobots.web.services.ServiceContext;
 
 public class ForgotPasswordPage {
 
-	//private final DataService dataService = ServiceContext.get().dataService();
+	private final DataService dataService = ServiceContext.get().dataService();
 	private String email;
 	private String error;
 
@@ -48,7 +50,14 @@ public class ForgotPasswordPage {
 			return;
 		}
 
-		// TODO: SEND RESET INSTRUCTIONS
+		// Generate reset token.
+		String token = dataService.addPasswordResetToken(context, email);
+		if (token == null) {
+			error = "Sorry - that email account is not registered.";
+			return;
+		}
+
+		// TODO: SEND MAIL WITH RESET TOKEN
 
 		// Redirect.
 		try {
