@@ -25,26 +25,28 @@ import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.WebUtil;
-import com.trainrobots.web.services.DataService;
-import com.trainrobots.web.services.MailService;
-import com.trainrobots.web.services.ServiceContext;
 
-public class ForgotPasswordPage {
+public class ResetPasswordPage {
 
-	private final DataService dataService = ServiceContext.get().dataService();
-	private final MailService mailService = ServiceContext.get().mailService();
-	private String email;
+	//private final DataService dataService = ServiceContext.get().dataService();
+	private String password;
+	private String confirmPassword;
 	private String error;
 
-	public void initiate(PageContext pageContext, String method, String email) {
+	public void initiate(PageContext pageContext, String method, String token,
+			String password, String confirmPassword) {
+
+		// TODO: VERIFY TOKEN!
 
 		// Not post back?
 		if (method == null || !method.equalsIgnoreCase("POST")) {
+			this.error = "GET REQUEST WITH TOKEN = [" + token + "]";
 			return;
 		}
 
 		// Form.
-		this.email = email;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
 
 		// Validate.
 		ServletContext context = pageContext.getServletContext();
@@ -52,44 +54,19 @@ public class ForgotPasswordPage {
 			return;
 		}
 
-		// Generate reset token.
-		String token = dataService.addPasswordResetToken(context, email);
-		if (token == null) {
-			error = "Sorry - that email account is not registered.";
-			return;
-		}
-
-		// Send mail with reset token.
-		sendMail(context, email, token);
+		// TODO: RESET PASSWORD
 
 		// Redirect.
 		try {
 			((HttpServletResponse) pageContext.getResponse())
-					.sendRedirect("/forgot_password_completed.jsp");
+					.sendRedirect("/reset_password_completed.jsp");
 		} catch (IOException exception) {
 			throw new WebException(exception);
 		}
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
 	public String getError() {
 		return error;
-	}
-
-	private void sendMail(ServletContext context, String email, String token) {
-
-		StringBuilder body = new StringBuilder();
-		body.append("Hello,\r\n\r\n");
-		body.append("To reset your Train Robots game password, open this link in your browser:\r\n\r\n");
-		body.append("http://localhost:8080/reset_password.jsp?token=" + token
-				+ "\r\n\r\n");
-		body.append("Once you've changed your password you can then sign in and start playing!\r\n\r\n");
-
-		String subject = "Reset your Train Robots game password";
-		mailService.sendMail(context, email, subject, body.toString());
 	}
 
 	private boolean validate(ServletContext context) {
@@ -97,9 +74,15 @@ public class ForgotPasswordPage {
 		// Initiate.
 		error = null;
 
-		// Email.
-		if (!WebUtil.isValidEmail(email)) {
-			error = "Please enter a valid email address.";
+		// Password.
+		if (!WebUtil.isValidPassword(password)) {
+			error = "Please enter a valid password.";
+			return false;
+		}
+
+		// Confirm password.
+		if (!password.equals(confirmPassword)) {
+			error = "The passwords you entered didn't match.";
 			return false;
 		}
 

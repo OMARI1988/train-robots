@@ -17,29 +17,37 @@
 
 package com.trainrobots.web.services;
 
-public class ServiceContext {
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-	private final static ServiceContext context = new ServiceContext();
-	private final DataService dataService = new DataService();
-	private final GameService gameService = new GameService();
-	private final MailService mailService = new MailService();
+import javax.servlet.ServletContext;
 
-	private ServiceContext() {
-	}
+import com.trainrobots.web.WebException;
 
-	public static ServiceContext get() {
-		return context;
-	}
+public class MailService {
 
-	public DataService dataService() {
-		return dataService;
-	}
+	public void sendMail(ServletContext context, String email, String subject,
+			String body) {
 
-	public GameService gameService() {
-		return gameService;
-	}
+		try {
 
-	public MailService mailService() {
-		return mailService;
+			File file = new File("c:/temp/mail.txt");
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write("TO: " + email + "\r\n");
+			bw.write("SUBJECT: " + subject + "\r\n");
+			bw.write("\r\n" + body);
+			bw.close();
+
+		} catch (IOException exception) {
+			throw new WebException(exception);
+		}
+
 	}
 }
