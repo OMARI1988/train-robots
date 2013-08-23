@@ -1,4 +1,11 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
+<%@page import="org.joda.time.DateTime"%>
+<%@page import="org.joda.time.DateTimeZone"%>
+<%
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+response.setDateHeader("Expires", 0); // Proxies.
+%>
 <html>
 <head>
 <style type="text/css">
@@ -42,7 +49,7 @@ h2 {
 						</td>
 					</tr>
 				</table>
-				<h2>robot intelligence at 87%</h2>
+				<h2>robot intelligence at <%=Math.round(85 + 7 * Math.sin(new DateTime(DateTimeZone.UTC).getMillis() / 4000000.0))%>%</h2>
 				<p class="tagline" />327 players online
 				</p>
 				<p class="player" style="margin-top: 2.8em">today's best player
