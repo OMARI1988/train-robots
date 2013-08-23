@@ -75,7 +75,7 @@ p.next a {
 		<p>With your help, we can teach robots to become much smarter.</p>
 	</div>
 	<p class="next">
-		<img src="images/next-small.png" /><a href="signin.jsp">Play</a>
+		<img src="images/next-small.png" /><a href="/game">Play</a>
 	</p>
 </body>
 </html>

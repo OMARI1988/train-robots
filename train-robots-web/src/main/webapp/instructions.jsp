@@ -69,7 +69,7 @@ p.next a {
 			robot to learn.</p>
 	</div>
 	<p class="next">
-		<img src="images/next-small.png" /><a href="signin.jsp">Play</a>
+		<img src="images/next-small.png" /><a href="/game">Play</a>
 	</p>
 </body>
 </html>
