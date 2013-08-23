@@ -23,12 +23,19 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
+
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.WebUtil;
+import com.trainrobots.web.game.ResetToken;
+import com.trainrobots.web.services.DataService;
+import com.trainrobots.web.services.ServiceContext;
 
 public class ResetPasswordPage {
 
-	//private final DataService dataService = ServiceContext.get().dataService();
+	private final DataService dataService = ServiceContext.get().dataService();
 	private String password;
 	private String confirmPassword;
 	private String error;
@@ -36,11 +43,24 @@ public class ResetPasswordPage {
 	public void initiate(PageContext pageContext, String method, String token,
 			String password, String confirmPassword) {
 
-		// TODO: VERIFY TOKEN!
+		// Validate token.
+		ServletContext context = pageContext.getServletContext();
+		ResetToken resetToken = getResetToken(context, token);
+		if (resetToken == null) {
+			redirect(pageContext, "/signin.jsp");
+			return;
+		}
+
+		// Expired?
+		DateTime now = new DateTime(DateTimeZone.UTC);
+		long elapsed = now.getMillis() - resetToken.requestUtc.getMillis();
+		if (elapsed > DateTimeConstants.MILLIS_PER_DAY) {
+			redirect(pageContext, "/signin.jsp");
+			return;
+		}
 
 		// Not post back?
 		if (method == null || !method.equalsIgnoreCase("POST")) {
-			this.error = "GET REQUEST WITH TOKEN = [" + token + "]";
 			return;
 		}
 
@@ -49,7 +69,6 @@ public class ResetPasswordPage {
 		this.confirmPassword = confirmPassword;
 
 		// Validate.
-		ServletContext context = pageContext.getServletContext();
 		if (!validate(context)) {
 			return;
 		}
@@ -57,16 +76,18 @@ public class ResetPasswordPage {
 		// TODO: RESET PASSWORD
 
 		// Redirect.
-		try {
-			((HttpServletResponse) pageContext.getResponse())
-					.sendRedirect("/reset_password_completed.jsp");
-		} catch (IOException exception) {
-			throw new WebException(exception);
-		}
+		redirect(pageContext, "/reset_password_completed.jsp");
 	}
 
 	public String getError() {
 		return error;
+	}
+
+	private ResetToken getResetToken(ServletContext context, String token) {
+		if (token == null || token.length() == 0) {
+			return null;
+		}
+		return dataService.getPasswordResetToken(context, token);
 	}
 
 	private boolean validate(ServletContext context) {
@@ -88,5 +109,13 @@ public class ResetPasswordPage {
 
 		// Valid.
 		return true;
+	}
+
+	private void redirect(PageContext pageContext, String url) {
+		try {
+			((HttpServletResponse) pageContext.getResponse()).sendRedirect(url);
+		} catch (IOException exception) {
+			throw new WebException(exception);
+		}
 	}
 }

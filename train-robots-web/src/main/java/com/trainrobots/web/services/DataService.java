@@ -26,8 +26,10 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.trainrobots.web.WebException;
+import com.trainrobots.web.game.ResetToken;
 import com.trainrobots.web.game.User;
 
 public class DataService {
@@ -66,8 +68,8 @@ public class DataService {
 				user.gameName = resultSet.getString(6);
 				user.email = resultSet.getString(7);
 				user.password = resultSet.getString(8);
-				user.registrationUtc = new DateTime(resultSet.getTimestamp(9));
-				user.lastScoreUtc = new DateTime(resultSet.getTimestamp(10));
+				user.registrationUtc = getUtc(resultSet, 9);
+				user.lastScoreUtc = getUtc(resultSet, 10);
 				user.signInMessage = resultSet.getString(11);
 			}
 
@@ -179,6 +181,49 @@ public class DataService {
 		} catch (SQLException exception) {
 			throw new WebException(exception);
 		}
+	}
+
+	public ResetToken getPasswordResetToken(ServletContext context, String token) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_password_reset_token(?)}");
+			statement.setString(1, token);
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			ResetToken resetToken = null;
+			if (resultSet.next()) {
+				resetToken = new ResetToken();
+				resetToken.userId = resultSet.getInt(1);
+				resetToken.requestUtc = getUtc(resultSet, 2);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return token.
+			return resetToken;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	private static DateTime getUtc(ResultSet resultSet, int columnIndex)
+			throws SQLException {
+		DateTime x = new DateTime(resultSet.getTimestamp(columnIndex));
+		return new DateTime(x.getYear(), x.getMonthOfYear(), x.getDayOfMonth(),
+				x.getHourOfDay(), x.getMinuteOfHour(), x.getSecondOfMinute(),
+				x.getMillisOfSecond(), DateTimeZone.UTC);
 	}
 
 	public void addRound(ServletContext context, int userId, int round,
