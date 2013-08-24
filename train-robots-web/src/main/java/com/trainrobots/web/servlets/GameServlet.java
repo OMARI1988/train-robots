@@ -70,6 +70,10 @@ public class GameServlet extends HttpServlet {
 			return;
 		}
 
+		// Form.
+		String command = request.getParameter("command");
+		String error = null;
+
 		// Handle post.
 		ServletContext context = request.getSession().getServletContext();
 		String feedback = null;
@@ -119,13 +123,18 @@ public class GameServlet extends HttpServlet {
 
 				// Add command.
 				else {
-					String c = request.getParameter("command");
-					user.score += 20;
-					user.potential += 100;
-					user.state = 2;
-					dataService.addRound(context, user.userId, user.round,
-							user.score, user.potential, user.sceneNumber, 0, 0,
-							request.getRemoteAddr(), c);
+
+					// Valid commmand?
+					if (isValidCommand(command)) {
+						user.score += 20;
+						user.potential += 100;
+						user.state = 2;
+						dataService.addRound(context, user.userId, user.round,
+								user.score, user.potential, user.sceneNumber,
+								0, 0, request.getRemoteAddr(), command);
+					} else {
+						error = "Please enter a valid command.";
+					}
 				}
 
 			} else if (user.state == 2) {
@@ -140,7 +149,7 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Write.
-		writePage(response, user, feedback);
+		writePage(response, user, feedback, command, error);
 
 		// Simulate latency.
 		try {
@@ -151,7 +160,7 @@ public class GameServlet extends HttpServlet {
 	}
 
 	private void writePage(HttpServletResponse response, User user,
-			String feedback) throws IOException {
+			String feedback, String command, String error) throws IOException {
 
 		// Disable caching.
 		response.setContentType("text/html");
@@ -183,7 +192,7 @@ public class GameServlet extends HttpServlet {
 				if (feedback != null) {
 					out.println("<p id='info'>" + feedback + "</p>");
 				}
-				out.println("<p id='info'><input class='formButton' name='command' type='submit' value='Continue'/></p>");
+				out.println("<p id='info'><input class='formButton' type='submit' value='Continue'/></p>");
 			}
 		} else {
 
@@ -191,10 +200,17 @@ public class GameServlet extends HttpServlet {
 			out.println("<div class='add'>");
 			if (user.state == 1) {
 				out.println("<p class='d'>Now its your turn to help us make the robot smarter! The robot can learn from your commands.</p>");
-				out.println("<p class='d'>What command what you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if this makes it clearer, but short commands are better. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
+				out.println("<p class='d'>What command would you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if this makes it clearer, but short commands are better. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
 				out.println("<p class='d'>You will get <span class='positive'>bonus points</span> when your command gets voted as <span class='positive'>clear</span> and <span class='positive'>correct</span> by other players, for changing from the first picture below to the second one.</p>");
-				out.println("<p class='d'>Look at the two pictures below and find out what's changed, then think about your command.</p>");
-				out.println("<p class='d'><textarea class='textBox' rows='3' type='text' name='command' style='width:650px;'/></textarea></p>");
+				out.println("<p class='d'>Look at the two pictures below and find out what's changed, then enter a suitable command.</p>");
+				out.print("<p class='d'><textarea class='textBox' rows='3' type='text' name='command' style='width:650px;'/>");
+				if (command != null) {
+					out.print(command);
+				}
+				out.print("</textarea></p>");
+				if (error != null) {
+					out.println("<p class='error'>" + error + "</p>");
+				}
 				out.println("<p class='d'><input class='formButton' type='submit' value='Save'/></p>");
 			} else {
 				out.println("<p class='d'>Thanks - your command has been saved.</p>");
@@ -319,6 +335,11 @@ public class GameServlet extends HttpServlet {
 		out.println("font-size: 12pt;");
 		out.println("line-height: 16pt;");
 		out.println("}");
+		out.println("p.error {");
+		out.println("color: orange;");
+		out.println("font-size: 12pt;");
+		out.println("line-height: 16pt;");
+		out.println("}");
 		out.println("td.right {");
 		out.println("padding-left: 30px;");
 		out.println("}");
@@ -343,5 +364,20 @@ public class GameServlet extends HttpServlet {
 		out.println("</script>");
 		out.println("<title>Train Robots - Game</title>");
 		out.println("</head>");
+	}
+
+	private static boolean isValidCommand(String command) {
+
+		// Not specified?
+		if (command == null) {
+			return false;
+		}
+
+		// Must be at least two words.
+		String text = command.trim();
+		if (text.length() == 0) {
+			return false;
+		}
+		return text.indexOf(' ') > 1;
 	}
 }
