@@ -73,7 +73,8 @@ public class ResetPasswordPage {
 			return;
 		}
 
-		// TODO: RESET PASSWORD
+		// Change password.
+		dataService.changePassword(context, resetToken.userId, password);
 
 		// Redirect.
 		redirect(pageContext, "/reset_password_completed.jsp");

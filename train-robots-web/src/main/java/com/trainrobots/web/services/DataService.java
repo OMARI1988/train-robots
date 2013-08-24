@@ -218,6 +218,33 @@ public class DataService {
 		}
 	}
 
+	public void changePassword(ServletContext context, int userId,
+			String password) {
+
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call change_password(?, ?)}");
+			statement.setInt(1, userId);
+			statement.setString(2, password);
+
+			// Execute.
+			statement.executeUpdate();
+
+			// Close connection.
+			statement.close();
+			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
 	private static DateTime getUtc(ResultSet resultSet, int columnIndex)
 			throws SQLException {
 		DateTime x = new DateTime(resultSet.getTimestamp(columnIndex));

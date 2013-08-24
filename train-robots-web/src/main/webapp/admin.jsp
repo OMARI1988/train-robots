@@ -1,12 +1,12 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
-<link href="css/main.css" type="text/css" rel="stylesheet" />
 <style type="text/css">
 p.info {
 	color: rgb(200, 200, 200);
 	font-size: 12pt;
 	line-height: 16pt;
+	width: 580px;
 }
 
 h2 {
@@ -29,15 +29,15 @@ p.next a {
 	margin-left: 0.4em;
 }
 </style>
-<title>Train Robots - Reset Password Completed</title>
+<title>Train Robots - Admin</title>
 </head>
 <body>
 	<h1>train robots</h1>
 	<p class="tagline">help teach robots to become smart as humans</p>
-	<h2>Reset password completed</h2>
-	<p class="info">Thanks - your new password has been saved. Sign in to play!</p>
+	<h2>Admin</h2>
+	<p class="info">There are no open administration tasks.</p>
 	<p class="next">
-		<img src="images/next-small.png" /><a href="signin.jsp">Sign in</a>
+		<img src="images/next-small.png" /><a href="default.jsp">Continue</a>
 	</p>
 </body>
 </html>
