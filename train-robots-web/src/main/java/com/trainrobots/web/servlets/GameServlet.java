@@ -68,7 +68,6 @@ public class GameServlet extends HttpServlet {
 		if (user == null || !user.signedIn) {
 			response.sendRedirect("/signin.jsp");
 			return;
-
 		}
 
 		// Handle post.
@@ -192,15 +191,15 @@ public class GameServlet extends HttpServlet {
 			out.println("<div class='add'>");
 			if (user.state == 1) {
 				out.println("<p class='d'>Now its your turn to help us make the robot smarter! The robot can learn from your commands.</p>");
-				out.println("<p class='d'>Look at the two pictures below and find out what's changed.</p>");
 				out.println("<p class='d'>What command what you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if this makes it clearer, but short commands are better. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
 				out.println("<p class='d'>You will get <span class='positive'>bonus points</span> when your command gets voted as <span class='positive'>clear</span> and <span class='positive'>correct</span> by other players, for changing from the first picture below to the second one.</p>");
+				out.println("<p class='d'>Look at the two pictures below and find out what's changed, then think about your command.</p>");
 				out.println("<p class='d'><textarea class='textBox' rows='3' type='text' name='command' style='width:650px;'/></textarea></p>");
 				out.println("<p class='d'><input class='formButton' type='submit' value='Save'/></p>");
 			} else {
 				out.println("<p class='d'>Thanks - your command has been saved.</p>");
 				out.println("<p class='d'><span class='positive'>+20 points!</span> You've also been awarded <span class='positive'>100 potential points!</span><br/></p>");
-				out.println("<p class='d'>Your potential gets converted to real points if other players think your command is good.<br/>Be careful though. Bad or unclear commands means you will lose your points.</p>");
+				out.println("<p class='d'>Your potential gets converted to real points if other players think your command is good.<br/>Be careful though. Bad or unclear commands means you could lose points.</p>");
 				out.println("<p class='d'><input class='formButton' name='command' type='submit' value='Continue'/></p>");
 			}
 			out.println("</div>");

@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.web.WebException;
@@ -30,9 +29,11 @@ import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
+import com.trainrobots.web.services.UserService;
 
 public class SignInPage {
 
+	private final UserService userService = ServiceContext.get().userService();
 	private final DataService dataService = ServiceContext.get().dataService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private String email;
@@ -62,11 +63,13 @@ public class SignInPage {
 			user.password = null;
 		}
 
-		// Initiate.
-		HttpSession session = pageContext.getSession();
-
 		// Sign the user in.
-		signInUser(session, user);
+		userService.signIn(pageContext.getSession(), user);
+
+		// Initiate game state.
+		user.round++;
+		user.state = 1;
+		user.sceneNumber = gameService.randomSceneNumber();
 
 		// Redirect.
 		try {
@@ -128,17 +131,5 @@ public class SignInPage {
 
 		// Valid?
 		return loginError == null;
-	}
-
-	private void signInUser(HttpSession session, User user) {
-
-		// Sign in.
-		session.setAttribute("user", user);
-		user.signedIn = true;
-
-		// Initiate game state.
-		user.round++;
-		user.state = 1;
-		user.sceneNumber = gameService.randomSceneNumber();
 	}
 }

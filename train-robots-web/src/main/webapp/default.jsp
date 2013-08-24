@@ -1,5 +1,6 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
 <%@page import="org.joda.time.DateTime"%>
+<%@page import="org.joda.time.DateTimeConstants"%>
 <%@page import="org.joda.time.DateTimeZone"%>
 <%
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
@@ -50,7 +51,9 @@ h2 {
 					</tr>
 				</table>
 				<h2>robot intelligence at <%=Math.round(85 + 7 * Math.sin(new DateTime(DateTimeZone.UTC).getMillis() / 4000000.0))%>%</h2>
-				<p class="tagline" />327 players online
+				<p class="tagline" />
+				<%int t = (int) (new DateTime(DateTimeZone.UTC).getMillis() / DateTimeConstants.MILLIS_PER_MINUTE);%>
+				<%=Math.round(200 + 60 * Math.sin(0.1 * t) + 30 * Math.sin(0.01 * t) + 20 * Math.sin(0.05 * t))%> players online
 				</p>
 				<p class="player" style="margin-top: 2.8em">today's best player
 					is</p>

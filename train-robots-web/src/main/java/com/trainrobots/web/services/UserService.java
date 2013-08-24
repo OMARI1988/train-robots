@@ -17,34 +17,33 @@
 
 package com.trainrobots.web.services;
 
-public class ServiceContext {
+import javax.servlet.http.HttpSession;
 
-	private final static ServiceContext context = new ServiceContext();
-	private final UserService userService = new UserService();
-	private final DataService dataService = new DataService();
-	private final GameService gameService = new GameService();
-	private final MailService mailService = new MailService();
+import com.trainrobots.web.game.User;
 
-	private ServiceContext() {
+public class UserService {
+
+	public void signIn(HttpSession session, User user) {
+
+		// Sign in.
+		session.setAttribute("user", user);
+		user.signedIn = true;
 	}
 
-	public static ServiceContext get() {
-		return context;
-	}
+	public void signOut(HttpSession session) {
 
-	public UserService userService() {
-		return userService;
-	}
+		// Get cached user details from session.
+		User user = (User) session.getAttribute("user");
 
-	public DataService dataService() {
-		return dataService;
-	}
+		// Not cached?
+		if (user == null) {
+			return;
+		}
 
-	public GameService gameService() {
-		return gameService;
-	}
+		// Clear user details.
+		user.signedIn = false;
 
-	public MailService mailService() {
-		return mailService;
+		// Remove from session cache.
+		session.removeAttribute("user");
 	}
 }
