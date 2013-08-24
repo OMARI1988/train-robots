@@ -34,8 +34,8 @@ public class User {
 	public DateTime lastScoreUtc;
 	public String signInMessage;
 
-	// Game fields.
-	public boolean signedIn;
+	// Session fields.
 	public int state;
 	public int sceneNumber;
+	public boolean superseded;
 }

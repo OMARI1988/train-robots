@@ -35,7 +35,7 @@ p.next a {
 	<h1>train robots</h1>
 	<p class="tagline">help teach robots to become smart as humans</p>
 	<h2>Oops!</h2>
-	<p class="info">You've been signed out because you logged in at another location.</p>
+	<p class="info">You've been signed out because you logged in somewhere else.</p>
 	<p class="next">
 		<img src="images/next-small.png" /><a href="/">Continue</a>
 	</p>

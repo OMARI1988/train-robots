@@ -32,9 +32,11 @@ import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
+import com.trainrobots.web.services.UserService;
 
 public class GameServlet extends HttpServlet {
 
+	private final UserService userService = ServiceContext.get().userService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private final DataService dataService = ServiceContext.get().dataService();
 	private static final String[] OPTIONS;
@@ -65,8 +67,15 @@ public class GameServlet extends HttpServlet {
 
 		// Not signed in?
 		User user = (User) request.getSession().getAttribute("user");
-		if (user == null || !user.signedIn) {
+		if (user == null) {
 			response.sendRedirect("/signin.jsp");
+			return;
+		}
+
+		// Superseded?
+		if (user.superseded) {
+			userService.signOut(request.getSession());
+			response.sendRedirect("/forced_signout.jsp");
 			return;
 		}
 
