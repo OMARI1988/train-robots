@@ -17,11 +17,13 @@
 
 package com.trainrobots.web.services;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
 import com.trainrobots.web.WebException;
@@ -33,21 +35,49 @@ public class MailService {
 
 		try {
 
-			File file = new File("c:/temp/mail.txt");
-			if (!file.exists()) {
-				file.createNewFile();
-			}
+			// Configuration.
+			String smtpHost = context.getInitParameter("smtp-host");
+			int smtpPort = Integer.parseInt(context
+					.getInitParameter("smtp-port"));
+			String smtpUser = context.getInitParameter("smtp-user");
+			String smtpPassword = context.getInitParameter("smtp-password");
 
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("TO: " + email + "\r\n");
-			bw.write("SUBJECT: " + subject + "\r\n");
-			bw.write("\r\n" + body);
-			bw.close();
+			// Initiate properties.
+			Properties properties = new Properties();
+			properties.put("mail.transport.protocol", "smtps");
+			properties.put("mail.smtps.host", smtpHost);
+			properties.put("mail.smtps.auth", "true");
 
-		} catch (IOException exception) {
+			// Initiate session.
+			Session mailSession = Session.getDefaultInstance(properties);
+			Transport transport = mailSession.getTransport();
+
+			// Create message.
+			MimeMessage message = new MimeMessage(mailSession);
+			message.setSubject(subject);
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					email));
+
+			// UTF-8 body.
+			message.setText(body, "UTF-8");
+			message.saveChanges();
+			message.removeHeader("Content-Transfer-Encoding");
+			message.removeHeader("Content-Type");
+			message.addHeader("Content-Transfer-Encoding", "base64");
+			message.addHeader("Content-Type", "text/plain; charset=UTF-8");
+
+			// Connect to SMTP server.
+			transport.connect(smtpHost, smtpPort, smtpUser, smtpPassword);
+
+			// Send message.
+			transport.sendMessage(message,
+					message.getRecipients(Message.RecipientType.TO));
+
+			// Close session.
+			transport.close();
+
+		} catch (Exception exception) {
 			throw new WebException(exception);
 		}
-
 	}
 }

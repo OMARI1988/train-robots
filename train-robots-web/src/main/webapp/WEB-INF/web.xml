@@ -11,6 +11,26 @@
 		<param-value>jdbc:mysql://localhost/train_robots?user=java_user&amp;password=Baz80931841</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>smtp-host</param-name>
+		<param-value>smtp.gmail.com</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>smtp-port</param-name>
+		<param-value>465</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>smtp-user</param-name>
+		<param-value>kais@kaisdukes.com</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>smtp-password</param-name>
+		<param-value>MASKED</param-value>
+	</context-param>
+
 	<welcome-file-list>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
