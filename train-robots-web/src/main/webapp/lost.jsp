@@ -13,7 +13,7 @@ p.info {
 h2 {
 	color: rgb(141, 244, 50);
 	font-size: 12pt;
-	font-weight: blue;
+	font-weight: bold;
 	margin-top: 2.5em;
 	margin-bottom: 0;
 }

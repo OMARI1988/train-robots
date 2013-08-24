@@ -29,15 +29,15 @@ p.next a {
 	margin-left: 0.4em;
 }
 </style>
-<title>Train Robots - Registration Completed</title>
+<title>Train Robots - Forced Sign Out</title>
 </head>
 <body>
 	<h1>train robots</h1>
 	<p class="tagline">help teach robots to become smart as humans</p>
-	<h2>Registration completed</h2>
-	<p class="info">Thanks - your account has been created. Sign in to play!</p>
+	<h2>Oops!</h2>
+	<p class="info">You've been signed out because you logged in at another location.</p>
 	<p class="next">
-		<img src="images/next-small.png" /><a href="signin.jsp">Sign in</a>
+		<img src="images/next-small.png" /><a href="/">Continue</a>
 	</p>
 </body>
 </html>

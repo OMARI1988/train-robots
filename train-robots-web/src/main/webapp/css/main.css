@@ -69,6 +69,13 @@ input.textBox {
 	width: 350px;
 }
 
+textarea.textBox {
+	padding: 0.4em;
+	font-size: 11pt;
+	font-family: Arial;
+	color: rgb(80, 80, 80);
+}
+
 input.formButton {
 	border: 2px solid white;
 	background: rgb(21, 97, 222);
