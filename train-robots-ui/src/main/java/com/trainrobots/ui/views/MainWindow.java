@@ -24,43 +24,42 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
 
 import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.resources.ResourceUtil;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.TreeView;
 
 public class MainWindow extends JFrame {
 
 	private final WindowService windowService;
 	private final MainMenu mainMenu;
-	// private final ToolBar toolBar;
+	private final ToolBar toolBar;
 	private final StatusBar statusBar;
-
-	// private final GraphicsPanel graphicsPanel;
+	private final TreeView treeView;
+	private final SceneView sceneView;
 
 	@Inject
 	public MainWindow(WindowService windowService, MainMenu mainMenu,
-	// ToolBar toolBar,
-			StatusBar statusBar) {
+			ToolBar toolBar, StatusBar statusBar, TreeView treeView,
+			SceneView sceneView) {
 
 		// Dependencies.
 		this.windowService = windowService;
 		this.mainMenu = mainMenu;
-		// this.toolBar = toolBar;
+		this.toolBar = toolBar;
 		this.statusBar = statusBar;
-		// this.graphicsPanel = new GraphicsPanel();
+		this.treeView = treeView;
+		this.sceneView = sceneView;
 
 		// Initiate.
 		initiateWindow();
 	}
 
-	// public ToolBar getToolBar() {
-	// return toolBar;
-	// }
-	//
-	// public GraphicsPanel getGraphicsPanel() {
-	// return graphicsPanel;
-	// }
+	public ToolBar getToolBar() {
+		return toolBar;
+	}
 
 	public StatusBar getStatusBar() {
 		return statusBar;
@@ -90,10 +89,14 @@ public class MainWindow extends JFrame {
 		setJMenuBar(mainMenu);
 
 		// Tool bar.
-		// add(toolBar, BorderLayout.NORTH);
+		add(toolBar, BorderLayout.NORTH);
 
-		// Content.
-		// add(new JScrollPane(graphicsPanel), BorderLayout.CENTER);
+		// Splitter.
+		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				treeView, sceneView);
+		splitter.setDividerLocation(350);
+		splitter.setDividerSize(2);
+		add(splitter, BorderLayout.CENTER);
 
 		// Status bar.
 		add(statusBar, BorderLayout.SOUTH);
