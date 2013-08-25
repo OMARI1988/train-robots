@@ -15,25 +15,25 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.views.tree;
 
-import java.awt.Color;
+import com.trainrobots.ui.services.WindowService;
 
-import javax.inject.Inject;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+public class GroupNode extends TreeNode {
 
-public class SceneView extends JPanel {
+	private final WindowService windowService;
+	private final int groupNumber;
 
-	private final JLabel label;
-
-	@Inject
-	public SceneView() {
-		setBackground(Color.WHITE);
-		add(label = new JLabel("No scene selected."));
+	public GroupNode(WindowService windowService, int groupNumber) {
+		super(Integer.toString(groupNumber), false);
+		this.windowService = windowService;
+		this.groupNumber = groupNumber;
 	}
 
-	public void select(int groupNumber, int imageNumber) {
-		label.setText(groupNumber + "." + imageNumber);
+	@Override
+	protected void createChildNodes() {
+		for (int i = 1; i <= 5; i++) {
+			add(new ImageNode(windowService, groupNumber, i));
+		}
 	}
 }

@@ -17,14 +17,114 @@
 
 package com.trainrobots.ui.views.tree;
 
-import javax.inject.Inject;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class TreeView extends JPanel {
+import javax.inject.Inject;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
+import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.WindowService;
+
+public class TreeView extends JTree implements TreeSelectionListener,
+		KeyListener, MouseListener {
 
 	@Inject
-	public TreeView() {
-		add(new JLabel("*** TREE ***"));
+	public TreeView(DataService dataService, WindowService windowService) {
+
+		// Model.
+		setModel(new DefaultTreeModel(new RootNode(dataService, windowService)));
+
+		// Show root handles.
+		setShowsRootHandles(true);
+
+		// Tree node renderer.
+		TreeNodeRenderer treeNodeRenderer = new TreeNodeRenderer();
+		setCellRenderer(treeNodeRenderer);
+
+		// Events handlers.
+		addTreeSelectionListener(this);
+		addKeyListener(this);
+		addMouseListener(this);
+	}
+
+	public void selectImage(int groupNumber, int imageNumber) {
+
+		// Image node.
+		RootNode rootNode = (RootNode) getModel().getRoot();
+		GroupNode groupNode = (GroupNode) rootNode.getChildAt(groupNumber - 1);
+		groupNode.getChildCount(); // Force creation.
+		ImageNode imageNode = (ImageNode) groupNode.getChildAt(imageNumber - 1);
+
+		// Select.
+		TreePath selectionPath = new TreePath(imageNode.getPath());
+		// setSelectionPath(selectionPath);
+		scrollPathToVisible(selectionPath);
+	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent event) {
+
+		// Get node.
+		TreePath path = event.getPath();
+		TreeNode node = (TreeNode) path.getLastPathComponent();
+
+		// Select.
+		node.select();
+	}
+
+	public void keyPressed(KeyEvent event) {
+	}
+
+	public void keyReleased(KeyEvent event) {
+	}
+
+	public void keyTyped(KeyEvent event) {
+		if (event.getKeyChar() == '\n') {
+
+			// Get tree node.
+			TreePath path = getSelectionPath();
+			TreeNode treeNode = (TreeNode) path.getLastPathComponent();
+			if (!treeNode.isLeaf()) {
+
+				// Expand non-leaf nodes.
+				if (isExpanded(path)) {
+					collapsePath(path);
+				} else {
+					expandPath(path);
+				}
+			}
+		}
+	}
+
+	public void mouseClicked(MouseEvent event) {
+	}
+
+	public void mouseEntered(MouseEvent event) {
+	}
+
+	public void mouseExited(MouseEvent event) {
+	}
+
+	public void mousePressed(MouseEvent event) {
+		if (event.getButton() == MouseEvent.BUTTON3) {
+			TreePath path = getPathForLocation(event.getX(), event.getY());
+			setSelectionPath(path);
+		}
+	}
+
+	public void mouseReleased(MouseEvent event) {
+		if (event.getButton() == MouseEvent.BUTTON3) {
+			TreePath path = getSelectionPath();
+			if (path != null) {
+				new TreeMenu(this).show(this, event.getX(), event.getY());
+			}
+		}
 	}
 }

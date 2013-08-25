@@ -15,31 +15,35 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.views.tree;
 
-import javax.inject.Singleton;
-
-import com.trainrobots.ui.services.DataService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultDataService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
 
-import dagger.Module;
-import dagger.Provides;
+public class ImageNode extends TreeNode {
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+	private final WindowService windowService;
+	private final int groupNumber;
+	private final int imageNumber;
 
-	@Provides
-	@Singleton
-	public DataService provideDataService() {
-		return new DefaultDataService();
+	public ImageNode(WindowService windowService, int groupNumber,
+			int imageNumber) {
+		super(getName(groupNumber, imageNumber), true);
+		this.windowService = windowService;
+		this.groupNumber = groupNumber;
+		this.imageNumber = imageNumber;
 	}
 
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+	@Override
+	public void select() {
+		windowService.getMainWindow().getSceneView()
+				.select(groupNumber, imageNumber);
+	}
+
+	private static String getName(int groupNumber, int imageNumber) {
+		StringBuilder text = new StringBuilder();
+		text.append(groupNumber);
+		text.append('.');
+		text.append(imageNumber);
+		return text.toString();
 	}
 }

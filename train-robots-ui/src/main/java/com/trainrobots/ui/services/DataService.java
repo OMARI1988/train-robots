@@ -15,25 +15,9 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.services;
 
-import java.awt.Color;
+public interface DataService {
 
-import javax.inject.Inject;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-public class SceneView extends JPanel {
-
-	private final JLabel label;
-
-	@Inject
-	public SceneView() {
-		setBackground(Color.WHITE);
-		add(label = new JLabel("No scene selected."));
-	}
-
-	public void select(int groupNumber, int imageNumber) {
-		label.setText(groupNumber + "." + imageNumber);
-	}
+	int getGroupCount();
 }

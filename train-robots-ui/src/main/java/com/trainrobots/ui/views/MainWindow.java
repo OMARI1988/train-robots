@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import com.trainrobots.ui.menus.MainMenu;
@@ -65,6 +66,10 @@ public class MainWindow extends JFrame {
 		return statusBar;
 	}
 
+	public SceneView getSceneView() {
+		return sceneView;
+	}
+
 	private void initiateWindow() {
 
 		// Register.
@@ -93,7 +98,7 @@ public class MainWindow extends JFrame {
 
 		// Splitter.
 		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				treeView, sceneView);
+				new JScrollPane(treeView), sceneView);
 		splitter.setDividerLocation(350);
 		splitter.setDividerSize(2);
 		add(splitter, BorderLayout.CENTER);
