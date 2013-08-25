@@ -17,41 +17,50 @@
 
 package com.trainrobots.ui.views;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.BorderLayout;
 
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JPanel;
+
+import com.trainrobots.ui.graphics.Renderer;
 
 public class GraphicsPanel extends JPanel {
 
-	@Override
-	public void paintComponent(Graphics graphics) {
-		super.paintComponent(graphics);
-		render((Graphics2D) graphics, getWidth(), getHeight());
-	}
+	public GraphicsPanel() {
 
-	private void render(Graphics2D graphics, int width, int height) {
+		GLProfile glprofile = GLProfile.getDefault();
+		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
+		GLJPanel glpanel = new GLJPanel(glcapabilities);
 
-		// Anti-aliasing.
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		glpanel.addGLEventListener(new GLEventListener() {
 
-		// Fractional metrics.
-		graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
-		// Board.
-		Color color1 = new Color(1, 161, 255);
-		Color color2 = new Color(183, 255, 252);
-		int s = width / 8;
-		int p = (width - (s * 8)) / 2;
-		for (int x = 0; x < 8; x++) {
-			for (int y = 0; y < 8; y++) {
-				graphics.setPaint(x % 2 == y % 2 ? color1 : color2);
-				graphics.fillRect(p + s * x, p + s * y, s, s);
+			@Override
+			public void reshape(GLAutoDrawable glautodrawable, int x, int y,
+					int width, int height) {
+				Renderer.setup(glautodrawable.getGL().getGL2(), width,
+						height);
 			}
-		}
+
+			@Override
+			public void init(GLAutoDrawable glautodrawable) {
+			}
+
+			@Override
+			public void dispose(GLAutoDrawable glautodrawable) {
+			}
+
+			@Override
+			public void display(GLAutoDrawable glautodrawable) {
+				Renderer.render(glautodrawable.getGL().getGL2(),
+						glautodrawable.getWidth(), glautodrawable.getHeight());
+			}
+		});
+
+		setLayout(new BorderLayout());
+		add(glpanel, BorderLayout.CENTER);
 	}
 }
