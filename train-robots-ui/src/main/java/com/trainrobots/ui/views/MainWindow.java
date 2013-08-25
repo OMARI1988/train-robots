@@ -40,11 +40,12 @@ public class MainWindow extends JFrame {
 	private final StatusBar statusBar;
 	private final TreeView treeView;
 	private final SceneView sceneView;
+	private final EditorView editorView;
 
 	@Inject
 	public MainWindow(WindowService windowService, MainMenu mainMenu,
 			ToolBar toolBar, StatusBar statusBar, TreeView treeView,
-			SceneView sceneView) {
+			SceneView sceneView, EditorView editorView) {
 
 		// Dependencies.
 		this.windowService = windowService;
@@ -53,6 +54,7 @@ public class MainWindow extends JFrame {
 		this.statusBar = statusBar;
 		this.treeView = treeView;
 		this.sceneView = sceneView;
+		this.editorView = editorView;
 
 		// Initiate.
 		initiateWindow();
@@ -80,7 +82,7 @@ public class MainWindow extends JFrame {
 
 		// Icons.
 		List<Image> images = new ArrayList<Image>();
-		for (int size : new int[] { 16, 24, 32, 48, 6 }) {
+		for (int size : new int[] { 16, 24, 32, 48, 64 }) {
 			images.add(getToolkit().getImage(
 					ResourceUtil.getUrl("/com/trainrobots/ui/go" + size
 							+ ".png")));
@@ -96,15 +98,24 @@ public class MainWindow extends JFrame {
 		// Tool bar.
 		add(toolBar, BorderLayout.NORTH);
 
-		// Splitter.
-		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(treeView), sceneView);
-		splitter.setDividerLocation(350);
-		splitter.setDividerSize(2);
-		add(splitter, BorderLayout.CENTER);
+		// Right splitter.
+		JSplitPane rightSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				sceneView, editorView);
+		rightSplitter.setDividerSize(4);
+
+		// Left splitter.
+		JSplitPane leftSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				new JScrollPane(treeView), rightSplitter);
+		leftSplitter.setDividerLocation(250);
+		leftSplitter.setDividerSize(2);
+		add(leftSplitter, BorderLayout.CENTER);
 
 		// Status bar.
 		add(statusBar, BorderLayout.SOUTH);
+
+		// Layout.
+		pack();
+		rightSplitter.setDividerLocation(800);
 
 		// Size and position.
 		setSize(650, 500);
