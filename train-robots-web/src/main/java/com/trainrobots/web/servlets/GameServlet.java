@@ -237,11 +237,13 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Scene.
-		out.println("<table id='scene' cellspacing='0' cellpadding='0'>");
-		out.println("<tr><td><p class='move'>before</p> <img src='"
-				+ scene.image1 + "' /></td>");
-		out.println("<td class='right'><p class='move'>after</p> <img src='"
-				+ scene.image2 + "' /></td></tr>");
+		String image1 = "/static/design/layout1.png"; // TODO: scene.image1
+		String image2 = "/static/design/layout2.png"; // TODO: scene.image2
+		out.println("<table id='scene' cellspacing='0' cellpadding='2'>");
+		out.println("<tr><td><p class='move'>before</p> <img src='" + image1
+				+ "' /></td>");
+		out.println("<td><p class='move'>after</p> <img src='"
+				+ image2 + "' /></td></tr>");
 		out.println("</table>");
 
 		// Hidden values.
@@ -333,11 +335,15 @@ public class GameServlet extends HttpServlet {
 		out.println("width: 630px;");
 		out.println("line-height: 16pt;");
 		out.println("}");
+		out.println("table#scene {");
+		out.println("background: black;");
+		out.println("border: 2px solid rgb(91, 91, 91);");
+		out.println("}");
 		out.println("p.move {");
-		out.println("color: rgb(200, 200, 200);");
-		out.println("font-size: 12pt;");
-		out.println("margin: 0;");
-		out.println("margin-bottom: 0.3em;");
+		out.println("color: white;");
+		out.println("font-size: 11pt;");
+		out.println("margin: 0.2em;");
+		out.println("margin-left: 0.4em;");
 		out.println("}");
 		out.println("p.d {");
 		out.println("color: rgb(200, 200, 200);");
@@ -348,9 +354,6 @@ public class GameServlet extends HttpServlet {
 		out.println("color: orange;");
 		out.println("font-size: 12pt;");
 		out.println("line-height: 16pt;");
-		out.println("}");
-		out.println("td.right {");
-		out.println("padding-left: 30px;");
 		out.println("}");
 		out.println("table.links {");
 		out.println("margin-top: 3em;");

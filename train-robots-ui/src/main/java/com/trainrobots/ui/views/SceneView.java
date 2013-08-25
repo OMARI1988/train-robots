@@ -28,7 +28,7 @@ public class SceneView extends JPanel {
 
 	private final JLabel label1 = new JLabel();
 	private final JLabel label2 = new JLabel();
-	private final GraphicsPanel panel1 = new GraphicsPanel();
+	private final ImagePanel panel1 = new ImagePanel();
 	private final GraphicsPanel panel2 = new GraphicsPanel();
 
 	@Inject
@@ -36,26 +36,28 @@ public class SceneView extends JPanel {
 
 		// Layout.
 		setLayout(null);
-		setBackground(Color.WHITE);
+		setBackground(new Color(33, 33, 33));
 
 		// Label 1.
 		label1.setText("No scene selected");
+		label1.setForeground(Color.WHITE);
 		Dimension ps1 = label1.getPreferredSize();
-		label1.setBounds(24, 15, (int) ps1.getWidth(), (int) ps1.getHeight());
+		label1.setBounds(25, 15, (int) ps1.getWidth(), (int) ps1.getHeight());
 		add(label1);
 
 		// Label 2.
 		label2.setText("No scene selected");
+		label2.setForeground(Color.WHITE);
 		Dimension ps2 = label2.getPreferredSize();
-		label2.setBounds(346, 15, (int) ps2.getWidth(), (int) ps2.getHeight());
+		label2.setBounds(352, 15, (int) ps2.getWidth(), (int) ps2.getHeight());
 		add(label2);
 
 		// Panel 1.
-		panel1.setBounds(24, 32, 300, 300);
+		panel1.setBounds(25, 32, 325, 350);
 		add(panel1);
 
 		// Panel 2.
-		panel2.setBounds(346, 32, 300, 300);
+		panel2.setBounds(352, 32, 325, 350);
 		add(panel2);
 	}
 
