@@ -15,23 +15,22 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
-
-import javax.inject.Singleton;
+package com.trainrobots.ui.services.defaults;
 
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
 import com.trainrobots.ui.views.MainWindow;
 
-import dagger.Module;
-import dagger.Provides;
+public class DefaultWindowService implements WindowService {
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+	private MainWindow mainWindow;
 
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+	@Override
+	public MainWindow getMainWindow() {
+		return mainWindow;
+	}
+
+	@Override
+	public void setMainWindow(MainWindow window) {
+		this.mainWindow = window;
 	}
 }

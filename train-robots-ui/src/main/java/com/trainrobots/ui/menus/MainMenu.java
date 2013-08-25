@@ -15,23 +15,15 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.menus;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
+import javax.swing.JMenuBar;
 
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
+public class MainMenu extends JMenuBar {
 
-import dagger.Module;
-import dagger.Provides;
-
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
-
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+	@Inject
+	public MainMenu(FileMenu fileMenu) {
+		add(fileMenu);
 	}
 }

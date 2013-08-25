@@ -15,23 +15,26 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.commands;
 
-import javax.inject.Singleton;
+import java.awt.event.ActionEvent;
+
+import javax.inject.Inject;
+import javax.swing.AbstractAction;
 
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
 
-import dagger.Module;
-import dagger.Provides;
+public class ExitCommand extends AbstractAction {
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+	private final WindowService windowService;
 
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+	@Inject
+	public ExitCommand(WindowService windowService) {
+		this.windowService = windowService;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		this.windowService.getMainWindow().dispose();
 	}
 }

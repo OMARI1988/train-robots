@@ -15,23 +15,38 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.menus;
 
-import javax.inject.Singleton;
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
+public class Menu extends JMenu {
 
-import dagger.Module;
-import dagger.Provides;
+	protected JMenuItem addItem(String name, String shortCutKey, Action action) {
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+		// Create item.
+		JMenuItem item = new JMenuItem(name);
 
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+		// Short cut key.
+		if (shortCutKey != null) {
+			if (shortCutKey.length() == 1) {
+				item.setMnemonic(shortCutKey.charAt(0));
+			} else {
+				item.setAccelerator(KeyStroke.getKeyStroke(shortCutKey));
+			}
+		}
+
+		// Action.
+		if (action != null) {
+			item.addActionListener(action);
+		}
+
+		// Add item.
+		add(item);
+
+		// Return item.
+		return item;
 	}
 }

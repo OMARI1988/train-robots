@@ -15,23 +15,22 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.menus;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.commands.ExitCommand;
 
-import dagger.Module;
-import dagger.Provides;
+public class FileMenu extends Menu {
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+	@Inject
+	public FileMenu(ExitCommand exitCommand) {
 
-	@Provides
-	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+		// Initiate.
+		setText("File");
+		setMnemonic('F');
+
+		// Exit.
+		addItem("Exit", "x", exitCommand);
 	}
 }

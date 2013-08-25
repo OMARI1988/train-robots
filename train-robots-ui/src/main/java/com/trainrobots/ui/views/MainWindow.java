@@ -17,6 +17,7 @@
 
 package com.trainrobots.ui.views;
 
+import java.awt.BorderLayout;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,49 +25,51 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.swing.JFrame;
 
+import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.resources.ResourceUtil;
+import com.trainrobots.ui.services.WindowService;
 
 public class MainWindow extends JFrame {
 
-	//private final WindowService windowService;
-	//private final MainMenu mainMenu;
-	//private final ToolBar toolBar;
-	//private final StatusBar statusBar;
-	//private final GraphicsPanel graphicsPanel;
+	private final WindowService windowService;
+	private final MainMenu mainMenu;
+	// private final ToolBar toolBar;
+	private final StatusBar statusBar;
+
+	// private final GraphicsPanel graphicsPanel;
 
 	@Inject
-	public MainWindow(
-			//WindowService windowService, MainMenu mainMenu,
-			//ToolBar toolBar, StatusBar statusBar
-			) {
+	public MainWindow(WindowService windowService, MainMenu mainMenu,
+	// ToolBar toolBar,
+			StatusBar statusBar) {
 
 		// Dependencies.
-		//this.windowService = windowService;
-		//this.mainMenu = mainMenu;
-		//this.toolBar = toolBar;
-		//this.statusBar = statusBar;
-		//this.graphicsPanel = new GraphicsPanel();
+		this.windowService = windowService;
+		this.mainMenu = mainMenu;
+		// this.toolBar = toolBar;
+		this.statusBar = statusBar;
+		// this.graphicsPanel = new GraphicsPanel();
 
 		// Initiate.
 		initiateWindow();
 	}
 
-//	public ToolBar getToolBar() {
-//		return toolBar;
-//	}
-//
-//	public GraphicsPanel getGraphicsPanel() {
-//		return graphicsPanel;
-//	}
-//
-//	public StatusBar getStatusBar() {
-//		return statusBar;
-//	}
+	// public ToolBar getToolBar() {
+	// return toolBar;
+	// }
+	//
+	// public GraphicsPanel getGraphicsPanel() {
+	// return graphicsPanel;
+	// }
+
+	public StatusBar getStatusBar() {
+		return statusBar;
+	}
 
 	private void initiateWindow() {
 
 		// Register.
-		//windowService.setMainWindow(this);
+		windowService.setMainWindow(this);
 
 		// Close.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +78,7 @@ public class MainWindow extends JFrame {
 		List<Image> images = new ArrayList<Image>();
 		for (int size : new int[] { 16, 24, 32, 48, 6 }) {
 			images.add(getToolkit().getImage(
-					ResourceUtil.getUrl("/com/dependencytreebank/ui/go" + size
+					ResourceUtil.getUrl("/com/trainrobots/ui/go" + size
 							+ ".png")));
 		}
 		setIconImages(images);
@@ -83,17 +86,17 @@ public class MainWindow extends JFrame {
 		// Title.
 		setTitle("Train Robots");
 
-//		// Menu.
-//		setJMenuBar(mainMenu);
-//
-//		// Tool bar.
-//		add(toolBar, BorderLayout.NORTH);
-//
-//		// Content.
-//		add(new JScrollPane(graphicsPanel), BorderLayout.CENTER);
-//
-//		// Status bar.
-//		add(statusBar, BorderLayout.SOUTH);
+		// Menu.
+		setJMenuBar(mainMenu);
+
+		// Tool bar.
+		// add(toolBar, BorderLayout.NORTH);
+
+		// Content.
+		// add(new JScrollPane(graphicsPanel), BorderLayout.CENTER);
+
+		// Status bar.
+		add(statusBar, BorderLayout.SOUTH);
 
 		// Size and position.
 		setSize(650, 500);
