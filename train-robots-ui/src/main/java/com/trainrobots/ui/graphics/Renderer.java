@@ -17,72 +17,69 @@
 
 package com.trainrobots.ui.graphics;
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 public class Renderer {
 
-	public static void setup(GL2 gl2, int width, int height) {
+	public static void setup(GL2 gl, int width, int height) {
 
-		// TODO: INITIATE VIEW PORT!
+		// Set viewing projection.
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glFrustum(-0.5f, 0.5f, -0.5f, 0.5f, 1.0f, 3.0f);
 
-		// gl2.glMatrixMode(GL2.GL_PROJECTION);
-		// gl2.glLoadIdentity();
-		//
-		// GLU glu = new GLU();
-		// glu.gluOrtho2D(0.0f, width, 0.0f, height);
-		//
-		// gl2.glMatrixMode(GL2.GL_MODELVIEW);
-		// gl2.glLoadIdentity();
-		//
-		// gl2.glViewport(0, 0, width, height);
+		// Position viewer.
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glTranslatef(0.0f, 0.0f, -2.0f);
+
+		// Position object.
+		gl.glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
+		gl.glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
+
+		gl.glEnable(GL2.GL_DEPTH_TEST);
+		gl.glEnable(GL2.GL_LIGHTING);
+		gl.glEnable(GL2.GL_LIGHT0);
 	}
 
 	public static void render(GL2 gl, int width, int height) {
-		float x, y;
-		int steps = 8;
-		double size = 0.90 / steps;
 
-		gl.glColor3f(1.f, 1.f, 1.f);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-		for (int i = 0; i < steps; i++) {
-			for (int j = 0; j < steps; j++) {
-				gl.glBegin(GL2.GL_QUADS);
-				x = 0.03f + 0.90f * (float) j / steps;
-				y = 0.03f + 0.90f * (float) i / steps;
-				if ((i + j) % 2 == 0) {
-					gl.glColor3f(0.0f, 0f, 0f);
-					gl.glVertex2d(x, y);
-					gl.glVertex2d(x, y + size);
-					gl.glVertex2d(x + size, y + size);
-					gl.glVertex2d(x + size, y);
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glNormal3f(0.0f, 0.0f, 1.0f);
+		gl.glVertex3f(0.5f, 0.5f, 0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, 0.5f);
+		gl.glVertex3f(-0.5f, -0.5f, 0.5f);
+		gl.glVertex3f(0.5f, -0.5f, 0.5f);
 
-				} else {
-					gl.glColor3f(1, 1, 1);
-					gl.glVertex2d(x, y);
-					gl.glVertex2d(x + size, y);
-					gl.glVertex2d(x + size, y + size);
-					gl.glVertex2d(x, y + size);
-				}
-				gl.glEnd();
+		gl.glNormal3f(0.0f, 0.0f, -1.0f);
+		gl.glVertex3f(-0.5f, -0.5f, -0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, -0.5f);
+		gl.glVertex3f(0.5f, 0.5f, -0.5f);
+		gl.glVertex3f(0.5f, -0.5f, -0.5f);
 
-			}
-		}
+		gl.glNormal3f(0.0f, 1.0f, 0.0f);
+		gl.glVertex3f(0.5f, 0.5f, 0.5f);
+		gl.glVertex3f(0.5f, 0.5f, -0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, -0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, 0.5f);
 
-		gl.glLineWidth(5);
+		gl.glNormal3f(0.0f, -1.0f, 0.0f);
+		gl.glVertex3f(-0.5f, -0.5f, -0.5f);
+		gl.glVertex3f(0.5f, -0.5f, -0.5f);
+		gl.glVertex3f(0.5f, -0.5f, 0.5f);
+		gl.glVertex3f(-0.5f, -0.5f, 0.5f);
 
-		gl.glBegin(GL.GL_LINE_LOOP);
-		gl.glColor3f(1.f, 1.f, 1.f);
-		gl.glVertex2d(0.0255, 0.0255);
+		gl.glNormal3f(1.0f, 0.0f, 0.0f);
+		gl.glVertex3f(0.5f, 0.5f, 0.5f);
+		gl.glVertex3f(0.5f, -0.5f, 0.5f);
+		gl.glVertex3f(0.5f, -0.5f, -0.5f);
+		gl.glVertex3f(0.5f, 0.5f, -0.5f);
 
-		gl.glColor3f(0.f, 0.f, 0.f);
-		gl.glVertex2d(.93, .0255);
-
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		gl.glVertex2d(.930, .930);
-
-		gl.glColor3f(0.f, 0.f, 0.f);
-		gl.glVertex2d(0.0255, .930);
+		gl.glNormal3f(-1.0f, 0.0f, 0.0f);
+		gl.glVertex3f(-0.5f, -0.5f, -0.5f);
+		gl.glVertex3f(-0.5f, -0.5f, 0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, 0.5f);
+		gl.glVertex3f(-0.5f, 0.5f, -0.5f);
 		gl.glEnd();
 	}
 }
