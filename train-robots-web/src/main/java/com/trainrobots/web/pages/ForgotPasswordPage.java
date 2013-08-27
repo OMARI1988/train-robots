@@ -84,7 +84,7 @@ public class ForgotPasswordPage {
 		StringBuilder body = new StringBuilder();
 		body.append("Hello,\r\n\r\n");
 		body.append("To reset your Train Robots game password, open this link in your browser:\r\n\r\n");
-		body.append("http://localhost:8080/reset_password.jsp?token=" + token
+		body.append("http://trainrobots.com/reset_password.jsp?token=" + token
 				+ "\r\n\r\n");
 		body.append("Once you've changed your password you can then sign in and start playing!\r\n\r\n");
 

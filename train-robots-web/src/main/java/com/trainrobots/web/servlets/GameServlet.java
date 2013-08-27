@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
@@ -159,13 +158,6 @@ public class GameServlet extends HttpServlet {
 
 		// Write.
 		writePage(response, user, feedback, command, error);
-
-		// Simulate latency.
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			throw new WebException(e);
-		}
 	}
 
 	private void writePage(HttpServletResponse response, User user,
@@ -237,13 +229,11 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Scene.
-		String image1 = "/static/design/layout1.png"; // TODO: scene.image1
-		String image2 = "/static/design/layout2.png"; // TODO: scene.image2
 		out.println("<table id='scene' cellspacing='0' cellpadding='2'>");
-		out.println("<tr><td><p class='move'>before</p> <img src='" + image1
-				+ "' /></td>");
-		out.println("<td><p class='move'>after</p> <img src='"
-				+ image2 + "' /></td></tr>");
+		out.println("<tr><td><p class='move'>before</p> <img src='"
+				+ scene.image1 + "' /></td>");
+		out.println("<td><p class='move'>after</p> <img src='" + scene.image2
+				+ "' /></td></tr>");
 		out.println("</table>");
 
 		// Hidden values.
