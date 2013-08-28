@@ -100,7 +100,7 @@ public class GameServlet extends HttpServlet {
 			if (user.state == 1) {
 
 				// Judge.
-				if (user.round % 4 != 0) {
+				if (user.round % 3 != 0) {
 					int q1;
 					try {
 						q1 = Integer.parseInt(request.getParameter("q1"));
@@ -184,7 +184,7 @@ public class GameServlet extends HttpServlet {
 		out.println("</p>");
 
 		// Judge?
-		boolean addCommand = user.round % 4 == 0;
+		boolean addCommand = user.round % 3 == 0;
 		if (!addCommand) {
 			writeQuestions(out, user.state);
 			if (user.state == 1) {
@@ -231,9 +231,9 @@ public class GameServlet extends HttpServlet {
 		// Scene.
 		out.println("<table id='scene' cellspacing='0' cellpadding='2'>");
 		out.println("<tr><td><p class='move'>before</p> <img src='"
-				+ scene.image1 + "' /></td>");
+				+ scene.image1 + "' width='325' height='350'/></td>");
 		out.println("<td><p class='move'>after</p> <img src='" + scene.image2
-				+ "' /></td></tr>");
+				+ "' width='325' height='350' /></td></tr>");
 		out.println("</table>");
 
 		// Hidden values.
