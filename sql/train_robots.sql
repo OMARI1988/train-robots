@@ -51,6 +51,25 @@ CREATE TABLE `round` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `scene`
+--
+
+DROP TABLE IF EXISTS `scene`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scene` (
+  `scene_number` int(11) NOT NULL,
+  `expected_option` int(11) NOT NULL,
+  `from_group` int(11) NOT NULL,
+  `from_image` int(11) NOT NULL,
+  `to_group` int(11) NOT NULL,
+  `to_image` int(11) NOT NULL,
+  `command` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`scene_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user`
 --
 
@@ -70,7 +89,7 @@ CREATE TABLE `user` (
   `last_score_utc` datetime NOT NULL,
   `sign_in_message` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,7 +163,7 @@ BEGIN
 		score = _score,
 		potential = _potential,
 		last_score_utc = _time_utc
-	WHERE user_id = user_id;
+	WHERE user_id = _user_id;
 
 	INSERT INTO round (
 		user_id,
@@ -269,6 +288,34 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `select_scenes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_scenes`()
+BEGIN
+	SELECT
+		scene_number,
+		expected_option,
+		from_group,
+		from_image,
+		to_group,
+		to_image,
+		command
+	FROM scene
+	ORDER BY scene_number;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `select_user` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -333,4 +380,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-24  8:02:22
+-- Dump completed on 2013-08-28 19:18:05

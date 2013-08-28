@@ -17,51 +17,35 @@
 
 package com.trainrobots.web.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+import javax.servlet.ServletContext;
+
+import com.trainrobots.web.MersenneTwister;
 import com.trainrobots.web.game.Scene;
 
 public class GameService {
 
-	private final List<Scene> scenes = new ArrayList<Scene>();
+	private List<Scene> scenes;
+	private final DataService dataService;
+	private final MersenneTwister mersenneTwister = new MersenneTwister();
 
-	public GameService() {
-
-		// Add.
-		add(5, "g1/x1", "g1/x2", "Put the small red circle above the blue circle.");
-		add(5, "g1/x2", "g1/x1", "Move the small red circle to the top left of the orange square.");
-		add(1, "g1/x1", "g1/x3", "I don't like this game");
-		add(1, "g1/x3", "g1/x1", "This game is stupid");
-		add(1, "g1/x1", "g1/x4", "Make me a cup of tea");
-		add(4, "g1/x4", "g1/x1", "Move the red circle above blue one");
-		add(5, "g1/x1", "g1/x5", "Move green circle to right edge");
-		add(2, "g1/x5", "g1/x1", "Put orange square left");
-		add(5, "g2/x1", "g2/x2", "Let the blue circle go bottom left of board but at one square to right.");
-		add(2, "g2/x2", "g2/x1", "Move red circle right.");
-		add(2, "g2/x1", "g2/x3", "Put green circle on red one.");
-		add(2, "g2/x3", "g2/x1", "Move the green circle to bottom edge");
-		add(1, "g2/x1", "g2/x4", "Move to the green circle to the top right of the board.");
-		add(4, "g2/x4", "g2/x1", "Move the blue circle to the bottom of the board at the very left edge");
-		add(3, "g2/x1", "g2/x5", "Position the orange shape two below greed circle");
-		add(3, "g2/x5", "g2/x1", "Move orange top left");
+	public GameService(DataService dataService) {
+		this.dataService = dataService;
 	}
 
-	public int randomSceneNumber() {
-		return 1 + new Random().nextInt(scenes.size());
+	public synchronized int randomSceneNumber(ServletContext context) {
+		return mersenneTwister.next(getScenes(context).size()) + 1;
 	}
 
-	public Scene scene(int sceneNumber) {
-		return scenes.get(sceneNumber - 1);
+	public synchronized Scene scene(ServletContext context, int sceneNumber) {
+		return getScenes(context).get(sceneNumber - 1);
 	}
 
-	private void add(int mark, String image1, String image2, String description) {
-		Scene scene = new Scene();
-		scene.mark = mark;
-		scene.image1 = "/static/" + image1 + ".png";
-		scene.image2 = "/static/" + image2 + ".png";
-		scene.description = description;
-		scenes.add(scene);
+	private List<Scene> getScenes(ServletContext context) {
+		if (scenes == null) {
+			scenes = dataService.getScenes(context);
+		}
+		return scenes;
 	}
 }

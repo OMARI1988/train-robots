@@ -113,7 +113,7 @@ public class GameServlet extends HttpServlet {
 						return;
 					}
 					user.state = 2;
-					int expected = gameService.scene(user.sceneNumber).mark;
+					int expected = gameService.scene(context, user.sceneNumber).expectedOption;
 					if (expected == q1) {
 						feedback = "<span class='positive'>+20 points!</span> You chose "
 								+ q1
@@ -149,7 +149,7 @@ public class GameServlet extends HttpServlet {
 				// New scene.
 				user.state = 1;
 				user.round++;
-				user.sceneNumber = gameService.randomSceneNumber();
+				user.sceneNumber = gameService.randomSceneNumber(context);
 			} else {
 				response.sendRedirect("/lost.jsp");
 				return;
@@ -157,11 +157,12 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Write.
-		writePage(response, user, feedback, command, error);
+		writePage(context, response, user, feedback, command, error);
 	}
 
-	private void writePage(HttpServletResponse response, User user,
-			String feedback, String command, String error) throws IOException {
+	private void writePage(ServletContext context,
+			HttpServletResponse response, User user, String feedback,
+			String command, String error) throws IOException {
 
 		// Disable caching.
 		response.setContentType("text/html");
@@ -223,16 +224,18 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Command.
-		Scene scene = gameService.scene(user.sceneNumber);
+		Scene scene = gameService.scene(context, user.sceneNumber);
 		if (!addCommand) {
-			out.println("<p id='command'>" + scene.description + "</p>");
+			out.println("<p id='command'>" + scene.command + "</p>");
 		}
 
 		// Scene.
 		out.println("<table id='scene' cellspacing='0' cellpadding='2'>");
 		out.println("<tr><td><p class='move'>before</p> <img src='"
-				+ scene.image1 + "' width='325' height='350'/></td>");
-		out.println("<td><p class='move'>after</p> <img src='" + scene.image2
+				+ getImage(scene.fromGroup, scene.fromImage)
+				+ "' width='325' height='350'/></td>");
+		out.println("<td><p class='move'>after</p> <img src='"
+				+ getImage(scene.toGroup, scene.toImage)
 				+ "' width='325' height='350' /></td></tr>");
 		out.println("</table>");
 
@@ -255,6 +258,16 @@ public class GameServlet extends HttpServlet {
 		out.println("</tr>");
 		out.println("</table>");
 		out.println("</body></html>");
+	}
+
+	private String getImage(int groupNumber, int imageNumber) {
+		StringBuilder text = new StringBuilder();
+		text.append("/static/g");
+		text.append(groupNumber);
+		text.append("/x");
+		text.append(imageNumber);
+		text.append(".png");
+		return text.toString();
 	}
 
 	private void writeQuestions(PrintWriter out, int state) {

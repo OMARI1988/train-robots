@@ -22,10 +22,11 @@ public class ServiceContext {
 	private final static ServiceContext context = new ServiceContext();
 	private final UserService userService = new UserService();
 	private final DataService dataService = new DataService();
-	private final GameService gameService = new GameService();
 	private final MailService mailService = new MailService();
+	private final GameService gameService;
 
 	private ServiceContext() {
+		gameService = new GameService(dataService);
 	}
 
 	public static ServiceContext get() {

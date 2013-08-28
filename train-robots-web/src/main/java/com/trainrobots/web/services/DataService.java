@@ -22,6 +22,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -30,6 +32,7 @@ import org.joda.time.DateTimeZone;
 
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.ResetToken;
+import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 
 public class DataService {
@@ -281,6 +284,47 @@ public class DataService {
 			// Close connection.
 			statement.close();
 			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public List<Scene> getScenes(ServletContext context) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_scenes()}");
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			List<Scene> scenes = new ArrayList<Scene>();
+
+			while (resultSet.next()) {
+				Scene scene = new Scene();
+				scene.sceneNumber = resultSet.getInt(1);
+				scene.expectedOption = resultSet.getInt(2);
+				scene.fromGroup = resultSet.getInt(3);
+				scene.fromImage = resultSet.getInt(4);
+				scene.toGroup = resultSet.getInt(5);
+				scene.toImage = resultSet.getInt(6);
+				scene.command = resultSet.getString(7);
+				scenes.add(scene);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return scenes.
+			return scenes;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);

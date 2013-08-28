@@ -18,8 +18,11 @@
 package com.trainrobots.web.game;
 
 public class Scene {
-	public String image1;
-	public String image2;
-	public String description;
-	public int mark;
+	public int sceneNumber;
+	public int expectedOption;
+	public int fromGroup;
+	public int fromImage;
+	public int toGroup;
+	public int toImage;
+	public String command;
 }

@@ -54,7 +54,8 @@ public class SignInPage {
 		this.password = password;
 
 		// Validate.
-		if (!validate(pageContext.getServletContext())) {
+		ServletContext context = pageContext.getServletContext();
+		if (!validate(context)) {
 			return;
 		}
 
@@ -69,7 +70,7 @@ public class SignInPage {
 		// Initiate game state.
 		user.round++;
 		user.state = 1;
-		user.sceneNumber = gameService.randomSceneNumber();
+		user.sceneNumber = gameService.randomSceneNumber(context);
 
 		// Redirect.
 		try {
