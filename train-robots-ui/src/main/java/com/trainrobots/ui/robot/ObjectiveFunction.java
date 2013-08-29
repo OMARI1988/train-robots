@@ -17,9 +17,8 @@
 
 package com.trainrobots.ui.robot;
 
-public interface ObjectiveFunction
-{
+public interface ObjectiveFunction {
 
-  public double eval(double[] param, Object data);
-  
+	public double eval(double[] param, Object data);
+
 }

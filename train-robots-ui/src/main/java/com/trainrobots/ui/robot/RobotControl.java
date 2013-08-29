@@ -17,27 +17,23 @@
 
 package com.trainrobots.ui.robot;
 
-import javax.media.opengl.*;
+import java.awt.Color;
+import java.util.ArrayList;
+
+import javax.media.opengl.GL2;
+
+import com.trainrobots.ui.configuration.Block;
+import com.trainrobots.ui.configuration.Configuration;
 
 public class RobotControl {
 
-	// object types
-	public static final int CUBE = 0;
-	public static final int PYRAMID = 1;
+	private Robot m_robot = new Robot();
+	private BoardState m_board = new BoardState();
 
-	// object colors
-	public static final int RED = 0;
-	public static final int GREEN = 1;
-	public static final int BLUE = 2;
-	public static final int YELLOW = 3;
-	public static final int CYAN = 4;
-	public static final int MAGENTA = 5;
-
-	Robot m_robot = new Robot(); // robot arm
-	BoardState m_board = new BoardState(); // board state
-
-	int m_x = 3, m_y = 3, m_z = 4; // initial arm position
-	boolean m_grasp = false; // initially not grasping
+	private int m_x = 3;
+	private int m_y = 3;
+	private int m_z = 4;
+	private boolean m_grasp;
 
 	public RobotControl() {
 		m_board.setTranslate(0.0, 0.0, 22.5);
@@ -63,7 +59,7 @@ public class RobotControl {
 		m_board.setArmLocation(m_x, m_y);
 	}
 
-	public void grasp() {
+	public void toggleGrasp() {
 		m_grasp = !m_grasp;
 		if (m_grasp) {
 			m_robot.setGrasp(0.8);
@@ -74,16 +70,14 @@ public class RobotControl {
 		}
 	}
 
-	public void addObject(int x, int y, int z, int c, int type) {
-		float[][] colors = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f },
-				{ 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.0f },
-				{ 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, 1.0f } };
-
-		if (type == CUBE)
-			m_board.addCube(x, y, z, colors[c][0], colors[c][1], colors[c][2]);
-		else
-			m_board.addPyramid(x, y, z, colors[c][0], colors[c][1],
-					colors[c][2]);
+	public void addObject(Block block) {
+		if (block.type == Block.CUBE) {
+			m_board.addCube(block.x, block.y, block.z,
+					toRobotColor(block.color), block);
+		} else {
+			m_board.addPyramid(block.x, block.y, block.z,
+					toRobotColor(block.color), block);
+		}
 	}
 
 	public void render(GL2 gl) {
@@ -127,5 +121,69 @@ public class RobotControl {
 		if (m_z < 7) {
 			moveArm(m_x, m_y, m_z + 1);
 		}
+	}
+
+	public void loadConfiguration(Configuration configuration) {
+
+		// Clear board.
+		m_board.clear();
+
+		// Position arm.
+		m_grasp = false;
+		m_robot.setGrasp(0.6);
+		moveArm(configuration.armX, configuration.armY, configuration.armZ);
+		m_board.setArmLocation(configuration.armX, configuration.armY);
+
+		// Add objects.
+		for (Block block : configuration.blocks) {
+			addObject(block);
+		}
+
+		// Close gripper?
+		if (!configuration.gripperOpen) {
+			toggleGrasp();
+		}
+	}
+
+	public Configuration saveConfiguration() {
+
+		Configuration configuration = new Configuration();
+		configuration.armX = m_x;
+		configuration.armY = m_y;
+		configuration.armZ = m_z;
+		configuration.gripperOpen = !m_grasp;
+
+		configuration.blocks = new ArrayList<Block>();
+
+		for (int i = 0, j, k; i < 8; i++) {
+			for (j = 0; j < 8; j++) {
+				for (k = 0; k < 8; k++) {
+					PolyMesh mesh = m_board.get(i, j, k);
+					if (mesh != null && mesh.tag != null) {
+						Block b = (Block) mesh.tag;
+						configuration.blocks.add(new Block(b.color, b.type, i,
+								j, k));
+					}
+				}
+			}
+		}
+
+		return configuration;
+	}
+
+	private Color toRobotColor(char color) {
+		switch (color) {
+		case Block.CYAN:
+			return Color.CYAN;
+		case Block.RED:
+			return Color.RED;
+		case Block.YELLOW:
+			return Color.YELLOW;
+		case Block.GREEN:
+			return Color.GREEN;
+		case Block.MAGENTA:
+			return Color.MAGENTA;
+		}
+		return Color.WHITE;
 	}
 }

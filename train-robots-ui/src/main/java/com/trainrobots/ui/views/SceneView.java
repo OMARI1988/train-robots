@@ -23,22 +23,37 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.trainrobots.ui.configuration.Block;
+import com.trainrobots.ui.configuration.Configuration;
 import com.trainrobots.ui.robot.RobotControl;
 
 public class SceneView extends JPanel {
 
 	private final JLabel label1 = new JLabel();
 	private final JLabel label2 = new JLabel();
-	private final GraphicsPanel panel1 = new GraphicsPanel(0, 325, 350);
-	private final GraphicsPanel panel2 = new GraphicsPanel(1, 325, 350);
+	private final GraphicsPanel panel1 = new GraphicsPanel(325, 350);
+	private final GraphicsPanel panel2 = new GraphicsPanel(325, 350);
+	private Configuration configuration;
 
 	@Inject
 	public SceneView() {
+
+		// Configuration.
+		configuration = new Configuration();
+		configuration.armX = 3;
+		configuration.armY = 2;
+		configuration.armZ = 7;
+		configuration.gripperOpen = false;
+		configuration.blocks = new ArrayList<Block>();
+		configuration.blocks
+				.add(new Block(Block.YELLOW, Block.PYRAMID, 1, 2, 0));
+		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 7, 4, 0));
 
 		// Layout.
 		setLayout(null);
@@ -148,9 +163,17 @@ public class SceneView extends JPanel {
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT && !e.isShiftDown()) {
 			rc.moveRight();
 		}
-		
+
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			rc.grasp();
+			rc.toggleGrasp();
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_X) {
+			rc.loadConfiguration(configuration);
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_Z) {
+			configuration = rc.saveConfiguration();
 		}
 	}
 }

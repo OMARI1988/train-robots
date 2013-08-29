@@ -37,14 +37,13 @@ public class ConfigurationTests {
 		configuration.armY = 2;
 		configuration.armZ = 7;
 		configuration.gripperOpen = true;
-		configuration.armBlock = new Block(Block.RED, Block.CUBE);
 
 		configuration.blocks = new ArrayList<Block>();
 		configuration.blocks
-				.add(new Block(Block.YELLOW, Block.PYRAMID, 1, 2, 8));
-		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 8, 4, 3));
+				.add(new Block(Block.YELLOW, Block.PYRAMID, 1, 2, 7));
+		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 7, 4, 3));
 
-		assertEquals("3\t2\t7\tO\tR\t1\r\n1\t2\t8\tY\t2\r\n8\t4\t3\tR\t1",
+		assertEquals("3\t2\t7\tO\r\n1\t2\t7\tY\t2\r\n7\t4\t3\tR\t1",
 				configuration.toString());
 	}
 
@@ -63,7 +62,6 @@ public class ConfigurationTests {
 				configuration.armY = 2;
 				configuration.armZ = 7;
 				configuration.gripperOpen = true;
-				configuration.armBlock = new Block(Block.RED, Block.CUBE);
 
 				configuration.blocks = new ArrayList<Block>();
 				configuration.blocks.add(new Block(Block.YELLOW, Block.PYRAMID,

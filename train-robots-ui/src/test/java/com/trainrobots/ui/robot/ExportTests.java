@@ -17,58 +17,59 @@
 
 package com.trainrobots.ui.robot;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.trainrobots.ui.configuration.Block;
 
 public class ExportTests {
 
 	@Test
-	@Ignore
 	public void shouldExportImages() {
 
 		RobotControl rc = new RobotControl();
 		RobotBuffer rb = new RobotBuffer(rc, 325, 350);
 
-		rc.addObject(0, 0, 0, RobotControl.CYAN, RobotControl.CUBE);
-		rc.addObject(3, 2, 0, RobotControl.RED, RobotControl.CUBE);
-		rc.addObject(5, 7, 0, RobotControl.GREEN, RobotControl.PYRAMID);
-		rc.addObject(7, 1, 0, RobotControl.MAGENTA, RobotControl.CUBE);
+		rc.addObject(new Block(Block.CYAN, Block.CUBE, 0, 0, 0));
+		rc.addObject(new Block(Block.RED, Block.CUBE, 3, 2, 0));
+		rc.addObject(new Block(Block.GREEN, Block.CUBE, 5, 7, 0));
+		rc.addObject(new Block(Block.MAGENTA, Block.CUBE, 7, 1, 0));
+
 		rb.renderToFile("c:/temp/test01.png");
-		
+
 		rc.moveArm(3, 2, 0);
 		rb.renderToFile("c:/temp/test02.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test03.png");
-		
+
 		rc.moveArm(0, 0, 7);
 		rb.renderToFile("c:/temp/test04.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test05.png");
-		
+
 		rc.moveArm(7, 1, 0);
 		rb.renderToFile("c:/temp/test06.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test07.png");
-		
+
 		rc.moveArm(0, 0, 7);
 		rb.renderToFile("c:/temp/test08.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test09.png");
-		
+
 		rc.moveArm(5, 7, 0);
 		rb.renderToFile("c:/temp/test10.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test11.png");
-		
+
 		rc.moveArm(0, 0, 7);
 		rb.renderToFile("c:/temp/test12.png");
-		
-		rc.grasp();
+
+		rc.toggleGrasp();
 		rb.renderToFile("c:/temp/test13.png");
 
 		rb.destroy();

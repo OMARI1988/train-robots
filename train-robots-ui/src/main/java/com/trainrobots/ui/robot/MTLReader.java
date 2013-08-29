@@ -22,60 +22,55 @@ import java.util.*;
 
 import com.trainrobots.ui.resources.ResourceUtil;
 
-public class MTLReader
-{
+public class MTLReader {
 
-public Material readMaterial(String fn)
-  {
-    try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(ResourceUtil.open("/com/trainrobots/ui/models/" + fn)));
-      
-      String line = reader.readLine();
-      
-      Material m = new Material();
-      
-      while(line != null)
-      {
-        StringTokenizer stok = new StringTokenizer(line);
-        
-        if(stok.hasMoreTokens())
-        {
-          String tok = stok.nextToken();
-          
-          if(tok.equals("Ka")) // ambient color
-          {
-            float red = new Float(stok.nextToken()),
-                   green = new Float(stok.nextToken()),
-                   blue = new Float(stok.nextToken());
-            m.setAmbient(red, green, blue, 1.0f);
-          }
-          else if(tok.equals("Kd")) // diffuse color
-          {
-            float red = new Float(stok.nextToken()),
-                  green = new Float(stok.nextToken()),
-                  blue = new Float(stok.nextToken());
-            m.setDiffuse(red, green, blue, 1.0f);
-          }
-          else if(tok.equals("Ks")) // specular color
-          {
-            float red = new Float(stok.nextToken()),
-                  green = new Float(stok.nextToken()),
-                  blue = new Float(stok.nextToken());
-            m.setSpecular(red, green, blue, 1.0f);
-          }
-        }
-        
-        line = reader.readLine();
-      }
-      
-      reader.close();
-      
-      return m;
-    }
-    catch(IOException e)
-    { System.out.println(e); }
-    
-    return null;
-  }
-  
+	public Material readMaterial(String fn) {
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					ResourceUtil.open("/com/trainrobots/ui/models/" + fn)));
+
+			String line = reader.readLine();
+
+			Material m = new Material();
+
+			while (line != null) {
+				StringTokenizer stok = new StringTokenizer(line);
+
+				if (stok.hasMoreTokens()) {
+					String tok = stok.nextToken();
+
+					if (tok.equals("Ka")) // ambient color
+					{
+						float red = new Float(stok.nextToken()), green = new Float(
+								stok.nextToken()), blue = new Float(
+								stok.nextToken());
+						m.setAmbient(red, green, blue, 1.0f);
+					} else if (tok.equals("Kd")) // diffuse color
+					{
+						float red = new Float(stok.nextToken()), green = new Float(
+								stok.nextToken()), blue = new Float(
+								stok.nextToken());
+						m.setDiffuse(red, green, blue, 1.0f);
+					} else if (tok.equals("Ks")) // specular color
+					{
+						float red = new Float(stok.nextToken()), green = new Float(
+								stok.nextToken()), blue = new Float(
+								stok.nextToken());
+						m.setSpecular(red, green, blue, 1.0f);
+					}
+				}
+
+				line = reader.readLine();
+			}
+
+			reader.close();
+
+			return m;
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+
+		return null;
+	}
+
 }

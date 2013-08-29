@@ -33,23 +33,11 @@ public class GraphicsPanel extends JPanel {
 
 	private final RobotControl control = new RobotControl();
 
-	public GraphicsPanel(int type, int width, int height) {
+	public GraphicsPanel(int width, int height) {
 
 		GLCapabilities caps = new GLCapabilities(null);
 		caps.setSampleBuffers(true);
 		caps.setNumSamples(8);
-
-		if (type == 0){
-			control.addObject(0, 0, 0, RobotControl.CYAN, RobotControl.CUBE);
-			control.addObject(3, 2, 0, RobotControl.RED, RobotControl.CUBE);
-			control.addObject(5, 7, 0, RobotControl.GREEN, RobotControl.PYRAMID);
-			control.addObject(7, 1, 0, RobotControl.MAGENTA, RobotControl.CUBE);
-		} else {
-			control.addObject(0, 0, 0, RobotControl.GREEN, RobotControl.CUBE);
-			control.addObject(3, 2, 0, RobotControl.CYAN, RobotControl.PYRAMID);
-			control.addObject(5, 7, 0, RobotControl.RED, RobotControl.CUBE);
-			control.addObject(7, 1, 0, RobotControl.MAGENTA, RobotControl.CUBE);
-		}
 
 		final RobotRenderer renderer = new RobotRenderer(control, width, height);
 

@@ -27,62 +27,59 @@ import javax.media.opengl.*;
 import com.jogamp.opengl.util.awt.Screenshot;
 
 @SuppressWarnings("deprecation")
-public class RobotBuffer extends RobotRenderer
-{
+public class RobotBuffer extends RobotRenderer {
 
-  private GLOffscreenAutoDrawable m_buffer; // pbuffer
-  private GLContext m_context; // opengl context
-  
-  public RobotBuffer(RobotControl ctrl, int w, int h)
-  {
-    super(ctrl, w, h);
-    
-    // construct pbuffer
-    GLProfile glp = GLProfile.getDefault();
-    GLCapabilities caps = new GLCapabilities(glp);
-    caps.setDoubleBuffered(false);
-    caps.setPBuffer(true);
-    caps.setNumSamples(8);
-    caps.setSampleBuffers(true);
-    GLDrawableFactory factory = GLDrawableFactory.getFactory(caps.getGLProfile());
-    m_buffer = (GLOffscreenAutoDrawable)factory.createOffscreenAutoDrawable(null,
-                  caps, null, m_width, m_height, null);
-    m_buffer.display();
+	private GLOffscreenAutoDrawable m_buffer; // pbuffer
+	private GLContext m_context; // opengl context
 
-    m_context = m_buffer.getContext();
-    
-    //init and set viewport
-    init(makeCurrent());
-    reshape(makeCurrent(), m_width, m_height);
-  }
+	public RobotBuffer(RobotControl ctrl, int w, int h) {
+		super(ctrl, w, h);
 
-  public GL2 makeCurrent()
-  {
-    m_context.makeCurrent();
-    return m_context.getGL().getGL2();
-  }
-  
-  // render to a buffered image
-  public BufferedImage renderToImage()
-  {
-    display(makeCurrent());
-    return Screenshot.readToBufferedImage(m_width, m_height);
-  }
-  
-  // renders to a buffered image and saves image to file
-  public void renderToFile(String fn)
-  {
-    try
-    {
-        BufferedImage img = renderToImage();
-        File outputfile = new File(fn);
-        ImageIO.write(img, "png", outputfile);
-    }
-    catch (IOException e)
-    { System.out.println(e); }
-  }
-  
-  public void destroy()
-  { m_buffer.destroy(); }
-  
+		// construct pbuffer
+		GLProfile glp = GLProfile.getDefault();
+		GLCapabilities caps = new GLCapabilities(glp);
+		caps.setDoubleBuffered(false);
+		caps.setPBuffer(true);
+		caps.setNumSamples(8);
+		caps.setSampleBuffers(true);
+		GLDrawableFactory factory = GLDrawableFactory.getFactory(caps
+				.getGLProfile());
+		m_buffer = (GLOffscreenAutoDrawable) factory
+				.createOffscreenAutoDrawable(null, caps, null, m_width,
+						m_height, null);
+		m_buffer.display();
+
+		m_context = m_buffer.getContext();
+
+		// init and set viewport
+		init(makeCurrent());
+		reshape(makeCurrent(), m_width, m_height);
+	}
+
+	public GL2 makeCurrent() {
+		m_context.makeCurrent();
+		return m_context.getGL().getGL2();
+	}
+
+	// render to a buffered image
+	public BufferedImage renderToImage() {
+		display(makeCurrent());
+		return Screenshot.readToBufferedImage(m_width, m_height);
+	}
+
+	// renders to a buffered image and saves image to file
+	public void renderToFile(String fn) {
+		try {
+			BufferedImage img = renderToImage();
+			File outputfile = new File(fn);
+			ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+	}
+
+	public void destroy() {
+		m_buffer.destroy();
+	}
+
 }

@@ -17,6 +17,8 @@
 
 package com.trainrobots.ui.robot;
 
+import java.awt.Color;
+
 import javax.media.opengl.*;
 
 public class BoardState {
@@ -37,11 +39,7 @@ public class BoardState {
 	private int m_x = 0, m_y = 0; // location of arm
 
 	public BoardState() {
-		// initialize the state so that there are no objects
-		for (int i = 0, j, k; i < m_state.length; ++i)
-			for (j = 0; j < m_state[i].length; ++j)
-				for (k = 0; k < m_state[i][j].length; ++k)
-					m_state[i][j][k] = null;
+		clear();
 	}
 
 	public void setTranslate(double x, double y, double z) {
@@ -64,10 +62,15 @@ public class BoardState {
 	}
 
 	// adds a pyramid at the appropriate grid cell
-	public void addPyramid(int x, int y, int z, float r, float g, float b) {
+	public void addPyramid(int x, int y, int z, Color color, Object tag) {
 		if (m_state[x][y][z] == null) {
 			m_state[x][y][z] = PolyMesh.pyramid(OBJ_DIM, OBJ_DIM, OBJ_DIM);
+			m_state[x][y][z].tag = tag;
 			Material m = m_state[x][y][z].getMaterial();
+
+			float r = color.getRed() / 255f;
+			float g = color.getGreen() / 255f;
+			float b = color.getBlue() / 255f;
 
 			m.setDiffuse(r, g, b, 1.0f);
 			m.setAmbient(0.0f, 0.0f, 0.0f, 1.0f);
@@ -75,10 +78,15 @@ public class BoardState {
 	}
 
 	// adds a cube at the appropriate grid cell
-	public void addCube(int x, int y, int z, float r, float g, float b) {
+	public void addCube(int x, int y, int z, Color color, Object tag) {
 		if (m_state[x][y][z] == null) {
 			m_state[x][y][z] = PolyMesh.cube(OBJ_DIM, OBJ_DIM, OBJ_DIM);
+			m_state[x][y][z].tag = tag;
 			Material m = m_state[x][y][z].getMaterial();
+
+			float r = color.getRed() / 255f;
+			float g = color.getGreen() / 255f;
+			float b = color.getBlue() / 255f;
 
 			m.setDiffuse(r, g, b, 1.0f);
 			m.setAmbient(0.0f, 0.0f, 0.0f, 1.0f);
@@ -176,4 +184,18 @@ public class BoardState {
 		gl.glPopAttrib();
 	}
 
+	public void clear() {
+		// initialize the state so that there are no objects
+		for (int i = 0, j, k; i < m_state.length; ++i) {
+			for (j = 0; j < m_state[i].length; ++j) {
+				for (k = 0; k < m_state[i][j].length; ++k) {
+					m_state[i][j][k] = null;
+				}
+			}
+		}
+	}
+
+	public PolyMesh get(int i, int j, int k) {
+		return m_state[i][j][k];
+	}
 }

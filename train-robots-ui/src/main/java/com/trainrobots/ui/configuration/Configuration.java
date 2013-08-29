@@ -30,7 +30,6 @@ public class Configuration {
 	public int armY;
 	public int armZ;
 	public boolean gripperOpen;
-	public Block armBlock;
 
 	@Override
 	public String toString() {
@@ -44,12 +43,6 @@ public class Configuration {
 		text.append(armZ);
 		text.append('\t');
 		text.append(gripperOpen ? 'O' : 'C');
-		if (armBlock != null) {
-			text.append('\t');
-			text.append(armBlock.color);
-			text.append('\t');
-			text.append(armBlock.type);
-		}
 
 		// Blocks.
 		for (Block block : blocks) {
