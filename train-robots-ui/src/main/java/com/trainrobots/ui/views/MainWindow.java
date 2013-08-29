@@ -40,12 +40,11 @@ public class MainWindow extends JFrame {
 	private final StatusBar statusBar;
 	private final TreeView treeView;
 	private final SceneView sceneView;
-	private final EditorView editorView;
 
 	@Inject
 	public MainWindow(WindowService windowService, MainMenu mainMenu,
 			ToolBar toolBar, StatusBar statusBar, TreeView treeView,
-			SceneView sceneView, EditorView editorView) {
+			SceneView sceneView) {
 
 		// Dependencies.
 		this.windowService = windowService;
@@ -54,7 +53,6 @@ public class MainWindow extends JFrame {
 		this.statusBar = statusBar;
 		this.treeView = treeView;
 		this.sceneView = sceneView;
-		this.editorView = editorView;
 
 		// Initiate.
 		initiateWindow();
@@ -98,24 +96,15 @@ public class MainWindow extends JFrame {
 		// Tool bar.
 		add(toolBar, BorderLayout.NORTH);
 
-		// Right splitter.
-		JSplitPane rightSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				sceneView, editorView);
-		rightSplitter.setDividerSize(4);
-
-		// Left splitter.
-		JSplitPane leftSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(treeView), rightSplitter);
-		leftSplitter.setDividerLocation(250);
-		leftSplitter.setDividerSize(2);
-		add(leftSplitter, BorderLayout.CENTER);
+		// Splitter.
+		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				new JScrollPane(treeView), sceneView);
+		splitter.setDividerLocation(250);
+		splitter.setDividerSize(2);
+		add(splitter, BorderLayout.CENTER);
 
 		// Status bar.
 		add(statusBar, BorderLayout.SOUTH);
-
-		// Layout.
-		pack();
-		rightSplitter.setDividerLocation(800);
 
 		// Size and position.
 		setSize(650, 500);

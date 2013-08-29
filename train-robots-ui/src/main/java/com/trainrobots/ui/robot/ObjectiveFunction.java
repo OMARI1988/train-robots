@@ -15,23 +15,11 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.robot;
 
-import java.awt.Graphics;
-import java.awt.Image;
+public interface ObjectiveFunction
+{
 
-import javax.swing.JPanel;
-
-import com.trainrobots.ui.resources.ResourceUtil;
-
-public class ImagePanel extends JPanel {
-
-	private final Image image = getToolkit().getImage(
-			ResourceUtil.getUrl("/com/trainrobots/ui/layout1.png"));
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		g.drawImage(image, 0, 0, null);
-	}
+  public double eval(double[] param, Object data);
+  
 }

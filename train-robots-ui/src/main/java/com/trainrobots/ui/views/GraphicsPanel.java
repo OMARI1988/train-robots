@@ -22,45 +22,64 @@ import java.awt.BorderLayout;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JPanel;
 
-import com.trainrobots.ui.graphics.Renderer;
+import com.jogamp.opengl.util.FPSAnimator;
+import com.trainrobots.ui.robot.RobotControl;
+import com.trainrobots.ui.robot.RobotRenderer;
 
 public class GraphicsPanel extends JPanel {
 
-	public GraphicsPanel() {
+	public GraphicsPanel(int type, int width, int height) {
 
-		GLProfile glprofile = GLProfile.getDefault();
-		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
-		GLJPanel glpanel = new GLJPanel(glcapabilities);
+		GLCapabilities caps = new GLCapabilities(null);
+		caps.setSampleBuffers(true);
+		caps.setNumSamples(8);
 
-		glpanel.addGLEventListener(new GLEventListener() {
+		RobotControl control = new RobotControl();
+		if (type == 0){
+			control.addObject(0, 0, 0, RobotControl.CYAN, RobotControl.CUBE);
+			control.addObject(3, 2, 0, RobotControl.RED, RobotControl.CUBE);
+			control.addObject(5, 7, 0, RobotControl.GREEN, RobotControl.PYRAMID);
+			control.addObject(7, 1, 0, RobotControl.MAGENTA, RobotControl.CUBE);
+		} else {
+			control.addObject(0, 0, 0, RobotControl.GREEN, RobotControl.CUBE);
+			control.addObject(3, 2, 0, RobotControl.CYAN, RobotControl.PYRAMID);
+			control.addObject(5, 7, 0, RobotControl.RED, RobotControl.CUBE);
+			control.addObject(7, 1, 0, RobotControl.MAGENTA, RobotControl.CUBE);
+		}
+
+		final RobotRenderer renderer = new RobotRenderer(control, width, height);
+
+		GLJPanel panel = new GLJPanel(caps);
+		panel.addGLEventListener(new GLEventListener() {
 
 			@Override
-			public void reshape(GLAutoDrawable glautodrawable, int x, int y,
+			public void reshape(GLAutoDrawable drawable, int x, int y,
 					int width, int height) {
-				Renderer.setup(glautodrawable.getGL().getGL2(), width,
-						height);
+				renderer.reshape(drawable.getGL().getGL2(), width, height);
 			}
 
 			@Override
-			public void init(GLAutoDrawable glautodrawable) {
+			public void init(GLAutoDrawable drawable) {
+				renderer.init(drawable.getGL().getGL2());
 			}
 
 			@Override
-			public void dispose(GLAutoDrawable glautodrawable) {
+			public void dispose(GLAutoDrawable drawable) {
 			}
 
 			@Override
-			public void display(GLAutoDrawable glautodrawable) {
-				Renderer.render(glautodrawable.getGL().getGL2(),
-						glautodrawable.getWidth(), glautodrawable.getHeight());
+			public void display(GLAutoDrawable drawable) {
+				renderer.display(drawable.getGL().getGL2());
 			}
 		});
 
 		setLayout(new BorderLayout());
-		add(glpanel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
+
+		FPSAnimator redraw = new FPSAnimator(panel, 60);
+		redraw.start();
 	}
 }
