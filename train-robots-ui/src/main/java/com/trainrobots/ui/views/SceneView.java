@@ -221,7 +221,6 @@ public class SceneView extends JPanel {
 		case 'w':
 			rc.addCube(Block.WHITE);
 			break;
-
 		case 'B':
 			rc.addPyramid(Block.BLUE);
 			break;
