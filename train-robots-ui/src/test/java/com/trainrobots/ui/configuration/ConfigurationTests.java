@@ -18,15 +18,26 @@
 package com.trainrobots.ui.configuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.trainrobots.ui.io.ConfigurationReader;
+
 public class ConfigurationTests {
 
 	@Test
-	public void shouldSerializeConfiguration() {
+	public void shouldReadConfiguration() {
+		for (Configuration c : ConfigurationReader
+				.read("../data/configuration.txt")) {
+			assertTrue(c.blocks.size() >= 1);
+		}
+	}
+
+	@Test
+	public void shouldWriteConfiguration() {
 
 		Configuration configuration = new Configuration();
 		configuration.armX = 3;
