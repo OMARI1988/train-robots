@@ -20,12 +20,8 @@ package com.trainrobots.ui.configuration;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.trainrobots.ui.io.ConfigurationWriter;
 
 public class ConfigurationTests {
 
@@ -45,33 +41,5 @@ public class ConfigurationTests {
 
 		assertEquals("3\t2\t7\tO\r\n1\t2\t7\tY\t2\r\n7\t4\t3\tR\t1",
 				configuration.toString());
-	}
-
-	@Test
-	@Ignore
-	public void generateConfiguration() {
-
-		List<Configuration> configurations = new ArrayList<Configuration>();
-		for (int g = 1; g <= 125; g++) {
-			for (int i = 1; i <= 5; i++) {
-
-				Configuration configuration = new Configuration();
-				configuration.groupNumber = g;
-				configuration.imageNumber = i;
-				configuration.armX = 3;
-				configuration.armY = 2;
-				configuration.armZ = 7;
-				configuration.gripperOpen = true;
-
-				configuration.blocks = new ArrayList<Block>();
-				configuration.blocks.add(new Block(Block.YELLOW, Block.PYRAMID,
-						1, 2, 8));
-				configuration.blocks.add(new Block(Block.RED, Block.CUBE, 8, 4,
-						3));
-				configurations.add(configuration);
-			}
-		}
-
-		ConfigurationWriter.write("c:/temp/train.robo", configurations);
 	}
 }

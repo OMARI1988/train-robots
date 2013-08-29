@@ -17,12 +17,48 @@
 
 package com.trainrobots.ui.services.defaults;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.ui.io.ConfigurationReader;
+import com.trainrobots.ui.io.ConfigurationWriter;
 import com.trainrobots.ui.services.DataService;
 
 public class DefaultDataService implements DataService {
 
+	private static final String FILE = "../data/configuration.txt";
+	private Configuration[][] items = new Configuration[125][5];
+
+	public DefaultDataService() {
+		for (Configuration c : ConfigurationReader.read(FILE)) {
+			update(c);
+		}
+	}
+
 	@Override
 	public int getGroupCount() {
 		return 125;
+	}
+
+	@Override
+	public void update(Configuration configuration) {
+		items[configuration.groupNumber - 1][configuration.imageNumber - 1] = configuration;
+	}
+
+	@Override
+	public Configuration get(int groupNumber, int imageNumber) {
+		return items[groupNumber - 1][imageNumber - 1];
+	}
+
+	@Override
+	public void save() {
+		List<Configuration> list = new ArrayList<Configuration>();
+		for (int g = 0; g < 125; g++) {
+			for (int i = 0; i < 5; i++) {
+				list.add(items[g][i]);
+			}
+		}
+		ConfigurationWriter.write(FILE, list);
 	}
 }

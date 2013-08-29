@@ -46,6 +46,7 @@ public class RobotControl {
 
 	public void moveArm(int x, int y, int z) {
 		m_robot.resetAngles();
+
 		// iterative update of robot to avoid awkward angles
 		m_robot.computeAngles(m_board.getCoord(x, 0, 5));
 		m_robot.computeAngles(m_board.getCoord(x, y, 5));
@@ -158,6 +159,11 @@ public class RobotControl {
 		// Position arm.
 		m_grasp = false;
 		m_robot.setGrasp(0.6);
+		if (configuration == null) {
+			moveArm(3, 3, 4);
+			m_board.setArmLocation(3, 3);
+			return;
+		}
 		moveArm(configuration.armX, configuration.armY, configuration.armZ);
 		m_board.setArmLocation(configuration.armX, configuration.armY);
 

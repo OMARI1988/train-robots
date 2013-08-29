@@ -17,7 +17,15 @@
 
 package com.trainrobots.ui.services;
 
+import com.trainrobots.ui.configuration.Configuration;
+
 public interface DataService {
 
 	int getGroupCount();
+
+	void update(Configuration configuration);
+
+	Configuration get(int groupNumber, int imageNumber);
+
+	void save();
 }

@@ -23,7 +23,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.swing.JLabel;
@@ -32,33 +31,23 @@ import javax.swing.JPanel;
 import com.trainrobots.ui.configuration.Block;
 import com.trainrobots.ui.configuration.Configuration;
 import com.trainrobots.ui.robot.RobotControl;
+import com.trainrobots.ui.services.DataService;
 
 public class SceneView extends JPanel {
 
+	private final DataService dataService;
 	private final JLabel label1 = new JLabel();
 	private final JLabel label2 = new JLabel();
 	private final GraphicsPanel panel1 = new GraphicsPanel(325, 350);
 	private final GraphicsPanel panel2 = new GraphicsPanel(325, 350);
-	private Configuration configuration;
+	private int groupNumber = -1;
+	private int imageNumber = -1;
 
 	@Inject
-	public SceneView() {
+	public SceneView(DataService dataService) {
 
-		// Configuration.
-		configuration = new Configuration();
-		configuration.armX = 3;
-		configuration.armY = 2;
-		configuration.armZ = 7;
-		configuration.gripperOpen = false;
-		configuration.blocks = new ArrayList<Block>();
-		configuration.blocks.add(new Block(Block.CYAN, Block.CUBE, 0, 0, 0));
-		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 1, 2, 0));
-		configuration.blocks.add(new Block(Block.YELLOW, Block.CUBE, 2, 4, 0));
-		configuration.blocks.add(new Block(Block.GREEN, Block.CUBE, 3, 6, 0));
-		configuration.blocks.add(new Block(Block.MAGENTA, Block.CUBE, 4, 7, 0));
-		configuration.blocks.add(new Block(Block.GRAY, Block.CUBE, 5, 5, 0));
-		configuration.blocks.add(new Block(Block.BLUE, Block.CUBE, 6, 3, 0));
-		configuration.blocks.add(new Block(Block.WHITE, Block.CUBE, 0, 5, 0));
+		// Services.
+		this.dataService = dataService;
 
 		// Layout.
 		setLayout(null);
@@ -123,7 +112,22 @@ public class SceneView extends JPanel {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				handleKey(e);
+
+				if (!hasFocus()) {
+					return;
+				}
+
+				if (e.getKeyCode() == KeyEvent.VK_INSERT) {
+					panel2.getRobotControl().loadConfiguration(
+							panel1.getRobotControl().saveConfiguration());
+					return;
+				}
+
+				if (imageNumber == 1) {
+					handleKey(panel1.getRobotControl(), e);
+				}
+
+				handleKey(panel2.getRobotControl(), e);
 			}
 
 			@Override
@@ -133,17 +137,31 @@ public class SceneView extends JPanel {
 		});
 	}
 
-	public void select(int groupNumber, int imageNumber) {
-		label1.setText(groupNumber + ".1");
-		label2.setText(groupNumber + "." + imageNumber);
+	public void update() {
+		if (this.groupNumber >= 1 && this.imageNumber >= 1) {
+			Configuration configuration = panel2.getRobotControl()
+					.saveConfiguration();
+			configuration.groupNumber = this.groupNumber;
+			configuration.imageNumber = this.imageNumber;
+			dataService.update(configuration);
+		}
 	}
 
-	private void handleKey(KeyEvent e) {
-		if (!hasFocus()) {
-			return;
-		}
+	public void select(int groupNumber, int imageNumber) {
+		update();
+		this.groupNumber = groupNumber;
+		this.imageNumber = imageNumber;
 
-		RobotControl rc = panel2.getRobotControl();
+		label1.setText(groupNumber + ".1");
+		panel1.getRobotControl().loadConfiguration(
+				dataService.get(groupNumber, 1));
+
+		label2.setText(groupNumber + "." + imageNumber);
+		panel2.getRobotControl().loadConfiguration(
+				dataService.get(groupNumber, imageNumber));
+	}
+
+	private static void handleKey(RobotControl rc, KeyEvent e) {
 
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			if (e.isShiftDown()) {

@@ -17,60 +17,33 @@
 
 package com.trainrobots.ui.robot;
 
+import java.util.List;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.ui.configuration.Block;
+import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.ui.io.ConfigurationReader;
 
 public class ExportTests {
 
 	@Test
+	@Ignore
 	public void shouldExportImages() {
+
+		List<Configuration> configuration = ConfigurationReader
+				.read("../data/configuration.txt");
 
 		RobotControl rc = new RobotControl();
 		RobotBuffer rb = new RobotBuffer(rc, 325, 350);
 
-		rc.addObject(new Block(Block.CYAN, Block.CUBE, 0, 0, 0));
-		rc.addObject(new Block(Block.RED, Block.CUBE, 3, 2, 0));
-		rc.addObject(new Block(Block.GREEN, Block.CUBE, 5, 7, 0));
-		rc.addObject(new Block(Block.MAGENTA, Block.CUBE, 7, 1, 0));
-
-		rb.renderToFile("c:/temp/test01.png");
-
-		rc.moveArm(3, 2, 0);
-		rb.renderToFile("c:/temp/test02.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test03.png");
-
-		rc.moveArm(0, 0, 7);
-		rb.renderToFile("c:/temp/test04.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test05.png");
-
-		rc.moveArm(7, 1, 0);
-		rb.renderToFile("c:/temp/test06.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test07.png");
-
-		rc.moveArm(0, 0, 7);
-		rb.renderToFile("c:/temp/test08.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test09.png");
-
-		rc.moveArm(5, 7, 0);
-		rb.renderToFile("c:/temp/test10.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test11.png");
-
-		rc.moveArm(0, 0, 7);
-		rb.renderToFile("c:/temp/test12.png");
-
-		rc.toggleGrasp();
-		rb.renderToFile("c:/temp/test13.png");
+		for (Configuration c : configuration) {
+			String path = "../data/g" + c.groupNumber + "/x" + c.imageNumber
+					+ ".png";
+			rc.loadConfiguration(c);
+			rb.renderToFile(path);
+			System.out.println("Wrote: " + path);
+		}
 
 		rb.destroy();
 	}

@@ -21,20 +21,28 @@ import java.awt.event.ActionEvent;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
+import com.trainrobots.ui.services.DataService;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.MainWindow;
 
-public class ExitCommand extends AbstractAction {
+public class SaveCommand extends AbstractAction {
 
+	private final DataService dataService;
 	private final WindowService windowService;
 
 	@Inject
-	public ExitCommand(WindowService windowService) {
+	public SaveCommand(DataService dataService, WindowService windowService) {
+		this.dataService = dataService;
 		this.windowService = windowService;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		windowService.getMainWindow().dispose();
+		MainWindow window = windowService.getMainWindow();
+		window.getSceneView().update();
+		dataService.save();
+		JOptionPane.showMessageDialog(window, "Data saved successfully.");
 	}
 }
