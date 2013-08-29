@@ -19,16 +19,21 @@ package com.trainrobots.ui.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.inject.Inject;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.trainrobots.ui.robot.RobotControl;
+
 public class SceneView extends JPanel {
 
 	private final JLabel label1 = new JLabel();
 	private final JLabel label2 = new JLabel();
-	private final JLabel label3 = new JLabel();
 	private final GraphicsPanel panel1 = new GraphicsPanel(0, 325, 350);
 	private final GraphicsPanel panel2 = new GraphicsPanel(1, 325, 350);
 
@@ -53,13 +58,6 @@ public class SceneView extends JPanel {
 		label2.setBounds(350, 15, (int) ps2.getWidth(), (int) ps2.getHeight());
 		add(label2);
 
-		// Label 3.
-		label3.setText("Default");
-		label3.setForeground(Color.WHITE);
-		Dimension ps3 = label3.getPreferredSize();
-		label3.setBounds(25, 400, (int) ps3.getWidth(), (int) ps3.getHeight());
-		add(label3);
-
 		// Panel 1.
 		panel1.setBounds(25, 32, 325, 350);
 		add(panel1);
@@ -67,10 +65,92 @@ public class SceneView extends JPanel {
 		// Panel 2.
 		panel2.setBounds(350, 32, 325, 350);
 		add(panel2);
+
+		// Mouse.
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (contains(e.getPoint())) {
+					requestFocus();
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+		});
+
+		// Keyboard.
+		this.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				handleKey(e);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+		});
 	}
 
 	public void select(int groupNumber, int imageNumber) {
 		label1.setText(groupNumber + ".1");
 		label2.setText(groupNumber + "." + imageNumber);
+	}
+
+	private void handleKey(KeyEvent e) {
+		if (!hasFocus()) {
+			return;
+		}
+
+		RobotControl rc = panel2.getRobotControl();
+
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			if (e.isShiftDown()) {
+				rc.raiseArm();
+			} else {
+				rc.moveUp();
+			}
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			if (e.isShiftDown()) {
+				rc.lowerArm();
+			} else {
+				rc.moveDown();
+			}
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_LEFT && !e.isShiftDown()) {
+			rc.moveLeft();
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT && !e.isShiftDown()) {
+			rc.moveRight();
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			rc.grasp();
+		}
 	}
 }

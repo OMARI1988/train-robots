@@ -31,13 +31,14 @@ import com.trainrobots.ui.robot.RobotRenderer;
 
 public class GraphicsPanel extends JPanel {
 
+	private final RobotControl control = new RobotControl();
+
 	public GraphicsPanel(int type, int width, int height) {
 
 		GLCapabilities caps = new GLCapabilities(null);
 		caps.setSampleBuffers(true);
 		caps.setNumSamples(8);
 
-		RobotControl control = new RobotControl();
 		if (type == 0){
 			control.addObject(0, 0, 0, RobotControl.CYAN, RobotControl.CUBE);
 			control.addObject(3, 2, 0, RobotControl.RED, RobotControl.CUBE);
@@ -81,5 +82,9 @@ public class GraphicsPanel extends JPanel {
 
 		FPSAnimator redraw = new FPSAnimator(panel, 60);
 		redraw.start();
+	}
+
+	public RobotControl getRobotControl() {
+		return control;
 	}
 }
