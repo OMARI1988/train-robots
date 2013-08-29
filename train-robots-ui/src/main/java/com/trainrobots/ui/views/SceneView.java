@@ -51,9 +51,14 @@ public class SceneView extends JPanel {
 		configuration.armZ = 7;
 		configuration.gripperOpen = false;
 		configuration.blocks = new ArrayList<Block>();
-		configuration.blocks
-				.add(new Block(Block.YELLOW, Block.PYRAMID, 1, 2, 0));
-		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 7, 4, 0));
+		configuration.blocks.add(new Block(Block.CYAN, Block.CUBE, 0, 0, 0));
+		configuration.blocks.add(new Block(Block.RED, Block.CUBE, 1, 2, 0));
+		configuration.blocks.add(new Block(Block.YELLOW, Block.CUBE, 2, 4, 0));
+		configuration.blocks.add(new Block(Block.GREEN, Block.CUBE, 3, 6, 0));
+		configuration.blocks.add(new Block(Block.MAGENTA, Block.CUBE, 4, 7, 0));
+		configuration.blocks.add(new Block(Block.GRAY, Block.CUBE, 5, 5, 0));
+		configuration.blocks.add(new Block(Block.BLUE, Block.CUBE, 6, 3, 0));
+		configuration.blocks.add(new Block(Block.WHITE, Block.CUBE, 0, 5, 0));
 
 		// Layout.
 		setLayout(null);
@@ -168,12 +173,61 @@ public class SceneView extends JPanel {
 			rc.toggleGrasp();
 		}
 
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			rc.loadConfiguration(configuration);
+		if (e.getKeyCode() == KeyEvent.VK_DELETE
+				|| e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			rc.remove();
 		}
 
-		if (e.getKeyCode() == KeyEvent.VK_Z) {
-			configuration = rc.saveConfiguration();
+		switch (e.getKeyChar()) {
+		case 'b':
+			rc.addCube(Block.BLUE);
+			break;
+		case 'c':
+			rc.addCube(Block.CYAN);
+			break;
+		case 'r':
+			rc.addCube(Block.RED);
+			break;
+		case 'y':
+			rc.addCube(Block.YELLOW);
+			break;
+		case 'g':
+			rc.addCube(Block.GREEN);
+			break;
+		case 'm':
+			rc.addCube(Block.MAGENTA);
+			break;
+		case 'x':
+			rc.addCube(Block.GRAY);
+			break;
+		case 'w':
+			rc.addCube(Block.WHITE);
+			break;
+
+		case 'B':
+			rc.addPyramid(Block.BLUE);
+			break;
+		case 'C':
+			rc.addPyramid(Block.CYAN);
+			break;
+		case 'R':
+			rc.addPyramid(Block.RED);
+			break;
+		case 'Y':
+			rc.addPyramid(Block.YELLOW);
+			break;
+		case 'G':
+			rc.addPyramid(Block.GREEN);
+			break;
+		case 'M':
+			rc.addPyramid(Block.MAGENTA);
+			break;
+		case 'X':
+			rc.addPyramid(Block.GRAY);
+			break;
+		case 'W':
+			rc.addPyramid(Block.WHITE);
+			break;
 		}
 	}
 }

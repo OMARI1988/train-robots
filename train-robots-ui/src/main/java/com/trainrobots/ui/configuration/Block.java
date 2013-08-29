@@ -19,11 +19,14 @@ package com.trainrobots.ui.configuration;
 
 public class Block {
 
+	public static final char BLUE = 'B';
 	public static final char CYAN = 'C';
 	public static final char RED = 'R';
 	public static final char YELLOW = 'Y';
 	public static final char GREEN = 'G';
 	public static final char MAGENTA = 'M';
+	public static final char GRAY = 'X';
+	public static final char WHITE = 'W';
 
 	public static final int CUBE = 1;
 	public static final int PYRAMID = 2;

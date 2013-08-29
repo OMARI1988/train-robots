@@ -80,6 +80,33 @@ public class RobotControl {
 		}
 	}
 
+	public void addCube(char color) {
+		for (int z = 0; z < 8; z++) {
+			if (m_board.get(m_x, m_y, z) == null) {
+				addObject(new Block(color, Block.CUBE, m_x, m_y, z));
+				return;
+			}
+		}
+	}
+
+	public void addPyramid(char color) {
+		for (int z = 0; z < 8; z++) {
+			if (m_board.get(m_x, m_y, z) == null) {
+				addObject(new Block(color, Block.PYRAMID, m_x, m_y, z));
+				return;
+			}
+		}
+	}
+
+	public void remove() {
+		for (int z = 7; z >= 0; z--) {
+			if (m_board.get(m_x, m_y, z) != null) {
+				m_board.clear(m_x, m_y, z);
+				return;
+			}
+		}
+	}
+
 	public void render(GL2 gl) {
 		gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 		m_board.render(gl);
@@ -173,6 +200,8 @@ public class RobotControl {
 
 	private Color toRobotColor(char color) {
 		switch (color) {
+		case Block.BLUE:
+			return Color.BLUE;
 		case Block.CYAN:
 			return Color.CYAN;
 		case Block.RED:
@@ -183,6 +212,8 @@ public class RobotControl {
 			return Color.GREEN;
 		case Block.MAGENTA:
 			return Color.MAGENTA;
+		case Block.GRAY:
+			return Color.GRAY;
 		}
 		return Color.WHITE;
 	}

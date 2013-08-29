@@ -198,4 +198,8 @@ public class BoardState {
 	public PolyMesh get(int i, int j, int k) {
 		return m_state[i][j][k];
 	}
+
+	public void clear(int i, int j, int k) {
+		m_state[i][j][k] = null;
+	}
 }
