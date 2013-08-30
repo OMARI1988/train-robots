@@ -31,8 +31,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.trainrobots.web.WebException;
+import com.trainrobots.web.game.MarkedCommand;
 import com.trainrobots.web.game.ResetToken;
-import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 
 public class DataService {
@@ -290,7 +290,7 @@ public class DataService {
 		}
 	}
 
-	public List<Scene> getScenes(ServletContext context) {
+	public List<MarkedCommand> getMarkedCommands(ServletContext context) {
 		try {
 
 			// Connect.
@@ -299,23 +299,19 @@ public class DataService {
 
 			// Initiate statement.
 			CallableStatement statement = connection
-					.prepareCall("{call select_scenes()}");
+					.prepareCall("{call select_marked_commands()}");
 
 			// Execute.
 			statement.execute();
 			ResultSet resultSet = statement.getResultSet();
-			List<Scene> scenes = new ArrayList<Scene>();
+			List<MarkedCommand> commands = new ArrayList<MarkedCommand>();
 
 			while (resultSet.next()) {
-				Scene scene = new Scene();
-				scene.sceneNumber = resultSet.getInt(1);
-				scene.expectedOption = resultSet.getInt(2);
-				scene.fromGroup = resultSet.getInt(3);
-				scene.fromImage = resultSet.getInt(4);
-				scene.toGroup = resultSet.getInt(5);
-				scene.toImage = resultSet.getInt(6);
-				scene.command = resultSet.getString(7);
-				scenes.add(scene);
+				MarkedCommand command = new MarkedCommand();
+				command.sceneNumber = resultSet.getInt(1);
+				command.command = resultSet.getString(2);
+				command.commandMark = resultSet.getInt(3);
+				commands.add(command);
 			}
 
 			// Close connection.
@@ -323,8 +319,8 @@ public class DataService {
 			statement.close();
 			connection.close();
 
-			// Return scenes.
-			return scenes;
+			// Return commands.
+			return commands;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);

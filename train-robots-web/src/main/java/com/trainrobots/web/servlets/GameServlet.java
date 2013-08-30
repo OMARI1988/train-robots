@@ -113,7 +113,7 @@ public class GameServlet extends HttpServlet {
 						return;
 					}
 					user.state = 2;
-					int expected = gameService.scene(context, user.sceneNumber).expectedOption;
+					int expected = user.scene.expectedOption;
 					if (expected == q1) {
 						feedback = "<span class='positive'>+20 points!</span> You chose "
 								+ q1
@@ -125,7 +125,7 @@ public class GameServlet extends HttpServlet {
 						user.score++;
 					}
 					dataService.addRound(context, user.userId, user.round,
-							user.score, user.potential, user.sceneNumber,
+							user.score, user.potential, user.scene.sceneNumber,
 							expected, q1, request.getRemoteAddr(), null);
 				}
 
@@ -138,8 +138,9 @@ public class GameServlet extends HttpServlet {
 						user.potential += 100;
 						user.state = 2;
 						dataService.addRound(context, user.userId, user.round,
-								user.score, user.potential, user.sceneNumber,
-								0, 0, request.getRemoteAddr(), command);
+								user.score, user.potential,
+								user.scene.sceneNumber, 0, 0,
+								request.getRemoteAddr(), command);
 					} else {
 						error = "Please enter a valid command.";
 					}
@@ -149,7 +150,7 @@ public class GameServlet extends HttpServlet {
 				// New scene.
 				user.state = 1;
 				user.round++;
-				user.sceneNumber = gameService.randomSceneNumber(context);
+				user.scene = gameService.assignScene(context, user.round);
 			} else {
 				response.sendRedirect("/lost.jsp");
 				return;
@@ -224,7 +225,7 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Command.
-		Scene scene = gameService.scene(context, user.sceneNumber);
+		Scene scene = user.scene;
 		if (!addCommand) {
 			out.println("<p id='command'>" + scene.command + "</p>");
 		}
