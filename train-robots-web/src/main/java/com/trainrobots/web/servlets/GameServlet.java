@@ -42,9 +42,9 @@ public class GameServlet extends HttpServlet {
 
 	static {
 		OPTIONS = new String[] {
-				"The robot should not have moved because the command doesn't make sense.",
-				"The command was <span class='negative'>unclear</span> so the robot made the <span class='negative'>wrong</span> move.",
-				"The command was <span class='negative'>unclear</span> but the robot still made the <span class='positive'>right</span> move.",
+				"The command uses inappropriate words (spam) and should be removed.",
+				"The command was <span class='negative'>unclear</span> so the robot made the <span class='negative'>wrong</span> move (e.g. before and after images were confused).",
+				"The command was <span class='negative'>unclear</span> but the robot still made the <span class='positive'>right</span> move (e.g. spelling or other mistakes).",
 				"The command was <span class='positive'>clear</span> but the robot got it <span class='negative'>wrong</span>.",
 				"The command was <span class='positive'>clear</span> and the robot got it <span class='positive'>right</span>." };
 	}
@@ -212,12 +212,12 @@ public class GameServlet extends HttpServlet {
 		if (!addCommand) {
 			writeQuestions(out, user.state);
 			if (user.state == 1) {
-				out.println("<p id='info'>Find the changes between the two pictures below. Which option from 1 to 5 is best?<br />Get the most points by choosing the same answer as other players.</p>");
+				out.println("<p class='info'>Find the changes between the two pictures below. Which option from 1 to 5 is best?<br />Get the most points by choosing the same answer as other players.</p>");
 			} else {
 				if (feedback != null) {
-					out.println("<p id='info'>" + feedback + "</p>");
+					out.println("<p class='info'>" + feedback + "</p>");
 				}
-				out.println("<p id='info'><input class='formButton' type='submit' value='Continue'/></p>");
+				out.println("<p class='info'><input class='formButton' type='submit' value='Continue'/></p>");
 			}
 		} else {
 
@@ -254,10 +254,11 @@ public class GameServlet extends HttpServlet {
 
 		// Scene.
 		out.println("<table id='scene' cellspacing='0' cellpadding='2'>");
-		out.println("<tr><td><p class='move'>before</p> <img src='"
+		out.println("<tr><td class='left-image'><p class='move'>Before the command</p> <img src='"
 				+ getImage(scene.fromGroup, scene.fromImage)
 				+ "' width='325' height='350'/></td>");
-		out.println("<td><p class='move'>after</p> <img src='"
+		out.println("<td><img src='/images/right-arrow.png' style='margin-left:20px; margin-right:20px;'/></td>");
+		out.println("<td class='right-image'><p class='move'>After the command	</p> <img src='"
 				+ getImage(scene.toGroup, scene.toImage)
 				+ "' width='325' height='350' /></td></tr>");
 		out.println("</table>");
@@ -270,6 +271,18 @@ public class GameServlet extends HttpServlet {
 
 		// End.
 		out.println("</form>");
+
+		// Hints.
+		out.println("<p id='hints'>Hints</p>");
+		out.println("<p class='tip'>");
+		out.println("Give directions from the perspective of the robot. Left and right should be used from the robots point of view, not from your point of view.");
+		out.println("Back means closer to the robot's pedestal. Forward means away from the robot's pedestal.");
+		out.println("</p>");
+		out.println("<p class='tip'>");
+		out.println("Try not to confuse the before and after images. The right image is the final image we want to get to.");
+		out.println("</p>");
+
+		// Links.
 		out.println("<table class='links' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
 		out.println("<td><img src='/images/home-medium.png'/></td>");
@@ -325,10 +338,22 @@ public class GameServlet extends HttpServlet {
 		out.println("font-weight: bold;");
 		out.println("margin-top: 2.5em;");
 		out.println("}");
-		out.println("p#info {");
+		out.println("p#hints {");
+		out.println("color: white;");
+		out.println("font-size: 12pt;");
+		out.println("font-weight: bold;");
+		out.println("margin-top: 2.5em;");
+		out.println("}");
+		out.println("p.info {");
 		out.println("color: rgb(200, 200, 200);");
 		out.println("font-size: 12pt;");
 		out.println("line-height: 16pt;");
+		out.println("}");
+		out.println("p.tip {");
+		out.println("color: rgb(200, 200, 200);");
+		out.println("font-size: 12pt;");
+		out.println("line-height: 16pt;");
+		out.println("width: 700px;");
 		out.println("}");
 		out.println("table#questions {");
 		out.println("color: rgb(200, 200, 200);");
@@ -363,11 +388,11 @@ public class GameServlet extends HttpServlet {
 		out.println("}");
 		out.println("table#scene {");
 		out.println("background: black;");
-		out.println("border: 2px solid rgb(91, 91, 91);");
 		out.println("}");
 		out.println("p.move {");
-		out.println("color: white;");
-		out.println("font-size: 11pt;");
+		out.println("color: rgb(141, 244, 50);");
+		out.println("font-size: 12pt;");
+		out.println("font-weight: bold;");
 		out.println("margin: 0.2em;");
 		out.println("margin-left: 0.4em;");
 		out.println("}");
