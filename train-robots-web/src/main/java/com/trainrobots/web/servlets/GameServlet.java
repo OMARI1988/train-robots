@@ -281,6 +281,9 @@ public class GameServlet extends HttpServlet {
 		out.println("<p class='tip'>");
 		out.println("Try not to confuse the before and after images. The right image is the final image we want to get to.");
 		out.println("</p>");
+		out.println("<p class='tip'>");
+		out.println("Don't use map directions (north, east, south, west) and don't use grid co-ordinates (A3, B5). Instead, explain the destination location relative to surrounding blocks. Be as specific as possible. Imagine you are explaining the command to your friend over the telephone.");
+		out.println("</p>");
 
 		// Links.
 		out.println("<table class='links' cellspacing='0' cellpadding='0'>");
