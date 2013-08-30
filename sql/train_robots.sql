@@ -297,7 +297,7 @@ BEGIN
 	FROM round
 	WHERE command IS NOT NULL
 	AND command_mark IS NULL
-	ORDER BY time_utc LIMIT 1;
+	ORDER BY time_utc DESC LIMIT 1;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -417,4 +417,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-30 12:29:33
+-- Dump completed on 2013-08-30 13:56:50
