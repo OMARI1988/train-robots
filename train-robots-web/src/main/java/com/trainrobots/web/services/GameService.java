@@ -82,6 +82,8 @@ public class GameService {
 				scene.toImage = s.toImage;
 				scene.command = command.command;
 				scene.expectedOption = command.commandMark;
+				scene.rateUserId = command.userId;
+				scene.rateRound = command.round;
 				markedScenes.add(scene);
 			}
 		}

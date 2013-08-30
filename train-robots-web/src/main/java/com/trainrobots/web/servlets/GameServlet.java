@@ -126,7 +126,8 @@ public class GameServlet extends HttpServlet {
 					}
 					dataService.addRound(context, user.userId, user.round,
 							user.score, user.potential, user.scene.sceneNumber,
-							expected, q1, request.getRemoteAddr(), null);
+							expected, q1, request.getRemoteAddr(), null,
+							user.scene.rateUserId, user.scene.rateRound);
 				}
 
 				// Add command.
@@ -140,7 +141,7 @@ public class GameServlet extends HttpServlet {
 						dataService.addRound(context, user.userId, user.round,
 								user.score, user.potential,
 								user.scene.sceneNumber, 0, 0,
-								request.getRemoteAddr(), command);
+								request.getRemoteAddr(), command, 0, 0);
 					} else {
 						error = "Please enter a valid command.";
 					}

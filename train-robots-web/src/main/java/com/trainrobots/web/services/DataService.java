@@ -258,7 +258,8 @@ public class DataService {
 
 	public void addRound(ServletContext context, int userId, int round,
 			int score, int potential, int sceneNumber, int expectedOption,
-			int selectedOption, String ipAddress, String command) {
+			int selectedOption, String ipAddress, String command,
+			int rateUserId, int rateRound) {
 		try {
 
 			// Connect.
@@ -267,7 +268,7 @@ public class DataService {
 
 			// Initiate statement.
 			CallableStatement statement = connection
-					.prepareCall("{call add_round(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+					.prepareCall("{call add_round(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			statement.setInt(1, userId);
 			statement.setInt(2, round);
 			statement.setInt(3, score);
@@ -277,6 +278,8 @@ public class DataService {
 			statement.setInt(7, selectedOption);
 			statement.setString(8, ipAddress);
 			statement.setString(9, command);
+			statement.setInt(10, rateUserId);
+			statement.setInt(11, rateRound);
 
 			// Execute.
 			statement.executeUpdate();
@@ -311,6 +314,8 @@ public class DataService {
 				command.sceneNumber = resultSet.getInt(1);
 				command.command = resultSet.getString(2);
 				command.commandMark = resultSet.getInt(3);
+				command.userId = resultSet.getInt(4);
+				command.round = resultSet.getInt(5);
 				commands.add(command);
 			}
 

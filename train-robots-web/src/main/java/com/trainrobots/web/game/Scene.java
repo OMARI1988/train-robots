@@ -25,4 +25,6 @@ public class Scene {
 	public int toGroup;
 	public int toImage;
 	public String command;
+	public int rateUserId;
+	public int rateRound;
 }

@@ -21,4 +21,6 @@ public class MarkedCommand {
 	public int sceneNumber;
 	public String command;
 	public int commandMark;
+	public int userId;
+	public int round;
 }
