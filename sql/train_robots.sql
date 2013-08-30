@@ -47,7 +47,9 @@ CREATE TABLE `round` (
   `expected_option` int(11) NOT NULL,
   `selected_option` int(11) NOT NULL,
   `command` varchar(512) DEFAULT NULL,
-  `command_mark` int(11) DEFAULT NULL
+  `command_mark` int(11) DEFAULT NULL,
+  `rate_user_id` int(11) NOT NULL,
+  `rate_round` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -71,7 +73,7 @@ CREATE TABLE `user` (
   `last_score_utc` datetime NOT NULL,
   `sign_in_message` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +136,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `add_round`(
 	IN _expected_option INT,
 	IN _selected_option INT,
 	IN _ip_address VARCHAR(64),
-	IN _command VARCHAR(512)
+	IN _command VARCHAR(512),
+	IN _rate_user_id INT,
+	IN _rate_round INT
 )
 BEGIN
 	DECLARE _time_utc DATETIME;
@@ -157,7 +161,9 @@ BEGIN
 		scene_number,
 		expected_option,
 		selected_option,
-		command)
+		command,
+		rate_user_id,
+		rate_round)
 	VALUES (
 		_user_id,
 		_ip_address,
@@ -168,7 +174,9 @@ BEGIN
 		_scene_number,
 		_expected_option,
 		_selected_option,
-		_command);
+		_command,
+		_rate_user_id,
+		_rate_round);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -262,7 +270,9 @@ BEGIN
 SELECT
 	scene_number,
 	command,
-	command_mark
+	command_mark,
+	user_id,
+	round
 FROM round
 WHERE command IS NOT NULL AND command_mark IS NOT NULL;
 END ;;
@@ -358,4 +368,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-30  3:00:18
+-- Dump completed on 2013-08-30 11:24:51
