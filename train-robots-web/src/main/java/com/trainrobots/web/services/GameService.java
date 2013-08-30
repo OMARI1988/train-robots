@@ -76,6 +76,14 @@ public class GameService {
 		return email != null && email.equals("kais@kaisdukes.com");
 	}
 
+	public Scene getAddCommandScene(int sceneNumber) {
+		int index = sceneNumber - 1;
+		if (index >= 0 && index < addCommandScenes.size()) {
+			return addCommandScenes.get(index);
+		}
+		return null;
+	}
+
 	public synchronized Scene assignScene(ServletContext context, String email,
 			int round) {
 
