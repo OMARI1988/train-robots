@@ -331,4 +331,67 @@ public class DataService {
 			throw new WebException(exception);
 		}
 	}
+
+	public MarkedCommand getAdminCommand(ServletContext context) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_admin_command()}");
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			MarkedCommand command = null;
+			if (resultSet.next()) {
+				command = new MarkedCommand();
+				command.userId = resultSet.getInt(1);
+				command.round = resultSet.getInt(2);
+				command.sceneNumber = resultSet.getInt(3);
+				command.command = resultSet.getString(4);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return command.
+			return command;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public void markCommand(ServletContext context, int userId, int round,
+			int commandMark) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call mark_command(?, ?, ?)}");
+			statement.setInt(1, userId);
+			statement.setInt(2, round);
+			statement.setInt(3, commandMark);
+
+			// Execute.
+			statement.executeUpdate();
+
+			// Close connection.
+			statement.close();
+			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
 }

@@ -61,10 +61,34 @@ public class GameService {
 		this.dataService = dataService;
 	}
 
-	public synchronized Scene assignScene(ServletContext context, int round) {
+	public boolean isAddCommandRound(String email, int round) {
+
+		// Admin?
+		if (isAdmin(email)) {
+			return false;
+		}
+
+		// Add command every third round.
+		return round % 3 == 0;
+	}
+
+	public boolean isAdmin(String email) {
+		return email != null && email.equals("kais@kaisdukes.com");
+	}
+
+	public synchronized Scene assignScene(ServletContext context, String email,
+			int round) {
+
+		// Admin?
+		if (isAdmin(email)) {
+			MarkedCommand command = dataService.getAdminCommand(context);
+			if (command != null) {
+				return translateMarkedCommand(command);
+			}
+		}
 
 		// Add command?
-		if (round % 3 == 0) {
+		if (isAddCommandRound(email, round)) {
 			return addCommandScenes.get(mersenneTwister.next(addCommandScenes
 					.size()));
 		}
@@ -73,20 +97,24 @@ public class GameService {
 		if (markedScenes == null) {
 			markedScenes = new ArrayList<Scene>();
 			for (MarkedCommand command : dataService.getMarkedCommands(context)) {
-				Scene scene = new Scene();
-				scene.sceneNumber = command.sceneNumber;
-				Scene s = addCommandScenes.get(command.sceneNumber - 1);
-				scene.fromGroup = s.fromGroup;
-				scene.toGroup = s.toGroup;
-				scene.fromImage = s.fromImage;
-				scene.toImage = s.toImage;
-				scene.command = command.command;
-				scene.expectedOption = command.commandMark;
-				scene.rateUserId = command.userId;
-				scene.rateRound = command.round;
-				markedScenes.add(scene);
+				markedScenes.add(translateMarkedCommand(command));
 			}
 		}
 		return markedScenes.get(mersenneTwister.next(markedScenes.size()));
+	}
+
+	private Scene translateMarkedCommand(MarkedCommand command) {
+		Scene scene = new Scene();
+		scene.sceneNumber = command.sceneNumber;
+		Scene s = addCommandScenes.get(command.sceneNumber - 1);
+		scene.fromGroup = s.fromGroup;
+		scene.toGroup = s.toGroup;
+		scene.fromImage = s.fromImage;
+		scene.toImage = s.toImage;
+		scene.command = command.command;
+		scene.expectedOption = command.commandMark;
+		scene.rateUserId = command.userId;
+		scene.rateRound = command.round;
+		return scene;
 	}
 }

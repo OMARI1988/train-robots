@@ -78,6 +78,9 @@ public class GameServlet extends HttpServlet {
 			return;
 		}
 
+		// Admin.
+		boolean admin = gameService.isAdmin(user.email);
+
 		// Form.
 		String command = request.getParameter("command");
 		String error = null;
@@ -100,7 +103,7 @@ public class GameServlet extends HttpServlet {
 			if (user.state == 1) {
 
 				// Judge.
-				if (user.round % 3 != 0) {
+				if (!gameService.isAddCommandRound(user.email, user.round)) {
 					int q1;
 					try {
 						q1 = Integer.parseInt(request.getParameter("q1"));
@@ -114,20 +117,31 @@ public class GameServlet extends HttpServlet {
 					}
 					user.state = 2;
 					int expected = user.scene.expectedOption;
-					if (expected == q1) {
-						feedback = "<span class='positive'>+20 points!</span> You chose "
-								+ q1
-								+ ". That's what most players voted for as well.";
-						user.score += 20;
+					if (admin) {
+						feedback = "Saved mark as option " + q1 + ".";
+						if (expected != 0) {
+							feedback = " Previously marked as " + expected
+									+ ".";
+						}
+						dataService.markCommand(context, user.scene.rateUserId,
+								user.scene.rateRound, q1);
 					} else {
-						feedback = "<span class='positive'>+1 point.</span> Nice try, but most players chose option "
-								+ expected + ".";
-						user.score++;
+						if (expected == q1) {
+							feedback = "<span class='positive'>+20 points!</span> You chose "
+									+ q1
+									+ ". That's what most players voted for as well.";
+							user.score += 20;
+						} else {
+							feedback = "<span class='positive'>+1 point.</span> Nice try, but most players chose option "
+									+ expected + ".";
+							user.score++;
+						}
+						dataService.addRound(context, user.userId, user.round,
+								user.score, user.potential,
+								user.scene.sceneNumber, expected, q1,
+								request.getRemoteAddr(), null,
+								user.scene.rateUserId, user.scene.rateRound);
 					}
-					dataService.addRound(context, user.userId, user.round,
-							user.score, user.potential, user.scene.sceneNumber,
-							expected, q1, request.getRemoteAddr(), null,
-							user.scene.rateUserId, user.scene.rateRound);
 				}
 
 				// Add command.
@@ -151,7 +165,8 @@ public class GameServlet extends HttpServlet {
 				// New scene.
 				user.state = 1;
 				user.round++;
-				user.scene = gameService.assignScene(context, user.round);
+				user.scene = gameService.assignScene(context, user.email,
+						user.round);
 			} else {
 				response.sendRedirect("/lost.jsp");
 				return;
@@ -159,12 +174,12 @@ public class GameServlet extends HttpServlet {
 		}
 
 		// Write.
-		writePage(context, response, user, feedback, command, error);
+		writePage(context, response, user, feedback, command, error, admin);
 	}
 
 	private void writePage(ServletContext context,
 			HttpServletResponse response, User user, String feedback,
-			String command, String error) throws IOException {
+			String command, String error, boolean admin) throws IOException {
 
 		// Disable caching.
 		response.setContentType("text/html");
@@ -182,12 +197,18 @@ public class GameServlet extends HttpServlet {
 		out.println("<h1>train robots</h1><p class='tagline'>help teach robots to become smart as humans</p>");
 
 		// Score.
-		out.println("<p id='play'><span class='positive'>Round " + user.round
-				+ "</span>&nbsp;&nbsp;&nbsp;" + user.score + " points");
+		out.println("<p id='play'>");
+		if (admin) {
+			out.println("Admin");
+		} else {
+			out.println("<span class='positive'>Round " + user.round
+					+ "</span>&nbsp;&nbsp;&nbsp;" + user.score + " points");
+		}
 		out.println("</p>");
 
 		// Judge?
-		boolean addCommand = user.round % 3 == 0;
+		boolean addCommand = gameService.isAddCommandRound(user.email,
+				user.round);
 		if (!addCommand) {
 			writeQuestions(out, user.state);
 			if (user.state == 1) {
@@ -206,7 +227,7 @@ public class GameServlet extends HttpServlet {
 				out.println("<p class='d'>Now its your turn to help us make the robot smarter! The robot can learn from your commands.</p>");
 				out.println("<p class='d'>What command would you give to another human being? We want the robot to be as smart as real people. Your command can be long and complicated if this makes it clearer, but short commands are better. Don't be afraid to use new words or ideas to tell the robot what to do. Be creative. We want the robot to learn real English.</p>");
 				out.println("<p class='d'>You will get <span class='positive'>bonus points</span> when your command gets voted as <span class='positive'>clear</span> and <span class='positive'>correct</span> by other players, for changing from the first picture below to the second one.</p>");
-				out.println("<p class='d'>Look at the two pictures below and find out what's changed, then enter a suitable command.</p>");
+				out.println("<p class='d'>Look at the two pictures below and find out what's changed, then enter a suitable command. Ignore arm movements and focus on the block that has changed position.</p>");
 				out.print("<p class='d'><textarea class='textBox' rows='3' type='text' name='command' style='width:650px;'/>");
 				if (command != null) {
 					out.print(command);
