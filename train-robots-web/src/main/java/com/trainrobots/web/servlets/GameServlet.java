@@ -26,6 +26,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
+import com.trainrobots.web.game.AdminProgress;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
@@ -199,7 +206,12 @@ public class GameServlet extends HttpServlet {
 		// Score.
 		out.println("<p id='play'>");
 		if (admin) {
-			out.println("Admin");
+			AdminProgress progress = dataService.getAdminProgress(context);
+			out.println("<span class='positive'>Admin</span>&nbsp;&nbsp;&nbsp;Gold "
+					+ progress.goldRated
+					+ "&nbsp;&nbsp;&nbsp;Marked "
+					+ progress.marked
+					+ " / " + progress.total);
 		} else {
 			out.println("<span class='positive'>Round " + user.round
 					+ "</span>&nbsp;&nbsp;&nbsp;" + user.score + " points");
@@ -246,8 +258,25 @@ public class GameServlet extends HttpServlet {
 			out.println("</div>");
 		}
 
-		// Command.
+		// Admin info.
 		Scene scene = user.scene;
+		if (admin) {
+
+			DateTime now = new DateTime(DateTimeZone.UTC);
+			PeriodFormatter pf = new PeriodFormatterBuilder().appendDays()
+					.appendSuffix(" day", " days").appendSeparator(", ")
+					.appendHours().appendSuffix(" hour", " hours")
+					.appendSeparator(", ").appendMinutes()
+					.appendSuffix(" minute", " minutes").appendSeparator(", ")
+					.appendSeconds().appendSuffix(" second", " seconds")
+					.toFormatter();
+
+			Period p = new Period(scene.timeUtc, now);
+			out.println("<p class='info'>" + scene.gameName + " ("
+					+ scene.email + "). " + pf.print(p) + " ago.</p>");
+		}
+
+		// Command.
 		if (!addCommand) {
 			out.println("<p id='command'>" + scene.command + "</p>");
 		}

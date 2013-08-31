@@ -17,15 +17,8 @@
 
 package com.trainrobots.web.game;
 
-import org.joda.time.DateTime;
-
-public class MarkedCommand {
-	public int sceneNumber;
-	public String command;
-	public int commandMark;
-	public int userId;
-	public int round;
-	public DateTime timeUtc;
-	public String email;
-	public String gameName;
+public class AdminProgress {
+	public int goldRated;
+	public int marked;
+	public int total;
 }

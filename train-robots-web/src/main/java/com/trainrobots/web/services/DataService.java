@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.trainrobots.web.WebException;
+import com.trainrobots.web.game.AdminProgress;
 import com.trainrobots.web.game.MarkedCommand;
 import com.trainrobots.web.game.ResetToken;
 import com.trainrobots.web.game.User;
@@ -248,14 +249,6 @@ public class DataService {
 		}
 	}
 
-	private static DateTime getUtc(ResultSet resultSet, int columnIndex)
-			throws SQLException {
-		DateTime x = new DateTime(resultSet.getTimestamp(columnIndex));
-		return new DateTime(x.getYear(), x.getMonthOfYear(), x.getDayOfMonth(),
-				x.getHourOfDay(), x.getMinuteOfHour(), x.getSecondOfMinute(),
-				x.getMillisOfSecond(), DateTimeZone.UTC);
-	}
-
 	public void addRound(ServletContext context, int userId, int round,
 			int score, int potential, int sceneNumber, int expectedOption,
 			int selectedOption, String ipAddress, String command,
@@ -353,6 +346,9 @@ public class DataService {
 				command.round = resultSet.getInt(2);
 				command.sceneNumber = resultSet.getInt(3);
 				command.command = resultSet.getString(4);
+				command.timeUtc = getUtc(resultSet, 5);
+				command.email = resultSet.getString(6);
+				command.gameName = resultSet.getString(7);
 			}
 
 			// Close connection.
@@ -362,6 +358,41 @@ public class DataService {
 
 			// Return command.
 			return command;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public AdminProgress getAdminProgress(ServletContext context) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_admin_progress()}");
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			AdminProgress progress = null;
+			if (resultSet.next()) {
+				progress = new AdminProgress();
+				progress.goldRated = resultSet.getInt(1);
+				progress.marked = resultSet.getInt(2);
+				progress.total = resultSet.getInt(3);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return progress.
+			return progress;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);
@@ -393,5 +424,13 @@ public class DataService {
 		} catch (SQLException exception) {
 			throw new WebException(exception);
 		}
+	}
+
+	private static DateTime getUtc(ResultSet resultSet, int columnIndex)
+			throws SQLException {
+		DateTime x = new DateTime(resultSet.getTimestamp(columnIndex));
+		return new DateTime(x.getYear(), x.getMonthOfYear(), x.getDayOfMonth(),
+				x.getHourOfDay(), x.getMinuteOfHour(), x.getSecondOfMinute(),
+				x.getMillisOfSecond(), DateTimeZone.UTC);
 	}
 }

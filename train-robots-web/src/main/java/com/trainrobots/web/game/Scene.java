@@ -17,6 +17,8 @@
 
 package com.trainrobots.web.game;
 
+import org.joda.time.DateTime;
+
 public class Scene {
 	public int sceneNumber;
 	public int expectedOption;
@@ -27,4 +29,7 @@ public class Scene {
 	public String command;
 	public int rateUserId;
 	public int rateRound;
+	public DateTime timeUtc;
+	public String email;
+	public String gameName;
 }

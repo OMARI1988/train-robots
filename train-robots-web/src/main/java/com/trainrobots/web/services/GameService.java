@@ -123,6 +123,9 @@ public class GameService {
 		scene.expectedOption = command.commandMark;
 		scene.rateUserId = command.userId;
 		scene.rateRound = command.round;
+		scene.timeUtc = command.timeUtc;
+		scene.email = command.email;
+		scene.gameName = command.gameName;
 		return scene;
 	}
 }
