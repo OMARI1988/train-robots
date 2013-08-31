@@ -302,18 +302,14 @@ public class GameServlet extends HttpServlet {
 		out.println("</form>");
 
 		// Hints.
-		out.println("<p id='hints'>Hints</p>");
-		out.println("<p class='tip'>");
-		out.println("Give directions from the perspective of the robot. Left and right should be used from the robots point of view, not from your point of view.");
-		out.println("Back means closer to the robot's pedestal. Forward means away from the robot's pedestal.");
-		out.println("</p>");
-		out.println("<p class='tip'>");
-		out.println("Try not to confuse the before and after images. The right image is the final image we want to get to.");
-		out.println("</p>");
-		out.println("<p class='tip'>");
-		out.println("Don't use map directions (north, east, south, west) and don't use grid co-ordinates (A3, B5). Instead, explain the destination location relative to surrounding blocks. Be as specific as possible. Imagine you are explaining the command to your friend over the telephone.");
-		out.println("</p>");
-
+		out.println("<p id='hints'>Robot's point of view</p>");
+		out.println("<table id='hintTable' cellspacing='0' cellpadding='0'>");
+		out.println("<tr>");
+		out.println("<td><img src='/images/layout.png' width='280' height='180'/></td>");
+		out.println("<td class='tip'>Commands are from the <span class='positive'>robot's point of view</span>. Forward means away from the robot. Don't use map directions (north, east, south, west). Instead, explain locations relative to surrounding blocks and edges.<br/><br/>Be as specific as possible and avoid spelling or grammar mistakes.<br/><br/>Don't make the common mistake of confusing the before and after images. Look at the <span class='positive'>before</span> image <span class='positive'>first</span> and then the <span class='positive'>after</span> image <span class='positive'>last</span>.</td>");
+		out.println("</tr>");
+		out.println("</table>");
+		
 		// Links.
 		out.println("<table class='links' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
@@ -381,11 +377,12 @@ public class GameServlet extends HttpServlet {
 		out.println("font-size: 12pt;");
 		out.println("line-height: 16pt;");
 		out.println("}");
-		out.println("p.tip {");
+		out.println("td.tip {");
 		out.println("color: rgb(200, 200, 200);");
 		out.println("font-size: 12pt;");
 		out.println("line-height: 16pt;");
-		out.println("width: 700px;");
+		out.println("vertical-align: top;");
+		out.println("padding-left: 20px;");
 		out.println("}");
 		out.println("table#questions {");
 		out.println("color: rgb(200, 200, 200);");
