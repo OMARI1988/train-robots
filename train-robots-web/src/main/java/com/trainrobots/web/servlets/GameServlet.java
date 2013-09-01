@@ -26,12 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
-
+import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.game.AdminProgress;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
@@ -49,11 +44,12 @@ public class GameServlet extends HttpServlet {
 
 	static {
 		OPTIONS = new String[] {
-				"The command uses inappropriate words (spam) and should be removed.",
-				"The command was <span class='negative'>unclear</span> so the robot made the <span class='negative'>wrong</span> move (e.g. before and after images were confused).",
-				"The command was <span class='negative'>unclear</span> but the robot still made the <span class='positive'>right</span> move (e.g. spelling or other mistakes).",
-				"The command was <span class='positive'>clear</span> but the robot got it <span class='negative'>wrong</span>.",
-				"The command was <span class='positive'>clear</span> and the robot got it <span class='positive'>right</span>." };
+				"<span class='negative'>Bad command</span> - Inappropriate words (e.g. 'north'), or spam.",
+				"<span class='negative'>Bad command</span> - Serious spelling or grammar mistakes or too many missing words.",
+				"<span class='negative'>Bad command</span> - Before and after images were confused (wrong way around).",
+				"<span class='negative'>Bad command</span> - Move was described incorrectly (bad directions or not using robot's viewpoint).",
+				"<span class='negative'>Bad command</span> - Command was not specific enough and could be misinterpreted.",
+				"<span class='positive'>Good command</span> - Clearly and accurately describes the move in the images." };
 	}
 
 	@Override
@@ -118,7 +114,7 @@ public class GameServlet extends HttpServlet {
 						response.sendRedirect("/lost.jsp");
 						return;
 					}
-					if (q1 < 1 || q1 > 5) {
+					if (q1 < 1 || q1 > 6) {
 						response.sendRedirect("/lost.jsp");
 						return;
 					}
@@ -210,8 +206,7 @@ public class GameServlet extends HttpServlet {
 			out.println("<span class='positive'>Admin</span>&nbsp;&nbsp;&nbsp;Gold "
 					+ progress.goldRated
 					+ "&nbsp;&nbsp;&nbsp;Marked "
-					+ progress.marked
-					+ " / " + progress.total);
+					+ progress.marked + " / " + progress.total);
 		} else {
 			out.println("<span class='positive'>Round " + user.round
 					+ "</span>&nbsp;&nbsp;&nbsp;" + user.score + " points");
@@ -224,7 +219,7 @@ public class GameServlet extends HttpServlet {
 		if (!addCommand) {
 			writeQuestions(out, user.state);
 			if (user.state == 1) {
-				out.println("<p class='info'>Find the changes between the two pictures below. Which option from 1 to 5 is best?<br />Get the most points by choosing the same answer as other players.</p>");
+				out.println("<p class='info'>Find the changes between the two pictures below. Which option from 1 to 6 is best?<br />Get the most points by choosing the same answer as other players.</p>");
 			} else {
 				if (feedback != null) {
 					out.println("<p class='info'>" + feedback + "</p>");
@@ -261,19 +256,9 @@ public class GameServlet extends HttpServlet {
 		// Admin info.
 		Scene scene = user.scene;
 		if (admin) {
-
-			DateTime now = new DateTime(DateTimeZone.UTC);
-			PeriodFormatter pf = new PeriodFormatterBuilder().appendDays()
-					.appendSuffix(" day", " days").appendSeparator(", ")
-					.appendHours().appendSuffix(" hour", " hours")
-					.appendSeparator(", ").appendMinutes()
-					.appendSuffix(" minute", " minutes").appendSeparator(", ")
-					.appendSeconds().appendSuffix(" second", " seconds")
-					.toFormatter();
-
-			Period p = new Period(scene.timeUtc, now);
 			out.println("<p class='info'>" + scene.gameName + " ("
-					+ scene.email + "). " + pf.print(p) + " ago.</p>");
+					+ scene.email + "). "
+					+ WebUtil.formatElapsedTime(scene.timeUtc) + " ago.</p>");
 		}
 
 		// Command.
@@ -306,10 +291,10 @@ public class GameServlet extends HttpServlet {
 		out.println("<table id='hintTable' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
 		out.println("<td><img src='/images/layout.png' width='280' height='180'/></td>");
-		out.println("<td class='tip'>Commands are from the <span class='positive'>robot's point of view</span>. Forward means away from the robot. Don't use map directions (north, east, south, west). Instead, explain locations relative to surrounding blocks and edges.<br/><br/>Be as specific as possible and avoid spelling or grammar mistakes.<br/><br/>Don't make the common mistake of confusing the before and after images. Look at the <span class='positive'>before</span> image <span class='positive'>first</span> and then the <span class='positive'>after</span> image <span class='positive'>last</span>.</td>");
+		out.println("<td class='tip'>Commands are from the <span class='positive'>robot's point of view</span>. Forward means away from the robot. <span class='negative'>Don't</span> use map directions (north, east, south, west). Instead, explain locations relative to surrounding blocks and edges.<br/><br/>Be as specific as possible and avoid spelling or grammar mistakes.<br/><br/>Don't make the common mistake of confusing the before and after images. Look at the <span class='positive'>before</span> image <span class='positive'>first</span> and then the <span class='positive'>after</span> image <span class='positive'>last</span>.</td>");
 		out.println("</tr>");
 		out.println("</table>");
-		
+
 		// Links.
 		out.println("<table class='links' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
@@ -336,7 +321,7 @@ public class GameServlet extends HttpServlet {
 
 	private void writeQuestions(PrintWriter out, int state) {
 		out.println("<table id='questions' cellspacing='0' cellpadding='0'>");
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 6; i++) {
 			out.println("<tr>");
 			if (state == 1) {
 				out.println("<td>");

@@ -18,6 +18,7 @@
 package com.trainrobots.web.pages;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,13 +27,16 @@ import javax.servlet.jsp.PageContext;
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
+import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
 public class ScenePage {
 
+	private final DataService dataService = ServiceContext.get().dataService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private Scene scene;
+	private List<Scene> commands;
 
 	public void initiate(PageContext pageContext, String id) {
 
@@ -44,15 +48,29 @@ public class ScenePage {
 			loadScene(id);
 		}
 
+		// Response.
+		HttpServletResponse response = (HttpServletResponse) pageContext
+				.getResponse();
+
 		// Redirect.
 		if (scene == null) {
 			try {
-				((HttpServletResponse) pageContext.getResponse())
-						.sendRedirect("/lost.jsp");
+				response.sendRedirect("/lost.jsp");
+				return;
 			} catch (IOException exception) {
 				throw new WebException(exception);
 			}
 		}
+
+		// Disable caching.
+		response.setHeader("Cache-Control",
+				"no-cache, no-store, must-revalidate"); // HTTP 1.1.
+		response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+		response.setDateHeader("Expires", 0); // Proxies.
+
+		// Load commands.
+		commands = dataService.getSceneCommands(
+				pageContext.getServletContext(), scene.sceneNumber);
 	}
 
 	public int getSceneNumber() {
@@ -71,6 +89,32 @@ public class ScenePage {
 			return null;
 		}
 		return getImage(scene.toGroup, scene.toImage);
+	}
+
+	public String getCommands() {
+
+		// No scene?
+		if (scene == null) {
+			return null;
+		}
+
+		// Commands.
+		StringBuilder text = new StringBuilder();
+		for (Scene command : commands) {
+
+			// Text.
+			text.append("<p class='text'>");
+			text.append(command.command);
+			text.append("</p>");
+
+			// Info.
+			text.append("<p class='info'>");
+			text.append(command.gameName);
+			text.append(" (");
+			text.append(command.email);
+			text.append(")</p>");
+		}
+		return text.toString();
 	}
 
 	private void loadScene(String id) {

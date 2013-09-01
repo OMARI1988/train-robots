@@ -61,8 +61,8 @@ p.next a {
 			learning from you. Be natural and imagine its not a robot. Pretend
 			you are telling a friend what to do.</p>
 		<h2>Who gets the top score?</h2>
-		<p>You will be asked to judge other player's commands to see if
-			the robot made the right move. You can also teach the robot new
+		<p>You will be asked to judge other player's commands to help
+			the robot make the right move. You can also teach the robot new
 			commands.</p>
 		<p>Players with the best scores teach the robot how to move blocks
 			using clear and correct commands. These are the best commands for the

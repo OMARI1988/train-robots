@@ -17,18 +17,36 @@
 
 package com.trainrobots.web;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 public class WebUtil {
 
 	private static final String EMAIL_REGEX = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
 
+	private static final PeriodFormatter PERIOD_FORMATTER = new PeriodFormatterBuilder()
+			.appendDays().appendSuffix(" day", " days").appendSeparator(", ")
+			.appendHours().appendSuffix(" hour", " hours")
+			.appendSeparator(", ").appendMinutes()
+			.appendSuffix(" minute", " minutes").appendSeparator(", ")
+			.appendSeconds().appendSuffix(" second", " seconds").toFormatter();
+
 	private WebUtil() {
+	}
+
+	public static String formatElapsedTime(DateTime timeUtc) {
+		DateTime now = new DateTime(DateTimeZone.UTC);
+		return PERIOD_FORMATTER.print(new Period(timeUtc, now));
 	}
 
 	public static boolean isValidEmail(String email) {
 		return email != null && email.length() > 0 && email.length() <= 32
 				&& email.matches(EMAIL_REGEX);
 	}
-	
+
 	public static boolean isValidPassword(String password) {
 		if (password == null) {
 			return false;

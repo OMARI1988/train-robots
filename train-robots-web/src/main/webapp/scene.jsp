@@ -25,6 +25,19 @@ p.move {
 	margin: 0.2em;
 	margin-left: 0.4em;
 }
+
+p.text {
+	margin-top: 2em;
+	margin-bottom: 0.25em;
+	color: white;
+	line-height: 16pt;
+}
+
+p.info {
+	margin: 0;
+	font-size: 11pt;
+	color: rgb(200, 200, 200);
+}
 </style>
 <title>Train Robots - Scene</title>
 </head>
@@ -38,5 +51,9 @@ p.move {
 		<td><img src="/images/right-arrow.png" style="margin-left:20px; margin-right:20px;"/></td>
 		<td class="right-image"><p class="move">After the command</p><img src="<%=scene.getImage2()%>" width="325" height="350"/></td></tr>
 	</table>
+	<p>
+		<img src='/images/layout.png' width='280' height='180'/>
+	</p>
+	<%=scene.getCommands()%>
 </body>
 </html>

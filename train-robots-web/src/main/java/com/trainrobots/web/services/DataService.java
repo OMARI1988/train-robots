@@ -34,6 +34,7 @@ import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.AdminProgress;
 import com.trainrobots.web.game.MarkedCommand;
 import com.trainrobots.web.game.ResetToken;
+import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 
 public class DataService {
@@ -420,6 +421,46 @@ public class DataService {
 			// Close connection.
 			statement.close();
 			connection.close();
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public List<Scene> getSceneCommands(ServletContext context, int sceneNumber) {
+
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_scene_commands(?)}");
+			statement.setInt(1, sceneNumber);
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			List<Scene> commands = new ArrayList<Scene>();
+
+			while (resultSet.next()) {
+				Scene command = new Scene();
+				command.timeUtc = getUtc(resultSet, 1);
+				command.email = resultSet.getString(2);
+				command.gameName = resultSet.getString(3);
+				command.command = resultSet.getString(4);
+				commands.add(command);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return commands.
+			return commands;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);
