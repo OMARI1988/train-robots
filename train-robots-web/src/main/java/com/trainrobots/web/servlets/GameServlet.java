@@ -290,7 +290,7 @@ public class GameServlet extends HttpServlet {
 		out.println("<p id='hints'>Robot's point of view</p>");
 		out.println("<table id='hintTable' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
-		out.println("<td><img src='/images/layout.png' width='280' height='180'/></td>");
+		out.println("<td><img style='vertical-align: top' src='/images/layout.png' width='280' height='180'/></td>");
 		out.println("<td class='tip'>Commands are from the <span class='positive'>robot's point of view</span>. Forward means away from the robot. <span class='negative'>Don't</span> use map directions (north, east, south, west). Instead, explain locations relative to surrounding blocks and edges.<br/><br/>Be as specific as possible and avoid spelling or grammar mistakes.<br/><br/>Don't make the common mistake of confusing the before and after images. Look at the <span class='positive'>before</span> image <span class='positive'>first</span> and then the <span class='positive'>after</span> image <span class='positive'>last</span>.</td>");
 		out.println("</tr>");
 		out.println("</table>");

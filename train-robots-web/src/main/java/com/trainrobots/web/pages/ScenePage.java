@@ -124,7 +124,7 @@ public class ScenePage {
 		try {
 			sceneNumber = Integer.parseInt(id);
 		} catch (NumberFormatException e) {
-			return;
+			sceneNumber = 1 + (int) (Math.random() * 1000);
 		}
 
 		// Load.

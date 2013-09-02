@@ -5,6 +5,23 @@ body {
 	padding: 0;
 }
 
+#menuBar {
+	background: rgb(17, 17, 17);
+	color: white;
+	font-size: 11pt;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+#menuBar a, #menuBar a:visited {
+	text-decoration: none;
+	color: skyblue;
+}
+
+#menuBar a:hover {
+	color: white;
+}
+
 #container {
 	margin: auto;
 	width: 800px;
@@ -19,7 +36,7 @@ body {
 	font-size: 10pt;
 }
 
-.footer a,.footer a:visited {
+.footer a, .footer a:visited {
 	text-decoration: none;
 	color: skyblue;
 }
