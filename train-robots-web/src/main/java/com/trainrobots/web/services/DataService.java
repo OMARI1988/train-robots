@@ -47,6 +47,40 @@ public class DataService {
 		}
 	}
 
+	public User getTopScore(ServletContext context) {
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_top_score()}");
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			User user = null;
+			if (resultSet.next()) {
+				user = new User();
+				user.gameName = resultSet.getString(1);
+				user.score = resultSet.getInt(2);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return user.
+			return user;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
 	public User getUser(ServletContext context, String email) {
 		try {
 

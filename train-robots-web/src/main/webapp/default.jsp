@@ -1,11 +1,16 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
+<%@page import="java.text.NumberFormat"%>
+<%@page import="java.util.Locale"%>
 <%@page import="org.joda.time.DateTime"%>
 <%@page import="org.joda.time.DateTimeConstants"%>
 <%@page import="org.joda.time.DateTimeZone"%>
+<%@page import="com.trainrobots.web.game.User"%>
+<%@page import="com.trainrobots.web.services.ServiceContext"%>
 <%
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
 response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 response.setDateHeader("Expires", 0); // Proxies.
+User top = ServiceContext.get().dataService().getTopScore(getServletContext());
 %>
 <html>
 <head>
@@ -58,7 +63,7 @@ h2 {
 				<p class="player" style="margin-top: 2.8em">today's best player
 					is</p>
 				<p class="player">
-					<b>itkonen513</b> with 17,321 points!
+					<b><%=top.gameName%></b> with <%=NumberFormat.getNumberInstance(Locale.US).format(top.score)%> points!
 				</p></td>
 			<td><img style="margin-left: 3em" src="images/arm-large.png"
 				width="282" height="288" />

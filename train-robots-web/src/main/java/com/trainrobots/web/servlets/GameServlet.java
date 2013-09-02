@@ -49,7 +49,7 @@ public class GameServlet extends HttpServlet {
 				"<span class='negative'>Bad command</span> - Before and after images were confused (wrong way around).",
 				"<span class='negative'>Bad command</span> - Move was described incorrectly (bad directions or not using robot's viewpoint).",
 				"<span class='negative'>Bad command</span> - Command was not specific enough and could be misinterpreted.",
-				"<span class='positive'>Good command</span> - Clearly and accurately describes the move in the images." };
+				"<span class='positive'>Good command</span> - Accurately describes the move (although may not be a linguistic masterpiece)." };
 	}
 
 	@Override
