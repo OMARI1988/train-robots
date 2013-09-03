@@ -24,7 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import com.trainrobots.web.WebException;
+import com.trainrobots.web.game.Options;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
@@ -32,6 +36,9 @@ import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
 public class ScenePage {
+
+	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormat
+			.forPattern("yyyy-MM-dd HH:mm:ss");
 
 	private final DataService dataService = ServiceContext.get().dataService();
 	private final GameService gameService = ServiceContext.get().gameService();
@@ -99,8 +106,18 @@ public class ScenePage {
 		}
 
 		// Commands.
+		int lastOption = -1;
 		StringBuilder text = new StringBuilder();
 		for (Scene command : commands) {
+
+			// Option.
+			int option = command.expectedOption;
+			if (option != lastOption) {
+				text.append("<p class='option'>");
+				text.append(option > 0 ? Options.get(option) : "Unmarked");
+				text.append("</p>");
+				lastOption = option;
+			}
 
 			// Text.
 			text.append("<p class='text'>");
@@ -112,7 +129,9 @@ public class ScenePage {
 			text.append(command.gameName);
 			text.append(" (");
 			text.append(command.email);
-			text.append(")</p>");
+			text.append(") - ");
+			text.append(TIME_FORMAT.print(command.timeUtc));
+			text.append("</p>");
 		}
 		return text.toString();
 	}

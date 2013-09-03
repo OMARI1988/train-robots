@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.game.AdminProgress;
+import com.trainrobots.web.game.Options;
 import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
@@ -40,17 +41,6 @@ public class GameServlet extends HttpServlet {
 	private final UserService userService = ServiceContext.get().userService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private final DataService dataService = ServiceContext.get().dataService();
-	private static final String[] OPTIONS;
-
-	static {
-		OPTIONS = new String[] {
-				"<span class='negative'>Bad command</span> - Inappropriate words (e.g. 'north'), or spam.",
-				"<span class='negative'>Bad command</span> - Serious spelling or grammar mistakes or too many missing words.",
-				"<span class='negative'>Bad command</span> - Before and after images were confused (wrong way around).",
-				"<span class='negative'>Bad command</span> - Move was described incorrectly (bad directions or not using robot's viewpoint).",
-				"<span class='negative'>Bad command</span> - Command was not specific enough and could be misinterpreted.",
-				"<span class='positive'>Good command</span> - Accurately describes the move (although may not be a linguistic masterpiece)." };
-	}
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -290,7 +280,7 @@ public class GameServlet extends HttpServlet {
 		out.println("<p id='hints'>Robot's point of view</p>");
 		out.println("<table id='hintTable' cellspacing='0' cellpadding='0'>");
 		out.println("<tr>");
-		out.println("<td><img style='vertical-align: top' src='/images/layout.png' width='280' height='180'/></td>");
+		out.println("<td style='vertical-align: top'><img src='/images/layout.png' width='280' height='180'/></td>");
 		out.println("<td class='tip'>Commands are from the <span class='positive'>robot's point of view</span>. Forward means away from the robot. <span class='negative'>Don't</span> use map directions (north, east, south, west). Instead, explain locations relative to surrounding blocks and edges.<br/><br/>Be as specific as possible and avoid spelling or grammar mistakes.<br/><br/>Don't make the common mistake of confusing the before and after images. Look at the <span class='positive'>before</span> image <span class='positive'>first</span> and then the <span class='positive'>after</span> image <span class='positive'>last</span>.</td>");
 		out.println("</tr>");
 		out.println("</table>");
@@ -321,19 +311,19 @@ public class GameServlet extends HttpServlet {
 
 	private void writeQuestions(PrintWriter out, int state) {
 		out.println("<table id='questions' cellspacing='0' cellpadding='0'>");
-		for (int i = 0; i < 6; i++) {
+		for (int i = 1; i <= 6; i++) {
 			out.println("<tr>");
 			if (state == 1) {
 				out.println("<td>");
-				out.println("<input name=\"q1\" type=\"radio\" value=\""
-						+ (i + 1) + "\" onclick=\"chooseOption();\"/>");
+				out.println("<input name=\"q1\" type=\"radio\" value=\"" + i
+						+ "\" onclick=\"chooseOption();\"/>");
 				out.println("</td>");
 			}
 			out.println("<td class='num'>");
-			out.println("<span>" + (i + 1) + "</span>");
+			out.println("<span>" + i + "</span>");
 			out.println("</td>");
 			out.println("<td>");
-			out.println(OPTIONS[i]);
+			out.println(Options.get(i));
 			out.println("</td>");
 			out.println("</tr>");
 		}

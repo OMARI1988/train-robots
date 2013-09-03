@@ -26,8 +26,16 @@ p.move {
 	margin-left: 0.4em;
 }
 
+p.option {
+	color: rgb(141, 244, 50);
+	font-size: 12pt;
+	font-weight: bold;
+	margin-top: 2.5em;
+	margin-bottom: 0;
+}
+
 p.text {
-	margin-top: 2em;
+	margin-top: 1.5em;
 	margin-bottom: 0.25em;
 	color: white;
 	line-height: 16pt;

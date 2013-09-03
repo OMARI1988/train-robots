@@ -485,6 +485,7 @@ public class DataService {
 				command.email = resultSet.getString(2);
 				command.gameName = resultSet.getString(3);
 				command.command = resultSet.getString(4);
+				command.expectedOption = resultSet.getInt(5);
 				commands.add(command);
 			}
 
