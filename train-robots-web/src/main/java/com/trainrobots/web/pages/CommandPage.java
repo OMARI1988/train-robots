@@ -18,8 +18,8 @@
 package com.trainrobots.web.pages;
 
 import java.io.IOException;
-import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -34,21 +34,20 @@ import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
-public class ScenePage {
+public class CommandPage {
 
 	private final DataService dataService = ServiceContext.get().dataService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private Scene scene;
-	private List<Command> commands;
 
-	public void initiate(PageContext pageContext, String id) {
+	public void initiate(PageContext pageContext, String u, String r) {
 
 		// Load.
 		HttpServletRequest request = (HttpServletRequest) pageContext
 				.getRequest();
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null && gameService.isAdmin(user.email)) {
-			loadScene(id);
+			loadScene(pageContext.getServletContext(), u, r);
 		}
 
 		// Response.
@@ -70,10 +69,6 @@ public class ScenePage {
 				"no-cache, no-store, must-revalidate"); // HTTP 1.1.
 		response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 		response.setDateHeader("Expires", 0); // Proxies.
-
-		// Load commands.
-		commands = dataService.getSceneCommands(
-				pageContext.getServletContext(), scene.sceneNumber);
 	}
 
 	public int getSceneNumber() {
@@ -94,57 +89,75 @@ public class ScenePage {
 		return getImage(scene.toGroup, scene.toImage);
 	}
 
-	public String getCommands() {
+	public String getDescription() {
 
 		// No scene?
 		if (scene == null) {
 			return null;
 		}
 
-		// Commands.
-		int lastOption = -1;
+		// Option.
 		StringBuilder text = new StringBuilder();
-		for (Command command : commands) {
+		int option = scene.expectedOption;
+		text.append("<p class='option'>");
+		text.append(option > 0 ? Options.get(option) : "Unmarked");
+		text.append("</p>");
 
-			// Option.
-			int option = command.commandMark;
-			if (option != lastOption) {
-				text.append("<p class='option'>");
-				text.append(option > 0 ? Options.get(option) : "Unmarked");
-				text.append("</p>");
-				lastOption = option;
-			}
+		// Text.
+		text.append("<p class='text'>");
+		text.append(scene.command);
+		text.append("</p>");
 
-			// Text.
-			text.append("<p class='text'><a href='command.jsp?u="
-					+ command.userId + "&r=" + command.round + "'>");
-			text.append(command.command);
-			text.append("</a></p>");
-
-			// Info.
-			text.append("<p class='info'>");
-			text.append(command.gameName);
-			text.append(" (");
-			text.append(command.email);
-			text.append(") - ");
-			text.append(WebUtil.formatTime(command.timeUtc));
-			text.append("</p>");
-		}
+		// Info.
+		text.append("<p class='info'>");
+		text.append(scene.gameName);
+		text.append(" (");
+		text.append(scene.email);
+		text.append(") - ");
+		text.append(WebUtil.formatTime(scene.timeUtc));
+		text.append("</p>");
 		return text.toString();
 	}
 
-	private void loadScene(String id) {
+	private void loadScene(ServletContext context, String u, String r) {
 
-		// Parse.
-		int sceneNumber;
+		// User ID.
+		int userId;
 		try {
-			sceneNumber = Integer.parseInt(id);
+			userId = Integer.parseInt(u);
 		} catch (NumberFormatException e) {
-			sceneNumber = 1 + (int) (Math.random() * 1000);
+			return;
+		}
+
+		// Round.
+		int round;
+		try {
+			round = Integer.parseInt(r);
+		} catch (NumberFormatException e) {
+			return;
 		}
 
 		// Load.
-		scene = gameService.getAddCommandScene(sceneNumber);
+		Command command = dataService.getCommand(context, userId, round);
+		if (command == null || command.command == null) {
+			return;
+		}
+
+		// Scene.
+		Scene s = gameService.getAddCommandScene(command.sceneNumber);
+		scene = new Scene();
+		scene.sceneNumber = s.sceneNumber;
+		scene.fromGroup = s.fromGroup;
+		scene.toGroup = s.toGroup;
+		scene.fromImage = s.fromImage;
+		scene.toImage = s.toImage;
+		scene.command = command.command;
+		scene.expectedOption = command.commandMark;
+		scene.rateUserId = userId;
+		scene.rateRound = round;
+		scene.timeUtc = command.timeUtc;
+		scene.email = command.email;
+		scene.gameName = command.gameName;
 	}
 
 	private static String getImage(int groupNumber, int imageNumber) {

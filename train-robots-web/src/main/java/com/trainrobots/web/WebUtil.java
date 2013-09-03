@@ -20,12 +20,17 @@ package com.trainrobots.web;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 public class WebUtil {
 
 	private static final String EMAIL_REGEX = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat
+			.forPattern("yyyy-MM-dd HH:mm:ss");
 
 	private static final PeriodFormatter PERIOD_FORMATTER = new PeriodFormatterBuilder()
 			.appendDays().appendSuffix(" day", " days").appendSeparator(", ")
@@ -35,6 +40,10 @@ public class WebUtil {
 			.appendSeconds().appendSuffix(" second", " seconds").toFormatter();
 
 	private WebUtil() {
+	}
+
+	public static String formatTime(DateTime timeUtc) {
+		return TIME_FORMATTER.print(timeUtc);
 	}
 
 	public static String formatElapsedTime(DateTime timeUtc) {

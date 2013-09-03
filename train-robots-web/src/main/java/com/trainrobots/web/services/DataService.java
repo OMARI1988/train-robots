@@ -32,9 +32,9 @@ import org.joda.time.DateTimeZone;
 
 import com.trainrobots.web.WebException;
 import com.trainrobots.web.game.AdminProgress;
+import com.trainrobots.web.game.Command;
 import com.trainrobots.web.game.MarkedCommand;
 import com.trainrobots.web.game.ResetToken;
-import com.trainrobots.web.game.Scene;
 import com.trainrobots.web.game.User;
 
 public class DataService {
@@ -461,7 +461,8 @@ public class DataService {
 		}
 	}
 
-	public List<Scene> getSceneCommands(ServletContext context, int sceneNumber) {
+	public List<Command> getSceneCommands(ServletContext context,
+			int sceneNumber) {
 
 		try {
 
@@ -477,15 +478,17 @@ public class DataService {
 			// Execute.
 			statement.execute();
 			ResultSet resultSet = statement.getResultSet();
-			List<Scene> commands = new ArrayList<Scene>();
+			List<Command> commands = new ArrayList<Command>();
 
 			while (resultSet.next()) {
-				Scene command = new Scene();
-				command.timeUtc = getUtc(resultSet, 1);
-				command.email = resultSet.getString(2);
-				command.gameName = resultSet.getString(3);
-				command.command = resultSet.getString(4);
-				command.expectedOption = resultSet.getInt(5);
+				Command command = new Command();
+				command.userId = resultSet.getInt(1);
+				command.round = resultSet.getInt(2);
+				command.timeUtc = getUtc(resultSet, 3);
+				command.email = resultSet.getString(4);
+				command.gameName = resultSet.getString(5);
+				command.command = resultSet.getString(6);
+				command.commandMark = resultSet.getInt(7);
 				commands.add(command);
 			}
 
@@ -496,6 +499,48 @@ public class DataService {
 
 			// Return commands.
 			return commands;
+
+		} catch (SQLException exception) {
+			throw new WebException(exception);
+		}
+	}
+
+	public Command getCommand(ServletContext context, int userId, int round) {
+
+		try {
+
+			// Connect.
+			String databaseUrl = context.getInitParameter("database-url");
+			Connection connection = DriverManager.getConnection(databaseUrl);
+
+			// Initiate statement.
+			CallableStatement statement = connection
+					.prepareCall("{call select_command(?, ?)}");
+			statement.setInt(1, userId);
+			statement.setInt(2, round);
+
+			// Execute.
+			statement.execute();
+			ResultSet resultSet = statement.getResultSet();
+			Command command = null;
+
+			while (resultSet.next()) {
+				command = new Command();
+				command.timeUtc = getUtc(resultSet, 1);
+				command.sceneNumber = resultSet.getInt(2);
+				command.email = resultSet.getString(3);
+				command.gameName = resultSet.getString(4);
+				command.command = resultSet.getString(5);
+				command.commandMark = resultSet.getInt(6);
+			}
+
+			// Close connection.
+			resultSet.close();
+			statement.close();
+			connection.close();
+
+			// Return command.
+			return command;
 
 		} catch (SQLException exception) {
 			throw new WebException(exception);

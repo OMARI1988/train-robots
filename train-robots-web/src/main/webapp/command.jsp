@@ -1,8 +1,9 @@
 <%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"%>
-<jsp:useBean id="scene" class="com.trainrobots.web.pages.ScenePage" />
-<%scene.initiate(
+<jsp:useBean id="command" class="com.trainrobots.web.pages.CommandPage" />
+<%command.initiate(
 		pageContext,
-		request.getParameter("id"));%>
+		request.getParameter("u"),
+		request.getParameter("r"));%>
 <html>
 <head>
 <style type="text/css">
@@ -38,14 +39,7 @@ p.text {
 	margin-top: 1.5em;
 	margin-bottom: 0.25em;
 	line-height: 16pt;
-}
-
-p.text a {
 	color: white;
-}
-
-p.text a:hover {
-	color: skyblue;
 }
 
 p.info {
@@ -54,21 +48,21 @@ p.info {
 	color: rgb(200, 200, 200);
 }
 </style>
-<title>Train Robots - Scene</title>
+<title>Train Robots - Command</title>
 </head>
 <body>
 	<h1>train robots</h1>
 	<p class="tagline">help teach robots to become smart as humans</p>
-	<h2>Scene <%=scene.getSceneNumber()%></h2>
+	<h2>Scene <%=command.getSceneNumber()%></h2>
 	<table id='scene' cellspacing='0' cellpadding='2'>
 	<tr>
-		<td class="left-image"><p class="move">Before the command</p><img src="<%=scene.getImage1()%>" width="325" height="350"/></td>
+		<td class="left-image"><p class="move">Before the command</p><img src="<%=command.getImage1()%>" width="325" height="350"/></td>
 		<td><img src="/images/right-arrow.png" style="margin-left:20px; margin-right:20px;"/></td>
-		<td class="right-image"><p class="move">After the command</p><img src="<%=scene.getImage2()%>" width="325" height="350"/></td></tr>
+		<td class="right-image"><p class="move">After the command</p><img src="<%=command.getImage2()%>" width="325" height="350"/></td></tr>
 	</table>
 	<p>
 		<img src='/images/layout.png' width='280' height='180'/>
 	</p>
-	<%=scene.getCommands()%>
+	<%=command.getDescription()%>
 </body>
 </html>
