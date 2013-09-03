@@ -393,12 +393,13 @@ BEGIN
 		r.time_utc,
 		u.email,
 		u.game_name,
-		r.command
+		r.command,
+		r.command_mark
 	FROM round r
 	INNER JOIN user u ON r.user_id = u.user_id
 	WHERE r.scene_number = _scene_number
 	AND r.command IS NOT NULL
-	ORDER BY r.time_utc DESC;
+	ORDER BY r.command_mark DESC, r.time_utc DESC;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -491,4 +492,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-09-02  5:58:31
+-- Dump completed on 2013-09-03  5:58:33
