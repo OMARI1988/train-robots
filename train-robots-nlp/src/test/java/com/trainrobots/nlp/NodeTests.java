@@ -1,0 +1,44 @@
+/* Copyright (C) Kais Dukes.
+ * Email: kais@kaisdukes.com
+ *
+ * This file is part of Train Robots.
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Train Robots. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.trainrobots.nlp;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import com.trainrobots.nlp.syntax.Node;
+
+public class NodeTests {
+
+	@Test
+	public void shouldWriteNode() {
+
+		Node a = new Node("A");
+		a.add("B").add("X");
+		a.add("C").add("Y");
+
+		assertEquals(a.toString(), "(A (B X) (C Y))");
+	}
+	
+	@Test
+	public void shouldReadNode() {
+		
+		String text = "(S (VP Stop) (NP me))";
+		assertEquals(Node.fromString(text).toString(), text);
+	}
+}
