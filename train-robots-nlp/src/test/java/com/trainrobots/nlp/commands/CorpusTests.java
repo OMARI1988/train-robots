@@ -15,12 +15,14 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp;
+package com.trainrobots.nlp.commands;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,7 +32,7 @@ import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.io.FileReader;
 import com.trainrobots.nlp.io.FileWriter;
 import com.trainrobots.nlp.syntax.Chunker;
-import com.trainrobots.nlp.syntax.Node;
+import com.trainrobots.nlp.trees.Node;
 
 import edu.berkeley.nlp.PCFGLA.CoarseToFineMaxRuleParser;
 import edu.berkeley.nlp.PCFGLA.Grammar;
@@ -49,40 +51,37 @@ public class CorpusTests {
 	}
 
 	@Test
-	public void shouldBuildChunks() {
-
-		// Commands.
-		List<Command> commands = Corpus.getCommands();
+	@Ignore
+	public void shouldGetChunks() {
 
 		// File.
 		FileReader reader = new FileReader("../data/parses.txt");
-		FileWriter writer = new FileWriter("c:/temp/chunks.txt");
 
 		// Process.
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		String line;
-		int index = 0;
 		while ((line = reader.readLine()) != null) {
 
 			// Parse tree.
 			Node node = Node.fromString(line);
 
-			// Command.
-			writer.writeLine(commands.get(index).text);
-			writer.writeLine(node.toString());
-
 			// Chunks.
-			for (String chunk : new Chunker().getChunks(node)) {
-				writer.writeLine(chunk);
+			for (Node chunk : new Chunker().getChunks(node)) {
+				if (chunk.hasTag("NP")) {
+					String key = chunk.getText().toLowerCase();
+					Integer count = map.get(key);
+					map.put(key, count == null ? 1 : count + 1);
+				}
 			}
-
-			// Spacing.
-			writer.writeLine();
-			index++;
 		}
 
 		// Close.
 		reader.close();
-		writer.close();
+
+		// Counts.
+		for (Map.Entry<String, Integer> e : map.entrySet()) {
+			System.out.println(e.getKey() + "\t" + e.getValue());
+		}
 	}
 
 	@Test

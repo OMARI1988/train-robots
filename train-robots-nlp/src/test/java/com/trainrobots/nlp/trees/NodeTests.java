@@ -15,35 +15,34 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.syntax;
+package com.trainrobots.nlp.trees;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import com.trainrobots.nlp.trees.Node;
+import org.junit.Test;
 
-public class Chunker {
+public class NodeTests {
 
-	private final List<Node> chunks = new ArrayList<Node>();
+	@Test
+	public void shouldWriteNode1() {
 
-	public List<Node> getChunks(Node node) {
-		visit(node);
-		return chunks;
+		Node a = new Node("A");
+		a.add("B").add("X");
+		a.add("C").add("Y");
+
+		assertEquals(a.toString(), "(A (B X) (C Y))");
 	}
 
-	private void visit(Node node) {
+	@Test
+	public void shouldWriteNode2() {
+		Node a = new Node("B", "X");
+		assertEquals(a.toString(), "(B X)");
+	}
 
-		if (node.allChildrenArePreTerminals()) {
-			chunks.add(node);
-			return;
-		}
+	@Test
+	public void shouldReadNode() {
 
-		for (Node child : node.children) {
-			if (child.isPreTerminal()) {
-				chunks.add(child);
-			} else {
-				visit(child);
-			}
-		}
+		String text = "(S (VP Stop) (NP me))";
+		assertEquals(Node.fromString(text).toString(), text);
 	}
 }

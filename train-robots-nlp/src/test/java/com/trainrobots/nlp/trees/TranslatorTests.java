@@ -15,30 +15,40 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp;
-
-import static org.junit.Assert.assertEquals;
+package com.trainrobots.nlp.trees;
 
 import org.junit.Test;
 
-import com.trainrobots.nlp.syntax.Node;
+import com.trainrobots.nlp.io.FileReader;
+import com.trainrobots.nlp.io.FileWriter;
+import com.trainrobots.nlp.semantics.Translator;
 
-public class NodeTests {
+public class TranslatorTests {
 
 	@Test
-	public void shouldWriteNode() {
+	public void shouldTranslateCorpus() {
 
-		Node a = new Node("A");
-		a.add("B").add("X");
-		a.add("C").add("Y");
+		// Files.
+		FileReader reader = new FileReader("../data/parses.txt");
+		FileWriter writer = new FileWriter("c:/temp/csr.txt");
 
-		assertEquals(a.toString(), "(A (B X) (C Y))");
-	}
-	
-	@Test
-	public void shouldReadNode() {
-		
-		String text = "(S (VP Stop) (NP me))";
-		assertEquals(Node.fromString(text).toString(), text);
+		// Process.
+		String line;
+		while ((line = reader.readLine()) != null) {
+
+			// Parse tree.
+			Node node = Node.fromString(line);
+			writer.writeLine(node.format());
+			writer.writeLine();
+
+			// Translate.
+			writer.writeLine(Translator.translate(node).format());
+			writer.writeLine();
+			writer.writeLine();
+		}
+
+		// Close.
+		reader.close();
+		writer.close();
 	}
 }
