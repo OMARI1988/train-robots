@@ -35,7 +35,8 @@ public class Corpus {
 				String[] items = line.split("\t");
 				Command command = new Command();
 				command.id = Integer.parseInt(items[0]);
-				command.text = items[1];
+				command.sceneNumber = Integer.parseInt(items[1]);
+				command.text = items[2].trim();
 				commands.add(command);
 			}
 			reader.close();

@@ -20,6 +20,8 @@ package com.trainrobots.nlp.trees;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.nlp.commands.Command;
+import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.io.FileReader;
 import com.trainrobots.nlp.io.FileWriter;
 import com.trainrobots.nlp.semantics.Translator;
@@ -36,14 +38,17 @@ public class TranslatorTests {
 
 		// Process.
 		String line;
+		int i = 0;
 		while ((line = reader.readLine()) != null) {
 
-			// Parse tree.
-			Node node = Node.fromString(line);
-			writer.writeLine(node.format());
+			// Command.
+			Command command = Corpus.getCommands().get(i++);
+			writer.writeLine("// Scene " + command.sceneNumber + ": "
+					+ command.text);
 			writer.writeLine();
 
-			// Translate.
+			// Translation.
+			Node node = Node.fromString(line);
 			writer.writeLine(Translator.translate(node).format());
 			writer.writeLine();
 			writer.writeLine();

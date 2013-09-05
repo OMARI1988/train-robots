@@ -20,5 +20,6 @@ package com.trainrobots.nlp.commands;
 public class Command {
 
 	public int id;
+	public int sceneNumber;
 	public String text;
 }
