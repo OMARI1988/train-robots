@@ -79,10 +79,14 @@ public class Node {
 	}
 
 	public Node getSingleChild() {
-		if (children == null || children.size() != 1) {
+		if (!hasSingleChild()) {
 			throw new NlpException("Node does not have a single child: " + this);
 		}
 		return children.get(0);
+	}
+
+	public boolean hasSingleChild() {
+		return children != null && children.size() == 1;
 	}
 
 	public Node add(String tag) {
@@ -141,6 +145,16 @@ public class Node {
 			}
 		}
 		return true;
+	}
+
+	public Node clone() {
+		Node copy = new Node(tag);
+		if (children != null) {
+			for (Node child : children) {
+				copy.add(child.clone());
+			}
+		}
+		return copy;
 	}
 
 	public static Node fromString(String text) {

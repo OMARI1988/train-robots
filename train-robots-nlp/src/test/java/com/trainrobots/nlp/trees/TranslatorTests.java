@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.trees;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.nlp.io.FileReader;
@@ -26,6 +27,7 @@ import com.trainrobots.nlp.semantics.Translator;
 public class TranslatorTests {
 
 	@Test
+	@Ignore
 	public void shouldTranslateCorpus() {
 
 		// Files.

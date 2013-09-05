@@ -23,86 +23,126 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.trainrobots.nlp.trees.Node;
+import com.trainrobots.nlp.trees.NodeMatch;
 
 public class Translator {
 
 	private static final Map<String, String> attributeMap = new TreeMap<String, String>(
 			String.CASE_INSENSITIVE_ORDER);
 
+	private static final List<NodeMatch> matches = new ArrayList<NodeMatch>();
+
 	private Translator() {
 	}
 
 	public static Node translate(Node node) {
 
-		// NP
-		if (node.hasTag("NP")) {
-			return translateNounPhrase(node);
+		// Copy.
+		node = node.clone();
+
+		// Match.
+		for (NodeMatch match : matches) {
+			match.apply(node);
 		}
 
-		// NP
-		if (node.hasTag("VP")) {
-			return translateVerbPhrase(node);
+		// Translate.
+		translate(null, node);
+
+		// Root.
+		if (match(node.tag, "ROOT") && node.hasSingleChild()) {
+			return node.getSingleChild();
 		}
 
-		// PP
-		if (node.hasTag("PP")) {
-			return translatePrepositionalPhrase(node);
-		}
-
-		// Default.
-		return getDefaultTranslation(node);
+		// Node.
+		return node;
 	}
 
-	private static Node getDefaultTranslation(Node node) {
+	private static void translate(Node parent, Node node) {
 
-		// Translate children.
-		Node copy = new Node(node.tag);
-		if (!node.isLeaf()) {
+		// Children first.
+		if (node.children != null) {
 			for (Node child : node.children) {
-				copy.add(translate(child));
+				translate(node, child);
 			}
 		}
 
-		// ROOT --> X
-		if (copy.hasTag("ROOT") && copy.children.size() == 1) {
-			copy = copy.children.get(0);
+		// S
+		if (node.hasSingleChild() && match(node.getSingleChild().tag, "S")) {
+			List<Node> list = node.getSingleChild().children;
+			node.children = new ArrayList<Node>();
+			for (Node child : list) {
+				if (!match(child.tag, ".")) {
+					node.children.add(child);
+				}
+			}
+			return;
 		}
 
-		// S --> X
-		if (copy.hasTag("S") && copy.children.size() == 1) {
-			copy = copy.children.get(0);
+		// X CC X --> Sequence
+		if (node.children != null && node.children.size() == 3
+				&& match(node.children.get(1).tag, "CC")) {
+			node.tag = "Sequence";
+			node.children.remove(1);
+			return;
 		}
 
-		// S --> X+ .
-		if (copy.hasTag("S")
-				&& copy.children.get(copy.children.size() - 1).hasTag(".")) {
-			copy.children.remove(copy.children.size() - 1);
+		// PP --> SpatialRelation
+		if (match(node.tag, "PP")) {
+			node.tag = "SpatialRelation";
+			if (match(node.children.get(0).tag, "IN")
+					|| match(node.children.get(0).tag, "TO")) {
+				node.children.get(0).tag = "Type";
+			}
+			return;
 		}
 
-		// X --> Y CC Y
-		if (copy.children != null && copy.children.size() == 3
-				&& copy.children.get(1).hasTag("CC")) {
-			copy.tag = "Sequence";
-			copy.children.remove(1);
+		// VP --> Command
+		if (match(node.tag, "VP")) {
+			node.tag = "Command";
+
+			String action = null;
+			for (int i = 0; i < node.children.size(); i++) {
+				Node c = node.children.get(i);
+				if (match(c.tag, "VB")) {
+					action = c.getValue().toLowerCase();
+					node.children.remove(i);
+					i--;
+					continue;
+				}
+				if (action != null && match(c.tag, "PRT")) {
+					Node child = c.getSingleChild();
+					if (match(child.tag, "RP")) {
+						action += "-" + child.getValue().toLowerCase();
+					}
+					node.children.remove(i);
+					i--;
+					continue;
+				}
+			}
+			if (action == null) {
+				action = "unknown";
+			}
+			node.children.add(0, new Node("Action", action));
+			return;
 		}
 
-		// Default.
-		return copy;
+		// NP
+		if (match(node.tag, "NP")) {
+			Node replacement = translateBaseNounPhrase(node);
+			if (replacement != null) {
+				int index = parent.children.indexOf(node);
+				parent.children.set(index, replacement);
+				return;
+			}
+		}
 	}
 
-	private static Node translateNounPhrase(Node np) {
+	private static Node translateBaseNounPhrase(Node np) {
 
-		// NP --> NP PP
-		if (np.hasChildren("NP", "PP")) {
-			Node object = translate(np.children.get(0));
-			object.add(translate(np.children.get(1)));
-			return object;
-		}
-
-		// (NP (PRP it))
-		if (np.children.size() == 1) {
+		// (NP (PRP it)) --> (Object @X1)
+		if (np.hasSingleChild()) {
 			Node child = np.children.get(0);
-			if (child.hasTag("PRP")) {
+			if (match(child.tag, "PRP")) {
 				String pronoun = child.getValue();
 				if (pronoun.equals("it")) {
 					return new Node("Object", "@X1");
@@ -112,7 +152,7 @@ public class Translator {
 
 		// Base NP?
 		if (!np.allChildrenArePreTerminals()) {
-			return getDefaultTranslation(np);
+			return null;
 		}
 
 		int size = np.children.size();
@@ -133,7 +173,7 @@ public class Translator {
 
 		// Class.
 		if (objectClass == null) {
-			return getDefaultTranslation(np);
+			return null;
 		}
 		Node object = new Node("Object");
 		object.add("Class", objectClass);
@@ -152,54 +192,6 @@ public class Translator {
 		return object;
 	}
 
-	private static Node translateVerbPhrase(Node vp) {
-
-		// Command.
-		Node command = new Node("Command");
-		for (Node child : vp.children) {
-
-			// VB
-			if (child.hasTag("VB")) {
-				command.add("Action", child.getText().toLowerCase());
-			}
-
-			// NP
-			else if (child.hasTag("NP")) {
-				command.add("Arg", translateNounPhrase(child));
-			}
-
-			// PRT
-			else if (child.hasTag("PRT") && child.getSingleChild().hasTag("RP")
-					&& command.getChild("Action") != null) {
-				String particle = child.getSingleChild().getValue();
-				command.getChild("Action").getSingleChild().tag += "-"
-						+ particle.toLowerCase();
-			}
-
-			// Default.
-			else {
-				command.add(translate(child));
-			}
-		}
-		return command;
-	}
-
-	private static Node translatePrepositionalPhrase(Node pp) {
-
-		// PP --> IN + NP
-		if (pp.hasChildren("IN", "NP")) {
-
-			// Spatial relation.
-			Node spatialRelation = new Node("SpatialRelation");
-			spatialRelation.add("Type", pp.getChild("IN").getText());
-			spatialRelation.add(translateNounPhrase(pp.getChild("NP")));
-			return spatialRelation;
-		}
-
-		// No match.
-		return getDefaultTranslation(pp);
-	}
-
 	private static String getAttributeName(String attribute) {
 
 		// Mapped?
@@ -213,6 +205,23 @@ public class Translator {
 	}
 
 	static {
+
+		matches.add(new NodeMatch("(VP (VBG sitting) ^1)", "(^1)"));
+		matches.add(new NodeMatch("(VP (VBN placed) ^1)", "(^1)"));
+		matches.add(new NodeMatch("(VP (VBN located) ^1)", "(^1)"));
+
+		matches.add(new NodeMatch(
+				"(PP (IN on) (NP (NP (NN top)) (PP (IN of) ^1)))",
+				"(PP (IN above) ^1)"));
+
+		matches.add(new NodeMatch(
+				"(PP (IN on) (NP (NP (DT the) (NN top)) (PP (IN of) ^1)))",
+				"(PP (IN above) ^1)"));
+
+		matches.add(new NodeMatch(
+				"(PP (TO to) (NP (NP (DT the) (NN right)) (PP (IN of) ^1)))",
+				"(PP (IN right-of) ^1)"));
+
 		attributeMap.put("red", "Color");
 		attributeMap.put("yellow", "Color");
 		attributeMap.put("green", "Color");
@@ -225,5 +234,14 @@ public class Translator {
 		attributeMap.put("blue", "Color");
 		attributeMap.put("sky", "Color");
 		attributeMap.put("cyan", "Color");
+
+		attributeMap.put("top", "Direction");
+		attributeMap.put("left", "Direction");
+		attributeMap.put("bottom", "Direction");
+		attributeMap.put("right", "Direction");
+	}
+
+	private static boolean match(String text1, String text2) {
+		return text1.equalsIgnoreCase(text2);
 	}
 }
