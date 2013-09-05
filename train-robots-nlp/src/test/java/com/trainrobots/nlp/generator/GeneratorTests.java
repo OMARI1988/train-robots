@@ -78,6 +78,4 @@ public class GeneratorTests {
 
 		assertEquals(Generator.generate(node), "pick the blue pyramid");
 	}
-
-	// pick the blue pyramid
 }

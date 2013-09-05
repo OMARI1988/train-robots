@@ -168,6 +168,35 @@ public class Node {
 		return text.toString();
 	}
 
+	@Override
+	public boolean equals(Object object) {
+
+		// Compare tags.
+		Node node = (Node) object;
+		if (!node.tag.equals(tag)) {
+			return false;
+		}
+
+		// Children not expected.
+		if (children == null) {
+			return node.children == null;
+		}
+
+		// Children expected.
+		int size = children.size();
+		if (node.children == null || node.children.size() != size) {
+			return false;
+		}
+
+		// Match children.
+		for (int i = 0; i < size; i++) {
+			if (!children.get(i).equals(node.children.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public String format() {
 		StringBuilder text = new StringBuilder();
 		format(text, 0);

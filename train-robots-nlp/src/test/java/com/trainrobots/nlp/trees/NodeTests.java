@@ -40,6 +40,12 @@ public class NodeTests {
 	}
 
 	@Test
+	public void shouldWriteNode3() {
+		Node a = Node.fromString("(A B C)");
+		assertEquals(a.toString(), "(A B C)");
+	}
+
+	@Test
 	public void shouldReadNode() {
 
 		String text = "(S (VP Stop) (NP me))";

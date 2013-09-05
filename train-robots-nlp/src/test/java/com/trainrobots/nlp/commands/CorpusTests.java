@@ -47,7 +47,7 @@ public class CorpusTests {
 
 	@Test
 	public void shouldLoadCorpus() {
-		assertEquals(5795, Corpus.getCommands().size());
+		assertEquals(6226, Corpus.getCommands().size());
 	}
 
 	@Test
