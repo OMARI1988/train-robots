@@ -101,6 +101,8 @@ public class Tagger {
 
 	static {
 
+		add("pick up", "(Action pick-up)");
+
 		add("on top of", "(SpatialRelation above)");
 		add("the top of", "(SpatialRelation above)");
 		add("on to", "(SpatialRelation above)");

@@ -245,9 +245,15 @@ public class Node {
 		} else {
 			text.append('(');
 			text.append(tag);
-			for (Node child : children) {
-				text.append("\r\n");
-				child.format(text, level + 1);
+			for (int i = 0; i < children.size(); i++) {
+				Node child = children.get(i);
+				if (i == 0 && child.isLeaf()) {
+					text.append(' ');
+					text.append(child.tag);
+				} else {
+					text.append("\r\n");
+					child.format(text, level + 1);
+				}
 			}
 			text.append(')');
 		}
