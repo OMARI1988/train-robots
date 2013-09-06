@@ -46,7 +46,7 @@ public class Tagger {
 				for (int j = 0; j < chunk.tokens.length; j++) {
 					input.remove(i);
 				}
-				input.add(i, chunk.node);
+				input.add(i, chunk.node.clone());
 			}
 		}
 

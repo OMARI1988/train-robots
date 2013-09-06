@@ -23,15 +23,20 @@ import com.trainrobots.nlp.trees.Node;
 public class Parser {
 
 	private final PartialList list;
-	private final boolean verbose = false;
+	private final boolean verbose;
 
-	private Parser(String text) {
+	private Parser(boolean verbose, String text) {
+		this.verbose = verbose;
 		Node tokens = Tagger.getTokens(text);
 		list = new PartialList(tokens.children);
 	}
 
 	public static Node parse(String text) {
-		Parser parser = new Parser(text);
+		return parse(false, text);
+	}
+
+	public static Node parse(boolean verbose, String text) {
+		Parser parser = new Parser(verbose, text);
 		parser.parse();
 		return parser.getResult();
 	}
