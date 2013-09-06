@@ -15,30 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.trees;
+package com.trainrobots.nlp.tagging;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.nlp.commands.Command;
 import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.io.FileWriter;
-import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.tokenizer.Tokenizer;
+import com.trainrobots.nlp.trees.Node;
 
-public class LexiconTests {
-
-	@Test
-	public void shouldGetEntries() {
-		assertEquals("(Color red)", Lexicon.get("red").toString());
-		assertNull(Lexicon.get("foo"));
-	}
+public class TaggerTests {
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void shouldTagCorpus() {
 
 		// Files.
@@ -53,17 +42,8 @@ public class LexiconTests {
 			writer.writeLine();
 
 			// Tokens.
-			Node tokens = Tokenizer.getTokens(command.text);
+			Node tokens = Tagger.getTokens(command.text);
 			for (Node node : tokens.children) {
-				if (node.tag.equals("Text")) {
-					String value = node.getValue();
-					Node entry = Lexicon.get(value);
-					if (entry != null) {
-						node = entry;
-					} else {
-						node.tag = "X";
-					}
-				}
 				writer.writeLine(node.toString());
 			}
 			writer.writeLine();

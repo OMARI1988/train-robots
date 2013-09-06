@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.trees;
+package com.trainrobots.nlp.semantics;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +25,7 @@ import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.io.FileReader;
 import com.trainrobots.nlp.io.FileWriter;
 import com.trainrobots.nlp.semantics.Translator;
+import com.trainrobots.nlp.trees.Node;
 
 public class TranslatorTests {
 

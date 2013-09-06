@@ -27,6 +27,9 @@ public class Lexicon {
 
 	private static final Map<String, Node> entries = new HashMap<String, Node>();
 
+	private Lexicon() {
+	}
+
 	public static Node get(String text) {
 		Node node = entries.get(text);
 		return node != null ? node.clone() : null;
