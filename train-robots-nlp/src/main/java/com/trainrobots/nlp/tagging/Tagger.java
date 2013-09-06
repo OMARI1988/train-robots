@@ -100,7 +100,59 @@ public class Tagger {
 	}
 
 	static {
+
 		add("on top of", "(SpatialRelation above)");
+		add("the top of", "(SpatialRelation above)");
+		add("on to", "(SpatialRelation above)");
+
+		add("to right of", "(SpatialRelation right)");
+		add("to left of", "(SpatialRelation left)");
+		add("to the right of", "(SpatialRelation right)");
+		add("to the left of", "(SpatialRelation left)");
+		add("to the position of", "(SpatialRelation at)");
+		add("to the position", "(SpatialRelation at)");
+		add("to your right", "(Direction right)");
+		add("to your left", "(Direction left)");
+		add("to the right", "(SpatialRelation right)");
+		add("to the left", "(SpatialRelation left)");
+		add("to right", "(SpatialRelation right)");
+		add("to left", "(SpatialRelation left)");
+
+		add("on right of", "(SpatialRelation right)");
+		add("on left of", "(SpatialRelation left)");
+		add("on the right of", "(SpatialRelation right)");
+		add("on the left of", "(SpatialRelation left)");
+		add("on the position of", "(SpatialRelation at)");
+		add("on the position", "(SpatialRelation at)");
+		add("on your right", "(Direction right)");
+		add("on your left", "(Direction left)");
+		add("on the right", "(SpatialRelation right)");
+		add("on the left", "(SpatialRelation left)");
+		add("on right", "(SpatialRelation right)");
+		add("on left", "(SpatialRelation left)");
+
+		add("close to", "(SpatialRelation near)");
+		add("closest to", "(SpatialRelation nearest)");
+		add("near to", "(SpatialRelation near)");
+		add("nearest to", "(SpatialRelation nearest)");
+		add("next to", "(SpatialRelation adjacent)");
+		add("furthest from", "(SpatialRelation furthest)");
+		add("furthest away", "(SpatialRelation furthest)");
+		add("furthest away from", "(SpatialRelation furthest)");
+		add("farthest from", "(SpatialRelation furthest)");
+		add("farthest away", "(SpatialRelation furthest)");
+		add("farthest away from", "(SpatialRelation furthest)");
+		add("that is", "(Link that-is)");
+		add("which is", "(Link that-is)");
+		add("sitting", "(Link that-is)");
+		add("placed", "(Link that-is)");
+		add("located", "(Link that-is)");
+		add("situated", "(Link that-is)");
+		add("in between", "(SpatialRelation between)");
+		add("light blue", "(Color cyan)");
+		add("dark blue", "(Color blue)");
+		add("light gray", "(Color white)");
+		add("light grey", "(Color white)");
 	}
 
 	private static void add(String text, String entry) {
