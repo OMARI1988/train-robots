@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.tagging;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.nlp.commands.Command;
@@ -27,7 +28,7 @@ import com.trainrobots.nlp.trees.Node;
 public class TaggerTests {
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void shouldTagCorpus() {
 
 		// Files.
