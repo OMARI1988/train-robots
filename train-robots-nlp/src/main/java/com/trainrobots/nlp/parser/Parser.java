@@ -17,6 +17,8 @@
 
 package com.trainrobots.nlp.parser;
 
+import java.util.List;
+
 import com.trainrobots.nlp.tagging.Tagger;
 import com.trainrobots.nlp.trees.Node;
 
@@ -25,10 +27,9 @@ public class Parser {
 	private final PartialList list;
 	private final boolean verbose;
 
-	private Parser(boolean verbose, String text) {
+	private Parser(boolean verbose, Node sentence) {
 		this.verbose = verbose;
-		Node tokens = Tagger.getTokens(text);
-		list = new PartialList(tokens.children);
+		list = new PartialList(sentence.children);
 	}
 
 	public static Node parse(String text) {
@@ -36,9 +37,15 @@ public class Parser {
 	}
 
 	public static Node parse(boolean verbose, String text) {
-		Parser parser = new Parser(verbose, text);
-		parser.parse();
-		return parser.getResult();
+		Node node = new Node("Sentences");
+		List<Node> sentences = Tagger.getSentences(text);
+		for (Node sentence : sentences) {
+			Parser parser = new Parser(verbose, sentence);
+			parser.parse();
+			Node result = parser.getResult();
+			node.add(result);
+		}
+		return node.hasSingleChild() ? node.getSingleChild() : node;
 	}
 
 	private void parse() {
@@ -95,7 +102,7 @@ public class Parser {
 		}
 
 		// Multiple nodes.
-		Node node = new Node("Partial");
+		Node node = new Node("Sentence");
 		for (Node child : list) {
 			node.add(child);
 		}

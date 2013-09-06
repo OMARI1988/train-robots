@@ -33,13 +33,44 @@ public class Tagger {
 	private Tagger() {
 	}
 
-	public static Node getTokens(String text) {
+	public static List<Node> getSentences(String text) {
 
 		// Tokenize.
-		Node tokens = Tokenizer.getTokens(text);
-		List<Node> input = tokens.children;
+		List<Node> sentences = tokenize(text);
+
+		// Tag.
+		for (Node sentence : sentences) {
+			tag(sentence);
+		}
+
+		// Result.
+		return sentences;
+	}
+
+	private static List<Node> tokenize(String text) {
+
+		ArrayList<Node> sentences = new ArrayList<Node>();
+		Node sentence = null;
+
+		for (Node token : Tokenizer.getTokens(text).children) {
+			if (token.tag.equals("End")) {
+				sentence = null;
+			} else {
+				if (sentence == null) {
+					sentence = new Node("Sentence");
+					sentences.add(sentence);
+				}
+				sentence.add(token);
+			}
+		}
+
+		return sentences;
+	}
+
+	private static void tag(Node sentence) {
 
 		// Chunks.
+		List<Node> input = sentence.children;
 		for (int i = 0; i < input.size(); i++) {
 			Chunk chunk = match(input, i);
 			if (chunk != null) {
@@ -63,9 +94,6 @@ public class Tagger {
 				}
 			}
 		}
-
-		// Result.
-		return tokens;
 	}
 
 	private static Chunk match(List<Node> input, int index) {

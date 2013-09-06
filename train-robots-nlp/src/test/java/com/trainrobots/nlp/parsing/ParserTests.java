@@ -33,7 +33,7 @@ public class ParserTests {
 	@Test
 	public void shouldParse1() {
 
-		Node node = Parser.parse("Pick up the blue pyramid");
+		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
 				Node.fromString("(Action pick-up (Object prism (Color blue) (State definite)))"));

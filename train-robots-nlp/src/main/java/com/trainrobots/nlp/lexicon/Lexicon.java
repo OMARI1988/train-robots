@@ -139,7 +139,7 @@ public class Lexicon {
 		add("nearest", "(SpatialRelation nearest)");
 		add("next", "(SpatialRelation adjacent)");
 		add("not", "(Relation negative)");
-		add("of", "(Relation member)");
+		add("of", "(Relation of)");
 		add("on", "(SpatialRelation on)");
 		add("one", "(Cardinal one)");
 		add("ones", "(Pronoun ones)");
