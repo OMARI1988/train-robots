@@ -35,7 +35,7 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action pick-up) (Object (Description definite) (Color blue) (Type prism)))"));
+				Node.fromString("(Command (Action pick-up) (Object (Description definite) (Attribute blue) (Type prism)))"));
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class ParserTests {
 				.parse("Place the blue block on top of the red block.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type cube)) (SpatialIndicator above (Object (Description definite) (Color red) (Type cube))))"));
+				Node.fromString("(Command (Action place) (Object (Description definite) (Attribute blue) (Type cube)) (SpatialIndicator above (Object (Description definite) (Attribute red) (Type cube))))"));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class ParserTests {
 		Node node = Parser.parse("white blocks");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Color white) (Type cube) (Number plural))"));
+				Node.fromString("(Object (Attribute white) (Type cube) (Number plural))"));
 	}
 
 	@Test
@@ -60,14 +60,14 @@ public class ParserTests {
 		Node node = Parser.parse("the top left corner");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Description definite) (Direction top) (Direction left) (Type corner))"));
+				Node.fromString("(Object (Description definite) (Attribute top) (Attribute left) (Type corner))"));
 	}
 
 	@Test
 	public void shouldParse5() {
 		Node node = Parser.parse("move it");
 		assertEquals(node,
-				Node.fromString("(Command (Action move) (Pronoun it))"));
+				Node.fromString("(Command (Action move) (Anaphor it))"));
 	}
 
 	@Test

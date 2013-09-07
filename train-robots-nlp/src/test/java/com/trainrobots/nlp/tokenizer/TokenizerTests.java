@@ -49,8 +49,8 @@ public class TokenizerTests {
 	@Test
 	public void shouldTokenizeTwoSentences() {
 		assertEquals(
-				Tokenizer.getTokens("A B. C D."),
-				Node.fromString("(Tokens (Text a) (Text b) (End .) (Text c) (Text d) (End .))"));
+				Tokenizer.getTokens("A B. C D!"),
+				Node.fromString("(Tokens (Text a) (Text b) (End .) (Text c) (Text d) (End !))"));
 	}
 
 	@Test

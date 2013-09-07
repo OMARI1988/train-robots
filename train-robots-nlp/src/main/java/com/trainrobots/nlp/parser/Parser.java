@@ -77,13 +77,11 @@ public class Parser {
 		int size = list.size();
 		for (int i = 1; i <= size; i++) {
 
-			Node left2 = list.get(i - 2);
-			Node left = list.get(i - 1);
 			Node node = list.get(i);
 			Node right = list.get(i + 1);
 			Node right2 = list.get(i + 2);
 
-			if (color(node) && object(right)) {
+			if (attribute(node) && object(right)) {
 				return Action.right(i);
 			}
 
@@ -99,7 +97,7 @@ public class Parser {
 				return Action.left(i);
 			}
 
-			if (command(node) && pronoun(right)) {
+			if (command(node) && anaphor(right)) {
 				return Action.left(i);
 			}
 
@@ -117,15 +115,6 @@ public class Parser {
 
 			if (command(node) && conjunction(right) && right2 == null) {
 				return Action.left(i);
-			}
-
-			if (description(left2) && direction(left) && direction(node)
-					&& object(right)) {
-				return Action.right(i);
-			}
-
-			if (description(left) && direction(node) && object(right)) {
-				return Action.right(i);
 			}
 		}
 		return null;
@@ -154,8 +143,8 @@ public class Parser {
 		return node != null && node.tag.equals("Description");
 	}
 
-	private static boolean color(Node node) {
-		return node != null && node.tag.equals("Color");
+	private static boolean attribute(Node node) {
+		return node != null && node.tag.equals("Attribute");
 	}
 
 	private static boolean cardinal(Node node) {
@@ -170,12 +159,8 @@ public class Parser {
 		return node != null && node.tag.equals("SpatialIndicator");
 	}
 
-	private static boolean direction(Node node) {
-		return node != null && node.tag.equals("Direction");
-	}
-
-	private static boolean pronoun(Node node) {
-		return node != null && node.tag.equals("Pronoun");
+	private static boolean anaphor(Node node) {
+		return node != null && node.tag.equals("Anaphor");
 	}
 
 	private static boolean conjunction(Node node) {

@@ -96,6 +96,8 @@ public class Tokenizer {
 		String tag = "Punctuation";
 		switch (ch) {
 		case '.':
+		case '!':
+		case '?':
 			tag = "End";
 			break;
 		case ',':
@@ -120,7 +122,7 @@ public class Tokenizer {
 
 	private static boolean punctuation(char ch) {
 		return ch == '.' || ch == '(' || ch == ')' || ch == '-' || ch == ','
-				|| ch == '/';
+				|| ch == '/' || ch == '!' || ch == '?';
 	}
 
 	private static boolean whitespace(char ch) {

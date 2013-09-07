@@ -18,17 +18,90 @@
 package com.trainrobots.nlp.tagging;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import com.trainrobots.nlp.NlpException;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 import com.trainrobots.nlp.trees.Node;
 
 public class Tagger {
 
-	private static final Map<String, List<Chunk>> chunks = new LinkedHashMap<String, List<Chunk>>();
+	private static final List<Chunk> chunks = new ArrayList<Chunk>();
+
+	static {
+
+		add("pick up", "(Command (Action pick-up))");
+
+		add("to the left bottom corner",
+				"(SpatialIndicator to (Object (Description definite) (Attribute left) (Attribute back) (Type corner)))");
+
+		add("to the top left corner",
+				"(SpatialIndicator to (Object (Description definite) (Attribute top) (Attribute left) (Type corner)))");
+
+		add("the left bottom corner",
+				"(Object (Description definite) (Attribute left) (Attribute back) (Type corner))");
+
+		add("the top left corner",
+				"(Object (Description definite) (Attribute top) (Attribute left) (Type corner))");
+
+		add("right in", "(SpatialIndicator in)");
+
+		add("on top of", "(SpatialIndicator above)");
+		add("the top of", "(SpatialIndicator above)");
+		add("on to", "(SpatialIndicator above)");
+
+		add("the nearest", "(Description definite) (Attribute nearest)");
+		add("the farthest", "(Description definite) (Attribute furthest)");
+		add("the furthest", "(Description definite) (Attribute furthest)");
+
+		add("to right of", "(SpatialIndicator right)");
+		add("to left of", "(SpatialIndicator left)");
+		add("to the right of", "(SpatialIndicator right)");
+		add("to the left of", "(SpatialIndicator left)");
+		add("to the position of", "(SpatialIndicator at)");
+		add("to the position", "(SpatialIndicator at)");
+		add("to your right", "(SpatialIndicator right)");
+		add("to your left", "(SpatialIndicator left)");
+		add("to the right", "(SpatialIndicator right)");
+		add("to the left", "(SpatialIndicator left)");
+		add("to right", "(SpatialIndicator right)");
+		add("to left", "(SpatialIndicator left)");
+
+		add("on right of", "(SpatialIndicator right)");
+		add("on left of", "(SpatialIndicator left)");
+		add("on the right of", "(SpatialIndicator right)");
+		add("on the left of", "(SpatialIndicator left)");
+		add("on the position of", "(SpatialIndicator at)");
+		add("on the position", "(SpatialIndicator at)");
+		add("on your right", "(SpatialIndicator right)");
+		add("on your left", "(SpatialIndicator left)");
+		add("on the right", "(SpatialIndicator right)");
+		add("on the left", "(SpatialIndicator left)");
+		add("on right", "(SpatialIndicator right)");
+		add("on left", "(SpatialIndicator left)");
+
+		add("close to", "(SpatialIndicator near)");
+		add("closest to", "(SpatialIndicator nearest)");
+		add("near to", "(SpatialIndicator near)");
+		add("nearest to", "(SpatialIndicator nearest)");
+		add("next to", "(SpatialIndicator adjacent)");
+		add("furthest from", "(SpatialIndicator furthest)");
+		add("furthest away", "(SpatialIndicator furthest)");
+		add("furthest away from", "(SpatialIndicator furthest)");
+		add("farthest from", "(SpatialIndicator furthest)");
+		add("farthest away", "(SpatialIndicator furthest)");
+		add("farthest away from", "(SpatialIndicator furthest)");
+		add("that is", "(Link that-is)");
+		add("which is", "(Link that-is)");
+		add("in between", "(SpatialIndicator between)");
+		add("light blue", "(Attribute cyan)");
+		add("sky blue", "(Attribute cyan)");
+		add("dark blue", "(Attribute blue)");
+		add("deep blue", "(Attribute blue)");
+		add("light gray", "(Attribute white)");
+		add("light grey", "(Attribute white)");
+	}
 
 	private Tagger() {
 	}
@@ -106,16 +179,9 @@ public class Tagger {
 	}
 
 	private static Chunk match(List<Node> input, int index) {
-		if (!input.get(index).isPreTerminal()) {
-			return null;
-		}
-		String key = input.get(index).getValue();
-		List<Chunk> list = chunks.get(key);
-		if (list != null) {
-			for (Chunk chunk : list) {
-				if (match(input, index, chunk)) {
-					return chunk;
-				}
+		for (Chunk chunk : chunks) {
+			if (match(input, index, chunk)) {
+				return chunk;
 			}
 		}
 		return null;
@@ -139,87 +205,14 @@ public class Tagger {
 		return true;
 	}
 
-	static {
-
-		add("pick up", "(Command (Action pick-up))");
-
-		add("to the left bottom corner",
-				"(SpatialIndicator to) (Object (Description definite) (Direction left) (Direction back) (Type corner))");
-
-		add("right in", "(SpatialIndicator in)");
-
-		add("on top of", "(SpatialIndicator above)");
-		add("the top of", "(SpatialIndicator above)");
-		add("on to", "(SpatialIndicator above)");
-
-		add("the nearest", "(Description definite) (Relation nearest)");
-		add("the farthest", "(Description definite) (Relation furthest)");
-		add("the furthest", "(Description definite) (Relation furthest)");
-
-		add("to right of", "(SpatialIndicator right)");
-		add("to left of", "(SpatialIndicator left)");
-		add("to the right of", "(SpatialIndicator right)");
-		add("to the left of", "(SpatialIndicator left)");
-		add("to the position of", "(SpatialIndicator at)");
-		add("to the position", "(SpatialIndicator at)");
-		add("to your right", "(Direction right)");
-		add("to your left", "(Direction left)");
-		add("to the right", "(SpatialIndicator right)");
-		add("to the left", "(SpatialIndicator left)");
-		add("to right", "(SpatialIndicator right)");
-		add("to left", "(SpatialIndicator left)");
-
-		add("on right of", "(SpatialIndicator right)");
-		add("on left of", "(SpatialIndicator left)");
-		add("on the right of", "(SpatialIndicator right)");
-		add("on the left of", "(SpatialIndicator left)");
-		add("on the position of", "(SpatialIndicator at)");
-		add("on the position", "(SpatialIndicator at)");
-		add("on your right", "(Direction right)");
-		add("on your left", "(Direction left)");
-		add("on the right", "(SpatialIndicator right)");
-		add("on the left", "(SpatialIndicator left)");
-		add("on right", "(SpatialIndicator right)");
-		add("on left", "(SpatialIndicator left)");
-
-		add("close to", "(SpatialIndicator near)");
-		add("closest to", "(SpatialIndicator nearest)");
-		add("near to", "(SpatialIndicator near)");
-		add("nearest to", "(SpatialIndicator nearest)");
-		add("next to", "(SpatialIndicator adjacent)");
-		add("furthest from", "(SpatialIndicator furthest)");
-		add("furthest away", "(SpatialIndicator furthest)");
-		add("furthest away from", "(SpatialIndicator furthest)");
-		add("farthest from", "(SpatialIndicator furthest)");
-		add("farthest away", "(SpatialIndicator furthest)");
-		add("farthest away from", "(SpatialIndicator furthest)");
-		add("that is", "(Link that-is)");
-		add("which is", "(Link that-is)");
-		add("sitting", "(Link that-is)");
-		add("placed", "(Link that-is)");
-		add("located", "(Link that-is)");
-		add("situated", "(Link that-is)");
-		add("in between", "(SpatialIndicator between)");
-		add("light blue", "(Color cyan)");
-		add("sky blue", "(Color cyan)");
-		add("dark blue", "(Color blue)");
-		add("deep blue", "(Color blue)");
-		add("light gray", "(Color white)");
-		add("light grey", "(Color white)");
-	}
-
 	private static void add(String text, String entry) {
-
 		Chunk chunk = new Chunk();
 		chunk.tokens = text.split(" ");
-		chunk.nodes = Node.listFromString(entry);
-
-		String key = chunk.tokens[0];
-		List<Chunk> list = chunks.get(key);
-		if (list == null) {
-			list = new ArrayList<Chunk>();
-			chunks.put(key, list);
+		if (chunk.tokens.length == 1) {
+			throw new NlpException(
+					"Single token chunk should be moved to the lexicon.");
 		}
-		list.add(chunk);
+		chunk.nodes = Node.listFromString(entry);
+		chunks.add(chunk);
 	}
 }
