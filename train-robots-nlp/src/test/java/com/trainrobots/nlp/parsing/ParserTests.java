@@ -71,6 +71,22 @@ public class ParserTests {
 	}
 
 	@Test
+	public void shouldParse6() {
+		Node node = Parser.parse("the 3rd tile");
+		assertEquals(
+				node,
+				Node.fromString("(Object (Description definite) (Ordinal 3) (Type tile))"));
+	}
+
+	@Test
+	public void shouldParse7() {
+		Node node = Parser.parse("the yellow and purple blocks");
+		assertEquals(
+				node,
+				Node.fromString("(Object (Description definite) (Attribute yellow (Conjunction and (Attribute magenta))) (Type cube) (Number plural))"));
+	}
+
+	@Test
 	@Ignore
 	public void shouldParseCorpus() {
 

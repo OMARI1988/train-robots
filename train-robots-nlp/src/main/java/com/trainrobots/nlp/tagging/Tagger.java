@@ -31,6 +31,9 @@ public class Tagger {
 
 	static {
 
+		add("left hand", "(Attribute left)");
+		add("right hand", "(Attribute right)");
+
 		add("pick up", "(Command (Action pick-up))");
 
 		add("to the left bottom corner",
@@ -54,6 +57,8 @@ public class Tagger {
 		add("the nearest", "(Description definite) (Attribute nearest)");
 		add("the farthest", "(Description definite) (Attribute furthest)");
 		add("the furthest", "(Description definite) (Attribute furthest)");
+
+		add("in front of", "(SpatialIndicator front)");
 
 		add("to right of", "(SpatialIndicator right)");
 		add("to left of", "(SpatialIndicator left)");

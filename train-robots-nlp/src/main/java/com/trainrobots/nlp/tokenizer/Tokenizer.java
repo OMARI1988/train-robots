@@ -59,7 +59,7 @@ public class Tokenizer {
 
 		// Digits.
 		if (digit(ch)) {
-			return readCardinal();
+			return readNumber();
 		}
 
 		// Text.
@@ -75,13 +75,41 @@ public class Tokenizer {
 		return new Node("Text", text);
 	}
 
-	private Node readCardinal() {
+	private Node readNumber() {
+
+		// Number.
 		int index = position;
 		while (!end() && digit(peek())) {
 			position++;
 		}
 		String text = this.text.substring(index, position);
+
+		// Suffix?
+		if (hasOrdinalSuffix(text)) {
+			position += 2;
+			return new Node("Ordinal", text);
+		}
+
+		// Cardinal.
 		return new Node("Cardinal", text);
+	}
+
+	private boolean hasOrdinalSuffix(String text) {
+		if (!canRead(2)) {
+			return false;
+		}
+		char ch = peek();
+		char ch2 = peek(2);
+		if (text.equals("1")) {
+			return ch == 's' && ch2 == 't';
+		}
+		if (text.equals("2")) {
+			return ch == 'n' && ch2 == 'd';
+		}
+		if (text.equals("3")) {
+			return ch == 'r' && ch2 == 'd';
+		}
+		return ch == 't' && ch2 == 'h';
 	}
 
 	private Node readWhitespace() {
@@ -135,6 +163,14 @@ public class Tokenizer {
 
 	private char peek() {
 		return text.charAt(position);
+	}
+
+	private char peek(int count) {
+		return text.charAt(position + count - 1);
+	}
+
+	public boolean canRead(int count) {
+		return position + count <= text.length();
 	}
 
 	private boolean end() {

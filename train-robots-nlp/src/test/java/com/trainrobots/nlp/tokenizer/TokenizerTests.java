@@ -75,6 +75,13 @@ public class TokenizerTests {
 	}
 
 	@Test
+	public void shouldTokenizeSuffixedOrdinals() {
+		assertEquals(
+				Tokenizer.getTokens("1st 2nd 3rd 4th 5th 6th"),
+				Node.fromString("(Tokens (Ordinal 1) (Ordinal 2) (Ordinal 3) (Ordinal 4) (Ordinal 5) (Ordinal 6))"));
+	}
+
+	@Test
 	public void shouldForceLowerCase() {
 		assertEquals(
 				Tokenizer.getTokens("4 PLUS 26"),

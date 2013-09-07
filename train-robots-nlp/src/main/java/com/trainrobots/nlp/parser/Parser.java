@@ -81,7 +81,15 @@ public class Parser {
 			Node right = list.get(i + 1);
 			Node right2 = list.get(i + 2);
 
-			if (attribute(node) && object(right)) {
+			// Attribute Conj Attribute 
+			if (conjunction(node) && attribute(right)) {
+				return Action.left(i);
+			}
+			if (attribute(node) && conjunction(right) && !right.isPreTerminal()) {
+				return Action.left(i);
+			}
+			
+			if ((attribute(node) || ordinal(node)) && object(right)) {
 				return Action.right(i);
 			}
 
@@ -106,14 +114,6 @@ public class Parser {
 			}
 
 			if (command(node) && spatialIndicator(right) && right2 == null) {
-				return Action.left(i);
-			}
-
-			if (conjunction(node) && command(right) && right2 == null) {
-				return Action.left(i);
-			}
-
-			if (command(node) && conjunction(right) && right2 == null) {
 				return Action.left(i);
 			}
 		}
@@ -145,6 +145,10 @@ public class Parser {
 
 	private static boolean attribute(Node node) {
 		return node != null && node.tag.equals("Attribute");
+	}
+
+	private static boolean ordinal(Node node) {
+		return node != null && node.tag.equals("Ordinal");
 	}
 
 	private static boolean cardinal(Node node) {

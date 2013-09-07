@@ -74,6 +74,7 @@ public class Lexicon {
 		add("cells", "(Object (Type tile) (Numer plural))");
 		add("center", "(Object (Type center))");
 		add("centre", "(Object (Type center))");
+		add("central", "(Attribute central)");
 		add("close", "(SpatialIndicator near)");
 		add("closer", "(SpatialIndicator near)");
 		add("closest", "(SpatialIndicator nearest)");
@@ -224,6 +225,8 @@ public class Lexicon {
 		add("third", "(Ordinal 3)");
 		add("this", "(Anaphor this)");
 		add("three", "(Cardinal 3)");
+		add("tile", "(Object (Type tile))");
+		add("tiles", "(Object (Type tile) (Number plural))");
 		add("to", "(SpatialIndicator to)");
 		add("top", "(Attribute top)");
 		add("toward", "(SpatialIndicator toward)");
@@ -253,7 +256,7 @@ public class Lexicon {
 		}
 		Node node = Node.fromString(entry);
 		if (node.hasTag("Object") && node.getChild("Type") == null) {
-			throw new NlpException("INVALID: " + text);
+			throw new NlpException("Object type not specified: " + text);
 		}
 		entries.put(text, node);
 	}
