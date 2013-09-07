@@ -33,6 +33,7 @@ public class Tagger {
 
 		add("left hand", "(Attribute left)");
 		add("right hand", "(Attribute right)");
+		add("far right", "(Attribute far) (Attribute right)");
 
 		add("pick up", "(Command (Action pick-up))");
 
