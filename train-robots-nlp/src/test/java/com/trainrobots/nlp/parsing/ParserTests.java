@@ -78,11 +78,11 @@ public class ParserTests {
 		FileWriter writer = new FileWriter("c:/temp/parse.txt");
 
 		// Process.
+		int i = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// Command.
-			writer.writeLine("// Scene " + command.sceneNumber + ": "
-					+ command.text);
+			writer.writeLine("// " + (++i) + ": " + command.text);
 			writer.writeLine();
 
 			// Parse.
