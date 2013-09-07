@@ -161,6 +161,10 @@ public class Node {
 		return new NodeReader(text).read();
 	}
 
+	public static List<Node> listFromString(String text) {
+		return new NodeReader(text).readList();
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();

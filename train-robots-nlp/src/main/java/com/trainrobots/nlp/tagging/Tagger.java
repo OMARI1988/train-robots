@@ -83,16 +83,23 @@ public class Tagger {
 
 		// Lexicon.
 		for (int i = 0; i < input.size(); i++) {
+
+			// Match text.
 			Node node = input.get(i);
-			if (node.tag.equals("Text")) {
-				String value = node.getValue();
-				Node entry = Lexicon.get(value);
-				if (entry != null) {
-					input.set(i, entry);
-				} else {
-					node.tag = "X";
-				}
+			if (!node.tag.equals("Text")) {
+				continue;
 			}
+
+			// Lexicon.
+			String value = node.getValue();
+			Node match = Lexicon.get(value);
+			if (match == null) {
+				node.tag = "X";
+				continue;
+			}
+
+			// Apply.
+			input.set(i, match);
 		}
 	}
 
@@ -130,6 +137,8 @@ public class Tagger {
 	static {
 
 		add("pick up", "(Action pick-up)");
+
+		add("right in", "(SpatialRelation in)");
 
 		add("on top of", "(SpatialRelation above)");
 		add("the top of", "(SpatialRelation above)");

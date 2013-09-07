@@ -31,7 +31,7 @@ public class PartialListTests {
 
 		// List.
 		Node a = new Node("Action", "pick-up");
-		Node b = new Node("State", "definite");
+		Node b = new Node("Description", "definite");
 		Node c = new Node("Color", "blue");
 		Node d = new Node("Object", "prism");
 		PartialList list = new PartialList(a, b, c, d);
@@ -39,7 +39,7 @@ public class PartialListTests {
 		// Verify.
 		assertEquals(list.size(), 4);
 		assertEquals(list.toString(),
-				"(Action pick-up) (State definite) (Color blue) (Object prism)");
+				"(Action pick-up) (Description definite) (Color blue) (Object prism)");
 		assertEquals(list.get(1), a);
 		assertEquals(list.get(2), b);
 		assertEquals(list.get(3), c);
@@ -58,13 +58,13 @@ public class PartialListTests {
 		assertEquals(list.size(), 2);
 		assertEquals(list.get(1), a);
 		assertEquals(list.get(2),
-				Node.fromString("(Object prism (Color blue) (State definite))"));
+				Node.fromString("(Object prism (Color blue) (Description definite))"));
 
 		// Left.
 		list.left(1);
 		assertEquals(list.size(), 1);
 		assertEquals(
 				list.get(1),
-				Node.fromString("(Action pick-up (Object prism (Color blue) (State definite)))"));
+				Node.fromString("(Action pick-up (Object prism (Color blue) (Description definite)))"));
 	}
 }

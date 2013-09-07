@@ -78,16 +78,25 @@ public class Parser {
 
 			Node node = list.get(i);
 			Node right = list.get(i + 1);
+			Node right2 = list.get(i + 2);
 
 			if (color(node) && object(right)) {
 				return Action.right(i);
 			}
 
-			if (state(node) && object(right)) {
+			if (description(node) && object(right)) {
 				return Action.right(i);
 			}
 
 			if (action(node) && object(right)) {
+				return Action.left(i);
+			}
+
+			if (spatialRelation(node) && object(right)) {
+				return Action.left(i);
+			}
+
+			if (action(node) && spatialRelation(right) && right2 == null) {
 				return Action.left(i);
 			}
 		}
@@ -113,8 +122,8 @@ public class Parser {
 		return node != null && node.tag.equals("Action");
 	}
 
-	private static boolean state(Node node) {
-		return node != null && node.tag.equals("State");
+	private static boolean description(Node node) {
+		return node != null && node.tag.equals("Description");
 	}
 
 	private static boolean color(Node node) {
@@ -123,5 +132,9 @@ public class Parser {
 
 	private static boolean object(Node node) {
 		return node != null && node.tag.equals("Object");
+	}
+
+	private static boolean spatialRelation(Node node) {
+		return node != null && node.tag.equals("SpatialRelation");
 	}
 }

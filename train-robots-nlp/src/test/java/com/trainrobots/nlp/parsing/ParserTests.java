@@ -32,11 +32,26 @@ public class ParserTests {
 
 	@Test
 	public void shouldParse1() {
-
 		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
-				Node.fromString("(Action pick-up (Object prism (Color blue) (State definite)))"));
+				Node.fromString("(Action pick-up (Object prism (Color blue) (Description definite)))"));
+	}
+
+	@Test
+	public void shouldParse2() {
+		Node node = Parser
+				.parse("Place the blue block on top of the red block.");
+		assertEquals(
+				node,
+				Node.fromString("(Action place (Object block (Color blue) (Description definite)) (SpatialRelation above (Object block (Color red) (Description definite))))"));
+	}
+
+	@Test
+	public void shouldParse3() {
+		Node node = Parser.parse("white blocks");
+		assertEquals(node,
+				Node.fromString("(Object block (Number plural) (Color white))"));
 	}
 
 	@Test

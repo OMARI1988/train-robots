@@ -19,6 +19,8 @@ package com.trainrobots.nlp.trees;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 public class NodeTests {
@@ -47,8 +49,15 @@ public class NodeTests {
 
 	@Test
 	public void shouldReadNode() {
-
 		String text = "(S (VP Stop) (NP me))";
 		assertEquals(Node.fromString(text).toString(), text);
+	}
+
+	@Test
+	public void shouldReadList() {
+		List<Node> list = Node.listFromString("(VP Stop) (NP me)");
+		assertEquals(list.size(), 2);
+		assertEquals(list.get(0), new Node("VP", "Stop"));
+		assertEquals(list.get(1), new Node("NP", "me"));
 	}
 }

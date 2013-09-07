@@ -18,6 +18,7 @@
 package com.trainrobots.nlp.trees;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.trainrobots.nlp.NlpException;
 
@@ -35,6 +36,27 @@ public class NodeReader {
 			return readNonLeaf();
 		}
 		return new Node(readTag());
+	}
+
+	public List<Node> readList() {
+
+		// Nodes.
+		List<Node> nodes = new ArrayList<Node>();
+		int size = text.length();
+		while (position < size) {
+
+			// Space.
+			if (position > 0) {
+				if (peek() != ' ') {
+					throw new NlpException("Expected space.");
+				}
+				next();
+			}
+
+			// Node.
+			nodes.add(read());
+		}
+		return nodes;
 	}
 
 	private Node readNonLeaf() {
