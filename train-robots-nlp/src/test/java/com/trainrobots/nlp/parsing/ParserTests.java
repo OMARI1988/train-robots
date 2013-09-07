@@ -44,7 +44,7 @@ public class ParserTests {
 				.parse("Place the blue block on top of the red block.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type block)) (SpatialRelation above (Object (Description definite) (Color red) (Type block))))"));
+				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type cube)) (SpatialRelation above (Object (Description definite) (Color red) (Type cube))))"));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class ParserTests {
 		Node node = Parser.parse("white blocks");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Color white) (Type block) (Number plural))"));
+				Node.fromString("(Object (Color white) (Type cube) (Number plural))"));
 	}
 
 	@Test
