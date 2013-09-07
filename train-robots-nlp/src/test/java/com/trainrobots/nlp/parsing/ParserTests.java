@@ -87,6 +87,14 @@ public class ParserTests {
 	}
 
 	@Test
+	public void shouldParse8() {
+		Node node = Parser.parse("Pick up and hold the yellow pyramid");
+		assertEquals(
+				node,
+				Node.fromString("(Command (Action pick-up) (Conjunction and (Command (Action hold) (Object (Description definite) (Attribute yellow) (Type prism)))))"));
+	}
+
+	@Test
 	@Ignore
 	public void shouldParseCorpus() {
 
