@@ -51,7 +51,7 @@ public class Parser {
 	private void parse() {
 
 		if (verbose) {
-			System.out.println("LIST: " + list);
+			System.out.println(list.format());
 			System.out.println();
 		}
 
@@ -66,7 +66,8 @@ public class Parser {
 
 			if (verbose) {
 				System.out.println(action);
-				System.out.println("LIST: " + list);
+				System.out.println();
+				System.out.println(list.format());
 				System.out.println();
 			}
 		}
@@ -76,6 +77,8 @@ public class Parser {
 		int size = list.size();
 		for (int i = 1; i <= size; i++) {
 
+			Node left2 = list.get(i - 2);
+			Node left = list.get(i - 1);
 			Node node = list.get(i);
 			Node right = list.get(i + 1);
 			Node right2 = list.get(i + 2);
@@ -84,11 +87,19 @@ public class Parser {
 				return Action.right(i);
 			}
 
+			if (cardinal(node) && object(right)) {
+				return Action.right(i);
+			}
+
 			if (description(node) && object(right)) {
 				return Action.right(i);
 			}
 
-			if (action(node) && object(right)) {
+			if (command(node) && object(right)) {
+				return Action.left(i);
+			}
+
+			if (command(node) && pronoun(right)) {
 				return Action.left(i);
 			}
 
@@ -96,8 +107,25 @@ public class Parser {
 				return Action.left(i);
 			}
 
-			if (action(node) && spatialRelation(right) && right2 == null) {
+			if (command(node) && spatialRelation(right) && right2 == null) {
 				return Action.left(i);
+			}
+
+			if (conjunction(node) && command(right) && right2 == null) {
+				return Action.left(i);
+			}
+
+			if (command(node) && conjunction(right) && right2 == null) {
+				return Action.left(i);
+			}
+
+			if (description(left2) && direction(left) && direction(node)
+					&& object(right)) {
+				return Action.right(i);
+			}
+
+			if (description(left) && direction(node) && object(right)) {
+				return Action.right(i);
 			}
 		}
 		return null;
@@ -118,8 +146,8 @@ public class Parser {
 		return node;
 	}
 
-	private static boolean action(Node node) {
-		return node != null && node.tag.equals("Action");
+	private static boolean command(Node node) {
+		return node != null && node.tag.equals("Command");
 	}
 
 	private static boolean description(Node node) {
@@ -130,11 +158,27 @@ public class Parser {
 		return node != null && node.tag.equals("Color");
 	}
 
+	private static boolean cardinal(Node node) {
+		return node != null && node.tag.equals("Cardinal");
+	}
+
 	private static boolean object(Node node) {
 		return node != null && node.tag.equals("Object");
 	}
 
 	private static boolean spatialRelation(Node node) {
 		return node != null && node.tag.equals("SpatialRelation");
+	}
+
+	private static boolean direction(Node node) {
+		return node != null && node.tag.equals("Direction");
+	}
+
+	private static boolean pronoun(Node node) {
+		return node != null && node.tag.equals("Pronoun");
+	}
+
+	private static boolean conjunction(Node node) {
+		return node != null && node.tag.equals("Conjunction");
 	}
 }

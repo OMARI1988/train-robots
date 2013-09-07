@@ -35,7 +35,7 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
-				Node.fromString("(Action pick-up (Object prism (Color blue) (Description definite)))"));
+				Node.fromString("(Command (Action pick-up) (Object (Description definite) (Color blue) (Type prism)))"));
 	}
 
 	@Test
@@ -44,14 +44,30 @@ public class ParserTests {
 				.parse("Place the blue block on top of the red block.");
 		assertEquals(
 				node,
-				Node.fromString("(Action place (Object block (Color blue) (Description definite)) (SpatialRelation above (Object block (Color red) (Description definite))))"));
+				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type block)) (SpatialRelation above (Object (Description definite) (Color red) (Type block))))"));
 	}
 
 	@Test
 	public void shouldParse3() {
 		Node node = Parser.parse("white blocks");
+		assertEquals(
+				node,
+				Node.fromString("(Object (Color white) (Type block) (Number plural))"));
+	}
+
+	@Test
+	public void shouldParse4() {
+		Node node = Parser.parse("the top left corner");
+		assertEquals(
+				node,
+				Node.fromString("(Object (Description definite) (Direction top) (Direction left) (Type corner))"));
+	}
+
+	@Test
+	public void shouldParse5() {
+		Node node = Parser.parse("move it");
 		assertEquals(node,
-				Node.fromString("(Object block (Number plural) (Color white))"));
+				Node.fromString("(Command (Action move) (Pronoun it))"));
 	}
 
 	@Test

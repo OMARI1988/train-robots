@@ -136,7 +136,7 @@ public class Tagger {
 
 	static {
 
-		add("pick up", "(Action pick-up)");
+		add("pick up", "(Command (Action pick-up))");
 
 		add("right in", "(SpatialRelation in)");
 

@@ -61,6 +61,28 @@ public class PartialList implements Iterable<Node> {
 		return text.toString();
 	}
 
+	public String format() {
+
+		// Empty?
+		int size = nodes.size();
+		if (size == 0) {
+			return "EMPTY";
+		}
+
+		// Format.
+		StringBuilder text = new StringBuilder();
+		for (int i = 0; i < size; i++) {
+			if (text.length() > 0) {
+				text.append("\r\n");
+			}
+			text.append("P");
+			text.append(i + 1);
+			text.append(" = ");
+			text.append(nodes.get(i).format());
+		}
+		return text.toString();
+	}
+
 	public int size() {
 		return nodes.size();
 	}
@@ -79,6 +101,6 @@ public class PartialList implements Iterable<Node> {
 	public void right(int number) {
 		Node head = nodes.get(number);
 		Node dependent = nodes.remove(number - 1);
-		head.add(dependent);
+		head.children.add(0, dependent);
 	}
 }

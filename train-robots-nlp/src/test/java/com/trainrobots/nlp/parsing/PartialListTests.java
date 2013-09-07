@@ -51,20 +51,21 @@ public class PartialListTests {
 		assertEquals(list.get(1), a);
 		assertEquals(list.get(2), b);
 		assertEquals(list.get(3),
-				Node.fromString("(Object prism (Color blue))"));
+				Node.fromString("(Object (Color blue) prism)"));
 
 		// Right.
 		list.right(2);
 		assertEquals(list.size(), 2);
 		assertEquals(list.get(1), a);
-		assertEquals(list.get(2),
-				Node.fromString("(Object prism (Color blue) (Description definite))"));
+		assertEquals(
+				list.get(2),
+				Node.fromString("(Object (Description definite) (Color blue) prism)"));
 
 		// Left.
 		list.left(1);
 		assertEquals(list.size(), 1);
 		assertEquals(
 				list.get(1),
-				Node.fromString("(Action pick-up (Object prism (Color blue) (Description definite)))"));
+				Node.fromString("(Action pick-up (Object (Description definite) (Color blue) prism))"));
 	}
 }

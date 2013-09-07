@@ -19,15 +19,8 @@ package com.trainrobots.nlp.tokenizer;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.nlp.commands.Command;
-import com.trainrobots.nlp.commands.Corpus;
-import com.trainrobots.nlp.io.FileWriter;
 import com.trainrobots.nlp.trees.Node;
 
 public class TokenizerTests {
@@ -75,60 +68,16 @@ public class TokenizerTests {
 	}
 
 	@Test
-	public void shouldTokenizeNumbers() {
-		assertEquals(Tokenizer.getTokens("4 plus 26"),
-				Node.fromString("(Tokens (Number 4) (Text plus) (Number 26))"));
+	public void shouldTokenizeCardinals() {
+		assertEquals(
+				Tokenizer.getTokens("4 plus 26"),
+				Node.fromString("(Tokens (Cardinal 4) (Text plus) (Cardinal 26))"));
 	}
 
 	@Test
 	public void shouldForceLowerCase() {
-		assertEquals(Tokenizer.getTokens("4 PLUS 26"),
-				Node.fromString("(Tokens (Number 4) (Text plus) (Number 26))"));
-	}
-
-	@Test
-	@Ignore
-	public void shouldTokenizeCorpus() {
-
-		// Files.
-		FileWriter writer = new FileWriter("c:/temp/tokens.txt");
-
-		// Process.
-		for (Command command : Corpus.getCommands()) {
-
-			// Command.
-			writer.writeLine("// Scene " + command.sceneNumber + ": "
-					+ command.text);
-			writer.writeLine();
-
-			// Tokens.
-			Node tokens = Tokenizer.getTokens(command.text);
-			for (Node token : tokens.children) {
-				writer.writeLine(token.toString());
-			}
-			writer.writeLine();
-			writer.writeLine();
-		}
-
-		// Close.
-		writer.close();
-	}
-
-	@Test
-	@Ignore
-	public void shouldBuildDictionary() {
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		for (Command command : Corpus.getCommands()) {
-			for (Node token : Tokenizer.getTokens(command.text).children) {
-				if (token.tag.equals("Text")) {
-					String key = token.getValue();
-					Integer count = map.get(key);
-					map.put(key, count != null ? count + 1 : 1);
-				}
-			}
-		}
-		for (Map.Entry<String, Integer> entry : map.entrySet()) {
-			System.out.println(entry.getKey() + "\t" + entry.getValue());
-		}
+		assertEquals(
+				Tokenizer.getTokens("4 PLUS 26"),
+				Node.fromString("(Tokens (Cardinal 4) (Text plus) (Cardinal 26))"));
 	}
 }

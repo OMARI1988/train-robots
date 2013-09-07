@@ -59,7 +59,7 @@ public class Tokenizer {
 
 		// Digits.
 		if (digit(ch)) {
-			return readNumber();
+			return readCardinal();
 		}
 
 		// Text.
@@ -75,13 +75,13 @@ public class Tokenizer {
 		return new Node("Text", text);
 	}
 
-	private Node readNumber() {
+	private Node readCardinal() {
 		int index = position;
 		while (!end() && digit(peek())) {
 			position++;
 		}
 		String text = this.text.substring(index, position);
-		return new Node("Number", text);
+		return new Node("Cardinal", text);
 	}
 
 	private Node readWhitespace() {
