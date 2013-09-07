@@ -17,10 +17,12 @@
 
 package com.trainrobots.nlp.tagging;
 
+import java.util.List;
+
 import com.trainrobots.nlp.trees.Node;
 
 public class Chunk {
 
 	public String[] tokens;
-	public Node node;
+	public List<Node> nodes;
 }

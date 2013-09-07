@@ -18,13 +18,16 @@
 package com.trainrobots.nlp.commands;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.trainrobots.nlp.io.FileReader;
 
 public class Corpus {
 
 	private static List<Command> commands;
+	private static Set<Integer> blackList = new HashSet<Integer>();
 
 	public static List<Command> getCommands() {
 		if (commands == null) {
@@ -37,10 +40,32 @@ public class Corpus {
 				command.id = Integer.parseInt(items[0]);
 				command.sceneNumber = Integer.parseInt(items[1]);
 				command.text = items[2].trim();
-				commands.add(command);
+				if (!blackList.contains(command.id)) {
+					commands.add(command);
+				}
 			}
 			reader.close();
 		}
 		return commands;
+	}
+
+	static {
+		blackList.add(3);
+		blackList.add(11);
+		blackList.add(16);
+		blackList.add(530);
+		blackList.add(533);
+		blackList.add(536);
+		blackList.add(539);
+		blackList.add(542);
+		blackList.add(545);
+		blackList.add(548);
+		blackList.add(551);
+		blackList.add(554);
+		blackList.add(557);
+		blackList.add(560);
+		blackList.add(563);
+		blackList.add(7522);
+		blackList.add(9374);
 	}
 }

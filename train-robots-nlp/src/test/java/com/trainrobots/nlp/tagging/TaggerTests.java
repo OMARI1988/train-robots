@@ -15,17 +15,22 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.commands;
+package com.trainrobots.nlp.tagging;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
-public class CorpusTests {
+import com.trainrobots.nlp.trees.Node;
+
+public class TaggerTests {
 
 	@Test
-	public void shouldLoadCorpus() {
-		
-		assertEquals(6209, Corpus.getCommands().size());
+	public void shouldTagSentence() {
+		List<Node> sentences = Tagger
+				.getSentences("Move the red block to the left bottom corner");
+		assertEquals(1, sentences.size());
 	}
 }

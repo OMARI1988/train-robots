@@ -44,7 +44,7 @@ public class ParserTests {
 				.parse("Place the blue block on top of the red block.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type cube)) (SpatialRelation above (Object (Description definite) (Color red) (Type cube))))"));
+				Node.fromString("(Command (Action place) (Object (Description definite) (Color blue) (Type cube)) (SpatialIndicator above (Object (Description definite) (Color red) (Type cube))))"));
 	}
 
 	@Test
@@ -78,11 +78,10 @@ public class ParserTests {
 		FileWriter writer = new FileWriter("c:/temp/parse.txt");
 
 		// Process.
-		int i = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// Command.
-			writer.writeLine("// " + (++i) + ": " + command.text);
+			writer.writeLine("// " + command.id + ": " + command.text);
 			writer.writeLine();
 
 			// Parse.

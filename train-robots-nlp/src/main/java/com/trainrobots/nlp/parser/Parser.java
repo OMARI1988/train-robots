@@ -103,11 +103,11 @@ public class Parser {
 				return Action.left(i);
 			}
 
-			if (spatialRelation(node) && object(right)) {
+			if (spatialIndicator(node) && object(right)) {
 				return Action.left(i);
 			}
 
-			if (command(node) && spatialRelation(right) && right2 == null) {
+			if (command(node) && spatialIndicator(right) && right2 == null) {
 				return Action.left(i);
 			}
 
@@ -166,8 +166,8 @@ public class Parser {
 		return node != null && node.tag.equals("Object");
 	}
 
-	private static boolean spatialRelation(Node node) {
-		return node != null && node.tag.equals("SpatialRelation");
+	private static boolean spatialIndicator(Node node) {
+		return node != null && node.tag.equals("SpatialIndicator");
 	}
 
 	private static boolean direction(Node node) {
