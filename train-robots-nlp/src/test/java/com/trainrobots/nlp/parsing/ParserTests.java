@@ -19,12 +19,8 @@ package com.trainrobots.nlp.parsing;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.core.io.FileWriter;
-import com.trainrobots.nlp.commands.Command;
-import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.trees.Node;
 
@@ -92,31 +88,5 @@ public class ParserTests {
 		assertEquals(
 				node,
 				Node.fromString("(Command (Action pick-up) (Conjunction and (Command (Action hold) (Object (Description definite) (Attribute yellow) (Type prism)))))"));
-	}
-
-	@Test
-	@Ignore
-	public void shouldParseCorpus() {
-
-		// Files.
-		FileWriter writer = new FileWriter("c:/temp/parse.txt");
-
-		// Process.
-		for (Command command : Corpus.getCommands()) {
-
-			// Command.
-			writer.writeLine("// Command " + command.id + ": " + command.text);
-			writer.writeLine("// Scene " + command.scene.number);
-			writer.writeLine();
-
-			// Parse.
-			Node parse = Parser.parse(command.text);
-			writer.writeLine(parse.format());
-			writer.writeLine();
-			writer.writeLine();
-		}
-
-		// Close.
-		writer.close();
 	}
 }

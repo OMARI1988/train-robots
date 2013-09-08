@@ -37,7 +37,8 @@ public class Agent {
 		}
 
 		String action = node.getValue("Action");
-		if (!action.equals("place")) {
+		if (!action.equals("move") && !action.equals("place")
+				&& !action.equals("put")) {
 			return null;
 		}
 
@@ -81,7 +82,8 @@ public class Agent {
 		}
 		Shape result = null;
 		for (Shape shape : model.shapes()) {
-			if (shape.color == color && shape.type == type) {
+			if (shape.color == color && shape.type == type
+					&& isTop(model, shape)) {
 				if (result != null) {
 					return result;
 				}
@@ -89,6 +91,10 @@ public class Agent {
 			}
 		}
 		return result;
+	}
+
+	private static boolean isTop(WorldModel model, Shape shape) {
+		return model.getShape(shape.position.add(0, 0, 1)) == null;
 	}
 
 	private static Color getObjectColor(Node node) {

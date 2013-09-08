@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.nlp.commands.Command;
 import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.parser.Parser;
@@ -62,30 +63,75 @@ public class AgentTests {
 
 	@Test
 	public void shouldProcessCorpus() {
+
+		// File.
+		FileWriter writer = new FileWriter("c:/temp/agent.html");
+		String[] types = { "Failed", "Success", "Mismatch" };
+
+		// Process.
 		int valid = 0;
 		int total = 0;
+		int mismatch = 0;
 		for (Command command : Corpus.getCommands()) {
+
+			// Command.
 			Scene scene = command.scene;
 			String text = command.text;
+
+			// Parse.
 			Node node = Parser.parse(text);
+
+			// Agent.
+			int category = 0;
 			try {
 				List<Move> moves = Agent.getMoves(scene.before, node);
 				if (match(moves, scene.moves)) {
-					valid++;
+					category = 1;
+				} else if (moves != null) {
+					category = 2;
 				}
 			} catch (Exception e) {
+			}
+
+			// Write.
+			switch (category) {
+			case 0:
+				writer.writeLine("<pre>");
+				break;
+			case 1:
+				writer.writeLine("<pre style='color:blue'>");
+				break;
+			case 2:
+				writer.writeLine("<pre style='color:red'>");
+				break;
+			}
+			writer.writeLine("// Command " + command.id + ": " + text);
+			writer.writeLine("// Scene " + scene.number + ": "
+					+ types[category]);
+			writer.writeLine();
+			writer.writeLine(node.format());
+			writer.writeLine();
+			writer.writeLine("</pre>");
+
+			// Increment.
+			if (category == 1) {
+				valid++;
+			} else if (category == 2) {
+				mismatch++;
 			}
 			total++;
 		}
 
+		// Results.
 		NumberFormat nf = NumberFormat.getNumberInstance();
 		nf.setMaximumFractionDigits(2);
 
 		double p = 100 * valid / (double) total;
 		System.out.println("Score: " + valid + " / " + total + " = "
 				+ nf.format(p) + "%");
+		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(70, valid);
+		assertEquals(180, valid);
 		assertEquals(6205, total);
 	}
 
