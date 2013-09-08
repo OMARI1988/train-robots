@@ -15,35 +15,12 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.syntax;
+package com.trainrobots.nlp.scenes;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.trainrobots.core.configuration.Configuration;
 
-import com.trainrobots.nlp.trees.Node;
+public class Scene {
 
-public class Chunker {
-
-	private final List<Node> chunks = new ArrayList<Node>();
-
-	public List<Node> getChunks(Node node) {
-		visit(node);
-		return chunks;
-	}
-
-	private void visit(Node node) {
-
-		if (node.allChildrenArePreTerminals()) {
-			chunks.add(node);
-			return;
-		}
-
-		for (Node child : node.children) {
-			if (child.isPreTerminal()) {
-				chunks.add(child);
-			} else {
-				visit(child);
-			}
-		}
-	}
+	public Configuration before;
+	public Configuration after;
 }
