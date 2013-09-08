@@ -37,7 +37,7 @@ public class LexiconTests {
 	@Test
 	@Ignore
 	public void shouldFindUnknownWords() {
-
+		
 		class Item {
 			String key;
 			int count;

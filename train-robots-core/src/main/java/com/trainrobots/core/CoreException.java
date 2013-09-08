@@ -15,19 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.core;
 
-public class UiException extends RuntimeException {
+public class CoreException extends RuntimeException {
 
-	public UiException(String message) {
+	public CoreException(String message) {
 		super(message);
 	}
 
-	public UiException(Exception exception) {
+	public CoreException(Exception exception) {
 		super(exception.getMessage(), exception);
 	}
 
-	public UiException(String message, Exception exception) {
+	public CoreException(String message, Exception exception) {
 		super(message, exception);
 	}
 }

@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.ServiceContext;
@@ -65,7 +65,7 @@ public class RegisterPage {
 			((HttpServletResponse) pageContext.getResponse())
 					.sendRedirect("/registration_completed.jsp");
 		} catch (IOException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 

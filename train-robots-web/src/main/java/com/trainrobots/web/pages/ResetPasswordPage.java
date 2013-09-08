@@ -27,7 +27,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.game.ResetToken;
 import com.trainrobots.web.services.DataService;
@@ -116,7 +116,7 @@ public class ResetPasswordPage {
 		try {
 			((HttpServletResponse) pageContext.getResponse()).sendRedirect(url);
 		} catch (IOException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 }

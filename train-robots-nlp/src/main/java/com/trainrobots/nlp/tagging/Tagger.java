@@ -20,7 +20,7 @@ package com.trainrobots.nlp.tagging;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.nlp.NlpException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 import com.trainrobots.nlp.trees.Node;
@@ -215,7 +215,7 @@ public class Tagger {
 		Chunk chunk = new Chunk();
 		chunk.tokens = text.split(" ");
 		if (chunk.tokens.length == 1) {
-			throw new NlpException(
+			throw new CoreException(
 					"Single token chunk should be moved to the lexicon.");
 		}
 		chunk.nodes = Node.listFromString(entry);

@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.configuration;
+package com.trainrobots.core.configuration;
 
 public class Block {
 

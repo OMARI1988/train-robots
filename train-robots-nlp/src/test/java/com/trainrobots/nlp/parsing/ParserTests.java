@@ -22,9 +22,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.nlp.commands.Command;
 import com.trainrobots.nlp.commands.Corpus;
-import com.trainrobots.nlp.io.FileWriter;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.trees.Node;
 

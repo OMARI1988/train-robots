@@ -20,9 +20,9 @@ package com.trainrobots.ui.services.defaults;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.ui.configuration.Configuration;
-import com.trainrobots.ui.io.ConfigurationReader;
-import com.trainrobots.ui.io.ConfigurationWriter;
+import com.trainrobots.core.configuration.Configuration;
+import com.trainrobots.core.configuration.ConfigurationReader;
+import com.trainrobots.core.configuration.ConfigurationWriter;
 import com.trainrobots.ui.services.DataService;
 
 public class DefaultDataService implements DataService {

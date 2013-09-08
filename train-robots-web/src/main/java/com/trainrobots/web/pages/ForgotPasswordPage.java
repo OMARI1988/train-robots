@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.services.DataService;
 import com.trainrobots.web.services.MailService;
@@ -67,7 +67,7 @@ public class ForgotPasswordPage {
 			((HttpServletResponse) pageContext.getResponse())
 					.sendRedirect("/forgot_password_completed.jsp");
 		} catch (IOException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 

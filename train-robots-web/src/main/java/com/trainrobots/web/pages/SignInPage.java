@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.game.User;
 import com.trainrobots.web.services.DataService;
@@ -77,7 +77,7 @@ public class SignInPage {
 			((HttpServletResponse) pageContext.getResponse())
 					.sendRedirect("/game");
 		} catch (IOException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 

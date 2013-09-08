@@ -28,8 +28,8 @@ import javax.inject.Inject;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.trainrobots.ui.configuration.Block;
-import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.core.configuration.Block;
+import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.ui.robot.RobotControl;
 import com.trainrobots.ui.services.DataService;
 

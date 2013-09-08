@@ -20,7 +20,7 @@ package com.trainrobots.nlp.lexicon;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.trainrobots.nlp.NlpException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.nlp.trees.Node;
 
 public class Lexicon {
@@ -252,11 +252,11 @@ public class Lexicon {
 
 	private static void add(String text, String entry) {
 		if (entries.containsKey(text)) {
-			throw new NlpException("Duplicate lexicon entry: " + text);
+			throw new CoreException("Duplicate lexicon entry: " + text);
 		}
 		Node node = Node.fromString(entry);
 		if (node.hasTag("Object") && node.getChild("Type") == null) {
-			throw new NlpException("Object type not specified: " + text);
+			throw new CoreException("Object type not specified: " + text);
 		}
 		entries.put(text, node);
 	}

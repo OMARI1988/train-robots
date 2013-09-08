@@ -30,7 +30,7 @@ import javax.servlet.ServletContext;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.game.AdminProgress;
 import com.trainrobots.web.game.Command;
 import com.trainrobots.web.game.MarkedCommand;
@@ -43,7 +43,7 @@ public class DataService {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class DataService {
 			return user;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class DataService {
 			return user;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class DataService {
 			return result;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -184,7 +184,7 @@ public class DataService {
 			connection.close();
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class DataService {
 			return result;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -253,7 +253,7 @@ public class DataService {
 			return resetToken;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class DataService {
 			connection.close();
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -317,7 +317,7 @@ public class DataService {
 			connection.close();
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -356,7 +356,7 @@ public class DataService {
 			return commands;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -395,7 +395,7 @@ public class DataService {
 			return command;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -430,7 +430,7 @@ public class DataService {
 			return progress;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -457,7 +457,7 @@ public class DataService {
 			connection.close();
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -501,7 +501,7 @@ public class DataService {
 			return commands;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -543,7 +543,7 @@ public class DataService {
 			return command;
 
 		} catch (SQLException exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 

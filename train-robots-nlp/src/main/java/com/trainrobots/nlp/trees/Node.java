@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.trainrobots.nlp.NlpException;
+import com.trainrobots.core.CoreException;
 
 public class Node {
 
@@ -73,14 +73,15 @@ public class Node {
 
 	public String getValue() {
 		if (!isPreTerminal()) {
-			throw new NlpException("Node is not a preterminal: " + this);
+			throw new CoreException("Node is not a preterminal: " + this);
 		}
 		return children.get(0).tag;
 	}
 
 	public Node getSingleChild() {
 		if (!hasSingleChild()) {
-			throw new NlpException("Node does not have a single child: " + this);
+			throw new CoreException("Node does not have a single child: "
+					+ this);
 		}
 		return children.get(0);
 	}
@@ -122,7 +123,7 @@ public class Node {
 		for (Node child : children) {
 			if (child.tag != null && child.hasTag(tag)) {
 				if (result != null) {
-					throw new NlpException("Duplicate child tag '" + tag
+					throw new CoreException("Duplicate child tag '" + tag
 							+ "' in " + this);
 				}
 				result = child;

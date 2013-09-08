@@ -20,7 +20,7 @@ package com.trainrobots.nlp.trees;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.nlp.NlpException;
+import com.trainrobots.core.CoreException;
 
 public class NodeMatch {
 
@@ -77,7 +77,7 @@ public class NodeMatch {
 		int number = getParameterNumber(search);
 		if (number >= 1) {
 			if (parameters.size() != number - 1) {
-				throw new NlpException("Parameter number mismatch.");
+				throw new CoreException("Parameter number mismatch.");
 			}
 			parameters.add(node);
 			return true;

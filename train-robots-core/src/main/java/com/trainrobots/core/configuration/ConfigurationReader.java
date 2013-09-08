@@ -15,13 +15,12 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.io;
+package com.trainrobots.core.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.ui.configuration.Block;
-import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.core.io.FileReader;
 
 public class ConfigurationReader {
 

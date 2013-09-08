@@ -22,8 +22,8 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.ui.configuration.Configuration;
-import com.trainrobots.ui.io.ConfigurationReader;
+import com.trainrobots.core.configuration.Configuration;
+import com.trainrobots.core.configuration.ConfigurationReader;
 
 public class ExportTests {
 

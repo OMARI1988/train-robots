@@ -5,9 +5,19 @@
 	<artifactId>train-robots-nlp</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>Train Robots</name>
+	<name>Train Robots NLP</name>
 	<url>http://maven.apache.org</url>
+	<parent>
+		<groupId>train-robots</groupId>
+		<artifactId>train-robots</artifactId>
+		<version>1.0.0</version>
+	</parent>
 	<dependencies>
+		<dependency>
+			<groupId>train-robots-core</groupId>
+			<artifactId>train-robots-core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

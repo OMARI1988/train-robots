@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
-import com.trainrobots.ui.configuration.Block;
-import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.core.configuration.Block;
+import com.trainrobots.core.configuration.Configuration;
 
 public class RobotControl {
 

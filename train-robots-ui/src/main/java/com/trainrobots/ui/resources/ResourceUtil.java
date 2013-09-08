@@ -20,7 +20,7 @@ package com.trainrobots.ui.resources;
 import java.io.InputStream;
 import java.net.URL;
 
-import com.trainrobots.ui.UiException;
+import com.trainrobots.core.CoreException;
 
 public class ResourceUtil {
 
@@ -36,7 +36,7 @@ public class ResourceUtil {
 	public static InputStream open(String resourcePath) {
 		InputStream stream = resourceType.getResourceAsStream(resourcePath);
 		if (stream == null) {
-			throw new UiException("Resource not found: " + resourcePath);
+			throw new CoreException("Resource not found: " + resourcePath);
 		}
 		return stream;
 	}

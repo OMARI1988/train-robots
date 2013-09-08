@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.trainrobots.nlp.io.FileReader;
+import com.trainrobots.core.io.FileReader;
 
 public class Corpus {
 

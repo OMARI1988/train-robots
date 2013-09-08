@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.web.WebUtil;
 import com.trainrobots.web.game.Command;
 import com.trainrobots.web.game.Options;
@@ -61,7 +61,7 @@ public class ScenePage {
 				response.sendRedirect("/lost.jsp");
 				return;
 			} catch (IOException exception) {
-				throw new WebException(exception);
+				throw new CoreException(exception);
 			}
 		}
 

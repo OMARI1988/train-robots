@@ -26,7 +26,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
-import com.trainrobots.web.WebException;
+import com.trainrobots.core.CoreException;
 
 public class MailService {
 
@@ -77,7 +77,7 @@ public class MailService {
 			transport.close();
 
 		} catch (Exception exception) {
-			throw new WebException(exception);
+			throw new CoreException(exception);
 		}
 	}
 }

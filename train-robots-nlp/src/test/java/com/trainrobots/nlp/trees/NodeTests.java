@@ -27,7 +27,7 @@ public class NodeTests {
 
 	@Test
 	public void shouldWriteNode1() {
-
+		
 		Node a = new Node("A");
 		a.add("B").add("X");
 		a.add("C").add("Y");

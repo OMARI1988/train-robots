@@ -17,7 +17,7 @@
 
 package com.trainrobots.ui.services;
 
-import com.trainrobots.ui.configuration.Configuration;
+import com.trainrobots.core.configuration.Configuration;
 
 public interface DataService {
 

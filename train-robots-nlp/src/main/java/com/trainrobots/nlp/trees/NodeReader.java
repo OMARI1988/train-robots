@@ -20,7 +20,7 @@ package com.trainrobots.nlp.trees;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.nlp.NlpException;
+import com.trainrobots.core.CoreException;
 
 public class NodeReader {
 
@@ -48,7 +48,7 @@ public class NodeReader {
 			// Space.
 			if (position > 0) {
 				if (peek() != ' ') {
-					throw new NlpException("Expected space.");
+					throw new CoreException("Expected space.");
 				}
 				next();
 			}
@@ -64,7 +64,7 @@ public class NodeReader {
 		// (
 		char ch = next();
 		if (ch != '(') {
-			throw new NlpException("Expected open bracket.");
+			throw new CoreException("Expected open bracket.");
 		}
 
 		// Tag.
@@ -76,7 +76,7 @@ public class NodeReader {
 			// ' '
 			ch = next();
 			if (ch != ' ') {
-				throw new NlpException("Expected space.");
+				throw new CoreException("Expected space.");
 			}
 
 			// Node.
@@ -90,7 +90,7 @@ public class NodeReader {
 		// ')'
 		ch = next();
 		if (ch != ')') {
-			throw new NlpException("Expected closing bracket.");
+			throw new CoreException("Expected closing bracket.");
 		}
 
 		return node;

@@ -1,42 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>train-robots-ui</groupId>
-	<artifactId>train-robots-ui</artifactId>
+	<groupId>train-robots-core</groupId>
+	<artifactId>train-robots-core</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>Train Robots UI</name>
+	<name>Train Robots Core</name>
 	<url>http://maven.apache.org</url>
 	<parent>
 		<groupId>train-robots</groupId>
 		<artifactId>train-robots</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<dependencies>
-		<dependency>
-			<groupId>train-robots-core</groupId>
-			<artifactId>train-robots-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
+
+
+<dependencies><dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-    <dependency>
-	    <groupId>com.squareup</groupId>
-	    <artifactId>dagger-parent</artifactId>
-	    <version>0.9.1</version>
-    </dependency>
-	<dependency>
-      <groupId>javax.inject</groupId>
-		<artifactId>javax.inject</artifactId>
-	<version>1</version>
-    </dependency>
-  </dependencies>
+</dependencies>
+
 	<build>
-		<finalName>train-robots-ui</finalName>
+		<finalName>train-robots-core</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

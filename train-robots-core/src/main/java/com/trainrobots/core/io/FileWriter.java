@@ -15,14 +15,14 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.io;
+package com.trainrobots.core.io;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import com.trainrobots.ui.UiException;
+import com.trainrobots.core.CoreException;
 
 public class FileWriter {
 
@@ -33,7 +33,7 @@ public class FileWriter {
 		try {
 			stream = new FileOutputStream(filename);
 		} catch (FileNotFoundException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 		printStream = new PrintStream(stream);
 	}
@@ -43,12 +43,12 @@ public class FileWriter {
 		try {
 			stream = new FileOutputStream(filename);
 		} catch (FileNotFoundException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 		try {
 			printStream = new PrintStream(stream, false, encoding);
 		} catch (UnsupportedEncodingException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 	}
 

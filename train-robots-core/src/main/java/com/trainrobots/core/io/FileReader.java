@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.io;
+package com.trainrobots.core.io;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-import com.trainrobots.ui.UiException;
+import com.trainrobots.core.CoreException;
 
 public class FileReader {
 
@@ -36,7 +36,7 @@ public class FileReader {
 		try {
 			reader = new BufferedReader(new java.io.FileReader(filename));
 		} catch (FileNotFoundException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -47,7 +47,7 @@ public class FileReader {
 					encoding);
 			reader = new BufferedReader(streamReader);
 		} catch (Exception exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class FileReader {
 			reader = new BufferedReader(new InputStreamReader(stream,
 					DEFAULT_ENCODING));
 		} catch (UnsupportedEncodingException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class FileReader {
 		try {
 			line = reader.readLine();
 		} catch (IOException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 		return line;
 	}
@@ -88,7 +88,7 @@ public class FileReader {
 		try {
 			reader.close();
 		} catch (IOException exception) {
-			throw new UiException(exception);
+			throw new CoreException(exception);
 		}
 	}
 }
