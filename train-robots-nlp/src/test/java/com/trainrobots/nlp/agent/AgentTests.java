@@ -18,7 +18,7 @@
 package com.trainrobots.nlp.agent;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -29,36 +29,21 @@ import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.nlp.commands.Command;
 import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.parser.Parser;
-import com.trainrobots.nlp.scenes.Color;
-import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
-import com.trainrobots.nlp.scenes.Shape;
-import com.trainrobots.nlp.scenes.ShapeType;
+import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.trees.Node;
 
 public class AgentTests {
 
 	@Test
-	public void shouldGetMove() {
-
+	public void shouldFindTopOfStack() {
+		WorldModel world = SceneManager.getScene(424).before;
 		Node node = Parser
-				.parse("place the yellow pyramid on top of the light grey brick");
-
-		Scene scene = SceneManager.getScene(897);
-		List<Move> moves = Agent.getMoves(scene.before, node);
-		assertTrue(match(moves, scene.moves));
-	}
-
-	@Test
-	public void shouldGetShape() {
-		Node node = Node
-				.fromString("(Object (Description definite) (Attribute yellow) (Type prism))");
-		Scene scene = SceneManager.getScene(897);
-		Shape shape = Agent.getShape(scene.before, node);
-		assertEquals(shape, new Shape(Color.Yellow, ShapeType.Prism,
-				new Position(3, 6, 2)));
+				.parse("Put the yellow pyramid on top of the grey tower.");
+		List<Move> moves = Agent.getMoves(world, node);
+		assertNotNull(moves);
 	}
 
 	@Test
@@ -131,8 +116,8 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(318, valid);
-		assertEquals(6195, total);
+		assertEquals(352, valid);
+		assertEquals(6194, total);
 	}
 
 	private boolean match(List<Move> moves1, List<Move> moves2) {

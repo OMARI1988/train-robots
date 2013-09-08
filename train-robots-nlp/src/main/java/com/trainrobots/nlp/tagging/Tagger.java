@@ -182,6 +182,13 @@ public class Tagger {
 			// Apply.
 			input.set(i, match);
 		}
+
+		// Clean.
+		for (int i = input.size() - 1; i >= 0; i--) {
+			if (input.get(i).hasTag("Link")) {
+				input.remove(i);
+			}
+		}
 	}
 
 	private static Chunk match(List<Node> input, int index) {

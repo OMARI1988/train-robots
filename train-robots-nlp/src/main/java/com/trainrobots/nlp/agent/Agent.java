@@ -24,6 +24,7 @@ import com.trainrobots.nlp.scenes.Color;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
@@ -71,12 +72,11 @@ public class Agent {
 			return null;
 		}
 
-		Shape shape = getShape(world, object);
-		if (shape == null) {
+		Position position = mapObjectToPosition(world, object);
+		if (position == null) {
 			return null;
 		}
-
-		return new PickUpMove(shape.position);
+		return new PickUpMove(position);
 	}
 
 	private static Move getDirectMove(WorldModel world, Node node) {
@@ -96,8 +96,8 @@ public class Agent {
 			return null;
 		}
 
-		Shape shape = getShape(world, object);
-		if (shape == null) {
+		Position position = mapObjectToPosition(world, object);
+		if (position == null) {
 			return null;
 		}
 
@@ -110,38 +110,86 @@ public class Agent {
 		}
 
 		Node object2 = spatialIndicator.getChild("Object");
-		Shape shape2 = getShape(world, object2);
-		if (shape2 == null) {
+		Position position2 = mapObjectToPosition(world, object2);
+		if (position2 == null) {
 			return null;
 		}
 
-		Position p1 = shape.position;
-		Position p2 = shape2.position.add(0, 0, 1);
-
-		return new DirectMove(p1, p2);
+		return new DirectMove(position, position2.add(0, 0, 1));
 	}
 
-	public static Shape getShape(WorldModel model, Node node) {
+	private static Position mapObjectToPosition(WorldModel world, Node node) {
+
+		// Color.
 		Color color = getObjectColor(node);
-		ShapeType type = getObjectShape(node);
-		if (color == null || type == null) {
-			return null;
+
+		// Cube.
+		String value = node.getValue("Type");
+		if (value.equals("cube")) {
+			return mapShapeToPosition(world, ShapeType.Cube, color);
 		}
-		Shape result = null;
-		for (Shape shape : model.shapes()) {
-			if (shape.color == color && shape.type == type
-					&& isTop(model, shape)) {
+
+		// Prism.
+		if (value.equals("prism")) {
+			return mapShapeToPosition(world, ShapeType.Prism, color);
+		}
+
+		// Stack.
+		if (value.equals("stack")) {
+			return mapStackToPosition(world, color);
+		}
+
+		// No match.
+		return null;
+	}
+
+	private static Position mapStackToPosition(WorldModel world, Color color) {
+
+		// Find all stacks.
+		List<Stack> stacks = new ArrayList<Stack>();
+		for (Shape shape : world.shapes()) {
+			if (shape.position.z == 0) {
+				Stack stack = null;
+				for (int z = 1; z < 8; z++) {
+					Shape s2 = world.getShape(shape.position.add(0, 0, z));
+					if (s2 != null) {
+						if (stack == null) {
+							stack = new Stack();
+							stack.add(shape);
+							stacks.add(stack);
+						}
+						stack.add(s2);
+					}
+				}
+			}
+		}
+
+		// Match.
+		Stack result = null;
+		for (Stack stack : stacks) {
+			if (stack.allHaveColor(color)) {
 				if (result != null) {
-					return result;
+					return null;
+				}
+				result = stack;
+			}
+		}
+		return result != null ? result.top().position : null;
+	}
+
+	private static Position mapShapeToPosition(WorldModel world,
+			ShapeType type, Color color) {
+		Shape result = null;
+		for (Shape shape : world.shapes()) {
+			if ((color == null || shape.color == color) && shape.type == type
+					&& world.getShape(shape.position.add(0, 0, 1)) == null) {
+				if (result != null) {
+					return null;
 				}
 				result = shape;
 			}
 		}
-		return result;
-	}
-
-	private static boolean isTop(WorldModel model, Shape shape) {
-		return model.getShape(shape.position.add(0, 0, 1)) == null;
+		return result != null ? result.position : null;
 	}
 
 	private static Color getObjectColor(Node node) {
@@ -166,24 +214,13 @@ public class Agent {
 				if (attribute.equals("magenta")) {
 					return Color.Magenta;
 				}
-				if (attribute.equals("Gray")) {
+				if (attribute.equals("gray")) {
 					return Color.Gray;
 				}
 				if (attribute.equals("white")) {
 					return Color.White;
 				}
 			}
-		}
-		return null;
-	}
-
-	private static ShapeType getObjectShape(Node node) {
-		String value = node.getValue("Type");
-		if (value.equals("cube")) {
-			return ShapeType.Cube;
-		}
-		if (value.equals("prism")) {
-			return ShapeType.Prism;
 		}
 		return null;
 	}

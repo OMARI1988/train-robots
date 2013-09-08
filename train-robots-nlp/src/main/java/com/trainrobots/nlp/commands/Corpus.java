@@ -78,6 +78,7 @@ public class Corpus {
 		blackList.add(822);
 		blackList.add(852);
 		blackList.add(857);
+		blackList.add(1172);
 		blackList.add(3138);
 		blackList.add(5231);
 		blackList.add(5234);

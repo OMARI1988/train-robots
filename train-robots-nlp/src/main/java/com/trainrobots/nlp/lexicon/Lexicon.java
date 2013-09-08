@@ -129,12 +129,13 @@ public class Lexicon {
 		add("inside", "(SpatialIndicator inside)");
 		add("into", "(SpatialIndicator into)");
 		add("is", "(Copula is)");
+		add("isolated", "(Attribute isolated)");
 		add("it", "(Anaphor it)");
 		add("it's", "(Contraction it is)");
 		add("its", "(Possessive its)");
-		add("last", "(SpatialIndicator last)");
+		add("last", "(Attribute last)");
 		add("left", "(Attribute left)");
-		add("leftmost", "(SpatialIndicator leftmost)");
+		add("leftmost", "(Attribute leftmost)");
 		add("lift", "(Command (Action lift))");
 		add("light", "(Attribute light)");
 		add("line", "(Object (Type line))");
@@ -170,6 +171,7 @@ public class Lexicon {
 		add("places", "(Object (Type tile) (Number plural))");
 		add("position", "(Object (Type position))");
 		add("prism", "(Object (Type prism))");
+		add("prisms", "(Object (Type prism) (Number plural))");
 		add("prim", "(Object (Type prism))");
 		add("pyrramid", "(Object (Type prism))");
 		add("purple", "(Attribute magenta)");
