@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.trainrobots.core.io.FileReader;
+import com.trainrobots.nlp.scenes.SceneManager;
 
 public class Corpus {
 
@@ -38,7 +39,8 @@ public class Corpus {
 				String[] items = line.split("\t");
 				Command command = new Command();
 				command.id = Integer.parseInt(items[0]);
-				command.sceneNumber = Integer.parseInt(items[1]);
+				int sceneNumber = Integer.parseInt(items[1]);
+				command.scene = SceneManager.getScene(sceneNumber);
 				command.text = items[2].trim();
 				if (!blackList.contains(command.id)) {
 					commands.add(command);

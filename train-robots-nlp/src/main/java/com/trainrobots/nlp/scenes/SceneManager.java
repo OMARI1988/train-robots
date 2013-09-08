@@ -55,10 +55,10 @@ public class SceneManager {
 		}
 	}
 
-	private static Scene buildScene(int sceneNumber, WorldModel before,
+	private static Scene buildScene(int number, WorldModel before,
 			WorldModel after) {
 		Scene scene = new Scene();
-		scene.sceneNumber = sceneNumber;
+		scene.number = number;
 		scene.before = before;
 		scene.after = after;
 		scene.moves = calculateMoves(scene);
@@ -90,7 +90,7 @@ public class SceneManager {
 		// Invalid?
 		if (removed.size() != added.size()) {
 			throw new CoreException("Failed to identify move for scene "
-					+ scene.sceneNumber + ".");
+					+ scene.number + ".");
 		}
 
 		// Moves.
@@ -109,7 +109,7 @@ public class SceneManager {
 		int size = list.size();
 		for (int i = 0; i < size; i++) {
 			Shape s2 = list.get(i);
-			if (s.cube == s2.cube && s.color == s2.color) {
+			if (s.type == s2.type && s.color == s2.color) {
 				return s2;
 			}
 		}
@@ -120,7 +120,8 @@ public class SceneManager {
 
 		List<Shape> shapes = new ArrayList<Shape>();
 		for (Block b : c.blocks) {
-			Shape s = new Shape(getColor(b.color), b.type == Block.CUBE,
+			Shape s = new Shape(getColor(b.color),
+					b.type == Block.CUBE ? ShapeType.Cube : ShapeType.Prism,
 					new Position(b.x, b.y, b.z));
 			shapes.add(s);
 		}

@@ -106,7 +106,7 @@ public class ParserTests {
 
 			// Command.
 			writer.writeLine("// Command " + command.id + ": " + command.text);
-			writer.writeLine("// Scene " + command.sceneNumber);
+			writer.writeLine("// Scene " + command.scene.number);
 			writer.writeLine();
 
 			// Parse.

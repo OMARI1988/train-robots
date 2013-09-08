@@ -17,23 +17,91 @@
 
 package com.trainrobots.nlp.agent;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.nlp.commands.Command;
+import com.trainrobots.nlp.commands.Corpus;
+import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.scenes.Color;
 import com.trainrobots.nlp.scenes.Move;
+import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.ShapeType;
+import com.trainrobots.nlp.trees.Node;
 
 public class AgentTests {
 
 	@Test
-	public void shouldExecuteCommand() {
+	public void shouldGetMove() {
 
-		// Move.
+		Node node = Parser
+				.parse("place the yellow pyramid on top of the light grey brick");
+
 		Scene scene = SceneManager.getScene(897);
-		Move move = Agent.getMove(scene.before,
-				"place the yellow pyramid on top of the light grey brick");
-		assertNull(move);
+		List<Move> moves = Agent.getMoves(scene.before, node);
+		assertTrue(match(moves, scene.moves));
+	}
+
+	@Test
+	public void shouldGetShape() {
+		Node node = Node
+				.fromString("(Object (Description definite) (Attribute yellow) (Type prism))");
+		Scene scene = SceneManager.getScene(897);
+		Shape shape = Agent.getShape(scene.before, node);
+		assertEquals(shape, new Shape(Color.Yellow, ShapeType.Prism,
+				new Position(3, 6, 2)));
+	}
+
+	@Test
+	public void shouldProcessCorpus() {
+		int valid = 0;
+		int total = 0;
+		for (Command command : Corpus.getCommands()) {
+			Scene scene = command.scene;
+			String text = command.text;
+			Node node = Parser.parse(text);
+			try {
+				List<Move> moves = Agent.getMoves(scene.before, node);
+				if (match(moves, scene.moves)) {
+					valid++;
+				}
+			} catch (Exception e) {
+			}
+			total++;
+		}
+
+		NumberFormat nf = NumberFormat.getNumberInstance();
+		nf.setMaximumFractionDigits(2);
+
+		double p = 100 * valid / (double) total;
+		System.out.println("Score: " + valid + " / " + total + " = "
+				+ nf.format(p) + "%");
+
+		assertEquals(70, valid);
+		assertEquals(6205, total);
+	}
+
+	private boolean match(List<Move> moves1, List<Move> moves2) {
+		int size1 = moves1 != null ? moves1.size() : 0;
+		int size2 = moves2 != null ? moves2.size() : 0;
+		if (size1 != size2) {
+			return false;
+		}
+		for (int i = 0; i < size1; i++) {
+			Move m1 = moves1.get(i);
+			Move m2 = moves2.get(i);
+			if (!m1.equals(m2)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

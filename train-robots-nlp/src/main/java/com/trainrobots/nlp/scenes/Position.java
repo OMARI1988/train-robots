@@ -29,6 +29,10 @@ public class Position {
 	public final int y;
 	public final int z;
 
+	public Position add(int dx, int dy, int dz) {
+		return new Position(x + dx, y + dy, z + dz);
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		Position p = (Position) object;

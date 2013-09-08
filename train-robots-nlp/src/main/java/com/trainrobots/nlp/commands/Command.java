@@ -17,9 +17,11 @@
 
 package com.trainrobots.nlp.commands;
 
+import com.trainrobots.nlp.scenes.Scene;
+
 public class Command {
 
 	public int id;
-	public int sceneNumber;
+	public Scene scene;
 	public String text;
 }

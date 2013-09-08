@@ -26,4 +26,19 @@ public class Move {
 
 	public final Position from;
 	public final Position to;
+
+	@Override
+	public boolean equals(Object object) {
+		Move m = (Move) object;
+		return m.from.equals(from) && m.to.equals(to);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		text.append(from);
+		text.append(" --> ");
+		text.append(to);
+		return text.toString();
+	}
 }

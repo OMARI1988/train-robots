@@ -17,33 +17,6 @@
 
 package com.trainrobots.nlp.scenes;
 
-public class Shape {
-
-	public Shape(Color color, ShapeType type, Position position) {
-		this.color = color;
-		this.type = type;
-		this.position = position;
-	}
-
-	public final Color color;
-	public final ShapeType type;
-	public final Position position;
-
-	@Override
-	public boolean equals(Object object) {
-		Shape s = (Shape) object;
-		return s.color == color && s.type == type
-				&& s.position.equals(position);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder text = new StringBuilder();
-		text.append(color);
-		text.append(' ');
-		text.append(type);
-		text.append(' ');
-		text.append(position);
-		return text.toString();
-	}
+public enum ShapeType {
+	Cube, Prism
 }

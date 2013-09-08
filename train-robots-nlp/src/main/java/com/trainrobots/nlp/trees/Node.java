@@ -90,6 +90,18 @@ public class Node {
 		return children != null && children.size() == 1;
 	}
 
+	public boolean hasLeaf(String tag) {
+		if (children == null) {
+			return false;
+		}
+		for (Node child : children) {
+			if (child.isLeaf() && child.tag.equals(tag)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public Node add(String tag) {
 		Node node = new Node(tag);
 		add(node);
@@ -130,6 +142,11 @@ public class Node {
 			}
 		}
 		return result;
+	}
+
+	public String getValue(String tag) {
+		Node child = getChild(tag);
+		return child != null ? child.getValue() : null;
 	}
 
 	public boolean hasTag(String tag) {

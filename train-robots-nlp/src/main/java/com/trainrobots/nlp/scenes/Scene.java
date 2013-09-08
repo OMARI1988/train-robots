@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Scene {
 
-	public int sceneNumber;
+	public int number;
 	public WorldModel before;
 	public WorldModel after;
 	public List<Move> moves;
