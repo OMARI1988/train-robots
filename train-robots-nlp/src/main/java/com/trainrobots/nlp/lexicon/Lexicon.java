@@ -63,6 +63,7 @@ public class Lexicon {
 		add("blog", "(Object (Type cube))");
 		add("blue", "(Attribute blue)");
 		add("board", "(Object (Type board))");
+		add("bock", "(Object (Type cube))");
 		add("border", "(Object (Type edge))");
 		add("bottom", "(Attribute back)");
 		add("box", "(Object (Type cube))");
@@ -178,6 +179,7 @@ public class Lexicon {
 		add("pyramids", "(Object (Type prism) (Number plural))");
 		add("red", "(Attribute red)");
 		add("rd", "(Attribute red)");
+		add("remote", "(Attribute remote)");
 		add("remove", "(Command (Action remove))");
 		add("right", "(Attribute right)");
 		add("rightmost", "(SpatialIndicator rightmost)");

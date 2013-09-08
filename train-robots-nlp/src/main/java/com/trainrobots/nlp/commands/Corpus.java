@@ -55,6 +55,10 @@ public class Corpus {
 		blackList.add(3);
 		blackList.add(11);
 		blackList.add(16);
+		blackList.add(469);
+		blackList.add(511);
+		blackList.add(514);
+		blackList.add(526);
 		blackList.add(530);
 		blackList.add(533);
 		blackList.add(536);
@@ -68,6 +72,12 @@ public class Corpus {
 		blackList.add(560);
 		blackList.add(563);
 		blackList.add(672);
+		blackList.add(675);
+		blackList.add(721);
+		blackList.add(762);
+		blackList.add(822);
+		blackList.add(852);
+		blackList.add(857);
 		blackList.add(3138);
 		blackList.add(5231);
 		blackList.add(5234);
