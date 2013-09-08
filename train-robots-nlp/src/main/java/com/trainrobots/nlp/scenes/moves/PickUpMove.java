@@ -15,16 +15,32 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.scenes.moves;
 
-import java.util.List;
+import com.trainrobots.nlp.scenes.Position;
 
-import com.trainrobots.nlp.scenes.moves.Move;
+public class PickUpMove implements Move {
 
-public class Scene {
+	public PickUpMove(Position from) {
+		this.from = from;
+	}
 
-	public int number;
-	public WorldModel before;
-	public WorldModel after;
-	public List<Move> moves;
+	public final Position from;
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof PickUpMove)) {
+			return false;
+		}
+		PickUpMove m = (PickUpMove) object;
+		return m.from.equals(from);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		text.append("PickUp: ");
+		text.append(from);
+		return text.toString();
+	}
 }

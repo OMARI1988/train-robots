@@ -21,16 +21,65 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.nlp.scenes.Color;
-import com.trainrobots.nlp.scenes.Move;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;
 import com.trainrobots.nlp.scenes.WorldModel;
+import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.Move;
+import com.trainrobots.nlp.scenes.moves.PickUpMove;
 import com.trainrobots.nlp.trees.Node;
 
 public class Agent {
 
 	public static List<Move> getMoves(WorldModel world, Node node) {
+
+		// Pick-up move.
+		Move pickUpMove = getPickUpMove(world, node);
+		if (pickUpMove != null) {
+			List<Move> moves = new ArrayList<Move>();
+			moves.add(pickUpMove);
+			return moves;
+		}
+
+		// Direct move.
+		Move directMove = getDirectMove(world, node);
+		if (directMove != null) {
+			List<Move> moves = new ArrayList<Move>();
+			moves.add(directMove);
+			return moves;
+		}
+
+		// No match.
+		return null;
+	}
+
+	private static Move getPickUpMove(WorldModel world, Node node) {
+
+		if (!node.hasTag("Command")) {
+			return null;
+		}
+
+		String action = node.getValue("Action");
+		if (!action.equals("pick-up") && !action.equals("take")
+				&& !action.equals("grab")) {
+			return null;
+		}
+
+		Node object = node.getChild("Object");
+		if (object == null) {
+			return null;
+		}
+
+		Shape shape = getShape(world, object);
+		if (shape == null) {
+			return null;
+		}
+
+		return new PickUpMove(shape.position);
+	}
+
+	private static Move getDirectMove(WorldModel world, Node node) {
 
 		if (!node.hasTag("Command")) {
 			return null;
@@ -69,9 +118,7 @@ public class Agent {
 		Position p1 = shape.position;
 		Position p2 = shape2.position.add(0, 0, 1);
 
-		List<Move> moves = new ArrayList<Move>();
-		moves.add(new Move(p1, p2));
-		return moves;
+		return new DirectMove(p1, p2);
 	}
 
 	public static Shape getShape(WorldModel model, Node node) {

@@ -15,16 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.scenes.moves;
 
-import java.util.List;
-
-import com.trainrobots.nlp.scenes.moves.Move;
-
-public class Scene {
-
-	public int number;
-	public WorldModel before;
-	public WorldModel after;
-	public List<Move> moves;
+public interface Move {
 }

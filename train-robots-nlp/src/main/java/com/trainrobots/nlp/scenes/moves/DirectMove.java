@@ -15,11 +15,13 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.scenes.moves;
 
-public class Move {
+import com.trainrobots.nlp.scenes.Position;
 
-	public Move(Position from, Position to) {
+public class DirectMove implements Move {
+
+	public DirectMove(Position from, Position to) {
 		this.from = from;
 		this.to = to;
 	}
@@ -29,7 +31,10 @@ public class Move {
 
 	@Override
 	public boolean equals(Object object) {
-		Move m = (Move) object;
+		if (!(object instanceof DirectMove)) {
+			return false;
+		}
+		DirectMove m = (DirectMove) object;
 		return m.from.equals(from) && m.to.equals(to);
 	}
 

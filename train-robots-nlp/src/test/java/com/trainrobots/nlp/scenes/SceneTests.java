@@ -23,17 +23,32 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.Move;
+import com.trainrobots.nlp.scenes.moves.PickUpMove;
+
 public class SceneTests {
 
 	@Test
-	public void shouldIdentifyMoves() {
+	public void shouldIdentifyDirectMove() {
 
 		Scene scene = SceneManager.getScene(897);
 		List<Move> moves = scene.moves;
 		assertEquals(moves.size(), 1);
 
-		Move move = moves.get(0);
+		DirectMove move = (DirectMove) moves.get(0);
 		assertEquals(move.from, new Position(3, 6, 2));
 		assertEquals(move.to, new Position(6, 7, 1));
+	}
+
+	@Test
+	public void shouldIdentifyPickUpMove() {
+
+		Scene scene = SceneManager.getScene(503);
+		List<Move> moves = scene.moves;
+		assertEquals(moves.size(), 1);
+
+		PickUpMove move = (PickUpMove) moves.get(0);
+		assertEquals(move.from, new Position(2, 1, 3));
 	}
 }

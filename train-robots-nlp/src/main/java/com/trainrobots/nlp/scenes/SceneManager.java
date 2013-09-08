@@ -24,6 +24,9 @@ import com.trainrobots.core.CoreException;
 import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
+import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.Move;
+import com.trainrobots.nlp.scenes.moves.PickUpMove;
 
 public class SceneManager {
 
@@ -100,7 +103,12 @@ public class SceneManager {
 			if (moves == null) {
 				moves = new ArrayList<Move>();
 			}
-			moves.add(new Move(s1.position, s2.position));
+			if (s2.position.z > 0
+					&& after.getShape(s2.position.add(0, 0, -1)) == null) {
+				moves.add(new PickUpMove(s1.position));
+			} else {
+				moves.add(new DirectMove(s1.position, s2.position));
+			}
 		}
 		return moves;
 	}

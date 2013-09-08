@@ -30,12 +30,12 @@ import com.trainrobots.nlp.commands.Command;
 import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.scenes.Color;
-import com.trainrobots.nlp.scenes.Move;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;
+import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.trees.Node;
 
 public class AgentTests {
@@ -127,11 +127,11 @@ public class AgentTests {
 		nf.setMaximumFractionDigits(2);
 
 		double p = 100 * valid / (double) total;
-		System.out.println("Score: " + valid + " / " + total + " = "
+		System.out.println("Success: " + valid + " / " + total + " = "
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(180, valid);
+		assertEquals(318, valid);
 		assertEquals(6195, total);
 	}
 
