@@ -17,10 +17,12 @@
 
 package com.trainrobots.nlp.scenes;
 
-import com.trainrobots.core.configuration.Configuration;
+import java.util.List;
 
 public class Scene {
 
-	public Configuration before;
-	public Configuration after;
+	public int sceneNumber;
+	public WorldModel before;
+	public WorldModel after;
+	public List<Move> moves;
 }

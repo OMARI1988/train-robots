@@ -15,25 +15,14 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.agent;
 
-import static org.junit.Assert.assertEquals;
+import com.trainrobots.nlp.scenes.Move;
+import com.trainrobots.nlp.scenes.WorldModel;
 
-import java.util.List;
+public class Agent {
 
-import org.junit.Test;
-
-public class SceneTests {
-
-	@Test
-	public void shouldIdentifyMoves() {
-
-		Scene scene = SceneManager.getScene(897);
-		List<Move> moves = scene.moves;
-		assertEquals(moves.size(), 1);
-
-		Move move = moves.get(0);
-		assertEquals(move.from, new Position(3, 6, 2));
-		assertEquals(move.to, new Position(6, 7, 1));
+	public static Move getMove(WorldModel world, String text) {
+		return null;
 	}
 }

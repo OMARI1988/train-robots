@@ -17,23 +17,13 @@
 
 package com.trainrobots.nlp.scenes;
 
-import static org.junit.Assert.assertEquals;
+public class Move {
 
-import java.util.List;
-
-import org.junit.Test;
-
-public class SceneTests {
-
-	@Test
-	public void shouldIdentifyMoves() {
-
-		Scene scene = SceneManager.getScene(897);
-		List<Move> moves = scene.moves;
-		assertEquals(moves.size(), 1);
-
-		Move move = moves.get(0);
-		assertEquals(move.from, new Position(3, 6, 2));
-		assertEquals(move.to, new Position(6, 7, 1));
+	public Move(Position from, Position to) {
+		this.from = from;
+		this.to = to;
 	}
+
+	public final Position from;
+	public final Position to;
 }

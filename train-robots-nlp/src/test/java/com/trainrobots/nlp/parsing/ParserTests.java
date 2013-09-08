@@ -105,7 +105,8 @@ public class ParserTests {
 		for (Command command : Corpus.getCommands()) {
 
 			// Command.
-			writer.writeLine("// " + command.id + ": " + command.text);
+			writer.writeLine("// Command " + command.id + ": " + command.text);
+			writer.writeLine("// Scene " + command.sceneNumber);
 			writer.writeLine();
 
 			// Parse.
