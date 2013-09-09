@@ -23,26 +23,25 @@ import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.trainrobots.ui.services.DataService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.MainWindow;
 
-public class SaveCommand extends AbstractAction {
+public class SaveConfigurationCommand extends AbstractAction {
 
-	private final DataService dataService;
 	private final WindowService windowService;
 
 	@Inject
-	public SaveCommand(DataService dataService, WindowService windowService) {
-		this.dataService = dataService;
+	public SaveConfigurationCommand(WindowService windowService) {
 		this.windowService = windowService;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		MainWindow window = windowService.getMainWindow();
-		window.getSceneView().update();
-		dataService.save();
-		JOptionPane.showMessageDialog(window, "Data saved successfully.");
+		JOptionPane
+				.showMessageDialog(window, "This command has been disabled.");
+		// window.getSceneView().update();
+		// dataService.save();
+		// JOptionPane.showMessageDialog(window, "Data saved successfully.");
 	}
 }

@@ -20,20 +20,20 @@ package com.trainrobots.ui.menus;
 import javax.inject.Inject;
 
 import com.trainrobots.ui.commands.ExitCommand;
-import com.trainrobots.ui.commands.SaveCommand;
+import com.trainrobots.ui.commands.SaveConfigurationCommand;
 
 public class FileMenu extends Menu {
 
 	@Inject
-	public FileMenu(SaveCommand saveCommand, ExitCommand exitCommand) {
+	public FileMenu(SaveConfigurationCommand saveConfigurationCommand, ExitCommand exitCommand) {
 
 		// Initiate.
 		setText("File");
 		setMnemonic('F');
 
 		// Items.
-		addItem("Save", null, saveCommand);
-		addSeparator();
+		//addItem("Save Configuration", null, saveConfigurationCommand);
+		//addSeparator();
 		addItem("Exit", "x", exitCommand);
 	}
 }
