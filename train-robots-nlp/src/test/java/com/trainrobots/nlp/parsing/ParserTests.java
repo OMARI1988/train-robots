@@ -56,7 +56,7 @@ public class ParserTests {
 		Node node = Parser.parse("the top left corner");
 		assertEquals(
 				node,
-				Node.fromString("(entity: (attribute: top) (attribute: left) (type: corner))"));
+				Node.fromString("(entity: (location-attribute: top) (location-attribute: left) (type: corner))"));
 	}
 
 	@Test

@@ -104,7 +104,7 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(399, valid);
+		assertEquals(398, valid);
 		assertEquals(7005, total);
 	}
 

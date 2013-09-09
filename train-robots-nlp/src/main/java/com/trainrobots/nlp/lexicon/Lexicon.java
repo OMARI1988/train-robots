@@ -50,8 +50,8 @@ public class Lexicon {
 		add("arm", "(entity: (type: arm))");
 		add("at", "(spatial-indicator: at)");
 		add("away", "(attribute: away)");
-		add("back", "(attribute: back)");
-		add("backwards", "(attribute: back)");
+		add("back", "(location-attribute: back)");
+		add("backwards", "(location-attribute: back)");
 		add("be", "(copula: be)");
 		add("behind", "(spatial-indicator: behind)");
 		add("below", "(spatial-indicator: below)");
@@ -65,7 +65,7 @@ public class Lexicon {
 		add("board", "(entity: (type: board))");
 		add("bock", "(entity: (type: cube))");
 		add("border", "(entity: (type: edge))");
-		add("bottom", "(attribute: back)");
+		add("bottom", "(location-attribute: back)");
 		add("box", "(entity: (type: cube))");
 		add("brick", "(entity: (type: cube))");
 		add("bricks", "(entity: (type: cube) (number: plural))");
@@ -75,7 +75,7 @@ public class Lexicon {
 		add("cells", "(entity: (type: tile) (number: plural))");
 		add("center", "(entity: (type: center))");
 		add("centre", "(entity: (type: center))");
-		add("central", "(attribute: central)");
+		add("central", "(location-attribute: central)");
 		add("close", "(spatial-indicator: near)");
 		add("closer", "(spatial-indicator: near)");
 		add("closest", "(spatial-indicator: nearest)");
@@ -96,9 +96,8 @@ public class Lexicon {
 		add("direction", "(spatial-indicator: direction)");
 		add("directly", "(attribute: direct)");
 		add("do", "(event: (action: do))");
-		add("down", "(attribute: down)");
+		add("down", "(location-attribute: down)");
 		add("drop", "(event: (action: drop))");
-		add("east", "(attribute: east)");
 		add("edge", "(entity: (type: edge))");
 		add("edges", "(entity: (type: edges) (number: plural))");
 		add("elevation", "(entity: (type: elevation))");
@@ -110,11 +109,11 @@ public class Lexicon {
 		add("five", "(cardinal: 5)");
 		add("fifth", "(ordinal: 5)");
 		add("floor", "(entity: (type: board))");
-		add("forward", "(attribute: forward)");
+		add("forward", "(location-attribute: forward)");
 		add("four", "(cardinal: 4)");
 		add("fourth", "(ordinal: 4)");
 		add("from", "(spatial-indicator: from)");
-		add("front", "(attribute: front)");
+		add("front", "(location-attribute: front)");
 		add("furthest", "(spatial-indicator: furthest)");
 		add("grab", "(event: (action: grab))");
 		add("gray", "(color: gray)");
@@ -134,7 +133,7 @@ public class Lexicon {
 		add("it's", "(contraction: it is)");
 		add("its", "(possessive: its)");
 		add("last", "(attribute: last)");
-		add("left", "(attribute: left)");
+		add("left", "(location-attribute: left)");
 		add("leftmost", "(attribute: leftmost)");
 		add("lift", "(event: (action: lift))");
 		add("light", "(attribute: light)");
@@ -183,7 +182,7 @@ public class Lexicon {
 		add("rd", "(color: red)");
 		add("remote", "(attribute: remote)");
 		add("remove", "(event: (action: remove))");
-		add("right", "(attribute: right)");
+		add("right", "(location-attribute: right)");
 		add("rightmost", "(spatial-indicator: rightmost)");
 		add("robot", "(entity: (type: robot))");
 		add("row", "(entity: (type: row))");
@@ -201,7 +200,6 @@ public class Lexicon {
 		add("sky", "(color: cyan)");
 		add("slab", "(entity: (type: stack))");
 		add("smallest", "(attribute: smallest)");
-		add("south", "(attribute: south)");
 		add("space", "(entity: (type: space))");
 		add("spaces", "(entity: (type: tile) (number: plural))");
 		add("square", "(entity: (type: tile))");
