@@ -50,7 +50,7 @@ public class AgentTests {
 	public void shouldProcessCorpus() {
 
 		// File.
-		FileWriter writer = new FileWriter("c:/temp/agent.html");
+		FileWriter writer = new FileWriter("c:/temp/agent.txt");
 		String[] types = { "Failed", "Success", "Mismatch" };
 
 		// Process.
@@ -79,24 +79,12 @@ public class AgentTests {
 			}
 
 			// Write.
-			switch (category) {
-			case 0:
-				writer.writeLine("<pre>");
-				break;
-			case 1:
-				writer.writeLine("<pre style='color:blue'>");
-				break;
-			case 2:
-				writer.writeLine("<pre style='color:red'>");
-				break;
-			}
 			writer.writeLine("// Command " + command.id + ": " + text);
 			writer.writeLine("// Scene " + scene.number + ": "
 					+ types[category]);
 			writer.writeLine();
 			writer.writeLine(node.format());
 			writer.writeLine();
-			writer.writeLine("</pre>");
 
 			// Increment.
 			if (category == 1) {
@@ -116,7 +104,7 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(382, valid);
+		assertEquals(399, valid);
 		assertEquals(7005, total);
 	}
 

@@ -35,27 +35,35 @@ public class Agent {
 
 	public static List<Move> getMoves(WorldModel world, Node node) {
 
-		// Pick-up move.
-		Move pickUpMove = getPickUpMove(world, node);
-		if (pickUpMove != null) {
-			List<Move> moves = new ArrayList<Move>();
-			moves.add(pickUpMove);
-			return moves;
+		Move move = getMove(world, node);
+		if (move == null) {
+			return null;
 		}
 
-		// Direct move.
-		Move directMove = getDirectMove(world, node);
-		if (directMove != null) {
-			List<Move> moves = new ArrayList<Move>();
-			moves.add(directMove);
-			return moves;
+		List<Move> moves = new ArrayList<Move>();
+		moves.add(move);
+		return moves;
+	}
+
+	private static Move getMove(WorldModel world, Node node) {
+
+		// Pick-up.
+		Move move = mapPickUpCommand(world, node);
+		if (move != null) {
+			return move;
+		}
+
+		// Move/above.
+		move = mapMoveAboveCommand(world, node);
+		if (move != null) {
+			return move;
 		}
 
 		// No match.
 		return null;
 	}
 
-	private static Move getPickUpMove(WorldModel world, Node node) {
+	private static Move mapPickUpCommand(WorldModel world, Node node) {
 
 		if (!node.hasTag("Command")) {
 			return null;
@@ -72,14 +80,14 @@ public class Agent {
 			return null;
 		}
 
-		Position position = mapObjectToPosition(world, object);
+		Position position = mapObjectToPosition(world, object, false);
 		if (position == null) {
 			return null;
 		}
 		return new PickUpMove(position);
 	}
 
-	private static Move getDirectMove(WorldModel world, Node node) {
+	private static Move mapMoveAboveCommand(WorldModel world, Node node) {
 
 		if (!node.hasTag("Command")) {
 			return null;
@@ -87,7 +95,7 @@ public class Agent {
 
 		String action = node.getValue("Action");
 		if (!action.equals("move") && !action.equals("place")
-				&& !action.equals("put")) {
+				&& !action.equals("put") && !action.equals("drop")) {
 			return null;
 		}
 
@@ -96,7 +104,7 @@ public class Agent {
 			return null;
 		}
 
-		Position position = mapObjectToPosition(world, object);
+		Position position = mapObjectToPosition(world, object, true);
 		if (position == null) {
 			return null;
 		}
@@ -105,20 +113,27 @@ public class Agent {
 		if (spatialIndicator == null) {
 			return null;
 		}
-		if (!spatialIndicator.hasLeaf("above")) {
-			return null;
-		}
-
-		Node object2 = spatialIndicator.getChild("Object");
-		Position position2 = mapObjectToPosition(world, object2);
+		Position position2 = mapSpatialIndicator(world, spatialIndicator);
 		if (position2 == null) {
 			return null;
 		}
-
-		return new DirectMove(position, position2.add(0, 0, 1));
+		return new DirectMove(position, position2);
 	}
 
-	private static Position mapObjectToPosition(WorldModel world, Node node) {
+	private static Position mapSpatialIndicator(WorldModel world, Node node) {
+		if (!node.hasLeaf("above")) {
+			return null;
+		}
+		Node object = node.getChild("Object");
+		Position position = mapObjectToPosition(world, object, false);
+		if (position == null) {
+			return null;
+		}
+		return position.add(0, 0, 1);
+	}
+
+	private static Position mapObjectToPosition(WorldModel world, Node node,
+			boolean prioritizeGripper) {
 
 		// Color.
 		Color color = getObjectColor(node);
@@ -126,12 +141,14 @@ public class Agent {
 		// Cube.
 		String value = node.getValue("Type");
 		if (value.equals("cube")) {
-			return mapShapeToPosition(world, ShapeType.Cube, color);
+			return mapShapeToPosition(world, ShapeType.Cube, color,
+					prioritizeGripper);
 		}
 
 		// Prism.
 		if (value.equals("prism")) {
-			return mapShapeToPosition(world, ShapeType.Prism, color);
+			return mapShapeToPosition(world, ShapeType.Prism, color,
+					prioritizeGripper);
 		}
 
 		// Stack.
@@ -178,7 +195,18 @@ public class Agent {
 	}
 
 	private static Position mapShapeToPosition(WorldModel world,
-			ShapeType type, Color color) {
+			ShapeType type, Color color, boolean prioritizeGripper) {
+
+		// Gripper?
+		if (prioritizeGripper) {
+			Shape shape = world.getShapeInGripper();
+			if (shape != null && (color == null || shape.color == color)
+					&& shape.type == type) {
+				return shape.position;
+			}
+		}
+
+		// Search the board.
 		Shape result = null;
 		for (Shape shape : world.shapes()) {
 			if ((color == null || shape.color == color) && shape.type == type

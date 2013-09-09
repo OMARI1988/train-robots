@@ -43,6 +43,10 @@ public class WorldModel {
 		return map.get(getKey(position));
 	}
 
+	public Shape getShapeInGripper() {
+		return getShape(arm);
+	}
+
 	public Iterable<Shape> shapes() {
 		return shapes;
 	}
