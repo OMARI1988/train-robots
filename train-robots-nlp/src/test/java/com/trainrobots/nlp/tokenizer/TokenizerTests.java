@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.trainrobots.nlp.commands.Command;
+import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.trees.Node;
 
 public class TokenizerTests {
@@ -86,5 +88,21 @@ public class TokenizerTests {
 		assertEquals(
 				Tokenizer.getTokens("4 PLUS 26"),
 				Node.fromString("(Tokens (Cardinal 4) (Text plus) (Cardinal 26))"));
+	}
+
+	@Test
+	public void souldTokenizeCorpus() {
+		int count = 0;
+		for (Command command : Corpus.getCommands()) {
+			Node tokens = Tokenizer.getTokens(command.text);
+			for (Node token : tokens.children) {
+				if (token.hasTag("Text") || token.hasTag("Cardinal")
+						|| token.hasTag("Ordinal")) {
+					count++;
+				}
+			}
+		}
+		System.out.println("Word count: " + count);
+		assertEquals(count, 99566);
 	}
 }

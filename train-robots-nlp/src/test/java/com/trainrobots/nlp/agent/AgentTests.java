@@ -116,8 +116,8 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(352, valid);
-		assertEquals(6194, total);
+		assertEquals(382, valid);
+		assertEquals(7005, total);
 	}
 
 	private boolean match(List<Move> moves1, List<Move> moves2) {
