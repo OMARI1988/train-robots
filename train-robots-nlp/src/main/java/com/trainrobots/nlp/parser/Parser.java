@@ -37,7 +37,7 @@ public class Parser {
 	}
 
 	public static Node parse(boolean verbose, String text) {
-		Node node = new Node("Sentences");
+		Node node = new Node("unknown-sequence:");
 		List<Node> sentences = Tagger.getSentences(text);
 		for (Node sentence : sentences) {
 			Parser parser = new Parser(verbose, sentence);
@@ -81,7 +81,7 @@ public class Parser {
 			Node right = list.get(i + 1);
 			Node right2 = list.get(i + 2);
 
-			// Attribute Conjunction Attribute
+			// attribute: conjunction: attribute:
 			if (conjunction(node) && attribute(right)) {
 				return Action.left(i);
 			}
@@ -89,39 +89,32 @@ public class Parser {
 				return Action.left(i);
 			}
 
-			if ((attribute(node) || ordinal(node)) && object(right)) {
+			// Attach attribute: or ordinal: to entity:
+			if ((attribute(node) || ordinal(node) || cardinal(node))
+					&& entity(right)) {
 				return Action.right(i);
 			}
 
-			if (cardinal(node) && object(right)) {
-				return Action.right(i);
-			}
-
-			if (description(node) && object(right)) {
-				return Action.right(i);
-			}
-
-			if (command(node) && object(right)) {
+			// Attach entity: or anaphor: to event:
+			if (event(node) && (entity(right) || anaphor(right))) {
 				return Action.left(i);
 			}
 
-			if (command(node) && anaphor(right)) {
+			// Attach entity: to spatial-indicator:
+			if (spatialIndicator(node) && entity(right)) {
 				return Action.left(i);
 			}
 
-			if (spatialIndicator(node) && object(right)) {
+			// Attach spatial-indicator: to event:
+			if (event(node) && spatialIndicator(right) && right2 == null) {
 				return Action.left(i);
 			}
 
-			if (command(node) && spatialIndicator(right) && right2 == null) {
+			// event: conjunction: event:
+			if (conjunction(node) && event(right) && right2 == null) {
 				return Action.left(i);
 			}
-
-			// Command Conjunction Command
-			if (conjunction(node) && command(right) && right2 == null) {
-				return Action.left(i);
-			}
-			if (command(node) && conjunction(right) && right2 == null) {
+			if (event(node) && conjunction(right) && right2 == null) {
 				return Action.left(i);
 			}
 		}
@@ -136,46 +129,43 @@ public class Parser {
 		}
 
 		// Multiple nodes.
-		Node node = new Node("Sentence");
+		Node node = new Node("unknown:");
 		for (Node child : list) {
 			node.add(child);
 		}
 		return node;
 	}
 
-	private static boolean command(Node node) {
-		return node != null && node.tag.equals("Command");
-	}
-
-	private static boolean description(Node node) {
-		return node != null && node.tag.equals("Description");
+	private static boolean event(Node node) {
+		return node != null && node.tag.equals("event:");
 	}
 
 	private static boolean attribute(Node node) {
-		return node != null && node.tag.equals("Attribute");
+		return node != null
+				&& (node.tag.equals("attribute:") || node.tag.equals("color:"));
 	}
 
 	private static boolean ordinal(Node node) {
-		return node != null && node.tag.equals("Ordinal");
+		return node != null && node.tag.equals("ordinal:");
 	}
 
 	private static boolean cardinal(Node node) {
-		return node != null && node.tag.equals("Cardinal");
+		return node != null && node.tag.equals("cardinal:");
 	}
 
-	private static boolean object(Node node) {
-		return node != null && node.tag.equals("Object");
+	private static boolean entity(Node node) {
+		return node != null && node.tag.equals("entity:");
 	}
 
 	private static boolean spatialIndicator(Node node) {
-		return node != null && node.tag.equals("SpatialIndicator");
+		return node != null && node.tag.equals("spatial-indicator:");
 	}
 
 	private static boolean anaphor(Node node) {
-		return node != null && node.tag.equals("Anaphor");
+		return node != null && node.tag.equals("anaphor:");
 	}
 
 	private static boolean conjunction(Node node) {
-		return node != null && node.tag.equals("Conjunction");
+		return node != null && node.tag.equals("conjunction:");
 	}
 }

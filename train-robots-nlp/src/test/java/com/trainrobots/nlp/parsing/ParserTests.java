@@ -31,7 +31,7 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action pick-up) (Object (Description definite) (Attribute blue) (Type prism)))"));
+				Node.fromString("(event: (action: pick-up) (entity: (color: blue) (type: prism)))"));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class ParserTests {
 				.parse("Place the blue block on top of the red block.");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action place) (Object (Description definite) (Attribute blue) (Type cube)) (SpatialIndicator above (Object (Description definite) (Attribute red) (Type cube))))"));
+				Node.fromString("(event: (action: place) (entity: (color: blue) (type: cube)) (spatial-indicator: above (entity: (color: red) (type: cube))))"));
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class ParserTests {
 		Node node = Parser.parse("white blocks");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Attribute white) (Type cube) (Number plural))"));
+				Node.fromString("(entity: (color: white) (type: cube) (number: plural))"));
 	}
 
 	@Test
@@ -56,14 +56,14 @@ public class ParserTests {
 		Node node = Parser.parse("the top left corner");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Description definite) (Attribute top) (Attribute left) (Type corner))"));
+				Node.fromString("(entity: (attribute: top) (attribute: left) (type: corner))"));
 	}
 
 	@Test
 	public void shouldParse5() {
 		Node node = Parser.parse("move it");
 		assertEquals(node,
-				Node.fromString("(Command (Action move) (Anaphor it))"));
+				Node.fromString("(event: (action: move) (anaphor: it))"));
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class ParserTests {
 		Node node = Parser.parse("the 3rd tile");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Description definite) (Ordinal 3) (Type tile))"));
+				Node.fromString("(entity: (ordinal: 3) (type: tile))"));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class ParserTests {
 		Node node = Parser.parse("the yellow and purple blocks");
 		assertEquals(
 				node,
-				Node.fromString("(Object (Description definite) (Attribute yellow (Conjunction and (Attribute magenta))) (Type cube) (Number plural))"));
+				Node.fromString("(entity: (color: yellow (conjunction: and (color: magenta))) (type: cube) (number: plural))"));
 	}
 
 	@Test
@@ -87,6 +87,6 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up and hold the yellow pyramid");
 		assertEquals(
 				node,
-				Node.fromString("(Command (Action pick-up) (Conjunction and (Command (Action hold) (Object (Description definite) (Attribute yellow) (Type prism)))))"));
+				Node.fromString("(event: (action: pick-up) (conjunction: and (event: (action: hold) (entity: (color: yellow) (type: prism)))))"));
 	}
 }

@@ -29,8 +29,12 @@ public class TaggerTests {
 
 	@Test
 	public void shouldTagSentence() {
-		List<Node> sentences = Tagger
-				.getSentences("Move the red block to the left bottom corner");
+
+		// Text.
+		String text = "Move the red block to the left bottom corner";
+
+		// Tag.
+		List<Node> sentences = Tagger.getSentences(text);
 		assertEquals(1, sentences.size());
 	}
 }

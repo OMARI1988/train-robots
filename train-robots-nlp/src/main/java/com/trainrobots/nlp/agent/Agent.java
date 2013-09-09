@@ -65,17 +65,17 @@ public class Agent {
 
 	private static Move mapPickUpCommand(WorldModel world, Node node) {
 
-		if (!node.hasTag("Command")) {
+		if (!node.hasTag("event:")) {
 			return null;
 		}
 
-		String action = node.getValue("Action");
+		String action = node.getValue("action:");
 		if (!action.equals("pick-up") && !action.equals("take")
 				&& !action.equals("grab")) {
 			return null;
 		}
 
-		Node object = node.getChild("Object");
+		Node object = node.getChild("entity:");
 		if (object == null) {
 			return null;
 		}
@@ -89,17 +89,17 @@ public class Agent {
 
 	private static Move mapMoveAboveCommand(WorldModel world, Node node) {
 
-		if (!node.hasTag("Command")) {
+		if (!node.hasTag("event:")) {
 			return null;
 		}
 
-		String action = node.getValue("Action");
+		String action = node.getValue("action:");
 		if (!action.equals("move") && !action.equals("place")
 				&& !action.equals("put") && !action.equals("drop")) {
 			return null;
 		}
 
-		Node object = node.getChild("Object");
+		Node object = node.getChild("entity:");
 		if (object == null) {
 			return null;
 		}
@@ -109,7 +109,7 @@ public class Agent {
 			return null;
 		}
 
-		Node spatialIndicator = node.getChild("SpatialIndicator");
+		Node spatialIndicator = node.getChild("spatial-indicator:");
 		if (spatialIndicator == null) {
 			return null;
 		}
@@ -124,7 +124,7 @@ public class Agent {
 		if (!node.hasLeaf("above")) {
 			return null;
 		}
-		Node object = node.getChild("Object");
+		Node object = node.getChild("entity:");
 		Position position = mapObjectToPosition(world, object, false);
 		if (position == null) {
 			return null;
@@ -139,7 +139,7 @@ public class Agent {
 		Color color = getObjectColor(node);
 
 		// Cube.
-		String value = node.getValue("Type");
+		String value = node.getValue("type:");
 		if (value.equals("cube")) {
 			return mapShapeToPosition(world, ShapeType.Cube, color,
 					prioritizeGripper);
@@ -222,7 +222,7 @@ public class Agent {
 
 	private static Color getObjectColor(Node node) {
 		for (Node child : node.children) {
-			if (child.hasTag("Attribute")) {
+			if (child.hasTag("color:")) {
 				String attribute = child.getValue();
 				if (attribute.equals("blue")) {
 					return Color.Blue;

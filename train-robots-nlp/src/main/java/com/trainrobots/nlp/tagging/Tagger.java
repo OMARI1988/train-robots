@@ -31,82 +31,83 @@ public class Tagger {
 
 	static {
 
-		add("left hand", "(Attribute left)");
-		add("right hand", "(Attribute right)");
-		add("far right", "(Attribute far) (Attribute right)");
+		add("left hand", "(attribute: left)");
+		add("right hand", "(attribute: right)");
+		add("far right", "(attribute: far) (attribute: right)");
 
-		add("pick up", "(Command (Action pick-up))");
+		add("pick up", "(event: (action: pick-up))");
 
 		add("to the left bottom corner",
-				"(SpatialIndicator to (Object (Description definite) (Attribute left) (Attribute back) (Type corner)))");
+				"(spatial-indicator: to (entity: (attribute: left) (attribute: back) (type: corner)))");
 
 		add("to the top left corner",
-				"(SpatialIndicator to (Object (Description definite) (Attribute top) (Attribute left) (Type corner)))");
+				"(spatial-indicator: to (entity: (attribute: top) (attribute: left) (type: corner)))");
 
 		add("the left bottom corner",
-				"(Object (Description definite) (Attribute left) (Attribute back) (Type corner))");
+				"(entity: (attribute: left) (attribute: back) (type: corner))");
 
 		add("the top left corner",
-				"(Object (Description definite) (Attribute top) (Attribute left) (Type corner))");
+				"(entity: (attribute: top) (attribute: left) (type: corner))");
 
-		add("right in", "(SpatialIndicator in)");
+		add("right in", "(spatial-indicator: in)");
 
-		add("on top of", "(SpatialIndicator above)");
-		add("the top of", "(SpatialIndicator above)");
-		add("on to", "(SpatialIndicator above)");
+		add("on top of", "(spatial-indicator: above)");
+		add("the top of", "(spatial-indicator: above)");
+		add("on to", "(spatial-indicator: above)");
 
-		add("the nearest", "(Description definite) (Attribute nearest)");
-		add("the farthest", "(Description definite) (Attribute furthest)");
-		add("the furthest", "(Description definite) (Attribute furthest)");
+		add("the nearest", "(attribute: nearest)");
+		add("the farthest", "(attribute: furthest)");
+		add("the furthest", "(attribute: furthest)");
 
-		add("in front of", "(SpatialIndicator front)");
+		add("in front of", "(spatial-indicator: front)");
 
-		add("to right of", "(SpatialIndicator right)");
-		add("to left of", "(SpatialIndicator left)");
-		add("to the right of", "(SpatialIndicator right)");
-		add("to the left of", "(SpatialIndicator left)");
-		add("to the position of", "(SpatialIndicator at)");
-		add("to the position", "(SpatialIndicator at)");
-		add("to your right", "(SpatialIndicator right)");
-		add("to your left", "(SpatialIndicator left)");
-		add("to the right", "(SpatialIndicator right)");
-		add("to the left", "(SpatialIndicator left)");
-		add("to right", "(SpatialIndicator right)");
-		add("to left", "(SpatialIndicator left)");
+		add("to right of", "(spatial-indicator: right)");
+		add("to left of", "(spatial-indicator: left)");
+		add("to the right of", "(spatial-indicator: right)");
+		add("to the left of", "(spatial-indicator: left)");
+		add("to the position of", "(spatial-indicator: at)");
+		add("to the position", "(spatial-indicator: at)");
+		add("to your right", "(spatial-indicator: right)");
+		add("to your left", "(spatial-indicator: left)");
+		add("to the right", "(spatial-indicator: right)");
+		add("to the left", "(spatial-indicator: left)");
+		add("to right", "(spatial-indicator: right)");
+		add("to left", "(spatial-indicator: left)");
 
-		add("on right of", "(SpatialIndicator right)");
-		add("on left of", "(SpatialIndicator left)");
-		add("on the right of", "(SpatialIndicator right)");
-		add("on the left of", "(SpatialIndicator left)");
-		add("on the position of", "(SpatialIndicator at)");
-		add("on the position", "(SpatialIndicator at)");
-		add("on your right", "(SpatialIndicator right)");
-		add("on your left", "(SpatialIndicator left)");
-		add("on the right", "(SpatialIndicator right)");
-		add("on the left", "(SpatialIndicator left)");
-		add("on right", "(SpatialIndicator right)");
-		add("on left", "(SpatialIndicator left)");
+		add("on right of", "(spatial-indicator: right)");
+		add("on left of", "(spatial-indicator: left)");
+		add("on the right of", "(spatial-indicator: right)");
+		add("on the left of", "(spatial-indicator: left)");
+		add("on the position of", "(spatial-indicator: at)");
+		add("on the position", "(spatial-indicator: at)");
+		add("on your right", "(spatial-indicator: right)");
+		add("on your left", "(spatial-indicator: left)");
+		add("on the right", "(spatial-indicator: right)");
+		add("on the left", "(spatial-indicator: left)");
+		add("on right", "(spatial-indicator: right)");
+		add("on left", "(spatial-indicator: left)");
 
-		add("close to", "(SpatialIndicator near)");
-		add("closest to", "(SpatialIndicator nearest)");
-		add("near to", "(SpatialIndicator near)");
-		add("nearest to", "(SpatialIndicator nearest)");
-		add("next to", "(SpatialIndicator adjacent)");
-		add("furthest from", "(SpatialIndicator furthest)");
-		add("furthest away", "(SpatialIndicator furthest)");
-		add("furthest away from", "(SpatialIndicator furthest)");
-		add("farthest from", "(SpatialIndicator furthest)");
-		add("farthest away", "(SpatialIndicator furthest)");
-		add("farthest away from", "(SpatialIndicator furthest)");
-		add("that is", "(Link that-is)");
-		add("which is", "(Link that-is)");
-		add("in between", "(SpatialIndicator between)");
-		add("light blue", "(Attribute cyan)");
-		add("sky blue", "(Attribute cyan)");
-		add("dark blue", "(Attribute blue)");
-		add("deep blue", "(Attribute blue)");
-		add("light gray", "(Attribute white)");
-		add("light grey", "(Attribute white)");
+		add("close to", "(spatial-indicator: near)");
+		add("closest to", "(spatial-indicator: nearest)");
+		add("near to", "(spatial-indicator: near)");
+		add("nearest to", "(spatial-indicator: nearest)");
+		add("next to", "(spatial-indicator: adjacent)");
+		add("furthest from", "(spatial-indicator: furthest)");
+		add("furthest away", "(spatial-indicator: furthest)");
+		add("furthest away from", "(spatial-indicator: furthest)");
+		add("farthest from", "(spatial-indicator: furthest)");
+		add("farthest away", "(spatial-indicator: furthest)");
+		add("farthest away from", "(spatial-indicator: furthest)");
+		add("that is", "(link: that-is)");
+		add("which is", "(link: that-is)");
+		add("in between", "(spatial-indicator: between)");
+
+		add("light blue", "(color: cyan)");
+		add("sky blue", "(color: cyan)");
+		add("dark blue", "(color: blue)");
+		add("deep blue", "(color: blue)");
+		add("light gray", "(color: white)");
+		add("light grey", "(color: white)");
 	}
 
 	private Tagger() {
@@ -132,11 +133,11 @@ public class Tagger {
 		Node sentence = null;
 
 		for (Node token : Tokenizer.getTokens(text).children) {
-			if (token.tag.equals("End")) {
+			if (token.tag.equals("end:")) {
 				sentence = null;
 			} else {
 				if (sentence == null) {
-					sentence = new Node("Sentence");
+					sentence = new Node("sentence:");
 					sentences.add(sentence);
 				}
 				sentence.add(token);
@@ -167,7 +168,7 @@ public class Tagger {
 
 			// Match text.
 			Node node = input.get(i);
-			if (!node.tag.equals("Text")) {
+			if (!node.tag.equals("text:")) {
 				continue;
 			}
 
@@ -175,7 +176,7 @@ public class Tagger {
 			String value = node.getValue();
 			Node match = Lexicon.get(value);
 			if (match == null) {
-				node.tag = "X";
+				node.tag = "unknown:";
 				continue;
 			}
 
@@ -185,7 +186,10 @@ public class Tagger {
 
 		// Clean.
 		for (int i = input.size() - 1; i >= 0; i--) {
-			if (input.get(i).hasTag("Link")) {
+			Node item = input.get(i);
+			if (item.hasTag("link:")
+					|| (item.hasTag("description:") && item.getValue().equals(
+							"definite"))) {
 				input.remove(i);
 			}
 		}

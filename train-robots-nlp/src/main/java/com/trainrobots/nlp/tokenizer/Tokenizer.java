@@ -21,7 +21,7 @@ import com.trainrobots.nlp.trees.Node;
 
 public class Tokenizer {
 
-	private final Node tokens = new Node("Tokens");
+	private final Node tokens = new Node("tokens:");
 	private final String text;
 	private int position;
 
@@ -72,7 +72,7 @@ public class Tokenizer {
 			position++;
 		}
 		String text = this.text.substring(index, position).toLowerCase();
-		return new Node("Text", text);
+		return new Node("text:", text);
 	}
 
 	private Node readNumber() {
@@ -87,11 +87,11 @@ public class Tokenizer {
 		// Suffix?
 		if (hasOrdinalSuffix(text)) {
 			position += 2;
-			return new Node("Ordinal", text);
+			return new Node("ordinal:", text);
 		}
 
 		// Cardinal.
-		return new Node("Cardinal", text);
+		return new Node("cardinal:", text);
 	}
 
 	private boolean hasOrdinalSuffix(String text) {
@@ -121,27 +121,27 @@ public class Tokenizer {
 
 	private Node readPunctuation() {
 		char ch = peek();
-		String tag = "Punctuation";
+		String tag = "punctuation:";
 		switch (ch) {
 		case '.':
 		case '!':
 		case '?':
-			tag = "End";
+			tag = "end:";
 			break;
 		case ',':
-			tag = "Comma";
+			tag = "comma:";
 			break;
 		case '(':
-			tag = "OpenBracket";
+			tag = "open-bracket:";
 			break;
 		case ')':
-			tag = "CloseBracket";
+			tag = "close-bracket:";
 			break;
 		case '-':
-			tag = "Dash";
+			tag = "dash:";
 			break;
 		case '/':
-			tag = "ForwardSlash";
+			tag = "forward-slash:";
 			break;
 		}
 		position++;

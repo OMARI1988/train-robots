@@ -31,63 +31,63 @@ public class TokenizerTests {
 	public void shouldTokenizeWords() {
 		assertEquals(
 				Tokenizer.getTokens("pick up the red block"),
-				Node.fromString("(Tokens (Text pick) (Text up) (Text the) (Text red) (Text block))"));
+				Node.fromString("(tokens: (text: pick) (text: up) (text: the) (text: red) (text: block))"));
 	}
 
 	@Test
 	public void shouldTokenizePunctuation() {
 		assertEquals(
 				Tokenizer.getTokens("you've, row."),
-				Node.fromString("(Tokens (Text you've) (Comma ,) (Text row) (End .))"));
+				Node.fromString("(tokens: (text: you've) (comma: ,) (text: row) (end: .))"));
 	}
 
 	@Test
 	public void shouldTokenizeIsolatedFullStop() {
 		assertEquals(
 				Tokenizer.getTokens("you've, row ."),
-				Node.fromString("(Tokens (Text you've) (Comma ,) (Text row) (End .))"));
+				Node.fromString("(tokens: (text: you've) (comma: ,) (text: row) (end: .))"));
 	}
 
 	@Test
 	public void shouldTokenizeTwoSentences() {
 		assertEquals(
 				Tokenizer.getTokens("A B. C D!"),
-				Node.fromString("(Tokens (Text a) (Text b) (End .) (Text c) (Text d) (End !))"));
+				Node.fromString("(tokens: (text: a) (text: b) (end: .) (text: c) (text: d) (end: !))"));
 	}
 
 	@Test
 	public void shouldTokenizeDashes() {
 		assertEquals(
 				Tokenizer.getTokens("top of red-blue-red tower"),
-				Node.fromString("(Tokens (Text top) (Text of) (Text red) (Dash -) (Text blue) (Dash -) (Text red) (Text tower))"));
+				Node.fromString("(tokens: (text: top) (text: of) (text: red) (dash: -) (text: blue) (dash: -) (text: red) (text: tower))"));
 	}
 
 	@Test
 	public void shouldTokenizeForwardSlash() {
 		assertEquals(
 				Tokenizer.getTokens("red/white column"),
-				Node.fromString("(Tokens (Text red) (ForwardSlash /) (Text white) (Text column))"));
+				Node.fromString("(tokens: (text: red) (forward-slash: /) (text: white) (text: column))"));
 	}
 
 	@Test
 	public void shouldTokenizeCardinals() {
 		assertEquals(
 				Tokenizer.getTokens("4 plus 26"),
-				Node.fromString("(Tokens (Cardinal 4) (Text plus) (Cardinal 26))"));
+				Node.fromString("(tokens: (cardinal: 4) (text: plus) (cardinal: 26))"));
 	}
 
 	@Test
 	public void shouldTokenizeSuffixedOrdinals() {
 		assertEquals(
 				Tokenizer.getTokens("1st 2nd 3rd 4th 5th 6th"),
-				Node.fromString("(Tokens (Ordinal 1) (Ordinal 2) (Ordinal 3) (Ordinal 4) (Ordinal 5) (Ordinal 6))"));
+				Node.fromString("(tokens: (ordinal: 1) (ordinal: 2) (ordinal: 3) (ordinal: 4) (ordinal: 5) (ordinal: 6))"));
 	}
 
 	@Test
 	public void shouldForceLowerCase() {
 		assertEquals(
 				Tokenizer.getTokens("4 PLUS 26"),
-				Node.fromString("(Tokens (Cardinal 4) (Text plus) (Cardinal 26))"));
+				Node.fromString("(tokens: (cardinal: 4) (text: plus) (cardinal: 26))"));
 	}
 
 	@Test
@@ -96,8 +96,8 @@ public class TokenizerTests {
 		for (Command command : Corpus.getCommands()) {
 			Node tokens = Tokenizer.getTokens(command.text);
 			for (Node token : tokens.children) {
-				if (token.hasTag("Text") || token.hasTag("Cardinal")
-						|| token.hasTag("Ordinal")) {
+				if (token.hasTag("text:") || token.hasTag("cardinal:")
+						|| token.hasTag("ordinal:")) {
 					count++;
 				}
 			}
