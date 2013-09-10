@@ -28,6 +28,8 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import com.trainrobots.core.CoreException;
+
 public class MockServletContext implements ServletContext {
 
 	@Override
@@ -55,7 +57,7 @@ public class MockServletContext implements ServletContext {
 		if (name.equals("database-url")) {
 			return "jdbc:mysql://localhost/train_robots?user=java_user&password=Baz80931841";
 		}
-		return null;
+		throw new CoreException("Invalid parameter: " + name);
 	}
 
 	@Override

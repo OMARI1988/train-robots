@@ -20,6 +20,7 @@ package com.trainrobots.web.services;
 import java.util.Properties;
 
 import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -36,45 +37,42 @@ public class MailService {
 		try {
 
 			// Configuration.
-			String smtpHost = context.getInitParameter("smtp-host");
-			int smtpPort = Integer.parseInt(context
+			final String smtpHost = context.getInitParameter("smtp-host");
+			final int smtpPort = Integer.parseInt(context
 					.getInitParameter("smtp-port"));
-			String smtpUser = context.getInitParameter("smtp-user");
-			String smtpPassword = context.getInitParameter("smtp-password");
+			final String smtpUser = context.getInitParameter("smtp-user");
+			final String smtpPassword = context
+					.getInitParameter("smtp-password");
 
 			// Initiate properties.
 			Properties properties = new Properties();
-			properties.put("mail.transport.protocol", "smtps");
-			properties.put("mail.smtps.host", smtpHost);
-			properties.put("mail.smtps.auth", "true");
+			properties.put("mail.smtp.host", smtpHost);
+			properties.put("mail.smtp.socketFactory.port",
+					Integer.toString(smtpPort));
+			properties.put("mail.smtp.socketFactory.class",
+					"javax.net.ssl.SSLSocketFactory");
+			properties.put("mail.smtp.auth", "true");
+			properties.put("mail.smtp.port", Integer.toString(smtpPort));
 
 			// Initiate session.
-			Session mailSession = Session.getDefaultInstance(properties);
-			Transport transport = mailSession.getTransport();
+			Session session = Session.getDefaultInstance(properties,
+					new javax.mail.Authenticator() {
+						protected PasswordAuthentication getPasswordAuthentication() {
+							return new PasswordAuthentication(smtpUser,
+									smtpPassword);
+						}
+					});
 
-			// Create message.
-			MimeMessage message = new MimeMessage(mailSession);
-			message.setSubject(subject);
+			// Message.
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(smtpUser));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					email));
+			message.setSubject(subject);
+			message.setText(body);
 
-			// UTF-8 body.
-			message.setText(body, "UTF-8");
-			message.saveChanges();
-			message.removeHeader("Content-Transfer-Encoding");
-			message.removeHeader("Content-Type");
-			message.addHeader("Content-Transfer-Encoding", "base64");
-			message.addHeader("Content-Type", "text/plain; charset=UTF-8");
-
-			// Connect to SMTP server.
-			transport.connect(smtpHost, smtpPort, smtpUser, smtpPassword);
-
-			// Send message.
-			transport.sendMessage(message,
-					message.getRecipients(Message.RecipientType.TO));
-
-			// Close session.
-			transport.close();
+			// Send.
+			Transport.send(message);
 
 		} catch (Exception exception) {
 			throw new CoreException(exception);

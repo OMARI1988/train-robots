@@ -249,7 +249,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `change_password`(
 BEGIN
 	UPDATE user
 	SET password = _password
-	WHERE user_id = user_id;
+	WHERE user_id = _user_id;
 
 END ;;
 DELIMITER ;
@@ -525,4 +525,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-09-03 20:18:32
+-- Dump completed on 2013-09-10 19:41:54
