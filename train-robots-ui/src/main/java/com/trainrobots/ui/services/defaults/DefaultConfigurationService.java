@@ -23,14 +23,14 @@ import java.util.List;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
 import com.trainrobots.core.configuration.ConfigurationWriter;
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.ConfigurationService;
 
-public class DefaultDataService implements DataService {
+public class DefaultConfigurationService implements ConfigurationService {
 
 	private static final String FILE = "../data/configuration.txt";
 	private Configuration[][] items = new Configuration[125][5];
 
-	public DefaultDataService() {
+	public DefaultConfigurationService() {
 		for (Configuration c : ConfigurationReader.read(FILE)) {
 			update(c);
 		}

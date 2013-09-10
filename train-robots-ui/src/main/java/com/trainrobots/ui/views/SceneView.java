@@ -31,11 +31,11 @@ import javax.swing.JPanel;
 import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.ui.robot.RobotControl;
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.ConfigurationService;
 
 public class SceneView extends JPanel {
 
-	private final DataService dataService;
+	private final ConfigurationService configurationService;
 	private final JLabel label1 = new JLabel();
 	private final JLabel label2 = new JLabel();
 	private final GraphicsPanel panel1 = new GraphicsPanel(325, 350);
@@ -44,10 +44,10 @@ public class SceneView extends JPanel {
 	private int imageNumber = -1;
 
 	@Inject
-	public SceneView(DataService dataService) {
+	public SceneView(ConfigurationService configurationService) {
 
 		// Services.
-		this.dataService = dataService;
+		this.configurationService = configurationService;
 
 		// Layout.
 		setLayout(null);
@@ -143,7 +143,7 @@ public class SceneView extends JPanel {
 					.saveConfiguration();
 			configuration.groupNumber = this.groupNumber;
 			configuration.imageNumber = this.imageNumber;
-			dataService.update(configuration);
+			configurationService.update(configuration);
 		}
 	}
 
@@ -154,11 +154,11 @@ public class SceneView extends JPanel {
 
 		label1.setText(groupNumber + ".1");
 		panel1.getRobotControl().loadConfiguration(
-				dataService.get(groupNumber, 1));
+				configurationService.get(groupNumber, 1));
 
 		label2.setText(groupNumber + "." + imageNumber);
 		panel2.getRobotControl().loadConfiguration(
-				dataService.get(groupNumber, imageNumber));
+				configurationService.get(groupNumber, imageNumber));
 	}
 
 	private static void handleKey(RobotControl rc, KeyEvent e) {

@@ -15,17 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.services;
+package com.trainrobots.ui.views.tree.corpus;
 
-import com.trainrobots.core.configuration.Configuration;
+import javax.inject.Inject;
 
-public interface DataService {
+import com.trainrobots.ui.services.ConfigurationService;
+import com.trainrobots.ui.services.CorpusService;
+import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.TreeView;
 
-	int getGroupCount();
+public class CorpusTreeView extends TreeView {
 
-	void update(Configuration configuration);
-
-	Configuration get(int groupNumber, int imageNumber);
-
-	void save();
+	@Inject
+	public CorpusTreeView(CorpusService corpusService, WindowService windowService) {
+		super(new RootNode(corpusService, windowService));
+	}
 }

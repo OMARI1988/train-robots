@@ -15,33 +15,41 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.commands;
+package com.trainrobots.ui.views;
 
-import java.awt.event.ActionEvent;
+import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.inject.Inject;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.services.CorpusService;
 
-public class SaveConfigurationCommand extends AbstractAction {
+public class CorpusView extends JPanel {
 
-	private final WindowService windowService;
+	private final JLabel label = new JLabel();
+	private final CorpusService corpusService;
 
 	@Inject
-	public SaveConfigurationCommand(WindowService windowService) {
-		this.windowService = windowService;
+	public CorpusView(CorpusService corpusService) {
+
+		// Services.
+		this.corpusService = corpusService;
+
+		// Layout.
+		setLayout(null);
+		setBackground(Color.BLACK);
+
+		// Label.
+		label.setText("No command selected");
+		label.setForeground(Color.WHITE);
+		Dimension ps = label.getPreferredSize();
+		label.setBounds(25, 15, (int) ps.getWidth(), (int) ps.getHeight());
+		add(label);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		MainWindow window = windowService.getMainWindow();
-		JOptionPane
-				.showMessageDialog(window, "This command has been disabled.");
-		// window.getSceneView().update();
-		// configurationService.save();
-		// JOptionPane.showMessageDialog(window, "Data saved successfully.");
+	public void select(int commandId) {
+		label.setText("Command " + commandId);
 	}
 }

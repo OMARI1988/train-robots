@@ -15,9 +15,10 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views.tree;
+package com.trainrobots.ui.views.tree.scenes;
 
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.TreeNode;
 
 public class ImageNode extends TreeNode {
 

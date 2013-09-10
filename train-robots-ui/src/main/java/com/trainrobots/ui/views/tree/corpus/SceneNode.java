@@ -15,33 +15,30 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.commands;
+package com.trainrobots.ui.views.tree.corpus;
 
-import java.awt.event.ActionEvent;
-
-import javax.inject.Inject;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-
+import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.views.tree.TreeNode;
 
-public class SaveConfigurationCommand extends AbstractAction {
+public class SceneNode extends TreeNode {
 
+	private final CorpusService corpusService;
 	private final WindowService windowService;
+	private final int sceneNumber;
 
-	@Inject
-	public SaveConfigurationCommand(WindowService windowService) {
+	public SceneNode(CorpusService corpusService, WindowService windowService,
+			int sceneNumber) {
+		super("S" + sceneNumber, false);
+		this.corpusService = corpusService;
 		this.windowService = windowService;
+		this.sceneNumber = sceneNumber;
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent event) {
-		MainWindow window = windowService.getMainWindow();
-		JOptionPane
-				.showMessageDialog(window, "This command has been disabled.");
-		// window.getSceneView().update();
-		// configurationService.save();
-		// JOptionPane.showMessageDialog(window, "Data saved successfully.");
+	protected void createChildNodes() {
+		for (int i = 1; i <= 5; i++) {
+			add(new CommandNode(windowService, sceneNumber * 50 + i));
+		}
 	}
 }

@@ -15,25 +15,29 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views.tree;
+package com.trainrobots.ui.views.tree.corpus;
 
+import com.trainrobots.ui.services.ConfigurationService;
+import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.TreeNode;
 
-public class GroupNode extends TreeNode {
+public class RootNode extends TreeNode {
 
+	private final CorpusService corpusService;
 	private final WindowService windowService;
-	private final int groupNumber;
 
-	public GroupNode(WindowService windowService, int groupNumber) {
-		super(Integer.toString(groupNumber), false);
+	public RootNode(CorpusService corpusService, WindowService windowService) {
+		super("Commands", false);
+		this.corpusService = corpusService;
 		this.windowService = windowService;
-		this.groupNumber = groupNumber;
 	}
 
 	@Override
 	protected void createChildNodes() {
-		for (int i = 1; i <= 5; i++) {
-			add(new ImageNode(windowService, groupNumber, i));
+		int size = corpusService.getSceneCount();
+		for (int i = 1; i <= size; i++) {
+			add(new SceneNode(corpusService, windowService, i));
 		}
 	}
 }

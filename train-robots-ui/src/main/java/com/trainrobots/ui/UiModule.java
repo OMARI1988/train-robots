@@ -19,9 +19,11 @@ package com.trainrobots.ui;
 
 import javax.inject.Singleton;
 
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.ConfigurationService;
+import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.services.defaults.DefaultDataService;
+import com.trainrobots.ui.services.defaults.DefaultConfigurationService;
+import com.trainrobots.ui.services.defaults.DefaultCorpusService;
 import com.trainrobots.ui.services.defaults.DefaultWindowService;
 import com.trainrobots.ui.views.MainWindow;
 
@@ -33,13 +35,19 @@ public class UiModule {
 
 	@Provides
 	@Singleton
-	public DataService provideDataService() {
-		return new DefaultDataService();
+	public WindowService provideWindowService() {
+		return new DefaultWindowService();
 	}
 
 	@Provides
 	@Singleton
-	public WindowService provideWindowService() {
-		return new DefaultWindowService();
+	public CorpusService provideCorpusService() {
+		return new DefaultCorpusService();
+	}
+
+	@Provides
+	@Singleton
+	public ConfigurationService provideConfigurationService() {
+		return new DefaultConfigurationService();
 	}
 }

@@ -15,27 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views.tree;
+package com.trainrobots.ui.views.tree.scenes;
 
-import com.trainrobots.ui.services.DataService;
+import javax.inject.Inject;
+
+import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.TreeView;
 
-public class RootNode extends TreeNode {
+public class SceneTreeView extends TreeView {
 
-	private final DataService dataService;
-	private final WindowService windowService;
-
-	public RootNode(DataService dataService, WindowService windowService) {
-		super("Groups", false);
-		this.dataService = dataService;
-		this.windowService = windowService;
-	}
-
-	@Override
-	protected void createChildNodes() {
-		int groupCount = dataService.getGroupCount();
-		for (int i = 1; i <= groupCount; i++) {
-			add(new GroupNode(windowService, i));
-		}
+	@Inject
+	public SceneTreeView(ConfigurationService configurationService,
+			WindowService windowService) {
+		super(new RootNode(configurationService, windowService));
 	}
 }

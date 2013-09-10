@@ -26,7 +26,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.trainrobots.ui.resources.ResourceUtil;
 
-class TreeNodeRenderer extends DefaultTreeCellRenderer {
+public class TreeNodeRenderer extends DefaultTreeCellRenderer {
 
 	private static final Icon FOLDER_ICON = new ImageIcon(
 			ResourceUtil.getUrl("/com/trainrobots/ui/folder.gif"));

@@ -22,24 +22,19 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.inject.Inject;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import com.trainrobots.ui.services.DataService;
-import com.trainrobots.ui.services.WindowService;
-
-public class TreeView extends JTree implements TreeSelectionListener,
+public abstract class TreeView extends JTree implements TreeSelectionListener,
 		KeyListener, MouseListener {
 
-	@Inject
-	public TreeView(DataService dataService, WindowService windowService) {
+	protected TreeView(TreeNode rootNode) {
 
 		// Model.
-		setModel(new DefaultTreeModel(new RootNode(dataService, windowService)));
+		setModel(new DefaultTreeModel(rootNode));
 
 		// Show root handles.
 		setShowsRootHandles(true);
@@ -52,20 +47,6 @@ public class TreeView extends JTree implements TreeSelectionListener,
 		addTreeSelectionListener(this);
 		addKeyListener(this);
 		addMouseListener(this);
-	}
-
-	public void selectImage(int groupNumber, int imageNumber) {
-
-		// Image node.
-		RootNode rootNode = (RootNode) getModel().getRoot();
-		GroupNode groupNode = (GroupNode) rootNode.getChildAt(groupNumber - 1);
-		groupNode.getChildCount(); // Force creation.
-		ImageNode imageNode = (ImageNode) groupNode.getChildAt(imageNumber - 1);
-
-		// Select.
-		TreePath selectionPath = new TreePath(imageNode.getPath());
-		// setSelectionPath(selectionPath);
-		scrollPathToVisible(selectionPath);
 	}
 
 	@Override
