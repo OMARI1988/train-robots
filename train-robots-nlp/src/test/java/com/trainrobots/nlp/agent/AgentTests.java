@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.io.FileWriter;
-import com.trainrobots.nlp.commands.Command;
-import com.trainrobots.nlp.commands.Corpus;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
@@ -60,7 +60,7 @@ public class AgentTests {
 		for (Command command : Corpus.getCommands()) {
 
 			// Command.
-			Scene scene = command.scene;
+			Scene scene = SceneManager.getScene(command.sceneNumber);
 			String text = command.text;
 
 			// Parse.

@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.commands;
+package com.trainrobots.core.corpus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.trainrobots.core.io.FileReader;
-import com.trainrobots.nlp.scenes.SceneManager;
 
 public class Corpus {
 
@@ -39,8 +38,7 @@ public class Corpus {
 				String[] items = line.split("\t");
 				Command command = new Command();
 				command.id = Integer.parseInt(items[0]);
-				int sceneNumber = Integer.parseInt(items[1]);
-				command.scene = SceneManager.getScene(sceneNumber);
+				command.sceneNumber = Integer.parseInt(items[1]);
 				command.text = items[2].trim();
 				if (!blackList.contains(command.id)) {
 					commands.add(command);

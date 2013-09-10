@@ -15,13 +15,18 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.commands;
+package com.trainrobots.core.corpus;
 
-import com.trainrobots.nlp.scenes.Scene;
+import static org.junit.Assert.assertEquals;
 
-public class Command {
+import org.junit.Test;
 
-	public int id;
-	public Scene scene;
-	public String text;
+import com.trainrobots.core.corpus.Corpus;
+
+public class CorpusTests {
+
+	@Test
+	public void shouldLoadCorpus() {
+		assertEquals(7005, Corpus.getCommands().size());
+	}
 }

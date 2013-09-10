@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.trainrobots.nlp.commands.Command;
-import com.trainrobots.nlp.commands.Corpus;
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.nlp.trees.Node;
 
 public class TokenizerTests {
