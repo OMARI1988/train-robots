@@ -20,6 +20,7 @@ package com.trainrobots.nlp.agent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.scenes.Color;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
@@ -29,7 +30,6 @@ import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.PickUpMove;
-import com.trainrobots.nlp.trees.Node;
 
 public class Agent {
 

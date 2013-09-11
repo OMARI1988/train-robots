@@ -26,7 +26,17 @@ import com.trainrobots.ui.services.CorpusService;
 public class DefaultCorpusService implements CorpusService {
 
 	@Override
+	public Command getCommand(int id) {
+		return Corpus.getCommand(id);
+	}
+
+	@Override
 	public List<Command> getCommands(int sceneNumber) {
 		return Corpus.getCommands(sceneNumber);
+	}
+
+	@Override
+	public void save() {
+		Corpus.saveAnnotation();
 	}
 }

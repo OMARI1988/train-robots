@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.trees;
+package com.trainrobots.core.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,7 @@ public class NodeReader {
 
 	public NodeReader(String text) {
 		this.text = text;
+		readWhitespace();
 	}
 
 	public Node read() {
@@ -47,10 +48,10 @@ public class NodeReader {
 
 			// Space.
 			if (position > 0) {
-				if (peek() != ' ') {
+				if (!whitespace(peek())) {
 					throw new CoreException("Expected space.");
 				}
-				next();
+				readWhitespace();
 			}
 
 			// Node.
@@ -73,18 +74,20 @@ public class NodeReader {
 		// Children.
 		while (peek() != ')') {
 
-			// ' '
-			ch = next();
-			if (ch != ' ') {
+			// Whitespace.
+			if (!whitespace(peek())) {
 				throw new CoreException("Expected space.");
 			}
+			readWhitespace();
 
 			// Node.
 			Node child = read();
-			if (node.children == null) {
-				node.children = new ArrayList<Node>();
+			if (child.tag.length() > 0) {
+				if (node.children == null) {
+					node.children = new ArrayList<Node>();
+				}
+				node.children.add(child);
 			}
-			node.children.add(child);
 		}
 
 		// ')'
@@ -92,13 +95,12 @@ public class NodeReader {
 		if (ch != ')') {
 			throw new CoreException("Expected closing bracket.");
 		}
-
 		return node;
 	}
 
 	private String readTag() {
 		int index = position;
-		while (peek() != ' ' && peek() != ')') {
+		while (!whitespace(peek()) && peek() != ')') {
 			next();
 		}
 		String tag = text.substring(index, position);
@@ -111,5 +113,15 @@ public class NodeReader {
 
 	private char next() {
 		return text.charAt(position++);
+	}
+
+	private void readWhitespace() {
+		while (whitespace(peek())) {
+			next();
+		}
+	}
+
+	private static boolean whitespace(char ch) {
+		return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 	}
 }

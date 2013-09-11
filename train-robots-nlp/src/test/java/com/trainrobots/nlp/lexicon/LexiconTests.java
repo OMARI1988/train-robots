@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
-import com.trainrobots.nlp.trees.Node;
 
 public class LexiconTests {
 

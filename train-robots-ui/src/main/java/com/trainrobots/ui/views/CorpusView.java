@@ -31,13 +31,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.MarkType;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.Parser;
-import com.trainrobots.nlp.trees.Node;
 import com.trainrobots.ui.services.ConfigurationService;
+import com.trainrobots.ui.services.WindowService;
 
 public class CorpusView extends JPanel {
 
 	private final ConfigurationService configurationService;
+	private final WindowService windowService;
 	private final JLabel headerLabel = new JLabel();
 	private final JLabel commandLabel = new JLabel();
 	private final JComboBox markList;
@@ -47,9 +50,11 @@ public class CorpusView extends JPanel {
 	private Command command;
 
 	@Inject
-	public CorpusView(ConfigurationService configurationService) {
+	public CorpusView(WindowService windowService,
+			ConfigurationService configurationService) {
 
 		// Services.
+		this.windowService = windowService;
 		this.configurationService = configurationService;
 
 		// Layout.
@@ -107,7 +112,19 @@ public class CorpusView extends JPanel {
 		add(scenePanel);
 	}
 
+	public void update() {
+		if (command == null) {
+			return;
+		}
+		Node rcl = validateCommand();
+		command.rcl = rcl;
+		command.mark = MarkType.getMark(markList.getSelectedIndex());
+	}
+
 	public void select(Command command) {
+
+		// Update.
+		update();
 
 		// Bind.
 		this.command = command;
@@ -116,9 +133,14 @@ public class CorpusView extends JPanel {
 		int sceneNumber = command.sceneNumber;
 		headerLabel.setText("Scene " + sceneNumber + ". Command " + command.id
 				+ ".");
+		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		statusBar.setText(headerLabel.getText());
 
 		// Command.
 		commandLabel.setText(command.text);
+
+		// Mark.
+		markList.setSelectedIndex(command.mark.getValue());
 
 		// Before.
 		beforePanel.getRobotControl().loadConfiguration(
@@ -127,6 +149,10 @@ public class CorpusView extends JPanel {
 		// After.
 		afterPanel.getRobotControl().loadConfiguration(
 				configurationService.getAfter(sceneNumber));
+
+		// Editor.
+		editor.setText(command.rcl != null ? command.rcl.format().replace("\r",
+				"") : null);
 	}
 
 	public void parse() {
@@ -134,7 +160,30 @@ public class CorpusView extends JPanel {
 			return;
 		}
 		Node node = Parser.parse(command.text);
-		editor.setText(node.format());
+		editor.setText(node.format().replace("\r", ""));
+		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		statusBar.setText("Parsed command.");
+	}
+
+	public Node validateCommand() {
+		if (command == null) {
+			return null;
+		}
+		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		String text = editor.getText();
+		if (text == null || text.length() == 0) {
+			statusBar.setText("RCL not specified.");
+			return null;
+		}
+		try {
+			Node rcl = Node.fromString(text);
+			editor.setText(rcl.format().replace("\r", ""));
+			statusBar.setText("RCL parsed successfully.");
+			return rcl;
+		} catch (Exception exception) {
+			statusBar.setError(exception.getMessage());
+			return null;
+		}
 	}
 
 	private static GraphicsPanel createGraphicsPanel() {

@@ -28,12 +28,12 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.io.FileWriter;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
-import com.trainrobots.nlp.trees.Node;
 
 public class AgentTests {
 

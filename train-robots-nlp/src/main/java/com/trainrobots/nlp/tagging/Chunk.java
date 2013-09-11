@@ -19,7 +19,7 @@ package com.trainrobots.nlp.tagging;
 
 import java.util.List;
 
-import com.trainrobots.nlp.trees.Node;
+import com.trainrobots.core.nodes.Node;
 
 public class Chunk {
 

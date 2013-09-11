@@ -76,6 +76,10 @@ public class MainWindow extends JFrame {
 		return statusBar;
 	}
 
+	public CorpusTreeView getCorpusTreeView() {
+		return corpusTreeView;
+	}
+
 	public CorpusView getCorpusView() {
 		return corpusView;
 	}

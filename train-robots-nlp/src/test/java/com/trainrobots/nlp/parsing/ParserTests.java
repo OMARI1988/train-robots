@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.Parser;
-import com.trainrobots.nlp.trees.Node;
 
 public class ParserTests {
 

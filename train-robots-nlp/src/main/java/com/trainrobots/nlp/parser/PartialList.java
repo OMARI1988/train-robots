@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import com.trainrobots.nlp.trees.Node;
+import com.trainrobots.core.nodes.Node;
 
 public class PartialList implements Iterable<Node> {
 

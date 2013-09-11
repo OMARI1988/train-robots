@@ -21,48 +21,29 @@ import java.awt.event.ActionEvent;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
-import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.MainWindow;
-import com.trainrobots.ui.views.StatusBar;
 
-public class SearchCommand extends AbstractAction {
+public class SaveAnnotationCommand extends AbstractAction {
 
-	private final WindowService windowService;
 	private final CorpusService corpusService;
+	private final WindowService windowService;
 
 	@Inject
-	public SearchCommand(WindowService windowService,
-			CorpusService corpusService) {
-		this.windowService = windowService;
+	public SaveAnnotationCommand(CorpusService corpusService,
+			WindowService windowService) {
 		this.corpusService = corpusService;
+		this.windowService = windowService;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-
-		// Try.
-		MainWindow mainWindow = windowService.getMainWindow();
-		StatusBar statusBar = mainWindow.getStatusBar();
-		try {
-
-			// Text.
-			String text = mainWindow.getToolBar().getText();
-			if (text == null || text.length() == 0) {
-				return;
-			}
-
-			// Search.
-			int id = Integer.parseInt(text);
-			Command command = corpusService.getCommand(id);
-			if (command != null) {
-				mainWindow.getCorpusTreeView().selectCommand(command);
-			}
-
-		} catch (Exception exception) {
-			statusBar.setError(exception.getMessage());
-		}
+		MainWindow window = windowService.getMainWindow();
+		window.getCorpusView().update();
+		corpusService.save();
+		JOptionPane.showMessageDialog(window, "Annotations saved.");
 	}
 }

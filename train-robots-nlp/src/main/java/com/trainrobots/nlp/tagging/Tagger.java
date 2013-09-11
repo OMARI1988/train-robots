@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
-import com.trainrobots.nlp.trees.Node;
 
 public class Tagger {
 

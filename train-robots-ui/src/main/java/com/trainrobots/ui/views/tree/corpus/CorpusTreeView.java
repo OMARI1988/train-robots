@@ -18,7 +18,9 @@
 package com.trainrobots.ui.views.tree.corpus;
 
 import javax.inject.Inject;
+import javax.swing.tree.TreePath;
 
+import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
@@ -30,5 +32,33 @@ public class CorpusTreeView extends TreeView {
 	public CorpusTreeView(ConfigurationService configurationServie,
 			CorpusService corpusService, WindowService windowService) {
 		super(new RootNode(configurationServie, corpusService, windowService));
+	}
+
+	public void selectCommand(Command command) {
+
+		// Root node.
+		RootNode rootNode = (RootNode) getModel().getRoot();
+		rootNode.getChildCount();
+
+		// Scene node.
+		SceneNode sceneNode = (SceneNode) rootNode
+				.getChildAt(command.sceneNumber - 1);
+
+		// Command node.
+		CommandNode commandNode = null;
+		int size = sceneNode.getChildCount();
+		for (int i = 0; i < size; i++) {
+			CommandNode node = (CommandNode) sceneNode.getChildAt(i);
+			if (node.getComand() == command) {
+				commandNode = node;
+			}
+		}
+
+		// Select.
+		if (commandNode != null) {
+			TreePath selectionPath = new TreePath(commandNode.getPath());
+			setSelectionPath(selectionPath);
+			scrollPathToVisible(selectionPath);
+		}
 	}
 }

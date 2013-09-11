@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.nlp.trees.Node;
+import com.trainrobots.core.nodes.Node;
 
 public class Lexicon {
 

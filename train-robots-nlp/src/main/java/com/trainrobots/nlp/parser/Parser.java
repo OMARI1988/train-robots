@@ -19,8 +19,8 @@ package com.trainrobots.nlp.parser;
 
 import java.util.List;
 
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.tagging.Tagger;
-import com.trainrobots.nlp.trees.Node;
 
 public class Parser {
 

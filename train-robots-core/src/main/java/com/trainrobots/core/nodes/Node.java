@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.trees;
+package com.trainrobots.core.nodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;

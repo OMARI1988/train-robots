@@ -23,5 +23,9 @@ import com.trainrobots.core.corpus.Command;
 
 public interface CorpusService {
 
+	Command getCommand(int id);
+
 	List<Command> getCommands(int sceneNumber);
+
+	void save();
 }

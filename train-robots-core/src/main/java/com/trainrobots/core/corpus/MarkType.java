@@ -15,24 +15,28 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.menus;
+package com.trainrobots.core.corpus;
 
-import javax.inject.Inject;
+public enum MarkType {
 
-import com.trainrobots.ui.commands.ParseCommand;
-import com.trainrobots.ui.commands.ValidateCommand;
+	Unmarked(0), Spam(1), SpellingOrGrammar(2), ImageConfusion(3), BadDirections(
+			4), NotSpecific(5), Accurate(6);
 
-public class AnnotationMenu extends Menu {
+	private static final MarkType[] marks = { Unmarked, Spam,
+			SpellingOrGrammar, ImageConfusion, BadDirections, NotSpecific,
+			Accurate };
 
-	@Inject
-	public AnnotationMenu(ParseCommand parseCommand, ValidateCommand validateCommand) {
+	private int value;
 
-		// Initiate.
-		setText("Annotation");
-		setMnemonic('A');
+	private MarkType(int value) {
+		this.value = value;
+	}
 
-		// Items.
-		addItem("Parse", "control P", parseCommand);
-		addItem("Validate", "F5", validateCommand);
+	public int getValue() {
+		return value;
+	}
+
+	public static MarkType getMark(int value) {
+		return marks[value];
 	}
 }

@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.trees;
+package com.trainrobots.core.nodes;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,11 +23,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.core.nodes.Node;
+
 public class NodeTests {
 
 	@Test
 	public void shouldWriteNode1() {
-		
+
 		Node a = new Node("A");
 		a.add("B").add("X");
 		a.add("C").add("Y");
@@ -48,9 +50,27 @@ public class NodeTests {
 	}
 
 	@Test
-	public void shouldReadNode() {
+	public void shouldReadNode1() {
 		String text = "(S (VP Stop) (NP me))";
 		assertEquals(Node.fromString(text).toString(), text);
+	}
+
+	@Test
+	public void shouldReadNode2() {
+		String text = "(S (VP    Stop)     (NP me))";
+		assertEquals(Node.fromString(text).toString(), "(S (VP Stop) (NP me))");
+	}
+
+	@Test
+	public void shouldReadNode3() {
+		String text = "    (S (VP    Stop)     (NP me))";
+		assertEquals(Node.fromString(text).toString(), "(S (VP Stop) (NP me))");
+	}
+
+	@Test
+	public void shouldReadNode4() {
+		String text = "    (S (VP    Stop)     (NP me)    )";
+		assertEquals(Node.fromString(text).toString(), "(S (VP Stop) (NP me))");
 	}
 
 	@Test

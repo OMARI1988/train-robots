@@ -32,6 +32,10 @@ public class CommandNode extends TreeNode {
 		this.command = command;
 	}
 
+	public Command getComand() {
+		return command;
+	}
+
 	@Override
 	public void select() {
 		windowService.getMainWindow().getCorpusView().select(command);

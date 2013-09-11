@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.nlp.trees.Node;
+import com.trainrobots.core.nodes.Node;
 
 public class TokenizerTests {
 
