@@ -15,20 +15,22 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.menus;
 
-import java.awt.Color;
-import java.awt.Font;
+import javax.inject.Inject;
 
-import javax.swing.JTextArea;
+import com.trainrobots.ui.commands.ParseCommand;
 
-public class EditorView extends JTextArea {
+public class AnnotationMenu extends Menu {
 
-	public EditorView() {
-		setFont(new Font("Consolas", Font.PLAIN, 12));
-		setForeground(new Color(220, 220, 220));
-		setBackground(Color.BLACK);
-		setCaretColor(Color.WHITE);
-		setTabSize(4);
+	@Inject
+	public AnnotationMenu(ParseCommand parseCommand) {
+
+		// Initiate.
+		setText("Annotation");
+		setMnemonic('A');
+
+		// Items.
+		addItem("Parse", "control P", parseCommand);
 	}
 }

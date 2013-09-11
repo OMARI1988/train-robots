@@ -19,22 +19,27 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
+			<groupId>train-robots-nlp</groupId>
+			<artifactId>train-robots-nlp</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-    <dependency>
-	    <groupId>com.squareup</groupId>
-	    <artifactId>dagger-parent</artifactId>
-	    <version>0.9.1</version>
-    </dependency>
-	<dependency>
-      <groupId>javax.inject</groupId>
-		<artifactId>javax.inject</artifactId>
-	<version>1</version>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>com.squareup</groupId>
+			<artifactId>dagger-parent</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<finalName>train-robots-ui</finalName>
 		<plugins>

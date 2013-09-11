@@ -23,7 +23,8 @@ import javax.swing.JMenuBar;
 public class MainMenu extends JMenuBar {
 
 	@Inject
-	public MainMenu(FileMenu fileMenu) {
+	public MainMenu(FileMenu fileMenu, AnnotationMenu annotationMenu) {
 		add(fileMenu);
+		add(annotationMenu);
 	}
 }

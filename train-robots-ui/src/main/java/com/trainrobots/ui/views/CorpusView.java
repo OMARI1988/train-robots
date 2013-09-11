@@ -31,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.trees.Node;
 import com.trainrobots.ui.services.ConfigurationService;
 
 public class CorpusView extends JPanel {
@@ -42,6 +44,7 @@ public class CorpusView extends JPanel {
 	private final EditorView editor = new EditorView();
 	private final GraphicsPanel beforePanel;
 	private final GraphicsPanel afterPanel;
+	private Command command;
 
 	@Inject
 	public CorpusView(ConfigurationService configurationService) {
@@ -96,23 +99,18 @@ public class CorpusView extends JPanel {
 		scenePanel.add(scrollPane);
 		scenePanel.add(beforePanel = createGraphicsPanel());
 		scenePanel.add(afterPanel = createGraphicsPanel());
+		afterPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
+		afterPanel.setBackground(Color.BLACK);
 		beforePanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		afterPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		scenePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		add(scenePanel);
 	}
 
-	private static GraphicsPanel createGraphicsPanel() {
-		final int width = 325;
-		final int height = 350;
-		GraphicsPanel graphicsPanel = new GraphicsPanel(width, height);
-		graphicsPanel.setPreferredSize(new Dimension(width, height));
-		graphicsPanel.setMaximumSize(new Dimension(width, height));
-		graphicsPanel.setMinimumSize(new Dimension(width, height));
-		return graphicsPanel;
-	}
-
 	public void select(Command command) {
+
+		// Bind.
+		this.command = command;
 
 		// Header.
 		int sceneNumber = command.sceneNumber;
@@ -129,5 +127,23 @@ public class CorpusView extends JPanel {
 		// After.
 		afterPanel.getRobotControl().loadConfiguration(
 				configurationService.getAfter(sceneNumber));
+	}
+
+	public void parse() {
+		if (command == null) {
+			return;
+		}
+		Node node = Parser.parse(command.text);
+		editor.setText(node.format());
+	}
+
+	private static GraphicsPanel createGraphicsPanel() {
+		final int width = 325;
+		final int height = 350;
+		GraphicsPanel graphicsPanel = new GraphicsPanel(width, height);
+		graphicsPanel.setPreferredSize(new Dimension(width, height));
+		graphicsPanel.setMaximumSize(new Dimension(width, height));
+		graphicsPanel.setMinimumSize(new Dimension(width, height));
+		return graphicsPanel;
 	}
 }
