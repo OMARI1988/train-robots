@@ -17,22 +17,23 @@
 
 package com.trainrobots.ui.views.tree.corpus;
 
+import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.TreeNode;
 
 public class CommandNode extends TreeNode {
 
 	private final WindowService windowService;
-	private final int commandId;
+	private final Command command;
 
-	public CommandNode(WindowService windowService, int commandId) {
-		super("C" + commandId, true);
+	public CommandNode(WindowService windowService, Command command) {
+		super("C" + command.id, true);
 		this.windowService = windowService;
-		this.commandId = commandId;
+		this.command = command;
 	}
 
 	@Override
 	public void select() {
-		windowService.getMainWindow().getCorpusView().select(commandId);
+		windowService.getMainWindow().getCorpusView().select(command);
 	}
 }

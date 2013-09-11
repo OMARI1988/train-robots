@@ -24,18 +24,21 @@ import com.trainrobots.ui.views.tree.TreeNode;
 
 public class RootNode extends TreeNode {
 
+	private final ConfigurationService configurationService;
 	private final CorpusService corpusService;
 	private final WindowService windowService;
 
-	public RootNode(CorpusService corpusService, WindowService windowService) {
+	public RootNode(ConfigurationService configurationService,
+			CorpusService corpusService, WindowService windowService) {
 		super("Commands", false);
+		this.configurationService = configurationService;
 		this.corpusService = corpusService;
 		this.windowService = windowService;
 	}
 
 	@Override
 	protected void createChildNodes() {
-		int size = corpusService.getSceneCount();
+		int size = configurationService.getSceneCount();
 		for (int i = 1; i <= size; i++) {
 			add(new SceneNode(corpusService, windowService, i));
 		}

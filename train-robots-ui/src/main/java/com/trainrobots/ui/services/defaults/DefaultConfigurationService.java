@@ -28,17 +28,34 @@ import com.trainrobots.ui.services.ConfigurationService;
 public class DefaultConfigurationService implements ConfigurationService {
 
 	private static final String FILE = "../data/configuration.txt";
-	private Configuration[][] items = new Configuration[125][5];
+	private final SceneInfo[] scenes = new SceneInfo[1000];
+	private final Configuration[][] items = new Configuration[125][5];
 
 	public DefaultConfigurationService() {
+
+		// Configuration.
 		for (Configuration c : ConfigurationReader.read(FILE)) {
 			update(c);
+		}
+
+		// Scenes.
+		int i = 0;
+		for (int g = 0; g < 125; g++) {
+			for (int c = 1; c < 5; c++) {
+				scenes[i++] = new SceneInfo(g, 0, c);
+				scenes[i++] = new SceneInfo(g, c, 0);
+			}
 		}
 	}
 
 	@Override
 	public int getGroupCount() {
 		return 125;
+	}
+
+	@Override
+	public int getSceneCount() {
+		return 1000;
 	}
 
 	@Override
@@ -52,6 +69,18 @@ public class DefaultConfigurationService implements ConfigurationService {
 	}
 
 	@Override
+	public Configuration getBefore(int sceneNumber) {
+		SceneInfo s = scenes[sceneNumber - 1];
+		return items[s.groupNumber][s.fromImage];
+	}
+
+	@Override
+	public Configuration getAfter(int sceneNumber) {
+		SceneInfo s = scenes[sceneNumber - 1];
+		return items[s.groupNumber][s.toImage];
+	}
+
+	@Override
 	public void save() {
 		List<Configuration> list = new ArrayList<Configuration>();
 		for (int g = 0; g < 125; g++) {
@@ -60,5 +89,18 @@ public class DefaultConfigurationService implements ConfigurationService {
 			}
 		}
 		ConfigurationWriter.write(FILE, list);
+	}
+
+	private static class SceneInfo {
+
+		public SceneInfo(int groupNumber, int fromImage, int toImage) {
+			this.groupNumber = groupNumber;
+			this.fromImage = fromImage;
+			this.toImage = toImage;
+		}
+
+		public final int groupNumber;
+		public final int fromImage;
+		public final int toImage;
 	}
 }

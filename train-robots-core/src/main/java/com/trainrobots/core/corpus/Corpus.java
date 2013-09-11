@@ -18,8 +18,10 @@
 package com.trainrobots.core.corpus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.trainrobots.core.io.FileReader;
@@ -27,9 +29,20 @@ import com.trainrobots.core.io.FileReader;
 public class Corpus {
 
 	private static List<Command> commands;
+	private static Map<Integer, List<Command>> commandsByScene = new HashMap<Integer, List<Command>>();
 	private static Set<Integer> blackList = new HashSet<Integer>();
 
 	public static List<Command> getCommands() {
+		loadCommands();
+		return commands;
+	}
+
+	public static List<Command> getCommands(int sceneNumber) {
+		loadCommands();
+		return commandsByScene.get(sceneNumber);
+	}
+
+	private static void loadCommands() {
 		if (commands == null) {
 			commands = new ArrayList<Command>();
 			FileReader reader = new FileReader("../data/commands.txt");
@@ -41,12 +54,21 @@ public class Corpus {
 				command.sceneNumber = Integer.parseInt(items[1]);
 				command.text = items[2].trim();
 				if (!blackList.contains(command.id)) {
-					commands.add(command);
+					add(command);
 				}
 			}
 			reader.close();
 		}
-		return commands;
+	}
+
+	private static void add(Command command) {
+		commands.add(command);
+		List<Command> sceneCommands = commandsByScene.get(command.sceneNumber);
+		if (sceneCommands == null) {
+			sceneCommands = new ArrayList<Command>();
+			commandsByScene.put(command.sceneNumber, sceneCommands);
+		}
+		sceneCommands.add(command);
 	}
 
 	static {

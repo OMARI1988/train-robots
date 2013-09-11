@@ -17,6 +17,9 @@
 
 package com.trainrobots.ui.views.tree.corpus;
 
+import java.util.List;
+
+import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.TreeNode;
@@ -37,8 +40,12 @@ public class SceneNode extends TreeNode {
 
 	@Override
 	protected void createChildNodes() {
-		for (int i = 1; i <= 5; i++) {
-			add(new CommandNode(windowService, sceneNumber * 50 + i));
+		List<Command> commands = corpusService.getCommands(sceneNumber);
+		if (commands == null) {
+			return;
+		}
+		for (Command command : commands) {
+			add(new CommandNode(windowService, command));
 		}
 	}
 }

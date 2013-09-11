@@ -23,9 +23,15 @@ public interface ConfigurationService {
 
 	int getGroupCount();
 
+	int getSceneCount();
+
 	void update(Configuration configuration);
 
 	Configuration get(int groupNumber, int imageNumber);
+
+	Configuration getBefore(int sceneNumber);
+
+	Configuration getAfter(int sceneNumber);
 
 	void save();
 }

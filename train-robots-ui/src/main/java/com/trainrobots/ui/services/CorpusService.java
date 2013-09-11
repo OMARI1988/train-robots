@@ -17,7 +17,11 @@
 
 package com.trainrobots.ui.services;
 
+import java.util.List;
+
+import com.trainrobots.core.corpus.Command;
+
 public interface CorpusService {
 
-	int getSceneCount();
+	List<Command> getCommands(int sceneNumber);
 }

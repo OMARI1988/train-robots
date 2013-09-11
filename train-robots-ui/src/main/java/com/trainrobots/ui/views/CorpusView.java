@@ -18,38 +18,82 @@
 package com.trainrobots.ui.views;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.inject.Inject;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.trainrobots.ui.services.CorpusService;
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.ui.services.ConfigurationService;
 
 public class CorpusView extends JPanel {
 
-	private final JLabel label = new JLabel();
-	private final CorpusService corpusService;
+	private final ConfigurationService configurationService;
+	private final JLabel headerLabel = new JLabel();
+	private final JLabel commandLabel = new JLabel();
+	private final GraphicsPanel beforePanel;
+	private final GraphicsPanel afterPanel;
 
 	@Inject
-	public CorpusView(CorpusService corpusService) {
+	public CorpusView(ConfigurationService configurationService) {
 
-		// Services.
-		this.corpusService = corpusService;
-
+		this.configurationService = configurationService;
 		// Layout.
-		setLayout(null);
+		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+		setLayout(layout);
 		setBackground(Color.BLACK);
 
-		// Label.
-		label.setText("No command selected");
-		label.setForeground(Color.WHITE);
-		Dimension ps = label.getPreferredSize();
-		label.setBounds(25, 15, (int) ps.getWidth(), (int) ps.getHeight());
-		add(label);
+		// Header.
+		headerLabel.setText("No scene selected");
+		headerLabel.setForeground(Color.WHITE);
+		headerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(headerLabel);
+
+		// Command.
+		commandLabel.setText("No command selected");
+		commandLabel.setForeground(Color.WHITE);
+		commandLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(commandLabel);
+
+		// Scene.
+		JPanel scenePanel = new JPanel();
+		scenePanel.setLayout(new BoxLayout(scenePanel, BoxLayout.X_AXIS));
+		scenePanel.setBackground(Color.YELLOW);
+		scenePanel.add(beforePanel = createGraphicsPanel());
+		scenePanel.add(afterPanel = createGraphicsPanel());
+		scenePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(scenePanel);
 	}
 
-	public void select(int commandId) {
-		label.setText("Command " + commandId);
+	private static GraphicsPanel createGraphicsPanel() {
+		final int width = 325;
+		final int height = 350;
+		GraphicsPanel graphicsPanel = new GraphicsPanel(width, height);
+		graphicsPanel.setPreferredSize(new Dimension(width, height));
+		graphicsPanel.setMaximumSize(new Dimension(width, height));
+		graphicsPanel.setMinimumSize(new Dimension(width, height));
+		return graphicsPanel;
+	}
+
+	public void select(Command command) {
+
+		// Header.
+		int sceneNumber = command.sceneNumber;
+		headerLabel.setText("Scene " + sceneNumber + ". Command " + command.id
+				+ ".");
+
+		// Command.
+		commandLabel.setText(command.text);
+
+		// Before.
+		beforePanel.getRobotControl().loadConfiguration(
+				configurationService.getBefore(sceneNumber));
+
+		// After.
+		afterPanel.getRobotControl().loadConfiguration(
+				configurationService.getAfter(sceneNumber));
 	}
 }

@@ -17,12 +17,16 @@
 
 package com.trainrobots.ui.services.defaults;
 
+import java.util.List;
+
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.ui.services.CorpusService;
 
 public class DefaultCorpusService implements CorpusService {
 
 	@Override
-	public int getSceneCount() {
-		return 1000;
+	public List<Command> getCommands(int sceneNumber) {
+		return Corpus.getCommands(sceneNumber);
 	}
 }

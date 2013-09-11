@@ -27,7 +27,8 @@ import com.trainrobots.ui.views.tree.TreeView;
 public class CorpusTreeView extends TreeView {
 
 	@Inject
-	public CorpusTreeView(CorpusService corpusService, WindowService windowService) {
-		super(new RootNode(corpusService, windowService));
+	public CorpusTreeView(ConfigurationService configurationServie,
+			CorpusService corpusService, WindowService windowService) {
+		super(new RootNode(configurationServie, corpusService, windowService));
 	}
 }
