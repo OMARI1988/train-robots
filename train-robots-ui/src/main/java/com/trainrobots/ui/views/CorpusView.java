@@ -28,6 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.ConfigurationService;
@@ -38,6 +39,7 @@ public class CorpusView extends JPanel {
 	private final JLabel headerLabel = new JLabel();
 	private final JLabel commandLabel = new JLabel();
 	private final JComboBox markList;
+	private final EditorView editor = new EditorView();
 	private final GraphicsPanel beforePanel;
 	private final GraphicsPanel afterPanel;
 
@@ -74,19 +76,28 @@ public class CorpusView extends JPanel {
 				"Before and after images confused",
 				"Incorrect or bad directions", "Not specific enough",
 				"Accurate" });
-		JPanel wrapper = new JPanel();
-		wrapper.setMaximumSize(new Dimension(240, 28));
-		wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
-		wrapper.add(markList);
-		wrapper.setBackground(Color.BLACK);
-		add(wrapper);
+		JPanel wrapperPanel = new JPanel();
+		wrapperPanel.setMaximumSize(new Dimension(240, 28));
+		wrapperPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		wrapperPanel.add(markList);
+		wrapperPanel.setBackground(Color.BLACK);
+		add(wrapperPanel);
+
+		// Editor.
+		JScrollPane scrollPane = new JScrollPane(editor);
+		scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		scrollPane.setBackground(Color.BLACK);
 
 		// Scene.
 		JPanel scenePanel = new JPanel();
 		scenePanel.setLayout(new BoxLayout(scenePanel, BoxLayout.X_AXIS));
-		scenePanel.setBackground(Color.YELLOW);
+		scenePanel.setBackground(Color.BLACK);
+		scenePanel.add(scrollPane);
 		scenePanel.add(beforePanel = createGraphicsPanel());
 		scenePanel.add(afterPanel = createGraphicsPanel());
+		beforePanel.setAlignmentY(Component.TOP_ALIGNMENT);
+		afterPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		scenePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		add(scenePanel);
 	}
