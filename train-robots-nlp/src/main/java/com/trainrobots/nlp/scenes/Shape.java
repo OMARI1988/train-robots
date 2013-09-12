@@ -17,6 +17,8 @@
 
 package com.trainrobots.nlp.scenes;
 
+import com.trainrobots.core.rcl.Color;
+
 public class Shape {
 
 	public Shape(Color color, ShapeType type, Position position) {

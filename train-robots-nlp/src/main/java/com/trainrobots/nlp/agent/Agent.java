@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.scenes.Color;
+import com.trainrobots.core.rcl.Color;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;

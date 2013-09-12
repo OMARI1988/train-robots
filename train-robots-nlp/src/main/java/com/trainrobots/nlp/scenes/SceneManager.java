@@ -24,6 +24,7 @@ import com.trainrobots.core.CoreException;
 import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
+import com.trainrobots.core.rcl.Color;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.PickUpMove;

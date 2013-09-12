@@ -15,31 +15,42 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.trainrobots.core.rcl.generation;
 
 import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Type;
 
-public class Stack {
+public class Generator {
 
-	private final List<Shape> shapes = new ArrayList<Shape>();
+	private final StringBuilder text = new StringBuilder();
 
-	public void add(Shape shape) {
-		shapes.add(shape);
+	@Override
+	public String toString() {
+		return text.toString();
 	}
 
-	public boolean allHaveColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color != color) {
-				return false;
+	public void generate(Entity entity) {
+		if (entity.colors() != null) {
+			for (Color color : entity.colors()) {
+				write(color);
 			}
 		}
-		return true;
+		write(entity.type());
 	}
 
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
+	private void write(Color color) {
+		write(color.toString().toLowerCase());
+	}
+
+	private void write(Type type) {
+		write(type.toString().toLowerCase());
+	}
+
+	private void write(String text) {
+		if (this.text.length() > 0) {
+			this.text.append(' ');
+		}
+		this.text.append(text);
 	}
 }

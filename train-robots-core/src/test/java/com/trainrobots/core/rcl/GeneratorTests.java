@@ -15,31 +15,23 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.core.rcl;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import com.trainrobots.core.rcl.Color;
+import org.junit.Test;
 
-public class Stack {
+public class GeneratorTests {
 
-	private final List<Shape> shapes = new ArrayList<Shape>();
-
-	public void add(Shape shape) {
-		shapes.add(shape);
+	@Test
+	public void shouldGenerateEntity1() {
+		Entity entity = new Entity(Type.Board);
+		assertEquals(entity.generate(), "board");
 	}
 
-	public boolean allHaveColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color != color) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
+	@Test
+	public void shouldGenerateEntity2() {
+		Entity entity = new Entity(Color.Red, Type.Cube);
+		assertEquals(entity.generate(), "red cube");
 	}
 }

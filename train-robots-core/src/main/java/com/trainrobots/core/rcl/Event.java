@@ -15,31 +15,32 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.core.rcl;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.trainrobots.core.rcl.Color;
+public class Event {
 
-public class Stack {
+	private final Action action;
+	private final Entity entity;
+	private final List<SpatialRelation> destinations;
 
-	private final List<Shape> shapes = new ArrayList<Shape>();
-
-	public void add(Shape shape) {
-		shapes.add(shape);
+	public Event(Action action, Entity entity, SpatialRelation... destinations) {
+		this.action = action;
+		this.entity = entity;
+		this.destinations = Arrays.asList(destinations);
 	}
 
-	public boolean allHaveColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color != color) {
-				return false;
-			}
-		}
-		return true;
+	public Action action() {
+		return action;
 	}
 
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
+	public Entity entity() {
+		return entity;
+	}
+
+	public Iterable<SpatialRelation> destinations() {
+		return destinations;
 	}
 }

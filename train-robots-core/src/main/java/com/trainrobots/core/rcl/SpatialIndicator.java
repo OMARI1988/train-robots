@@ -15,8 +15,8 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.core.rcl;
 
-public enum Color {
-	Blue, Cyan, Red, Yellow, Green, Magenta, Gray, White;
+public enum SpatialIndicator {
+	Front, Frontmost, Back, Backmost, Left, Leftmost, Right, Rightmost, Highest, Lowest, Opposite, Single, Above, Adjacent, Within, Between, Near, Nearest, Far, Furthest, Contain
 }
