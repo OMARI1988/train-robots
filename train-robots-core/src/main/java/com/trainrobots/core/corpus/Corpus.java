@@ -24,7 +24,7 @@ import java.util.Map;
 
 import com.trainrobots.core.io.FileReader;
 import com.trainrobots.core.io.FileWriter;
-import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 
 public class Corpus {
 
@@ -93,7 +93,7 @@ public class Corpus {
 			if (items[1].equals("mark")) {
 				command.mark = MarkType.getMark(Integer.parseInt(items[2]));
 			} else if (items[1].equals("rcl")) {
-				command.rcl = Node.fromString(items[2]);
+				command.rcl = Rcl.fromString(items[2]);
 			}
 		}
 		reader.close();

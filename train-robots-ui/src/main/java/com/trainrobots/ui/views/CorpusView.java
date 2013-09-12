@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
@@ -132,7 +133,7 @@ public class CorpusView extends JPanel {
 		if (command == null) {
 			return;
 		}
-		Node rcl = validateCommand();
+		Rcl rcl = validateCommand();
 		command.rcl = rcl;
 		command.mark = MarkType.getMark(markList.getSelectedIndex());
 	}
@@ -181,7 +182,7 @@ public class CorpusView extends JPanel {
 		statusBar.setText("Parsed command.");
 	}
 
-	public Node validateCommand() {
+	public Rcl validateCommand() {
 		if (command == null) {
 			return null;
 		}
@@ -192,7 +193,7 @@ public class CorpusView extends JPanel {
 			return null;
 		}
 		try {
-			Node rcl = Node.fromString(text);
+			Rcl rcl = Rcl.fromString(text);
 			editor.setText(rcl.format().replace("\r", ""));
 			statusBar.setText("RCL parsed successfully.");
 			return rcl;

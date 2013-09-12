@@ -29,6 +29,19 @@ public abstract class Rcl {
 
 	public abstract String generate();
 
+	public static Rcl fromString(String text) {
+		return fromNode(Node.fromString(text));
+	}
+
+	@Override
+	public String toString() {
+		return toNode().toString();
+	}
+
+	public String format() {
+		return toNode().format();
+	}
+
 	public static Rcl fromNode(Node node) {
 
 		if (node.hasTag("entity:")) {
@@ -47,6 +60,11 @@ public abstract class Rcl {
 	}
 
 	private static Entity entityFromNode(Node node) {
+
+		if (!node.hasTag("entity:")) {
+			throw new CoreException("Expected 'entity:' not '" + node.tag
+					+ "'.");
+		}
 
 		Integer id = null;
 		Integer referenceId = null;
@@ -92,6 +110,11 @@ public abstract class Rcl {
 
 	private static SpatialRelation spatialRelationFromNode(Node node) {
 
+		if (!node.hasTag("spatial-relation:")) {
+			throw new CoreException("Expected 'spatial-relation:' not '"
+					+ node.tag + "'.");
+		}
+
 		SpatialIndicator indicator = null;
 		Entity entity = null;
 
@@ -114,6 +137,10 @@ public abstract class Rcl {
 	}
 
 	private static Event eventFromNode(Node node) {
+
+		if (!node.hasTag("event:")) {
+			throw new CoreException("Expected 'event:' not '" + node.tag + "'.");
+		}
 
 		Action action = null;
 		Entity entity = null;

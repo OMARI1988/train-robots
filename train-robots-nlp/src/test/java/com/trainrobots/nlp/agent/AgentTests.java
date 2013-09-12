@@ -110,7 +110,7 @@ public class AgentTests {
 		System.out.println("Mismatch: " + mismatch);
 
 		assertEquals(490, valid);
-		assertEquals(8631, total);
+		assertEquals(8629, total);
 	}
 
 	private boolean match(List<Move> moves1, List<Move> moves2) {

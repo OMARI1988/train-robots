@@ -17,13 +17,13 @@
 
 package com.trainrobots.core.corpus;
 
-import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 
 public class Command {
 
 	public int id;
 	public int sceneNumber;
 	public String text;
-	public Node rcl;
+	public Rcl rcl;
 	public MarkType mark;
 }
