@@ -47,8 +47,8 @@ public class Agent {
 
 	private static Move getMove(WorldModel world, Node node) {
 
-		// Pick-up.
-		Move move = mapPickUpCommand(world, node);
+		// Take.
+		Move move = mapTakeCommand(world, node);
 		if (move != null) {
 			return move;
 		}
@@ -63,15 +63,14 @@ public class Agent {
 		return null;
 	}
 
-	private static Move mapPickUpCommand(WorldModel world, Node node) {
+	private static Move mapTakeCommand(WorldModel world, Node node) {
 
 		if (!node.hasTag("event:")) {
 			return null;
 		}
 
 		String action = node.getValue("action:");
-		if (!action.equals("pick-up") && !action.equals("take")
-				&& !action.equals("grab")) {
+		if (!action.equals("take") && !action.equals("grab")) {
 			return null;
 		}
 

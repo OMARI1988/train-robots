@@ -31,26 +31,26 @@ public class Tagger {
 
 	static {
 
-		add("left hand", "(location-attribute: left)");
-		add("right hand", "(location-attribute: right)");
+		add("left hand", "(spatial-indicator: left)");
+		add("right hand", "(spatial-indicator: right)");
 		add("far right",
-				"(location-attribute: front) (location-attribute: right)");
+				"(spatial-indicator: front) (spatial-indicator: right)");
 		add("far left",
-				"(location-attribute: front) (location-attribute: left)");
+				"(spatial-indicator: front) (spatial-indicator: left)");
 
-		add("pick up", "(event: (action: pick-up))");
+		add("pick up", "(event: (action: take))");
 
 		add("to the left bottom corner",
-				"(spatial-indicator: to (entity: (location-attribute: left) (location-attribute: back) (type: corner)))");
+				"(spatial-indicator: to (entity: (spatial-indicator: left) (spatial-indicator: back) (type: corner)))");
 
 		add("to the top left corner",
-				"(spatial-indicator: to (entity: (location-attribute: top) (location-attribute: left) (type: corner)))");
+				"(spatial-indicator: to (entity: (spatial-indicator: top) (spatial-indicator: left) (type: corner)))");
 
 		add("the left bottom corner",
-				"(entity: (location-attribute: left) (location-attribute: back) (type: corner))");
+				"(entity: (spatial-indicator: left) (spatial-indicator: back) (type: corner))");
 
 		add("the top left corner",
-				"(entity: (location-attribute: top) (location-attribute: left) (type: corner))");
+				"(entity: (spatial-indicator: top) (spatial-indicator: left) (type: corner))");
 
 		add("right in", "(spatial-indicator: in)");
 

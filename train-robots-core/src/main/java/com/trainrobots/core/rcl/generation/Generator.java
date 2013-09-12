@@ -36,6 +36,9 @@ public class Generator {
 
 	public void generate(Entity entity) {
 
+		// Determiner.
+		write("the");
+
 		// Indicators.
 		if (entity.indicators() != null) {
 			for (SpatialIndicator indicator : entity.indicators()) {

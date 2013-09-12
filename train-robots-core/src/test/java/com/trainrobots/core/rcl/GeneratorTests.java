@@ -26,13 +26,13 @@ public class GeneratorTests {
 	@Test
 	public void shouldGenerateEntity1() {
 		Entity entity = new Entity(Type.board);
-		assertEquals(entity.generate(), "board");
+		assertEquals(entity.generate(), "the board");
 	}
 
 	@Test
 	public void shouldGenerateEntity2() {
 		Entity entity = new Entity(Color.red, Type.cube);
-		assertEquals(entity.generate(), "red cube");
+		assertEquals(entity.generate(), "the red cube");
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class GeneratorTests {
 				new Entity(Color.green, Type.prism), new SpatialRelation(
 						SpatialIndicator.above,
 						new Entity(Color.red, Type.cube)));
-		assertEquals(event.generate(), "move green prism above red cube");
+		assertEquals(event.generate(), "move the green prism above the red cube");
 	}
 
 	@Test
@@ -52,6 +52,6 @@ public class GeneratorTests {
 								SpatialIndicator.back, SpatialIndicator.left,
 								Type.corner)));
 		assertEquals(event.generate(),
-				"move green prism within back left corner");
+				"move the green prism within the back left corner");
 	}
 }

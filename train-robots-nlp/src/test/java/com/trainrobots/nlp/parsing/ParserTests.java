@@ -31,7 +31,7 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up the blue pyramid.");
 		assertEquals(
 				node,
-				Node.fromString("(event: (action: pick-up) (entity: (color: blue) (type: prism)))"));
+				Node.fromString("(event: (action: take) (entity: (color: blue) (type: prism)))"));
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class ParserTests {
 		Node node = Parser.parse("the top left corner");
 		assertEquals(
 				node,
-				Node.fromString("(entity: (location-attribute: top) (location-attribute: left) (type: corner))"));
+				Node.fromString("(entity: (spatial-indicator: top) (spatial-indicator: left) (type: corner))"));
 	}
 
 	@Test
@@ -87,6 +87,6 @@ public class ParserTests {
 		Node node = Parser.parse("Pick up and hold the yellow pyramid");
 		assertEquals(
 				node,
-				Node.fromString("(event: (action: pick-up) (conjunction: and (event: (action: hold) (entity: (color: yellow) (type: prism)))))"));
+				Node.fromString("(event: (action: take) (conjunction: and (event: (action: hold) (entity: (color: yellow) (type: prism)))))"));
 	}
 }

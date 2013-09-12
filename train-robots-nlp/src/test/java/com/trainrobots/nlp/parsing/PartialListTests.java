@@ -30,7 +30,7 @@ public class PartialListTests {
 	public void shouldAttachNodes() {
 
 		// List.
-		Node a = new Node("Action", "pick-up");
+		Node a = new Node("Action", "take");
 		Node b = new Node("Description", "definite");
 		Node c = new Node("Color", "blue");
 		Node d = new Node("Object", "prism");
@@ -39,7 +39,7 @@ public class PartialListTests {
 		// Verify.
 		assertEquals(list.size(), 4);
 		assertEquals(list.toString(),
-				"(Action pick-up) (Description definite) (Color blue) (Object prism)");
+				"(Action take) (Description definite) (Color blue) (Object prism)");
 		assertEquals(list.get(1), a);
 		assertEquals(list.get(2), b);
 		assertEquals(list.get(3), c);
@@ -66,6 +66,6 @@ public class PartialListTests {
 		assertEquals(list.size(), 1);
 		assertEquals(
 				list.get(1),
-				Node.fromString("(Action pick-up (Object (Description definite) (Color blue) prism))"));
+				Node.fromString("(Action take (Object (Description definite) (Color blue) prism))"));
 	}
 }

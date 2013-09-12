@@ -48,6 +48,7 @@ public class CorpusView extends JPanel {
 	private final WindowService windowService;
 	private final JLabel headerLabel = new JLabel();
 	private final JLabel commandLabel = new JLabel();
+	private final JLabel infoLabel = new JLabel();
 	private final JComboBox markList;
 	private final EditorView editor = new EditorView();
 	private final GraphicsPanel beforePanel;
@@ -83,6 +84,14 @@ public class CorpusView extends JPanel {
 		commandLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 10));
 		add(commandLabel);
 
+		// Info.
+		infoLabel.setText("No information available");
+		infoLabel.setForeground(new Color(220, 220, 220));
+		infoLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		infoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 10));
+		add(infoLabel);
+
 		// List.
 		markList = new JComboBox(new String[] { "Unmarked",
 				"Inappropriate words or spam", "Invalid spelling or grammar",
@@ -97,6 +106,7 @@ public class CorpusView extends JPanel {
 						command.mark = MarkType.getMark(markList
 								.getSelectedIndex());
 						syncTreeNode();
+						setInfoText();
 					}
 				}
 			}
@@ -133,8 +143,7 @@ public class CorpusView extends JPanel {
 		if (command == null) {
 			return;
 		}
-		Rcl rcl = validateCommand();
-		command.rcl = rcl;
+		validateCommand();
 		command.mark = MarkType.getMark(markList.getSelectedIndex());
 	}
 
@@ -155,6 +164,9 @@ public class CorpusView extends JPanel {
 
 		// Command.
 		commandLabel.setText(command.text);
+
+		// Info.
+		setInfoText();
 
 		// Mark.
 		markList.setSelectedIndex(command.mark.getValue());
@@ -182,24 +194,24 @@ public class CorpusView extends JPanel {
 		statusBar.setText("Parsed command.");
 	}
 
-	public Rcl validateCommand() {
+	public void validateCommand() {
 		if (command == null) {
-			return null;
+			return;
 		}
 		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
 		String text = editor.getText();
 		if (text == null || text.length() == 0) {
 			statusBar.setText("RCL not specified.");
-			return null;
+			return;
 		}
 		try {
-			Rcl rcl = Rcl.fromString(text);
-			editor.setText(rcl.format().replace("\r", ""));
+			command.rcl = Rcl.fromString(text);
+			editor.setText(command.rcl.format().replace("\r", ""));
 			statusBar.setText("RCL parsed successfully.");
-			return rcl;
+			setInfoText();
 		} catch (Exception exception) {
 			statusBar.setError(exception.getMessage());
-			return null;
+			return;
 		}
 	}
 
@@ -221,5 +233,17 @@ public class CorpusView extends JPanel {
 		CommandNode node = tree.getCommandNode(command);
 		node.decorate();
 		tree.repaint();
+	}
+
+	private void setInfoText() {
+		if (command.rcl == null) {
+			infoLabel.setText(" ");
+			return;
+		}
+		try {
+			infoLabel.setText(command.rcl.generate());
+		} catch (Exception exception) {
+			infoLabel.setText(exception.getMessage());
+		}
 	}
 }
