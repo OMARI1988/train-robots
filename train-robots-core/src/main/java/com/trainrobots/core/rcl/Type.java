@@ -18,5 +18,5 @@
 package com.trainrobots.core.rcl;
 
 public enum Type {
-	Reference, Cube, Prism, Corner, Board, Stack, Row, Column, Edge, Tile, Robot
+	reference, cube, prism, corner, board, stack, row, column, edge, tile, robot;
 }

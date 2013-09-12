@@ -18,5 +18,5 @@
 package com.trainrobots.core.rcl;
 
 public enum Action {
-	None, Move, PickUp, Drop
+	none, move, take, drop
 }

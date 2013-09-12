@@ -17,7 +17,10 @@
 
 package com.trainrobots.core.rcl;
 
-public class SpatialRelation {
+import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.Generator;
+
+public class SpatialRelation extends Rcl {
 
 	private final Entity measure;
 	private final SpatialIndicator indicator;
@@ -52,5 +55,20 @@ public class SpatialRelation {
 
 	public Entity entity() {
 		return entity;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("spatial-relation:");
+		node.add("spatial-indicator:", indicator.toString().toLowerCase());
+		node.add(entity.toNode());
+		return node;
+	}
+
+	@Override
+	public String generate() {
+		Generator generator = new Generator();
+		generator.generate(this);
+		return generator.toString();
 	}
 }

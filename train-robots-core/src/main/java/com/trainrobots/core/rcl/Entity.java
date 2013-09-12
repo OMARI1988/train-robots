@@ -20,9 +20,10 @@ package com.trainrobots.core.rcl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.generation.Generator;
 
-public class Entity {
+public class Entity extends Rcl {
 
 	private final Integer id;
 	private final Integer referenceId;
@@ -57,6 +58,36 @@ public class Entity {
 		this.colors.add(color);
 		this.indicators = null;
 		this.relations = null;
+	}
+
+	public Entity(SpatialIndicator indicator1, SpatialIndicator indicator2,
+			Type type) {
+		this.id = null;
+		this.referenceId = null;
+		this.type = type;
+		this.ordinal = null;
+		this.cardinal = null;
+		this.multiple = false;
+		this.colors = null;
+		this.indicators = new ArrayList<SpatialIndicator>();
+		this.indicators.add(indicator1);
+		this.indicators.add(indicator2);
+		this.relations = null;
+	}
+
+	public Entity(Integer id, Integer referenceId, Type type, Integer ordinal,
+			Integer cardinal, boolean multiple, List<Color> colors,
+			List<SpatialIndicator> indicators, List<SpatialRelation> relations) {
+
+		this.id = id;
+		this.referenceId = referenceId;
+		this.type = type;
+		this.ordinal = ordinal;
+		this.cardinal = cardinal;
+		this.multiple = multiple;
+		this.colors = colors;
+		this.indicators = indicators;
+		this.relations = relations;
 	}
 
 	public Integer id() {
@@ -95,6 +126,47 @@ public class Entity {
 		return relations;
 	}
 
+	@Override
+	public Node toNode() {
+
+		// Node.
+		Node node = new Node("entity:");
+
+		// TODO: FIX!!
+		// id;
+		// referenceId;
+		// ordinal;
+		// cardinal;
+		// multiple;
+
+		// Indicators.
+		if (indicators != null) {
+			for (SpatialIndicator indicator : indicators) {
+				node.add("spatial-indicator:", indicator.toString()
+						.toLowerCase());
+			}
+		}
+
+		// Colors.
+		if (colors != null) {
+			for (Color color : colors) {
+				node.add("color:", color.toString().toLowerCase());
+			}
+		}
+
+		// Type.
+		if (type != null) {
+			node.add("type:", type.toString().toLowerCase());
+		}
+
+		// TODO: FIX!!
+		// relations;
+
+		// Result.
+		return node;
+	}
+
+	@Override
 	public String generate() {
 		Generator generator = new Generator();
 		generator.generate(this);

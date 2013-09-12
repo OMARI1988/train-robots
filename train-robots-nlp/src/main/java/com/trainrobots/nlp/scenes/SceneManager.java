@@ -142,20 +142,20 @@ public class SceneManager {
 	private static Color getColor(char color) {
 		switch (color) {
 		case Block.BLUE:
-			return Color.Blue;
+			return Color.blue;
 		case Block.CYAN:
-			return Color.Cyan;
+			return Color.cyan;
 		case Block.RED:
-			return Color.Red;
+			return Color.red;
 		case Block.YELLOW:
-			return Color.Yellow;
+			return Color.yellow;
 		case Block.GREEN:
-			return Color.Green;
+			return Color.green;
 		case Block.MAGENTA:
-			return Color.Magenta;
+			return Color.magenta;
 		case Block.GRAY:
-			return Color.Gray;
+			return Color.gray;
 		}
-		return Color.White;
+		return Color.white;
 	}
 }

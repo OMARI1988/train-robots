@@ -20,7 +20,10 @@ package com.trainrobots.core.rcl;
 import java.util.Arrays;
 import java.util.List;
 
-public class Event {
+import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.Generator;
+
+public class Event extends Rcl {
 
 	private final Action action;
 	private final Entity entity;
@@ -42,5 +45,29 @@ public class Event {
 
 	public Iterable<SpatialRelation> destinations() {
 		return destinations;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("event:");
+		if (action != null) {
+			node.add("action:", action.toString().toLowerCase());
+		}
+		if (entity != null) {
+			node.add(entity.toNode());
+		}
+		if (destinations != null) {
+			for (SpatialRelation destination : destinations) {
+				node.add("destination:", destination.toNode());
+			}
+		}
+		return node;
+	}
+
+	@Override
+	public String generate() {
+		Generator generator = new Generator();
+		generator.generate(this);
+		return generator.toString();
 	}
 }

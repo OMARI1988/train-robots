@@ -25,13 +25,33 @@ public class GeneratorTests {
 
 	@Test
 	public void shouldGenerateEntity1() {
-		Entity entity = new Entity(Type.Board);
+		Entity entity = new Entity(Type.board);
 		assertEquals(entity.generate(), "board");
 	}
 
 	@Test
 	public void shouldGenerateEntity2() {
-		Entity entity = new Entity(Color.Red, Type.Cube);
+		Entity entity = new Entity(Color.red, Type.cube);
 		assertEquals(entity.generate(), "red cube");
+	}
+
+	@Test
+	public void shouldGenerateEvent1() {
+		Event event = new Event(Action.move,
+				new Entity(Color.green, Type.prism), new SpatialRelation(
+						SpatialIndicator.above,
+						new Entity(Color.red, Type.cube)));
+		assertEquals(event.generate(), "move green prism above red cube");
+	}
+
+	@Test
+	public void shouldGenerateEvent2() {
+		Event event = new Event(Action.move,
+				new Entity(Color.green, Type.prism), new SpatialRelation(
+						SpatialIndicator.within, new Entity(
+								SpatialIndicator.back, SpatialIndicator.left,
+								Type.corner)));
+		assertEquals(event.generate(),
+				"move green prism within back left corner");
 	}
 }

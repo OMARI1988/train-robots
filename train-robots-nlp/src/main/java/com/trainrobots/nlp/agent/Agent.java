@@ -225,28 +225,28 @@ public class Agent {
 			if (child.hasTag("color:")) {
 				String attribute = child.getValue();
 				if (attribute.equals("blue")) {
-					return Color.Blue;
+					return Color.blue;
 				}
 				if (attribute.equals("cyan")) {
-					return Color.Cyan;
+					return Color.cyan;
 				}
 				if (attribute.equals("red")) {
-					return Color.Red;
+					return Color.red;
 				}
 				if (attribute.equals("yellow")) {
-					return Color.Yellow;
+					return Color.yellow;
 				}
 				if (attribute.equals("green")) {
-					return Color.Green;
+					return Color.green;
 				}
 				if (attribute.equals("magenta")) {
-					return Color.Magenta;
+					return Color.magenta;
 				}
 				if (attribute.equals("gray")) {
-					return Color.Gray;
+					return Color.gray;
 				}
 				if (attribute.equals("white")) {
-					return Color.White;
+					return Color.white;
 				}
 			}
 		}

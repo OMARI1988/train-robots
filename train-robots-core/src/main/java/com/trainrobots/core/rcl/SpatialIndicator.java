@@ -18,5 +18,5 @@
 package com.trainrobots.core.rcl;
 
 public enum SpatialIndicator {
-	Front, Frontmost, Back, Backmost, Left, Leftmost, Right, Rightmost, Highest, Lowest, Opposite, Single, Above, Adjacent, Within, Between, Near, Nearest, Far, Furthest, Contain
+	front, frontmost, back, backmost, left, leftmost, right, rightmost, highest, lowest, opposite, single, above, adjacent, within, between, near, nearest, far, furthest, contain
 }
