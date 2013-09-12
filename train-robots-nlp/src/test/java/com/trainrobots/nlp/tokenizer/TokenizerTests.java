@@ -103,6 +103,6 @@ public class TokenizerTests {
 			}
 		}
 		System.out.println("Word count: " + count);
-		assertEquals(count, 99566);
+		assertEquals(count, 121302);
 	}
 }

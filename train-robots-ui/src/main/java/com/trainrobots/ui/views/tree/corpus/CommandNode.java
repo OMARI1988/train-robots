@@ -17,7 +17,10 @@
 
 package com.trainrobots.ui.views.tree.corpus;
 
+import java.awt.Color;
+
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.TreeNode;
 
@@ -30,6 +33,7 @@ public class CommandNode extends TreeNode {
 		super("C" + command.id, true);
 		this.windowService = windowService;
 		this.command = command;
+		decorate();
 	}
 
 	public Command getComand() {
@@ -39,5 +43,15 @@ public class CommandNode extends TreeNode {
 	@Override
 	public void select() {
 		windowService.getMainWindow().getCorpusView().select(command);
+	}
+
+	public void decorate() {
+		if (command.mark == MarkType.Accurate) {
+			setColor(new Color(0, 200, 0));
+		} else if (command.mark == MarkType.Unmarked) {
+			setColor(Color.BLACK);
+		} else {
+			setColor(Color.GRAY);
+		}
 	}
 }

@@ -21,6 +21,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
@@ -36,6 +38,8 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.tree.corpus.CommandNode;
+import com.trainrobots.ui.views.tree.corpus.CorpusTreeView;
 
 public class CorpusView extends JPanel {
 
@@ -84,6 +88,18 @@ public class CorpusView extends JPanel {
 				"Before and after images confused",
 				"Incorrect or bad directions", "Not specific enough",
 				"Accurate" });
+		markList.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if (command != null) {
+						command.mark = MarkType.getMark(markList
+								.getSelectedIndex());
+						syncTreeNode();
+					}
+				}
+			}
+		});
 		JPanel wrapperPanel = new JPanel();
 		wrapperPanel.setMaximumSize(new Dimension(240, 28));
 		wrapperPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -194,5 +210,15 @@ public class CorpusView extends JPanel {
 		graphicsPanel.setMaximumSize(new Dimension(width, height));
 		graphicsPanel.setMinimumSize(new Dimension(width, height));
 		return graphicsPanel;
+	}
+
+	private void syncTreeNode() {
+		if (command == null) {
+			return;
+		}
+		CorpusTreeView tree = windowService.getMainWindow().getCorpusTreeView();
+		CommandNode node = tree.getCommandNode(command);
+		node.decorate();
+		tree.repaint();
 	}
 }

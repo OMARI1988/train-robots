@@ -51,6 +51,7 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
 		// Icon.
 		TreeNode node = (TreeNode) value;
 		setIcon(node.isLeaf() ? LEAF_ICON : FOLDER_ICON);
+		setForeground(node.getColor());
 
 		// Return renderer.
 		return this;

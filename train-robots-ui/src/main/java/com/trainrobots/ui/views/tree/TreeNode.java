@@ -17,13 +17,16 @@
 
 package com.trainrobots.ui.views.tree;
 
+import java.awt.Color;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class TreeNode extends DefaultMutableTreeNode {
 
-	private boolean isInitiated = false;
-	protected String name;
 	private final boolean isLeaf;
+	private boolean isInitiated = false;
+	private String name;
+	private Color color = Color.BLACK;
 
 	protected TreeNode(String name, boolean isLeaf) {
 		this.name = name;
@@ -66,6 +69,14 @@ public abstract class TreeNode extends DefaultMutableTreeNode {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	protected void createChildNodes() {

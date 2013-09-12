@@ -19,10 +19,8 @@ package com.trainrobots.core.corpus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.trainrobots.core.io.FileReader;
 import com.trainrobots.core.io.FileWriter;
@@ -36,7 +34,6 @@ public class Corpus {
 	private static List<Command> commands;
 	private static Map<Integer, List<Command>> commandsByScene = new HashMap<Integer, List<Command>>();
 	private static Map<Integer, Command> commandsById = new HashMap<Integer, Command>();
-	private static Set<Integer> blackList = new HashSet<Integer>();
 
 	public static Command getCommand(int id) {
 		loadCommands();
@@ -84,9 +81,7 @@ public class Corpus {
 			command.sceneNumber = Integer.parseInt(items[1]);
 			command.text = items[2].trim();
 			command.mark = MarkType.Unmarked;
-			if (!blackList.contains(command.id)) {
-				add(command);
-			}
+			add(command);
 		}
 		reader.close();
 
@@ -119,40 +114,5 @@ public class Corpus {
 
 		// Commands by ID.
 		commandsById.put(command.id, command);
-	}
-
-	static {
-		blackList.add(3);
-		blackList.add(11);
-		blackList.add(16);
-		blackList.add(469);
-		blackList.add(511);
-		blackList.add(514);
-		blackList.add(526);
-		blackList.add(530);
-		blackList.add(533);
-		blackList.add(536);
-		blackList.add(539);
-		blackList.add(542);
-		blackList.add(545);
-		blackList.add(548);
-		blackList.add(551);
-		blackList.add(554);
-		blackList.add(557);
-		blackList.add(560);
-		blackList.add(563);
-		blackList.add(672);
-		blackList.add(675);
-		blackList.add(721);
-		blackList.add(762);
-		blackList.add(822);
-		blackList.add(852);
-		blackList.add(857);
-		blackList.add(1172);
-		blackList.add(3138);
-		blackList.add(5231);
-		blackList.add(5234);
-		blackList.add(7522);
-		blackList.add(9374);
 	}
 }

@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.Parser;
@@ -60,6 +61,10 @@ public class AgentTests {
 		for (Command command : Corpus.getCommands()) {
 
 			// Command.
+			if (command.mark != MarkType.Unmarked
+					&& command.mark != MarkType.Accurate) {
+				continue;
+			}
 			Scene scene = SceneManager.getScene(command.sceneNumber);
 			String text = command.text;
 
@@ -104,8 +109,8 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(398, valid);
-		assertEquals(7005, total);
+		assertEquals(490, valid);
+		assertEquals(8631, total);
 	}
 
 	private boolean match(List<Move> moves1, List<Move> moves2) {

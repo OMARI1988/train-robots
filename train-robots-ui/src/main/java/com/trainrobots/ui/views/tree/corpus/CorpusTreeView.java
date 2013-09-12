@@ -36,6 +36,19 @@ public class CorpusTreeView extends TreeView {
 
 	public void selectCommand(Command command) {
 
+		// Node.
+		CommandNode commandNode = getCommandNode(command);
+
+		// Select.
+		if (commandNode != null) {
+			TreePath selectionPath = new TreePath(commandNode.getPath());
+			setSelectionPath(selectionPath);
+			scrollPathToVisible(selectionPath);
+		}
+	}
+
+	public CommandNode getCommandNode(Command command) {
+
 		// Root node.
 		RootNode rootNode = (RootNode) getModel().getRoot();
 		rootNode.getChildCount();
@@ -45,20 +58,15 @@ public class CorpusTreeView extends TreeView {
 				.getChildAt(command.sceneNumber - 1);
 
 		// Command node.
-		CommandNode commandNode = null;
 		int size = sceneNode.getChildCount();
 		for (int i = 0; i < size; i++) {
 			CommandNode node = (CommandNode) sceneNode.getChildAt(i);
 			if (node.getComand() == command) {
-				commandNode = node;
+				return node;
 			}
 		}
 
-		// Select.
-		if (commandNode != null) {
-			TreePath selectionPath = new TreePath(commandNode.getPath());
-			setSelectionPath(selectionPath);
-			scrollPathToVisible(selectionPath);
-		}
+		// No match.
+		return null;
 	}
 }
