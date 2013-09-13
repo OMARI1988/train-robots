@@ -17,10 +17,9 @@
 
 package com.trainrobots.nlp.processor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,10 +27,8 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
-import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
@@ -50,86 +47,43 @@ public class ProcessorTests {
 	@Test
 	public void shouldProcessCorpus() {
 
-		// File.
-		// FileWriter writer = new FileWriter("c:/temp/processor.txt");
-		// String[] types = { "Failed", "Success", "Mismatch" };
-
 		// Process.
-		int valid = 0;
-		int total = 0;
-		int mismatch = 0;
+		int i = 0;
 		for (Command command : Corpus.getCommands()) {
 
+			// RCL but not accurate?
+			if (command.rcl != null && command.mark != MarkType.Accurate) {
+				System.out
+						.println("C"
+								+ command.id
+								+ ": RCL specified but command was not marked as accurate.");
+			}
+
+			// Accurate but no RCL?
+			if (command.rcl == null && command.mark == MarkType.Accurate) {
+				System.out
+						.println("C"
+								+ command.id
+								+ ": Command marked as accurate but RCL was not specified.");
+			}
+
 			// Command.
-			if (command.mark != MarkType.Unmarked
-					&& command.mark != MarkType.Accurate) {
+			if (command.rcl == null || command.mark != MarkType.Accurate) {
 				continue;
 			}
-			Scene scene = SceneManager.getScene(command.sceneNumber);
-			String text = command.text;
-
-			// Parse.
-			Node node = Parser.parse(text);
 
 			// Agent.
-			int category = 0;
 			try {
-				Rcl rcl = Rcl.fromNode(node);
-				List<Move> moves = Processor.getMoves(scene.before, rcl);
-				if (match(moves, scene.moves)) {
-					category = 1;
-				} else if (moves != null) {
-					category = 2;
-				}
+				MoveValidator.validate(command.sceneNumber, command.rcl);
 			} catch (Exception e) {
-			}
-
-			// Write.
-			// writer.writeLine("// Command " + command.id + ": " + text);
-			// writer.writeLine("// Scene " + scene.number + ": " +
-			// types[category]);
-			// writer.writeLine();
-			// writer.writeLine(node.format());
-			// writer.writeLine();
-
-			// Increment.
-			if (category == 1) {
-				valid++;
-			} else if (category == 2) {
-				mismatch++;
-			}
-			total++;
-		}
-
-		// Close.
-		// writer.close();
-
-		// Results.
-		NumberFormat nf = NumberFormat.getNumberInstance();
-		nf.setMaximumFractionDigits(2);
-
-		double p = 100 * valid / (double) total;
-		System.out.println("Success: " + valid + " / " + total + " = "
-				+ nf.format(p) + "%");
-		System.out.println("Mismatch: " + mismatch);
-
-		assertEquals(464, valid);
-		assertEquals(8629, total);
-	}
-
-	private boolean match(List<Move> moves1, List<Move> moves2) {
-		int size1 = moves1 != null ? moves1.size() : 0;
-		int size2 = moves2 != null ? moves2.size() : 0;
-		if (size1 != size2) {
-			return false;
-		}
-		for (int i = 0; i < size1; i++) {
-			Move m1 = moves1.get(i);
-			Move m2 = moves2.get(i);
-			if (!m1.equals(m2)) {
-				return false;
+				System.out.println(++i + ") C" + command.id + ": "
+						+ e.getMessage() + " " + command.rcl);
 			}
 		}
-		return true;
+
+		// Failed?
+		if (i > 0) {
+			fail(i + " processing error(s).");
+		}
 	}
 }

@@ -19,9 +19,9 @@ package com.trainrobots.nlp.scenes.moves;
 
 import com.trainrobots.nlp.scenes.Position;
 
-public class PickUpMove implements Move {
+public class TakeMove implements Move {
 
-	public PickUpMove(Position from) {
+	public TakeMove(Position from) {
 		this.from = from;
 	}
 
@@ -29,17 +29,17 @@ public class PickUpMove implements Move {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof PickUpMove)) {
+		if (!(object instanceof TakeMove)) {
 			return false;
 		}
-		PickUpMove m = (PickUpMove) object;
+		TakeMove m = (TakeMove) object;
 		return m.from.equals(from);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
-		text.append("PickUp: ");
+		text.append("Take: ");
 		text.append(from);
 		return text.toString();
 	}

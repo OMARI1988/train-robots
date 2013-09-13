@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
-import com.trainrobots.nlp.scenes.moves.PickUpMove;
+import com.trainrobots.nlp.scenes.moves.TakeMove;
 
 public class SceneTests {
 
@@ -48,7 +48,7 @@ public class SceneTests {
 		List<Move> moves = scene.moves;
 		assertEquals(moves.size(), 1);
 
-		PickUpMove move = (PickUpMove) moves.get(0);
+		TakeMove move = (TakeMove) moves.get(0);
 		assertEquals(move.from, new Position(2, 1, 3));
 	}
 }

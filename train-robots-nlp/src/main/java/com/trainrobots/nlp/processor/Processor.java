@@ -20,6 +20,7 @@ package com.trainrobots.nlp.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Entity;
@@ -27,7 +28,6 @@ import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
-import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;
@@ -35,17 +35,12 @@ import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
-import com.trainrobots.nlp.scenes.moves.PickUpMove;
+import com.trainrobots.nlp.scenes.moves.TakeMove;
 
 public class Processor {
 
 	public static List<Move> getMoves(WorldModel world, Rcl rcl) {
-
 		Move move = getMove(world, rcl);
-		if (move == null) {
-			return null;
-		}
-
 		List<Move> moves = new ArrayList<Move>();
 		moves.add(move);
 		return moves;
@@ -53,75 +48,52 @@ public class Processor {
 
 	private static Move getMove(WorldModel world, Rcl rcl) {
 
+		// Event.
+		if (!(rcl instanceof Event)) {
+			throw new CoreException("Expected an RCL event.");
+		}
+		Event event = (Event) rcl;
+
 		// Take.
-		Move move = mapTakeCommand(world, rcl);
-		if (move != null) {
-			return move;
+		if (event.action() == Action.take) {
+			return mapTakeCommand(world, event);
 		}
 
-		// Move/above.
-		move = mapMoveAboveCommand(world, rcl);
-		if (move != null) {
-			return move;
+		// Move.
+		if (event.action() == Action.move) {
+			return mapMoveCommand(world, event);
 		}
 
 		// No match.
-		return null;
+		throw new CoreException("Event action '" + event.action()
+				+ "' not recognized.");
 	}
 
-	private static Move mapTakeCommand(WorldModel world, Rcl rcl) {
-
-		if (!(rcl instanceof Event)) {
-			return null;
-		}
-
-		Event event = (Event) rcl;
-		if (event.action() != Action.take) {
-			return null;
-		}
+	private static Move mapTakeCommand(WorldModel world, Event event) {
 
 		Entity entity = event.entity();
 		if (entity == null) {
-			return null;
+			throw new CoreException("Event entity not specified.");
 		}
 
-		Position position = mapEntityToPosition(world, entity, false);
-		if (position == null) {
-			return null;
-		}
-		return new PickUpMove(position);
+		return new TakeMove(mapEntityToPosition(world, entity, false));
 	}
 
-	private static Move mapMoveAboveCommand(WorldModel world, Rcl rcl) {
-
-		if (!(rcl instanceof Event)) {
-			return null;
-		}
-
-		Event event = (Event) rcl;
-		if (event.action() != Action.move && event.action() != Action.take
-				&& event.action() != Action.drop) {
-			return null;
-		}
+	private static Move mapMoveCommand(WorldModel world, Event event) {
 
 		Entity entity = event.entity();
 		if (entity == null) {
-			return null;
+			throw new CoreException("Event entity not specified.");
 		}
 
 		Position position = mapEntityToPosition(world, entity, true);
-		if (position == null) {
-			return null;
-		}
 
 		if (event.destinations() == null || event.destinations().size() != 1) {
-			return null;
+			throw new CoreException("Single destination not specified.");
 		}
+
 		SpatialRelation destination = event.destinations().get(0);
 		Position position2 = mapSpatialRelation(world, destination);
-		if (position2 == null) {
-			return null;
-		}
 		return new DirectMove(position, position2);
 	}
 
@@ -130,19 +102,16 @@ public class Processor {
 
 		SpatialIndicator indicator = relation.indicator();
 		if (indicator == null) {
-			return null;
+			throw new CoreException("Indicator not specified.");
 		}
 
-		if (indicator != SpatialIndicator.above) {
-			return null;
+		if (indicator != SpatialIndicator.above
+				&& indicator != SpatialIndicator.within) {
+			throw new CoreException("Invalid indicator: " + indicator);
 		}
 
 		Entity entity = relation.entity();
 		Position position = mapEntityToPosition(world, entity, false);
-		if (position == null) {
-			return null;
-
-		}
 		return position.add(0, 0, 1);
 	}
 
@@ -153,25 +122,51 @@ public class Processor {
 		Color color = getEntityColor(entity);
 
 		// Cube.
-		Type type = entity.type();
-		if (type == Type.cube) {
+		switch (entity.type()) {
+		case cube:
 			return mapShapeToPosition(world, ShapeType.Cube, color,
 					prioritizeGripper);
-		}
-
-		// Prism.
-		if (type == Type.prism) {
+		case prism:
 			return mapShapeToPosition(world, ShapeType.Prism, color,
 					prioritizeGripper);
-		}
-
-		// Stack.
-		if (type == Type.stack) {
+		case stack:
 			return mapStackToPosition(world, color);
+		case corner:
+			return mapCornerToPosition(world, entity.indicators());
 		}
 
 		// No match.
-		return null;
+		throw new CoreException("Failed to map entity '" + entity.type()
+				+ "' to position.");
+	}
+
+	private static Position mapShapeToPosition(WorldModel world,
+			ShapeType type, Color color, boolean prioritizeGripper) {
+
+		// Gripper?
+		if (prioritizeGripper) {
+			Shape shape = world.getShapeInGripper();
+			if (shape != null && (color == null || shape.color == color)
+					&& shape.type == type) {
+				return shape.position;
+			}
+		}
+
+		// Search the board.
+		Shape result = null;
+		for (Shape shape : world.shapes()) {
+			if ((color == null || shape.color == color) && shape.type == type
+					&& world.getShape(shape.position.add(0, 0, 1)) == null) {
+				if (result != null) {
+					throw new CoreException("Failed to find unique shape.");
+				}
+				result = shape;
+			}
+		}
+		if (result == null) {
+			throw new CoreException("Shape not found.");
+		}
+		return result.position;
 	}
 
 	private static Position mapStackToPosition(WorldModel world, Color color) {
@@ -200,38 +195,55 @@ public class Processor {
 		for (Stack stack : stacks) {
 			if (stack.allHaveColor(color)) {
 				if (result != null) {
-					return null;
+					throw new CoreException("Failed to find unique stack.");
 				}
 				result = stack;
 			}
 		}
-		return result != null ? result.top().position : null;
+		if (result == null) {
+			throw new CoreException("Stack not found.");
+		}
+		return result.top().position;
 	}
 
-	private static Position mapShapeToPosition(WorldModel world,
-			ShapeType type, Color color, boolean prioritizeGripper) {
+	private static Position mapCornerToPosition(WorldModel world,
+			List<SpatialIndicator> indicators) {
 
-		// Gripper?
-		if (prioritizeGripper) {
-			Shape shape = world.getShapeInGripper();
-			if (shape != null && (color == null || shape.color == color)
-					&& shape.type == type) {
-				return shape.position;
+		boolean front = false;
+		boolean back = false;
+		boolean left = false;
+		boolean right = false;
+		for (SpatialIndicator indicator : indicators) {
+			switch (indicator) {
+			case front:
+				front = true;
+				break;
+			case back:
+				back = true;
+				break;
+			case left:
+				left = true;
+				break;
+			case right:
+				right = true;
+				break;
 			}
 		}
 
-		// Search the board.
-		Shape result = null;
-		for (Shape shape : world.shapes()) {
-			if ((color == null || shape.color == color) && shape.type == type
-					&& world.getShape(shape.position.add(0, 0, 1)) == null) {
-				if (result != null) {
-					return null;
-				}
-				result = shape;
-			}
+		if (back && right) {
+			return new Position(0, 0, -1);
 		}
-		return result != null ? result.position : null;
+		if (back && left) {
+			return new Position(0, 7, -1);
+		}
+		if (front && right) {
+			return new Position(7, 0, -1);
+		}
+		if (front && left) {
+			return new Position(7, 7, -1);
+		}
+
+		throw new CoreException("Failed to identify corner.");
 	}
 
 	private static Color getEntityColor(Entity entity) {

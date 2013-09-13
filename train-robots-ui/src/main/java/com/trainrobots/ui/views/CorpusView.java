@@ -37,6 +37,7 @@ import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.corpus.CommandNode;
@@ -209,6 +210,7 @@ public class CorpusView extends JPanel {
 			editor.setText(command.rcl.format().replace("\r", ""));
 			statusBar.setText("RCL parsed successfully.");
 			setInfoText();
+			MoveValidator.validate(command.sceneNumber, command.rcl);
 		} catch (Exception exception) {
 			statusBar.setError(exception.getMessage());
 			return;
