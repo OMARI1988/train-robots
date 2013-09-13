@@ -25,6 +25,7 @@ import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
 import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
@@ -78,7 +79,7 @@ public class SceneManager {
 		// Removed.
 		List<Shape> removed = new ArrayList<Shape>();
 		for (Shape shape : before.shapes()) {
-			if (after.getShape(shape.position) == null) {
+			if (after.getShape(shape.position()) == null) {
 				removed.add(shape);
 			}
 		}
@@ -86,7 +87,7 @@ public class SceneManager {
 		// Added.
 		List<Shape> added = new ArrayList<Shape>();
 		for (Shape shape : after.shapes()) {
-			if (before.getShape(shape.position) == null) {
+			if (before.getShape(shape.position()) == null) {
 				added.add(shape);
 			}
 		}
@@ -104,11 +105,11 @@ public class SceneManager {
 			if (moves == null) {
 				moves = new ArrayList<Move>();
 			}
-			if (s2.position.z > 0
-					&& after.getShape(s2.position.add(0, 0, -1)) == null) {
-				moves.add(new TakeMove(s1.position));
+			if (s2.position().z > 0
+					&& after.getShape(s2.position().add(0, 0, -1)) == null) {
+				moves.add(new TakeMove(s1.position()));
 			} else {
-				moves.add(new DirectMove(s1.position, s2.position));
+				moves.add(new DirectMove(s1.position(), s2.position()));
 			}
 		}
 		return moves;
@@ -118,7 +119,7 @@ public class SceneManager {
 		int size = list.size();
 		for (int i = 0; i < size; i++) {
 			Shape s2 = list.get(i);
-			if (s.type == s2.type && s.color == s2.color) {
+			if (s.type() == s2.type() && s.color() == s2.color()) {
 				return s2;
 			}
 		}
@@ -130,7 +131,7 @@ public class SceneManager {
 		List<Shape> shapes = new ArrayList<Shape>();
 		for (Block b : c.blocks) {
 			Shape s = new Shape(getColor(b.color),
-					b.type == Block.CUBE ? ShapeType.Cube : ShapeType.Prism,
+					b.type == Block.CUBE ? Type.cube : Type.prism,
 					new Position(b.x, b.y, b.z));
 			shapes.add(s);
 		}

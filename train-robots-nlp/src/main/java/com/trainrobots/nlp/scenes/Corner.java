@@ -17,6 +17,32 @@
 
 package com.trainrobots.nlp.scenes;
 
-public enum ShapeType {
-	Cube, Prism
+import com.trainrobots.core.rcl.Type;
+
+public class Corner implements WorldEntity {
+
+	public static Corner BackRight = new Corner(new Position(0, 0, 0));
+	public static Corner BackLeft = new Corner(new Position(0, 7, 0));
+	public static Corner FrontRight = new Corner(new Position(7, 0, 0));
+	public static Corner FrontLeft = new Corner(new Position(7, 7, 0));
+
+	private final Position position;
+
+	private Corner(Position position) {
+		this.position = position;
+	}
+
+	public Position position() {
+		return position;
+	}
+
+	@Override
+	public String toString() {
+		return "Corner " + position;
+	}
+
+	@Override
+	public Type type() {
+		return Type.corner;
+	}
 }

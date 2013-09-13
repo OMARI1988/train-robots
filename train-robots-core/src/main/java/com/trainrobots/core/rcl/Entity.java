@@ -126,6 +126,10 @@ public class Entity extends Rcl {
 		return relations;
 	}
 
+	public static Entity fromString(String text) {
+		return (Entity) Rcl.fromString(text);
+	}
+
 	@Override
 	public Node toNode() {
 

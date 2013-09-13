@@ -35,7 +35,7 @@ public class WorldModel {
 		this.shapes = shapes;
 
 		for (Shape shape : shapes) {
-			map.put(getKey(shape.position), shape);
+			map.put(getKey(shape.position()), shape);
 		}
 	}
 

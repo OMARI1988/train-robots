@@ -28,9 +28,9 @@ import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
-import com.trainrobots.nlp.scenes.ShapeType;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
@@ -124,10 +124,10 @@ public class Processor {
 		// Cube.
 		switch (entity.type()) {
 		case cube:
-			return mapShapeToPosition(world, ShapeType.Cube, color,
+			return mapShapeToPosition(world, Type.cube, color,
 					prioritizeGripper);
 		case prism:
-			return mapShapeToPosition(world, ShapeType.Prism, color,
+			return mapShapeToPosition(world, Type.prism, color,
 					prioritizeGripper);
 		case stack:
 			return mapStackToPosition(world, color);
@@ -140,23 +140,24 @@ public class Processor {
 				+ "' to position.");
 	}
 
-	private static Position mapShapeToPosition(WorldModel world,
-			ShapeType type, Color color, boolean prioritizeGripper) {
+	private static Position mapShapeToPosition(WorldModel world, Type type,
+			Color color, boolean prioritizeGripper) {
 
 		// Gripper?
 		if (prioritizeGripper) {
 			Shape shape = world.getShapeInGripper();
-			if (shape != null && (color == null || shape.color == color)
-					&& shape.type == type) {
-				return shape.position;
+			if (shape != null && (color == null || shape.color() == color)
+					&& shape.type() == type) {
+				return shape.position();
 			}
 		}
 
 		// Search the board.
 		Shape result = null;
 		for (Shape shape : world.shapes()) {
-			if ((color == null || shape.color == color) && shape.type == type
-					&& world.getShape(shape.position.add(0, 0, 1)) == null) {
+			if ((color == null || shape.color() == color)
+					&& shape.type() == type
+					&& world.getShape(shape.position().add(0, 0, 1)) == null) {
 				if (result != null) {
 					throw new CoreException("Failed to find unique shape.");
 				}
@@ -166,7 +167,7 @@ public class Processor {
 		if (result == null) {
 			throw new CoreException("Shape not found.");
 		}
-		return result.position;
+		return result.position();
 	}
 
 	private static Position mapStackToPosition(WorldModel world, Color color) {
@@ -174,10 +175,10 @@ public class Processor {
 		// Find all stacks.
 		List<Stack> stacks = new ArrayList<Stack>();
 		for (Shape shape : world.shapes()) {
-			if (shape.position.z == 0) {
+			if (shape.position().z == 0) {
 				Stack stack = null;
 				for (int z = 1; z < 8; z++) {
-					Shape s2 = world.getShape(shape.position.add(0, 0, z));
+					Shape s2 = world.getShape(shape.position().add(0, 0, z));
 					if (s2 != null) {
 						if (stack == null) {
 							stack = new Stack();
@@ -203,7 +204,7 @@ public class Processor {
 		if (result == null) {
 			throw new CoreException("Stack not found.");
 		}
-		return result.top().position;
+		return result.top().position();
 	}
 
 	private static Position mapCornerToPosition(WorldModel world,

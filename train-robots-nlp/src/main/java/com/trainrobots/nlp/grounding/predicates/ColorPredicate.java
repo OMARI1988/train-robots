@@ -15,51 +15,31 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.grounding.predicates;
 
 import com.trainrobots.core.rcl.Color;
-import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class Shape implements WorldEntity {
+public class ColorPredicate implements Predicate {
 
 	private final Color color;
-	private final Type type;
-	private final Position position;
 
-	public Shape(Color color, Type type, Position position) {
+	public ColorPredicate(Color color) {
 		this.color = color;
-		this.type = type;
-		this.position = position;
-	}
-
-	public Color color() {
-		return color;
 	}
 
 	@Override
-	public Type type() {
-		return type;
-	}
-
-	public Position position() {
-		return position;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		Shape s = (Shape) object;
-		return s.color == color && s.type == type
-				&& s.position.equals(position);
+	public boolean match(WorldEntity entity) {
+		if (!(entity instanceof Shape)) {
+			return false;
+		}
+		Shape shape = (Shape) entity;
+		return shape.color() == color;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder text = new StringBuilder();
-		text.append(color);
-		text.append(' ');
-		text.append(type);
-		text.append(' ');
-		text.append(position);
-		return text.toString();
+		return "(color: " + color + ")";
 	}
 }

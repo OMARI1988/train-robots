@@ -15,37 +15,11 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.nlp.grounding.predicates;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.trainrobots.nlp.scenes.WorldEntity;
 
-import com.trainrobots.core.rcl.Color;
-import com.trainrobots.core.rcl.Type;
-
-public class Stack implements WorldEntity {
-
-	private final List<Shape> shapes = new ArrayList<Shape>();
-
-	public void add(Shape shape) {
-		shapes.add(shape);
-	}
-
-	public boolean allHaveColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color() != color) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
-	}
-
-	@Override
-	public Type type() {
-		return Type.stack;
-	}
+public interface Predicate {
+	
+	boolean match(WorldEntity entity);
 }

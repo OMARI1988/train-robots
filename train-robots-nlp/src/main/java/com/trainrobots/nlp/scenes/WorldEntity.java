@@ -17,35 +17,9 @@
 
 package com.trainrobots.nlp.scenes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Type;
 
-public class Stack implements WorldEntity {
+public interface WorldEntity {
 
-	private final List<Shape> shapes = new ArrayList<Shape>();
-
-	public void add(Shape shape) {
-		shapes.add(shape);
-	}
-
-	public boolean allHaveColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color() != color) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
-	}
-
-	@Override
-	public Type type() {
-		return Type.stack;
-	}
+	Type type();
 }
