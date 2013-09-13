@@ -108,25 +108,34 @@ public class Agent {
 			return null;
 		}
 
-		Node spatialIndicator = node.getChild("spatial-indicator:");
-		if (spatialIndicator == null) {
+		Node destination = node.getChild("destination:");
+		if (destination == null) {
 			return null;
 		}
-		Position position2 = mapSpatialIndicator(world, spatialIndicator);
+		Position position2 = mapSpatialRelation(world,
+				destination.getSingleChild());
 		if (position2 == null) {
 			return null;
 		}
 		return new DirectMove(position, position2);
 	}
 
-	private static Position mapSpatialIndicator(WorldModel world, Node node) {
-		if (!node.hasLeaf("above")) {
+	private static Position mapSpatialRelation(WorldModel world, Node node) {
+
+		Node spatialIndicator = node.getChild("spatial-indicator:");
+		if (spatialIndicator == null) {
 			return null;
 		}
+
+		if (!spatialIndicator.hasLeaf("above")) {
+			return null;
+		}
+
 		Node object = node.getChild("entity:");
 		Position position = mapObjectToPosition(world, object, false);
 		if (position == null) {
 			return null;
+
 		}
 		return position.add(0, 0, 1);
 	}

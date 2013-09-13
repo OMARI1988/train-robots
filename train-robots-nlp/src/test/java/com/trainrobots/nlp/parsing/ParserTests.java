@@ -22,25 +22,25 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
 
 public class ParserTests {
 
 	@Test
 	public void shouldParse1() {
-		Node node = Parser.parse("Pick up the blue pyramid.");
-		assertEquals(
-				node,
-				Node.fromString("(event: (action: take) (entity: (color: blue) (type: prism)))"));
+		Rcl rcl = Rcl.fromNode(Parser.parse("Pick up the blue pyramid."));
+		assertEquals(rcl.toString(),
+				"(event: (action: take) (entity: (color: blue) (type: prism)))");
 	}
 
 	@Test
 	public void shouldParse2() {
-		Node node = Parser
-				.parse("Place the blue block on top of the red block.");
+		Rcl rcl = Rcl.fromNode(Parser
+				.parse("Place the blue block on top of the red block."));
 		assertEquals(
-				node,
-				Node.fromString("(event: (action: place) (entity: (color: blue) (type: cube)) (spatial-indicator: above (entity: (color: red) (type: cube))))"));
+				rcl.toString(),
+				"(event: (action: move) (entity: (color: blue) (type: cube)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube)))))");
 	}
 
 	@Test
@@ -63,14 +63,13 @@ public class ParserTests {
 	public void shouldParse5() {
 		Node node = Parser.parse("move it");
 		assertEquals(node,
-				Node.fromString("(event: (action: move) (anaphor: it))"));
+				Node.fromString("(event: (action: move) (entity: (type: reference)))"));
 	}
 
 	@Test
 	public void shouldParse6() {
 		Node node = Parser.parse("the 3rd tile");
-		assertEquals(
-				node,
+		assertEquals(node,
 				Node.fromString("(entity: (ordinal: 3) (type: tile))"));
 	}
 

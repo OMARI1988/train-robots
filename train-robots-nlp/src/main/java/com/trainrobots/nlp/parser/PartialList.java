@@ -103,4 +103,10 @@ public class PartialList implements Iterable<Node> {
 		Node dependent = nodes.remove(number - 1);
 		head.children.add(0, dependent);
 	}
+
+	public void unary(int number, String tag) {
+		Node dependent = nodes.get(number - 1);
+		Node head = new Node(tag, dependent);
+		nodes.set(number - 1, head);
+	}
 }

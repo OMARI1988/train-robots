@@ -58,10 +58,16 @@ public class Parser {
 		Action action;
 		while ((action = next()) != null) {
 
-			if (action.left()) {
+			switch (action.type()) {
+			case Left:
 				list.left(action.number());
-			} else {
+				break;
+			case Right:
 				list.right(action.number());
+				break;
+			case Unary:
+				list.unary(action.number(), action.tag());
+				break;
 			}
 
 			if (verbose) {
@@ -100,13 +106,19 @@ public class Parser {
 				return Action.left(i);
 			}
 
-			// Attach entity: to spatial-indicator:
+			// Attach entity: to spatial-relation:
 			if (spatialIndicator(node) && entity(right)) {
+				return Action.unary(i, "spatial-relation:");
+			}
+			if (spatialRelation(node) && entity(right)) {
 				return Action.left(i);
 			}
 
-			// Attach spatial-indicator: to event:
-			if (event(node) && spatialIndicator(right) && right2 == null) {
+			// Attach spatial-relation: to event:
+			if (event(node) && spatialRelation(right) && right2 == null) {
+				return Action.unary(i + 1, "destination:");
+			}
+			if (event(node) && destination(right) && right2 == null) {
 				return Action.left(i);
 			}
 
@@ -159,6 +171,14 @@ public class Parser {
 
 	private static boolean spatialIndicator(Node node) {
 		return node != null && node.tag.equals("spatial-indicator:");
+	}
+
+	private static boolean spatialRelation(Node node) {
+		return node != null && node.tag.equals("spatial-relation:");
+	}
+
+	private static boolean destination(Node node) {
+		return node != null && node.tag.equals("destination:");
 	}
 
 	private static boolean anaphor(Node node) {

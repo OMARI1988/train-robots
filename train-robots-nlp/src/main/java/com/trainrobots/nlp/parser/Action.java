@@ -19,32 +19,55 @@ package com.trainrobots.nlp.parser;
 
 public class Action {
 
-	private final boolean left;
+	private final ActionType type;
 	private final int number;
+	private final String tag;
 
-	private Action(boolean left, int number) {
-		this.left = left;
+	private Action(ActionType type, int number) {
+		this.type = type;
 		this.number = number;
+		this.tag = null;
+	}
+
+	private Action(ActionType type, int number, String tag) {
+		this.type = type;
+		this.number = number;
+		this.tag = tag;
 	}
 
 	public static Action left(int number) {
-		return new Action(true, number);
+		return new Action(ActionType.Left, number);
 	}
 
 	public static Action right(int number) {
-		return new Action(false, number);
+		return new Action(ActionType.Right, number);
 	}
 
-	public boolean left() {
-		return left;
+	public static Action unary(int number, String tag) {
+		return new Action(ActionType.Unary, number, tag);
+	}
+
+	public ActionType type() {
+		return type;
 	}
 
 	public int number() {
 		return number;
 	}
 
+	public String tag() {
+		return tag;
+	}
+
 	@Override
 	public String toString() {
-		return (left ? "LEFT " : "RIGHT ") + number;
+		switch (type) {
+		case Left:
+			return "LEFT " + number;
+		case Right:
+			return "RIGHT " + number;
+		default:
+			return "UNARY " + number + " " + tag;
+		}
 	}
 }

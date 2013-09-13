@@ -166,6 +166,9 @@ public abstract class Rcl {
 			}
 		}
 
+		if (destination == null) {
+			return new Event(action, entity);
+		}
 		return new Event(action, entity, destination);
 	}
 }
