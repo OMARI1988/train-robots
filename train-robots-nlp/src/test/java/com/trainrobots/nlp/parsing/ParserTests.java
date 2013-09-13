@@ -19,8 +19,12 @@ package com.trainrobots.nlp.parsing;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
@@ -62,7 +66,8 @@ public class ParserTests {
 	@Test
 	public void shouldParse5() {
 		Node node = Parser.parse("move it");
-		assertEquals(node,
+		assertEquals(
+				node,
 				Node.fromString("(event: (action: move) (entity: (type: reference)))"));
 	}
 
@@ -87,5 +92,23 @@ public class ParserTests {
 		assertEquals(
 				node,
 				Node.fromString("(event: (action: take) (conjunction: and (event: (action: hold) (entity: (color: yellow) (type: prism)))))"));
+	}
+
+	@Test
+	@Ignore
+	public void shouldWriteCommand() {
+		FileWriter writer = new FileWriter("c:/temp/commands.txt");
+		for (int i = 1; i <= 1000; i++) {
+			writer.writeLine();
+			writer.writeLine("// ==============================");
+			writer.writeLine("// Scene " + i);
+			for (Command command : Corpus.getCommands(i)) {
+				writer.writeLine();
+				writer.writeLine("// C" + command.id + ": " + command.text);
+				writer.writeLine();
+				writer.writeLine(Parser.parse(command.text).format());
+			}
+		}
+		writer.close();
 	}
 }
