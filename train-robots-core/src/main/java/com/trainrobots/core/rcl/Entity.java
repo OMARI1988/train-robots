@@ -114,15 +114,15 @@ public class Entity extends Rcl {
 		return multiple;
 	}
 
-	public Iterable<Color> colors() {
+	public List<Color> colors() {
 		return colors;
 	}
 
-	public Iterable<SpatialIndicator> indicators() {
+	public List<SpatialIndicator> indicators() {
 		return indicators;
 	}
 
-	public Iterable<SpatialRelation> relations() {
+	public List<SpatialRelation> relations() {
 		return relations;
 	}
 

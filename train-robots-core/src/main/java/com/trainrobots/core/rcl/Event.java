@@ -43,7 +43,7 @@ public class Event extends Rcl {
 		return entity;
 	}
 
-	public Iterable<SpatialRelation> destinations() {
+	public List<SpatialRelation> destinations() {
 		return destinations;
 	}
 

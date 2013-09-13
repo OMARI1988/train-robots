@@ -174,7 +174,7 @@ public class Lexicon {
 		add("prim", "(entity: (type: prism))");
 		add("pyrramid", "(entity: (type: prism))");
 		add("purple", "(color: magenta)");
-		add("put", "(event: (action: put))");
+		add("put", "(event: (action: move))");
 		add("pyramid", "(entity: (type: prism))");
 		add("pyraamid", "(entity: (type: prism))");
 		add("pyramids", "(entity: (type: prism) (number: plural))");

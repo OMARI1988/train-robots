@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.agent;
+package com.trainrobots.nlp.processor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,22 +28,22 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
 
-public class AgentTests {
+public class ProcessorTests {
 
 	@Test
 	public void shouldFindTopOfStack() {
 		WorldModel world = SceneManager.getScene(424).before;
-		Node node = Parser
-				.parse("Put the yellow pyramid on top of the grey tower.");
-		List<Move> moves = Agent.getMoves(world, node);
+		Rcl rcl = Rcl.fromNode(Parser
+				.parse("Put the yellow pyramid on top of the grey tower."));
+		List<Move> moves = Processor.getMoves(world, rcl);
 		assertNotNull(moves);
 	}
 
@@ -51,8 +51,8 @@ public class AgentTests {
 	public void shouldProcessCorpus() {
 
 		// File.
-		FileWriter writer = new FileWriter("c:/temp/agent.txt");
-		String[] types = { "Failed", "Success", "Mismatch" };
+		// FileWriter writer = new FileWriter("c:/temp/processor.txt");
+		// String[] types = { "Failed", "Success", "Mismatch" };
 
 		// Process.
 		int valid = 0;
@@ -74,7 +74,8 @@ public class AgentTests {
 			// Agent.
 			int category = 0;
 			try {
-				List<Move> moves = Agent.getMoves(scene.before, node);
+				Rcl rcl = Rcl.fromNode(node);
+				List<Move> moves = Processor.getMoves(scene.before, rcl);
 				if (match(moves, scene.moves)) {
 					category = 1;
 				} else if (moves != null) {
@@ -84,12 +85,12 @@ public class AgentTests {
 			}
 
 			// Write.
-			writer.writeLine("// Command " + command.id + ": " + text);
-			writer.writeLine("// Scene " + scene.number + ": "
-					+ types[category]);
-			writer.writeLine();
-			writer.writeLine(node.format());
-			writer.writeLine();
+			// writer.writeLine("// Command " + command.id + ": " + text);
+			// writer.writeLine("// Scene " + scene.number + ": " +
+			// types[category]);
+			// writer.writeLine();
+			// writer.writeLine(node.format());
+			// writer.writeLine();
 
 			// Increment.
 			if (category == 1) {
@@ -100,6 +101,9 @@ public class AgentTests {
 			total++;
 		}
 
+		// Close.
+		// writer.close();
+
 		// Results.
 		NumberFormat nf = NumberFormat.getNumberInstance();
 		nf.setMaximumFractionDigits(2);
@@ -109,7 +113,7 @@ public class AgentTests {
 				+ nf.format(p) + "%");
 		System.out.println("Mismatch: " + mismatch);
 
-		assertEquals(543, valid);
+		assertEquals(464, valid);
 		assertEquals(8629, total);
 	}
 

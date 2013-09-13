@@ -15,13 +15,19 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.agent;
+package com.trainrobots.nlp.processor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.SpatialRelation;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.ShapeType;
@@ -31,11 +37,11 @@ import com.trainrobots.nlp.scenes.moves.DirectMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.PickUpMove;
 
-public class Agent {
+public class Processor {
 
-	public static List<Move> getMoves(WorldModel world, Node node) {
+	public static List<Move> getMoves(WorldModel world, Rcl rcl) {
 
-		Move move = getMove(world, node);
+		Move move = getMove(world, rcl);
 		if (move == null) {
 			return null;
 		}
@@ -45,16 +51,16 @@ public class Agent {
 		return moves;
 	}
 
-	private static Move getMove(WorldModel world, Node node) {
+	private static Move getMove(WorldModel world, Rcl rcl) {
 
 		// Take.
-		Move move = mapTakeCommand(world, node);
+		Move move = mapTakeCommand(world, rcl);
 		if (move != null) {
 			return move;
 		}
 
 		// Move/above.
-		move = mapMoveAboveCommand(world, node);
+		move = mapMoveAboveCommand(world, rcl);
 		if (move != null) {
 			return move;
 		}
@@ -63,76 +69,76 @@ public class Agent {
 		return null;
 	}
 
-	private static Move mapTakeCommand(WorldModel world, Node node) {
+	private static Move mapTakeCommand(WorldModel world, Rcl rcl) {
 
-		if (!node.hasTag("event:")) {
+		if (!(rcl instanceof Event)) {
 			return null;
 		}
 
-		String action = node.getValue("action:");
-		if (!action.equals("take") && !action.equals("grab")) {
+		Event event = (Event) rcl;
+		if (event.action() != Action.take) {
 			return null;
 		}
 
-		Node object = node.getChild("entity:");
-		if (object == null) {
+		Entity entity = event.entity();
+		if (entity == null) {
 			return null;
 		}
 
-		Position position = mapObjectToPosition(world, object, false);
+		Position position = mapEntityToPosition(world, entity, false);
 		if (position == null) {
 			return null;
 		}
 		return new PickUpMove(position);
 	}
 
-	private static Move mapMoveAboveCommand(WorldModel world, Node node) {
+	private static Move mapMoveAboveCommand(WorldModel world, Rcl rcl) {
 
-		if (!node.hasTag("event:")) {
+		if (!(rcl instanceof Event)) {
 			return null;
 		}
 
-		String action = node.getValue("action:");
-		if (!action.equals("move") && !action.equals("place")
-				&& !action.equals("put") && !action.equals("drop")) {
+		Event event = (Event) rcl;
+		if (event.action() != Action.move && event.action() != Action.take
+				&& event.action() != Action.drop) {
 			return null;
 		}
 
-		Node object = node.getChild("entity:");
-		if (object == null) {
+		Entity entity = event.entity();
+		if (entity == null) {
 			return null;
 		}
 
-		Position position = mapObjectToPosition(world, object, true);
+		Position position = mapEntityToPosition(world, entity, true);
 		if (position == null) {
 			return null;
 		}
 
-		Node destination = node.getChild("destination:");
-		if (destination == null) {
+		if (event.destinations() == null || event.destinations().size() != 1) {
 			return null;
 		}
-		Position position2 = mapSpatialRelation(world,
-				destination.getSingleChild());
+		SpatialRelation destination = event.destinations().get(0);
+		Position position2 = mapSpatialRelation(world, destination);
 		if (position2 == null) {
 			return null;
 		}
 		return new DirectMove(position, position2);
 	}
 
-	private static Position mapSpatialRelation(WorldModel world, Node node) {
+	private static Position mapSpatialRelation(WorldModel world,
+			SpatialRelation relation) {
 
-		Node spatialIndicator = node.getChild("spatial-indicator:");
-		if (spatialIndicator == null) {
+		SpatialIndicator indicator = relation.indicator();
+		if (indicator == null) {
 			return null;
 		}
 
-		if (!spatialIndicator.hasLeaf("above")) {
+		if (indicator != SpatialIndicator.above) {
 			return null;
 		}
 
-		Node object = node.getChild("entity:");
-		Position position = mapObjectToPosition(world, object, false);
+		Entity entity = relation.entity();
+		Position position = mapEntityToPosition(world, entity, false);
 		if (position == null) {
 			return null;
 
@@ -140,27 +146,27 @@ public class Agent {
 		return position.add(0, 0, 1);
 	}
 
-	private static Position mapObjectToPosition(WorldModel world, Node node,
-			boolean prioritizeGripper) {
+	private static Position mapEntityToPosition(WorldModel world,
+			Entity entity, boolean prioritizeGripper) {
 
 		// Color.
-		Color color = getObjectColor(node);
+		Color color = getEntityColor(entity);
 
 		// Cube.
-		String value = node.getValue("type:");
-		if (value.equals("cube")) {
+		Type type = entity.type();
+		if (type == Type.cube) {
 			return mapShapeToPosition(world, ShapeType.Cube, color,
 					prioritizeGripper);
 		}
 
 		// Prism.
-		if (value.equals("prism")) {
+		if (type == Type.prism) {
 			return mapShapeToPosition(world, ShapeType.Prism, color,
 					prioritizeGripper);
 		}
 
 		// Stack.
-		if (value.equals("stack")) {
+		if (type == Type.stack) {
 			return mapStackToPosition(world, color);
 		}
 
@@ -228,36 +234,10 @@ public class Agent {
 		return result != null ? result.position : null;
 	}
 
-	private static Color getObjectColor(Node node) {
-		for (Node child : node.children) {
-			if (child.hasTag("color:")) {
-				String attribute = child.getValue();
-				if (attribute.equals("blue")) {
-					return Color.blue;
-				}
-				if (attribute.equals("cyan")) {
-					return Color.cyan;
-				}
-				if (attribute.equals("red")) {
-					return Color.red;
-				}
-				if (attribute.equals("yellow")) {
-					return Color.yellow;
-				}
-				if (attribute.equals("green")) {
-					return Color.green;
-				}
-				if (attribute.equals("magenta")) {
-					return Color.magenta;
-				}
-				if (attribute.equals("gray")) {
-					return Color.gray;
-				}
-				if (attribute.equals("white")) {
-					return Color.white;
-				}
-			}
+	private static Color getEntityColor(Entity entity) {
+		if (entity.colors() == null || entity.colors().size() != 1) {
+			return null;
 		}
-		return null;
+		return entity.colors().get(0);
 	}
 }

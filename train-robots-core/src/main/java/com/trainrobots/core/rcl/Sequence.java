@@ -18,15 +18,13 @@
 package com.trainrobots.core.rcl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class Sequence implements Iterable<Event> {
+public class Sequence {
 
 	private final List<Event> events = new ArrayList<Event>();
 
-	@Override
-	public Iterator<Event> iterator() {
-		return events.iterator();
+	public List<Event> events() {
+		return events;
 	}
 }
