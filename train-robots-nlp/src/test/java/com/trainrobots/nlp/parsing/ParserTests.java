@@ -88,10 +88,11 @@ public class ParserTests {
 
 	@Test
 	public void shouldParse8() {
-		Node node = Parser.parse("Pick up and hold the yellow pyramid");
+		Node node = Parser
+				.parse("Pick the green pyramid and place on the red cube");
 		assertEquals(
 				node,
-				Node.fromString("(event: (action: take) (conjunction: and (event: (action: hold) (entity: (color: yellow) (type: prism)))))"));
+				Node.fromString("(sequence: (event: (action: take) (entity: (color: green) (type: prism))) (event: (action: move) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube))))))"));
 	}
 
 	@Test

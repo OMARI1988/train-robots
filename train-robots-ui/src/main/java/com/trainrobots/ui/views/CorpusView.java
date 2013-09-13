@@ -211,6 +211,7 @@ public class CorpusView extends JPanel {
 			statusBar.setText("RCL parsed successfully.");
 			setInfoText();
 			MoveValidator.validate(command.sceneNumber, command.rcl);
+			statusBar.setText("RCL executed successfully.");
 		} catch (Exception exception) {
 			statusBar.setError(exception.getMessage());
 			return;

@@ -109,4 +109,8 @@ public class PartialList implements Iterable<Node> {
 		Node head = new Node(tag, dependent);
 		nodes.set(number - 1, head);
 	}
+
+	public void remove(int number) {
+		nodes.remove(number - 1);
+	}
 }

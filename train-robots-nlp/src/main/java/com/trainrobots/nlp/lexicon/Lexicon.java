@@ -152,7 +152,7 @@ public class Lexicon {
 		add("next", "(spatial-indicator: adjacent)");
 		add("not", "(attribute: negative)");
 		add("of", "(relation: of)");
-		add("on", "(spatial-indicator: on)");
+		add("on", "(spatial-indicator: above)");
 		add("one", "(cardinal: 1)");
 		add("ones", "(entity: (type: reference) (number: plural))");
 		add("only", "(attribute: only)");

@@ -47,6 +47,10 @@ public class Action {
 		return new Action(ActionType.Unary, number, tag);
 	}
 
+	public static Action remove(int number) {
+		return new Action(ActionType.Remove, number);
+	}
+
 	public ActionType type() {
 		return type;
 	}
@@ -66,6 +70,8 @@ public class Action {
 			return "LEFT " + number;
 		case Right:
 			return "RIGHT " + number;
+		case Remove:
+			return "REMOVE " + number;
 		default:
 			return "UNARY " + number + " " + tag;
 		}

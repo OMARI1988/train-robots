@@ -19,6 +19,7 @@ package com.trainrobots.nlp.parser;
 
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.tagging.Tagger;
 
@@ -68,6 +69,11 @@ public class Parser {
 			case Unary:
 				list.unary(action.number(), action.tag());
 				break;
+			case Remove:
+				list.remove(action.number());
+				break;
+			default:
+				throw new CoreException("Unrecognized action: " + action);
 			}
 
 			if (verbose) {
@@ -83,6 +89,8 @@ public class Parser {
 		int size = list.size();
 		for (int i = 1; i <= size; i++) {
 
+			// Context.
+			Node left = list.get(i - 1);
 			Node node = list.get(i);
 			Node right = list.get(i + 1);
 			Node right2 = list.get(i + 2);
@@ -123,10 +131,14 @@ public class Parser {
 			}
 
 			// event: conjunction: event:
-			if (conjunction(node) && event(right) && right2 == null) {
-				return Action.left(i);
+			if (event(left) && conjunction(node) && event(right)
+					&& right2 == null) {
+				return Action.remove(i);
 			}
-			if (event(node) && conjunction(right) && right2 == null) {
+			if (event(node) && event(right) && right2 == null) {
+				return Action.unary(i, "sequence:");
+			}
+			if (sequence(node) && event(right) && right2 == null) {
 				return Action.left(i);
 			}
 		}
@@ -146,6 +158,10 @@ public class Parser {
 			node.add(child);
 		}
 		return node;
+	}
+
+	private static boolean sequence(Node node) {
+		return node != null && node.tag.equals("sequence:");
 	}
 
 	private static boolean event(Node node) {

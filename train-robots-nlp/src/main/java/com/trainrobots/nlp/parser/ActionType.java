@@ -18,5 +18,5 @@
 package com.trainrobots.nlp.parser;
 
 public enum ActionType {
-	Left, Right, Unary
+	Left, Right, Unary, Remove
 }
