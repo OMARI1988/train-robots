@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.processor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -48,7 +49,8 @@ public class ProcessorTests {
 	public void shouldProcessCorpus() {
 
 		// Process.
-		int i = 0;
+		int error = 0;
+		int total = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// RCL but not accurate?
@@ -72,18 +74,22 @@ public class ProcessorTests {
 				continue;
 			}
 
-			// Agent.
+			// Process.
 			try {
 				MoveValidator.validate(command.sceneNumber, command.rcl);
 			} catch (Exception e) {
-				System.out.println(++i + ") C" + command.id + ": "
+				System.out.println(++error + ") C" + command.id + ": "
 						+ e.getMessage() + " " + command.rcl);
 			}
+			total++;
 		}
 
 		// Failed?
-		if (i > 0) {
-			fail(i + " processing error(s).");
+		if (error > 0) {
+			fail(error + " processing error(s).");
 		}
+
+		// Count.
+		assertEquals(11, total);
 	}
 }
