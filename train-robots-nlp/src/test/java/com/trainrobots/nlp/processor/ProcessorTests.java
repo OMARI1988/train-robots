@@ -18,32 +18,15 @@
 package com.trainrobots.nlp.processor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-
-import java.util.List;
 
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.nlp.parser.Parser;
-import com.trainrobots.nlp.scenes.SceneManager;
-import com.trainrobots.nlp.scenes.WorldModel;
-import com.trainrobots.nlp.scenes.moves.Move;
 
 public class ProcessorTests {
-
-	@Test
-	public void shouldFindTopOfStack() {
-		WorldModel world = SceneManager.getScene(424).before;
-		Rcl rcl = Rcl.fromNode(Parser
-				.parse("Put the yellow pyramid on top of the grey tower."));
-		List<Move> moves = Processor.getMoves(world, rcl);
-		assertNotNull(moves);
-	}
 
 	@Test
 	public void shouldProcessCorpus() {

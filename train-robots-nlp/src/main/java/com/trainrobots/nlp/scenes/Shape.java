@@ -41,6 +41,7 @@ public class Shape implements WorldEntity {
 		return type;
 	}
 
+	@Override
 	public Position position() {
 		return position;
 	}

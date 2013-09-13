@@ -32,7 +32,7 @@ public class MoveValidator {
 
 	public static void validate(int sceneNumber, Rcl rcl) {
 		Scene scene = SceneManager.getScene(sceneNumber);
-		List<Move> moves = Processor.getMoves(scene.before, rcl);
+		List<Move> moves = new Processor(scene.before).getMoves(rcl);
 		if (!match(moves, scene.moves)) {
 			throw new CoreException("Incorrect move.");
 		}

@@ -32,10 +32,6 @@ public class Corner implements WorldEntity {
 		this.position = position;
 	}
 
-	public Position position() {
-		return position;
-	}
-
 	@Override
 	public String toString() {
 		return "Corner " + position;
@@ -44,5 +40,10 @@ public class Corner implements WorldEntity {
 	@Override
 	public Type type() {
 		return Type.corner;
+	}
+
+	@Override
+	public Position position() {
+		return position;
 	}
 }
