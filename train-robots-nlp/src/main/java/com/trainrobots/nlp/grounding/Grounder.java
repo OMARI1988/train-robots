@@ -29,6 +29,7 @@ import com.trainrobots.nlp.grounding.predicates.PredicateList;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
@@ -41,6 +42,11 @@ public class Grounder {
 		// Shapes.
 		for (Shape shape : world.shapes()) {
 			entities.add(shape);
+		}
+
+		// Stacks.
+		for (Stack stack : StackFinder.getStacks(world)) {
+			entities.add(stack);
 		}
 
 		// Corners.

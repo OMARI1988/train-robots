@@ -17,49 +17,39 @@
 
 package com.trainrobots.nlp.scenes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Type;
 
-public class Shape implements WorldEntity {
+public class Stack implements WorldEntity {
 
-	private final Color color;
-	private final Type type;
-	private final Position position;
-
-	public Shape(Color color, Type type, Position position) {
-		this.color = color;
-		this.type = type;
-		this.position = position;
-	}
-
-	public Color color() {
-		return color;
-	}
+	private final List<Shape> shapes = new ArrayList<Shape>();
 
 	@Override
 	public Type type() {
-		return type;
+		return Type.stack;
 	}
 
-	public Position position() {
-		return position;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		Shape s = (Shape) object;
-		return s.color == color && s.type == type
-				&& s.position.equals(position);
+	public List<Shape> shapes() {
+		return shapes;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
-		text.append(color);
-		text.append(' ');
-		text.append(type);
-		text.append(' ');
-		text.append(position);
+		text.append("stack ");
+		text.append(shapes.get(0).position());
 		return text.toString();
+	}
+
+	public boolean hasSingleColor(Color color) {
+		for (Shape shape : shapes) {
+			if (shape.color() != color) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -19,6 +19,7 @@ package com.trainrobots.nlp.grounding.predicates;
 
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class ColorPredicate implements Predicate {
@@ -31,11 +32,18 @@ public class ColorPredicate implements Predicate {
 
 	@Override
 	public boolean match(WorldEntity entity) {
-		if (!(entity instanceof Shape)) {
-			return false;
+
+		if ((entity instanceof Shape)) {
+			Shape shape = (Shape) entity;
+			return shape.color() == color;
 		}
-		Shape shape = (Shape) entity;
-		return shape.color() == color;
+
+		if ((entity instanceof Stack)) {
+			Stack stack = (Stack) entity;
+			return stack.hasSingleColor(color);
+		}
+
+		return false;
 	}
 
 	@Override

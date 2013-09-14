@@ -31,7 +31,9 @@ import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
 import com.trainrobots.nlp.grounding.Grounding;
+import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
+import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
@@ -90,7 +92,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		return new TakeMove(mapEntity(entity).position());
+		return new TakeMove(getPosition(mapEntity(entity)));
 	}
 
 	private Move mapMoveCommand(Event event) {
@@ -100,7 +102,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		Position position = mapEntity(entity).position();
+		Position position = getPosition(mapEntity(entity));
 
 		if (event.destinations() == null || event.destinations().size() != 1) {
 			throw new CoreException("Single destination not specified.");
@@ -119,7 +121,7 @@ public class Processor {
 		}
 
 		WorldEntity entity = mapEntity(relation.entity());
-		Position position = entity.position();
+		Position position = getPosition(entity);
 
 		switch (indicator) {
 		case above:
@@ -138,5 +140,18 @@ public class Processor {
 			throw new CoreException("Failed to ground: " + entity);
 		}
 		return groundings.get(0).entity();
+	}
+
+	private static Position getPosition(WorldEntity entity) {
+
+		if (entity instanceof Shape) {
+			return ((Shape) entity).position();
+		}
+
+		if (entity instanceof Corner) {
+			return ((Corner) entity).position();
+		}
+
+		throw new CoreException("Failed to get position for " + entity);
 	}
 }

@@ -22,6 +22,4 @@ import com.trainrobots.core.rcl.Type;
 public interface WorldEntity {
 
 	Type type();
-
-	Position position();
 }
