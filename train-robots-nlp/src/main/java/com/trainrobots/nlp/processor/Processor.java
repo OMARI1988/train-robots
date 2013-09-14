@@ -37,14 +37,17 @@ import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
 
 public class Processor {
 
 	private final Grounder grounder;
+	private final WorldModel world;
 
 	public Processor(WorldModel world) {
+		this.world = world;
 		grounder = new Grounder(world);
 	}
 
@@ -70,6 +73,11 @@ public class Processor {
 
 	private Move getMove(Event event) {
 
+		// Drop.
+		if (event.action() == Action.drop) {
+			return mapDropCommand(event);
+		}
+
 		// Take.
 		if (event.action() == Action.take) {
 			return mapTakeCommand(event);
@@ -83,6 +91,26 @@ public class Processor {
 		// No match.
 		throw new CoreException("Event action '" + event.action()
 				+ "' not recognized.");
+	}
+
+	private Move mapDropCommand(Event event) {
+
+		Shape shape = world.getShapeInGripper();
+		if (shape == null) {
+			throw new CoreException("Not holding anything to drop.");
+		}
+
+		Entity entity = event.entity();
+		if (entity == null) {
+			throw new CoreException("Event entity not specified.");
+		}
+
+		WorldEntity worldEntity = mapEntity(entity);
+		if (!worldEntity.equals(shape)) {
+			throw new CoreException("Drop shape mismatch.");
+		}
+
+		return new DropMove();
 	}
 
 	private Move mapTakeCommand(Event event) {
@@ -135,7 +163,24 @@ public class Processor {
 	}
 
 	private WorldEntity mapEntity(Entity entity) {
+
+		// If there are multiple groundings, then match the shape in the
+		// gripper.
 		List<Grounding> groundings = grounder.ground(entity);
+		if (groundings.size() > 1) {
+			Shape shape = world.getShapeInGripper();
+			if (shape != null) {
+				for (Grounding grounding : groundings) {
+					if (grounding.entity() instanceof Shape) {
+						if (grounding.entity().equals(shape)) {
+							return shape;
+						}
+					}
+				}
+			}
+		}
+
+		// Otherwise, we expect a single grounding.
 		if (groundings.size() != 1) {
 			throw new CoreException("Failed to ground: " + entity);
 		}

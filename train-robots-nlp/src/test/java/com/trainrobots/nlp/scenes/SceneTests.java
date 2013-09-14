@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
 
@@ -50,5 +51,14 @@ public class SceneTests {
 
 		TakeMove move = (TakeMove) moves.get(0);
 		assertEquals(move.from, new Position(2, 1, 3));
+	}
+
+	@Test
+	public void shouldIdentifyDropMove() {
+
+		Scene scene = SceneManager.getScene(20);
+		List<Move> moves = scene.moves;
+		assertEquals(moves.size(), 1);
+		assertEquals(moves.get(0), new DropMove());
 	}
 }

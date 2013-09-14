@@ -65,6 +65,10 @@ public class Event extends Rcl {
 		return node;
 	}
 
+	public static Event fromString(String text) {
+		return fromNode(Node.fromString(text));
+	}
+
 	public static Event fromNode(Node node) {
 
 		if (!node.hasTag("event:")) {

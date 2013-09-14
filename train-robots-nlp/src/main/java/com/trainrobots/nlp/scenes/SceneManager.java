@@ -27,6 +27,7 @@ import com.trainrobots.core.configuration.ConfigurationReader;
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
 
@@ -105,12 +106,19 @@ public class SceneManager {
 			if (moves == null) {
 				moves = new ArrayList<Move>();
 			}
+
+			if (s1.equals(before.getShapeInGripper())) {
+				moves.add(new DropMove());
+				continue;
+			}
+
 			if (s2.position().z > 0
 					&& after.getShape(s2.position().add(0, 0, -1)) == null) {
 				moves.add(new TakeMove(s1.position()));
-			} else {
-				moves.add(new DirectMove(s1.position(), s2.position()));
+				continue;
 			}
+
+			moves.add(new DirectMove(s1.position(), s2.position()));
 		}
 		return moves;
 	}

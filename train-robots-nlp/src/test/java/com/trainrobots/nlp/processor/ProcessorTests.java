@@ -38,6 +38,20 @@ import com.trainrobots.core.rcl.Type;
 public class ProcessorTests {
 
 	@Test
+	public void shouldDropPrism() {
+		Event event = Event
+				.fromString("(event: (action: drop) (entity: (type: prism)))");
+		MoveValidator.validate(20, event);
+	}
+
+	@Test
+	public void shouldDropGreenPrism() {
+		Event event = Event
+				.fromString("(event: (action: drop) (entity: (color: green) (type: prism)))");
+		MoveValidator.validate(20, event);
+	}
+
+	@Test
 	@Ignore
 	public void shouldProcessSequence() {
 
@@ -97,6 +111,6 @@ public class ProcessorTests {
 		}
 
 		// Count.
-		assertEquals(16, total);
+		assertEquals(41, total);
 	}
 }

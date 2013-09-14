@@ -23,6 +23,7 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.nlp.grounding.predicates.ColorPredicate;
 import com.trainrobots.nlp.grounding.predicates.IndicatorPredicate;
 import com.trainrobots.nlp.grounding.predicates.PredicateList;
@@ -96,15 +97,30 @@ public class Grounder {
 			predicates.add(new ColorPredicate(entity.colors().get(0)));
 		}
 
-		// Indicators.
+		// Indicator/relation combinations.
+		List<SpatialIndicator> indicators = new ArrayList<SpatialIndicator>();
 		if (entity.indicators() != null) {
-			for (SpatialIndicator indicator : entity.indicators()) {
-				predicates.add(new IndicatorPredicate(indicator));
-			}
+			indicators.addAll(entity.indicators());
+		}
+		List<SpatialRelation> relations = new ArrayList<SpatialRelation>();
+		if (entity.relations() != null) {
+			relations.addAll(entity.relations());
+		}
+		// if (indicators.size() == 1 && indicators.get(0) ==
+		// SpatialIndicator.top
+		// && relations.size() == 1
+		// && relations.get(0).indicator() == SpatialIndicator.part) {
+		// indicators.clear();
+		// relations.clear();
+		// }
+
+		// Indicators.
+		for (SpatialIndicator indicator : indicators) {
+			predicates.add(new IndicatorPredicate(indicator));
 		}
 
 		// Relations.
-		if (entity.relations() != null) {
+		if (relations.size() > 0) {
 			throw new CoreException("Unexpected entity relations in " + entity);
 		}
 

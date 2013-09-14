@@ -47,6 +47,9 @@ public class Shape implements WorldEntity {
 
 	@Override
 	public boolean equals(Object object) {
+		if (object == null) {
+			return false;
+		}
 		Shape s = (Shape) object;
 		return s.color == color && s.type == type
 				&& s.position.equals(position);
