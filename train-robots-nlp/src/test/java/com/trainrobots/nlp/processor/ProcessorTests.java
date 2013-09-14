@@ -20,13 +20,37 @@ package com.trainrobots.nlp.processor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
+import com.trainrobots.core.rcl.Action;
+import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.Sequence;
+import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.SpatialRelation;
+import com.trainrobots.core.rcl.Type;
 
 public class ProcessorTests {
+
+	@Test
+	@Ignore
+	public void shouldProcessSequence() {
+
+		Sequence sequence = new Sequence(new Event(Action.take, new Entity(1,
+				SpatialIndicator.top, Type.cube, new SpatialRelation(
+						SpatialIndicator.part, new Entity(Color.blue,
+								Type.stack)))), new Event(Action.drop,
+				new Entity(Type.reference, 1),
+				new SpatialRelation(Entity.cardinal(2, Type.tile),
+						SpatialIndicator.forward)));
+
+		MoveValidator.validate(3, sequence);
+	}
 
 	@Test
 	public void shouldProcessCorpus() {
