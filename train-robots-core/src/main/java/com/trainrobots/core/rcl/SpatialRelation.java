@@ -17,6 +17,7 @@
 
 package com.trainrobots.core.rcl;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.generation.Generator;
 
@@ -60,9 +61,47 @@ public class SpatialRelation extends Rcl {
 	@Override
 	public Node toNode() {
 		Node node = new Node("spatial-relation:");
+		if (measure != null) {
+			node.add("measure:", measure.toNode());
+		}
 		node.add("spatial-indicator:", indicator.toString().toLowerCase());
-		node.add(entity.toNode());
+		if (entity != null) {
+			node.add(entity.toNode());
+		}
 		return node;
+	}
+
+	public static SpatialRelation fromNode(Node node) {
+
+		if (!node.hasTag("spatial-relation:")) {
+			throw new CoreException("Expected 'spatial-relation:' not '"
+					+ node.tag + "'.");
+		}
+
+		Entity measure = null;
+		SpatialIndicator indicator = null;
+		Entity entity = null;
+
+		if (node.children != null) {
+			for (Node child : node.children) {
+				if (child.hasTag("measure:")) {
+					measure = Entity.fromNode(child.getSingleChild());
+					continue;
+				}
+				if (child.hasTag("spatial-indicator:")) {
+					indicator = SpatialIndicator.valueOf(child.getValue());
+					continue;
+				}
+				if (child.hasTag("entity:")) {
+					entity = Entity.fromNode(child);
+					continue;
+				}
+				throw new CoreException("Invalid spatial relation tag '"
+						+ child.tag + "'.");
+			}
+		}
+
+		return new SpatialRelation(measure, indicator, entity);
 	}
 
 	@Override

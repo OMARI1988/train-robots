@@ -20,6 +20,7 @@ package com.trainrobots.core.rcl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.generation.Generator;
 
@@ -47,6 +48,18 @@ public class Entity extends Rcl {
 		this.relations = null;
 	}
 
+	public Entity(Type type, int referenceId) {
+		this.id = null;
+		this.referenceId = referenceId;
+		this.type = type;
+		this.ordinal = null;
+		this.cardinal = null;
+		this.multiple = false;
+		this.colors = null;
+		this.indicators = null;
+		this.relations = null;
+	}
+
 	public Entity(Color color, Type type) {
 		this.id = null;
 		this.referenceId = null;
@@ -58,6 +71,21 @@ public class Entity extends Rcl {
 		this.colors.add(color);
 		this.indicators = null;
 		this.relations = null;
+	}
+
+	public Entity(int id, SpatialIndicator indicator, Type type,
+			SpatialRelation relation) {
+		this.id = id;
+		this.referenceId = null;
+		this.type = type;
+		this.ordinal = null;
+		this.cardinal = null;
+		this.multiple = false;
+		this.colors = null;
+		this.indicators = new ArrayList<SpatialIndicator>();
+		this.indicators.add(indicator);
+		this.relations = new ArrayList<SpatialRelation>();
+		this.relations.add(relation);
 	}
 
 	public Entity(SpatialIndicator indicator1, SpatialIndicator indicator2,
@@ -88,6 +116,11 @@ public class Entity extends Rcl {
 		this.colors = colors;
 		this.indicators = indicators;
 		this.relations = relations;
+	}
+
+	public static Entity cardinal(int cardinal, Type type) {
+		return new Entity(null, null, type, null, cardinal, false, null, null,
+				null);
 	}
 
 	public Integer id() {
@@ -136,11 +169,22 @@ public class Entity extends Rcl {
 		// Node.
 		Node node = new Node("entity:");
 
+		// ID.
+		if (id != null) {
+			node.add("id:", id.toString());
+		}
+
+		// Ordinal.
+		if (ordinal != null) {
+			node.add("ordinal:", ordinal.toString());
+		}
+
+		// Cardinal.
+		if (cardinal != null) {
+			node.add("cardinal:", cardinal.toString());
+		}
+
 		// TODO: FIX!!
-		// id;
-		// referenceId;
-		// ordinal;
-		// cardinal;
 		// multiple;
 
 		// Indicators.
@@ -163,11 +207,97 @@ public class Entity extends Rcl {
 			node.add("type:", type.toString().toLowerCase());
 		}
 
-		// TODO: FIX!!
-		// relations;
+		// Reference.
+		if (referenceId != null) {
+			node.add("reference-id:", referenceId.toString());
+		}
+
+		// Relations.
+		if (relations != null) {
+			for (SpatialRelation relation : relations) {
+				node.add(relation.toNode());
+			}
+		}
 
 		// Result.
 		return node;
+	}
+
+	public static Entity fromNode(Node node) {
+
+		if (!node.hasTag("entity:")) {
+			throw new CoreException("Expected 'entity:' not '" + node.tag
+					+ "'.");
+		}
+
+		Integer id = null;
+		Integer referenceId = null;
+		Type type = null;
+		Integer ordinal = null;
+		Integer cardinal = null;
+		boolean multiple = false;
+		List<Color> colors = null;
+		List<SpatialIndicator> indicators = null;
+		List<SpatialRelation> relations = null;
+
+		if (node.children != null) {
+			for (Node child : node.children) {
+
+				if (child.hasTag("id:")) {
+					id = Integer.parseInt(child.getValue());
+					continue;
+				}
+
+				if (child.hasTag("spatial-indicator:")) {
+					SpatialIndicator indicator = SpatialIndicator.valueOf(child
+							.getValue());
+					if (indicators == null) {
+						indicators = new ArrayList<SpatialIndicator>();
+					}
+					indicators.add(indicator);
+					continue;
+				}
+
+				if (child.hasTag("cardinal:")) {
+					cardinal = Integer.parseInt(child.getValue());
+					continue;
+				}
+
+				if (child.hasTag("color:")) {
+					Color color = Color.valueOf(child.getValue());
+					if (colors == null) {
+						colors = new ArrayList<Color>();
+					}
+					colors.add(color);
+					continue;
+				}
+
+				if (child.hasTag("type:")) {
+					type = Type.valueOf(child.getValue());
+					continue;
+				}
+
+				if (child.hasTag("reference-id:")) {
+					referenceId = Integer.parseInt(child.getValue());
+					continue;
+				}
+
+				if (child.hasTag("spatial-relation:")) {
+					SpatialRelation relation = SpatialRelation.fromNode(child);
+					if (relations == null) {
+						relations = new ArrayList<SpatialRelation>();
+					}
+					relations.add(relation);
+					continue;
+				}
+
+				throw new CoreException("Invalid entity tag '" + child.tag
+						+ "'.");
+			}
+		}
+
+		return new Entity(id, referenceId, type, ordinal, cardinal, multiple,
+				colors, indicators, relations);
 	}
 
 	@Override

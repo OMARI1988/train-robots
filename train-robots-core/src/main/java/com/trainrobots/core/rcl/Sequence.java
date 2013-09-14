@@ -18,13 +18,55 @@
 package com.trainrobots.core.rcl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Sequence {
+import com.trainrobots.core.CoreException;
+import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.Generator;
+
+public class Sequence extends Rcl {
 
 	private final List<Event> events = new ArrayList<Event>();
 
+	public Sequence() {
+	}
+
+	public Sequence(Event... events) {
+		this.events.addAll(Arrays.asList(events));
+	}
+
 	public List<Event> events() {
 		return events;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("sequence:");
+		for (Event event : events) {
+			node.add(event.toNode());
+		}
+		return node;
+	}
+
+	public static Sequence fromNode(Node node) {
+
+		if (!node.hasTag("sequence:")) {
+			throw new CoreException("Expected 'sequence:' not '" + node.tag
+					+ "'.");
+		}
+
+		Sequence sequence = new Sequence();
+		for (Node child : node.children) {
+			sequence.events.add(Event.fromNode(child));
+		}
+		return sequence;
+	}
+
+	@Override
+	public String generate() {
+		Generator generator = new Generator();
+		generator.generate(this);
+		return generator.toString();
 	}
 }

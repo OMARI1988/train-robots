@@ -48,6 +48,19 @@ public class ConversionTests {
 				"(event: (action: move) (entity: (color: green) (type: prism)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube)))))");
 	}
 
+	@Test
+	public void shouldConvertSequence() {
+		testConversion(
+				new Sequence(new Event(Action.take, new Entity(1,
+						SpatialIndicator.top, Type.cube, new SpatialRelation(
+								SpatialIndicator.part, new Entity(Color.blue,
+										Type.stack)))), new Event(Action.drop,
+						new Entity(Type.reference, 1), new SpatialRelation(
+								Entity.cardinal(2, Type.tile),
+								SpatialIndicator.forward))),
+				"(sequence: (event: (action: take) (entity: (id: 1) (spatial-indicator: top) (type: cube) (spatial-relation: (spatial-indicator: part) (entity: (color: blue) (type: stack))))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (measure: (entity: (cardinal: 2) (type: tile))) (spatial-indicator: forward)))))");
+	}
+
 	private static void testConversion(Rcl expectedRcl, String expectedText) {
 
 		// Format.

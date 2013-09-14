@@ -20,6 +20,7 @@ package com.trainrobots.core.rcl;
 import java.util.Arrays;
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.generation.Generator;
 
@@ -62,6 +63,42 @@ public class Event extends Rcl {
 			}
 		}
 		return node;
+	}
+
+	public static Event fromNode(Node node) {
+
+		if (!node.hasTag("event:")) {
+			throw new CoreException("Expected 'event:' not '" + node.tag + "'.");
+		}
+
+		Action action = null;
+		Entity entity = null;
+		SpatialRelation destination = null;
+
+		if (node.children != null) {
+			for (Node child : node.children) {
+				if (child.hasTag("action:")) {
+					action = Action.valueOf(child.getValue());
+					continue;
+				}
+				if (child.hasTag("entity:")) {
+					entity = Entity.fromNode(child);
+					continue;
+				}
+				if (child.hasTag("destination:")) {
+					destination = SpatialRelation.fromNode(child
+							.getSingleChild());
+					continue;
+				}
+				throw new CoreException("Invalid event tag '" + child.tag
+						+ "'.");
+			}
+		}
+
+		if (destination == null) {
+			return new Event(action, entity);
+		}
+		return new Event(action, entity, destination);
 	}
 
 	@Override
