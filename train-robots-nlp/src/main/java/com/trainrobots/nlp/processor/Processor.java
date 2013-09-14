@@ -25,6 +25,7 @@ import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
@@ -46,19 +47,26 @@ public class Processor {
 	}
 
 	public List<Move> getMoves(Rcl rcl) {
-		Move move = getMove(rcl);
+
+		// Sequence.
 		List<Move> moves = new ArrayList<Move>();
-		moves.add(move);
+		if (rcl instanceof Sequence) {
+			for (Event event : ((Sequence) rcl).events()) {
+				moves.add(getMove(event));
+			}
+		}
+
+		// Event.
+		else {
+			if (!(rcl instanceof Event)) {
+				throw new CoreException("Expected an RCL event.");
+			}
+			moves.add(getMove((Event) rcl));
+		}
 		return moves;
 	}
 
-	private Move getMove(Rcl rcl) {
-
-		// Event.
-		if (!(rcl instanceof Event)) {
-			throw new CoreException("Expected an RCL event.");
-		}
-		Event event = (Event) rcl;
+	private Move getMove(Event event) {
 
 		// Take.
 		if (event.action() == Action.take) {

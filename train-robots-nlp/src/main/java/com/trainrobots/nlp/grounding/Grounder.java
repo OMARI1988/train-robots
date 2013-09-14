@@ -99,7 +99,7 @@ public class Grounder {
 
 		// Relations.
 		if (entity.relations() != null) {
-			throw new CoreException("Unexpected entity relations.");
+			throw new CoreException("Unexpected entity relations in " + entity);
 		}
 
 		// Apply predicates.

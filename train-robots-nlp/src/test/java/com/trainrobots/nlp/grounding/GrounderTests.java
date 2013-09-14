@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Entity;
@@ -65,6 +66,15 @@ public class GrounderTests {
 		Grounding grounding = getSingleGrounding(828,
 				"(entity: (spatial-indicator: back) (spatial-indicator: left) (type: corner))");
 		assertEquals(grounding.entity(), Corner.BackLeft);
+	}
+
+	@Test
+	@Ignore
+	public void shouldGroundTopPartOfStack() {
+		testGrounding(
+				3,
+				"(entity: (spatial-indicator: top) (type: cube) (spatial-relation: (spatial-indicator: part) (entity: (color: blue) (type: stack))))",
+				1);
 	}
 
 	private static Grounding getSingleGrounding(int sceneNumber, String text) {
