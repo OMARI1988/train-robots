@@ -80,9 +80,16 @@ public class Generator {
 			}
 		}
 
+		// Type reference?
+		if (entity.type() == Type.typeReference) {
+			write("one");
+		}
+
 		// Type.
-		boolean plural = entity.cardinal() != null && entity.cardinal() > 1;
-		write(entity.type(), plural);
+		else {
+			boolean plural = entity.cardinal() != null && entity.cardinal() > 1;
+			write(entity.type(), plural);
+		}
 
 		// Relation.
 		if (entity.relations() != null) {

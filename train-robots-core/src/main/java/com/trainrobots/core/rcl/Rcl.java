@@ -35,6 +35,30 @@ public abstract class Rcl {
 		return toNode().toString();
 	}
 
+	public abstract void accept(RclVisitor visitor);
+
+	public Rcl getElement(final int id) {
+
+		class EntityVisitor implements RclVisitor {
+
+			public Entity match;
+
+			@Override
+			public void visit(Entity entity) {
+				if (entity.id() != null && entity.id().equals(id)) {
+					if (match != null) {
+						throw new CoreException("Duplicate id " + id);
+					}
+					match = entity;
+				}
+			}
+		}
+
+		EntityVisitor visitor = new EntityVisitor();
+		accept(visitor);
+		return visitor.match;
+	}
+
 	public String format() {
 		return toNode().format();
 	}

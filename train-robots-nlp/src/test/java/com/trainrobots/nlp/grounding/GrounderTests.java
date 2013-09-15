@@ -101,7 +101,7 @@ public class GrounderTests {
 	private static Grounding getSingleGrounding(int sceneNumber, String text) {
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<Grounding> list = new Grounder(world).ground(entity);
+		List<Grounding> list = new Grounder(world).ground(entity, entity);
 		assertEquals(list.size(), 1);
 		return list.get(0);
 	}
@@ -111,7 +111,7 @@ public class GrounderTests {
 
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<Grounding> list = new Grounder(world).ground(entity);
+		List<Grounding> list = new Grounder(world).ground(entity, entity);
 		assertEquals(expectedCount, list.size());
 	}
 }

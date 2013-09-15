@@ -190,21 +190,20 @@ public class Entity extends Rcl {
 		// Indicators.
 		if (indicators != null) {
 			for (SpatialIndicator indicator : indicators) {
-				node.add("spatial-indicator:", indicator.toString()
-						.toLowerCase());
+				node.add("spatial-indicator:", indicator.toString());
 			}
 		}
 
 		// Colors.
 		if (colors != null) {
 			for (Color color : colors) {
-				node.add("color:", color.toString().toLowerCase());
+				node.add("color:", color.toString());
 			}
 		}
 
 		// Type.
 		if (type != null) {
-			node.add("type:", type.toString().toLowerCase());
+			node.add("type:", type.toString());
 		}
 
 		// Reference.
@@ -273,7 +272,7 @@ public class Entity extends Rcl {
 				}
 
 				if (child.hasTag("type:")) {
-					type = Type.valueOf(child.getValue());
+					type = Type.parse(child.getValue());
 					continue;
 				}
 
@@ -305,5 +304,15 @@ public class Entity extends Rcl {
 		Generator generator = new Generator();
 		generator.generate(this);
 		return generator.toString();
+	}
+
+	@Override
+	public void accept(RclVisitor visitor) {
+		visitor.visit(this);
+		if (relations != null) {
+			for (SpatialRelation relation : relations) {
+				relation.accept(visitor);
+			}
+		}
 	}
 }

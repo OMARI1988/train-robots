@@ -61,6 +61,12 @@ public class ConversionTests {
 				"(sequence: (event: (action: take) (entity: (id: 1) (spatial-indicator: top) (type: cube) (spatial-relation: (spatial-indicator: part) (entity: (color: blue) (type: stack))))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (measure: (entity: (cardinal: 2) (type: tile))) (spatial-indicator: forward)))))");
 	}
 
+	@Test
+	public void shouldConvertTypeReference() {
+		testConversion(new Entity(Color.green, Type.typeReference),
+				"(entity: (color: green) (type: type-reference))");
+	}
+
 	private static void testConversion(Rcl expectedRcl, String expectedText) {
 
 		// Format.

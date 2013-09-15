@@ -17,21 +17,7 @@
 
 package com.trainrobots.core.rcl;
 
-public enum Type {
-	reference, typeReference, cube, prism, corner, board, stack, row, column, edge, tile, robot;
-
-	@Override
-	public String toString() {
-		if (this == typeReference) {
-			return "type-reference";
-		}
-		return name();
-	}
-
-	public static Type parse(String name) {
-		if (name.equals("type-reference")) {
-			return typeReference;
-		}
-		return Type.valueOf(name);
-	}
+public interface RclVisitor {
+	
+	void visit(Entity entity);
 }

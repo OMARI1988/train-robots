@@ -110,4 +110,14 @@ public class SpatialRelation extends Rcl {
 		generator.generate(this);
 		return generator.toString();
 	}
+
+	@Override
+	public void accept(RclVisitor visitor) {
+		if (measure != null) {
+			measure.accept(visitor);
+		}
+		if (entity != null) {
+			entity.accept(visitor);
+		}
+	}
 }

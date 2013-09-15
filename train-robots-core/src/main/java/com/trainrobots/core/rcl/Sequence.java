@@ -73,4 +73,11 @@ public class Sequence extends Rcl {
 		generator.generate(this);
 		return generator.toString();
 	}
+
+	@Override
+	public void accept(RclVisitor visitor) {
+		for (Event event : events) {
+			event.accept(visitor);
+		}
+	}
 }

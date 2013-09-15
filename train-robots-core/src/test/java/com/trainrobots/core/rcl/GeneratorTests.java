@@ -69,4 +69,13 @@ public class GeneratorTests {
 				sequence.generate(),
 				"take the top cube that is part of the blue stack and drop it two tiles forward");
 	}
+
+	@Test
+	public void shouldGenerateTypeReference() {
+		Sequence sequence = Sequence
+				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: gray) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: green) (type: type-reference) (reference-id: 1))))))");
+
+		assertEquals(sequence.generate(),
+				"take the gray cube and drop it above the green one");
+	}
 }

@@ -60,7 +60,7 @@ public class Processor {
 
 			// Recognized sequence?
 			Sequence sequence = (Sequence) rcl;
-			Move move = matchRecognizedSequence(sequence);
+			Move move = matchRecognizedSequence(rcl, sequence);
 			if (move != null) {
 				moves.add(move);
 				return moves;
@@ -68,7 +68,7 @@ public class Processor {
 
 			// Default sequence handling.
 			for (Event event : sequence.events()) {
-				moves.add(getMove(event));
+				moves.add(getMove(rcl, event));
 			}
 		}
 
@@ -77,12 +77,12 @@ public class Processor {
 			if (!(rcl instanceof Event)) {
 				throw new CoreException("Expected an RCL event.");
 			}
-			moves.add(getMove((Event) rcl));
+			moves.add(getMove(rcl, (Event) rcl));
 		}
 		return moves;
 	}
 
-	private Move matchRecognizedSequence(Sequence sequence) {
+	private Move matchRecognizedSequence(Rcl root, Sequence sequence) {
 
 		// Events.
 		List<Event> events = sequence.events();
@@ -115,24 +115,24 @@ public class Processor {
 
 		// Translate equivalent move.
 		Event event3 = new Event(Action.move, entity1, event2.destinations());
-		return getMove(event3);
+		return getMove(root, event3);
 	}
 
-	private Move getMove(Event event) {
+	private Move getMove(Rcl root, Event event) {
 
 		// Drop.
 		if (event.action() == Action.drop) {
-			return mapDropCommand(event);
+			return mapDropCommand(root, event);
 		}
 
 		// Take.
 		if (event.action() == Action.take) {
-			return mapTakeCommand(event);
+			return mapTakeCommand(root, event);
 		}
 
 		// Move.
 		if (event.action() == Action.move) {
-			return mapMoveCommand(event);
+			return mapMoveCommand(root, event);
 		}
 
 		// No match.
@@ -140,7 +140,7 @@ public class Processor {
 				+ "' not recognized.");
 	}
 
-	private Move mapDropCommand(Event event) {
+	private Move mapDropCommand(Rcl root, Event event) {
 
 		Shape shape = world.getShapeInGripper();
 		if (shape == null) {
@@ -152,7 +152,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		WorldEntity worldEntity = mapEntity(entity);
+		WorldEntity worldEntity = mapEntity(root, entity);
 		if (!worldEntity.equals(shape)) {
 			throw new CoreException("Drop shape mismatch.");
 		}
@@ -160,42 +160,42 @@ public class Processor {
 		return new DropMove();
 	}
 
-	private Move mapTakeCommand(Event event) {
+	private Move mapTakeCommand(Rcl root, Event event) {
 
 		Entity entity = event.entity();
 		if (entity == null) {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		return new TakeMove(getPosition(mapEntity(entity)));
+		return new TakeMove(getPosition(mapEntity(root, entity)));
 	}
 
-	private Move mapMoveCommand(Event event) {
+	private Move mapMoveCommand(Rcl root, Event event) {
 
 		Entity entity = event.entity();
 		if (entity == null) {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		Position position = getPosition(mapEntity(entity));
+		Position position = getPosition(mapEntity(root, entity));
 
 		if (event.destinations() == null || event.destinations().size() != 1) {
 			throw new CoreException("Single destination not specified.");
 		}
 
 		SpatialRelation destination = event.destinations().get(0);
-		Position position2 = mapSpatialRelation(destination);
+		Position position2 = mapSpatialRelation(root, destination);
 		return new DirectMove(position, position2);
 	}
 
-	private Position mapSpatialRelation(SpatialRelation relation) {
+	private Position mapSpatialRelation(Rcl root, SpatialRelation relation) {
 
 		SpatialIndicator indicator = relation.indicator();
 		if (indicator == null) {
 			throw new CoreException("Indicator not specified.");
 		}
 
-		WorldEntity entity = mapEntity(relation.entity());
+		WorldEntity entity = mapEntity(root, relation.entity());
 
 		// Stack?
 		if (entity.type() == Type.stack) {
@@ -222,10 +222,10 @@ public class Processor {
 		return getPosition(entity).add(0, 0, 1);
 	}
 
-	private WorldEntity mapEntity(Entity entity) {
+	private WorldEntity mapEntity(Rcl root, Entity entity) {
 
 		// Multiple groundings?
-		List<Grounding> groundings = grounder.ground(entity);
+		List<Grounding> groundings = grounder.ground(root, entity);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.

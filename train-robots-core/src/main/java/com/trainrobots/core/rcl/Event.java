@@ -116,4 +116,16 @@ public class Event extends Rcl {
 		generator.generate(this);
 		return generator.toString();
 	}
+
+	@Override
+	public void accept(RclVisitor visitor) {
+		if (entity != null) {
+			entity.accept(visitor);
+		}
+		if (destinations != null) {
+			for (SpatialRelation destination : destinations) {
+				destination.accept(visitor);
+			}
+		}
+	}
 }

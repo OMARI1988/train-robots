@@ -22,8 +22,10 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.predicates.ColorPredicate;
 import com.trainrobots.nlp.grounding.predicates.IndicatorPredicate;
 import com.trainrobots.nlp.grounding.predicates.Predicate;
@@ -63,22 +65,37 @@ public class Grounder {
 		entities.add(Board.TheBoard);
 	}
 
-	public List<Grounding> ground(Entity entity) {
+	public List<Grounding> ground(Rcl root, Entity entity) {
 
 		// Predicates.
 		PredicateList predicates = new PredicateList();
 
+		// Type reference?
+		Type type = entity.type();
+		if (type == null) {
+			throw new CoreException("Entity type not specified: " + entity);
+		}
+		if (type == Type.typeReference) {
+			if (entity.referenceId() == null) {
+				throw new CoreException("Reference ID not specified: " + entity);
+			}
+			Entity antecedent = (Entity) root.getElement(entity.referenceId());
+			if (antecedent == null) {
+				throw new CoreException("Failed to resolve reference: "
+						+ entity);
+			}
+			type = antecedent.type();
+		}
+
 		// Reference ID.
-		if (entity.referenceId() != null) {
+		else if (entity.referenceId() != null) {
 			throw new CoreException("Unexpected reference ID: "
 					+ entity.referenceId());
+
 		}
 
 		// Type.
-		if (entity.type() == null) {
-			throw new CoreException("Entity type not specified.");
-		}
-		predicates.add(new TypePredicate(entity.type()));
+		predicates.add(new TypePredicate(type));
 
 		// Ordinal.
 		if (entity.ordinal() != null) {
@@ -128,18 +145,18 @@ public class Grounder {
 
 		// Relations.
 		if (relations.size() > 0) {
-			filterGroundings(groundings, relations);
+			filterGroundings(root, groundings, relations);
 		}
 		return groundings;
 	}
 
-	private void filterGroundings(List<Grounding> groundings,
+	private void filterGroundings(Rcl root, List<Grounding> groundings,
 			List<SpatialRelation> relations) {
 
 		// Predicates.
 		PredicateList predicates = new PredicateList();
 		for (SpatialRelation relation : relations) {
-			Predicate predicate = createPredicateForRelation(relation);
+			Predicate predicate = createPredicateForRelation(root, relation);
 			if (predicate != null) {
 				predicates.add(predicate);
 			}
@@ -153,7 +170,8 @@ public class Grounder {
 		}
 	}
 
-	private Predicate createPredicateForRelation(SpatialRelation relation) {
+	private Predicate createPredicateForRelation(Rcl root,
+			SpatialRelation relation) {
 
 		// Measure.
 		if (relation.measure() != null) {
@@ -174,7 +192,7 @@ public class Grounder {
 			throw new CoreException("Spatial relation entity not specified: "
 					+ relation);
 		}
-		List<Grounding> groundings = ground(entity);
+		List<Grounding> groundings = ground(root, entity);
 		if (groundings.size() == 0) {
 			throw new CoreException(
 					"Entity in spatial relation has no groundings: " + entity);
