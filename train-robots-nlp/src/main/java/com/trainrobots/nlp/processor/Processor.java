@@ -160,17 +160,20 @@ public class Processor {
 			throw new CoreException("Invalid indicator for stack: " + indicator);
 		}
 
-		Position position = getPosition(entity);
+		// Corner?
+		if (entity.type() == Type.corner) {
+			Position position = getPosition(entity);
+			if (indicator == SpatialIndicator.within
+					|| indicator == SpatialIndicator.above) {
+				return world.getDropPosition(position.x, position.y);
+			}
+		}
 
-		switch (indicator) {
-		case above:
-			return entity.type() == Type.corner ? position : position.add(0, 0,
-					1);
-		case within:
-			return position;
-		default:
+		// Shape.
+		if (indicator != SpatialIndicator.above) {
 			throw new CoreException("Invalid indicator: " + indicator);
 		}
+		return getPosition(entity).add(0, 0, 1);
 	}
 
 	private WorldEntity mapEntity(Entity entity) {

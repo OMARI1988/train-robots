@@ -66,8 +66,8 @@ public class MoveValidator {
 			DirectMove actualMove = (DirectMove) actualMoves.get(0);
 			Position expectedFrom = world.getShapeInGripper().position();
 			if (actualMove.from.equals(expectedFrom)
-					&& actualMove.to
-							.equals(getDropPosition(world, expectedFrom))) {
+					&& actualMove.to.equals(world.getDropPosition(
+							expectedFrom.x, expectedFrom.y))) {
 				return true;
 			}
 		}
@@ -84,17 +84,5 @@ public class MoveValidator {
 			}
 		}
 		return true;
-	}
-
-	private static Position getDropPosition(WorldModel world, Position from) {
-		int x = from.x;
-		int y = from.y;
-		for (int z = 0; z <= 7; z++) {
-			Position p = new Position(x, y, z);
-			if (world.getShape(p) == null) {
-				return p;
-			}
-		}
-		throw new CoreException("Failed to find drop position.");
 	}
 }

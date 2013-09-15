@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.trainrobots.core.CoreException;
+
 public class WorldModel {
 
 	private final Position arm;
@@ -53,6 +55,16 @@ public class WorldModel {
 
 	public Iterable<Shape> shapes() {
 		return shapes;
+	}
+
+	public Position getDropPosition(int x, int y) {
+		for (int z = 0; z <= 7; z++) {
+			Position p = new Position(x, y, z);
+			if (getShape(p) == null) {
+				return p;
+			}
+		}
+		throw new CoreException("Failed to find drop position.");
 	}
 
 	@Override

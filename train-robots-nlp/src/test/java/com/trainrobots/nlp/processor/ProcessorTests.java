@@ -41,10 +41,10 @@ import com.trainrobots.nlp.parser.Parser;
 public class ProcessorTests {
 
 	@Test
-	public void shouldPlaceBlockOntoStack() {
+	public void shouldPlaceBlockOntoStackInCorner() {
 		Event event = Event.fromNode(Parser
-				.parse("Place pink pyramid on cyan tower"));
-		MoveValidator.validate(276, event);
+				.parse("move the yellow pyramid on the top left corner"));
+		MoveValidator.validate(822, event);
 	}
 
 	@Test
@@ -114,8 +114,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(935, correct);
-		assertEquals(8588, size);
+		assertEquals(942, correct);
+		assertEquals(8577, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");
