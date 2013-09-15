@@ -30,10 +30,15 @@ public class Event extends Rcl {
 	private final Entity entity;
 	private final List<SpatialRelation> destinations;
 
-	public Event(Action action, Entity entity, SpatialRelation... destinations) {
+	public Event(Action action, Entity entity,
+			List<SpatialRelation> destinations) {
 		this.action = action;
 		this.entity = entity;
-		this.destinations = Arrays.asList(destinations);
+		this.destinations = destinations;
+	}
+
+	public Event(Action action, Entity entity, SpatialRelation... destinations) {
+		this(action, entity, Arrays.asList(destinations));
 	}
 
 	public Action action() {

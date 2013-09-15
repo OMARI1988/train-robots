@@ -55,8 +55,16 @@ public class ProcessorTests {
 	}
 
 	@Test
+	public void shouldProcessSequence1() {
+
+		Sequence sequence = Sequence
+				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: red) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: yellow) (type: cube))))))");
+		MoveValidator.validate(708, sequence);
+	}
+
+	@Test
 	@Ignore
-	public void shouldProcessSequence() {
+	public void shouldProcessSequence2() {
 
 		Sequence sequence = new Sequence(new Event(Action.take, new Entity(1,
 				SpatialIndicator.top, Type.cube, new SpatialRelation(
@@ -121,8 +129,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(945, correct);
-		assertEquals(8552, size);
+		assertEquals(961, correct);
+		assertEquals(8543, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");

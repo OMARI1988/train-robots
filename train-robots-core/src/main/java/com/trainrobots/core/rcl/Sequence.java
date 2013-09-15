@@ -49,6 +49,10 @@ public class Sequence extends Rcl {
 		return node;
 	}
 
+	public static Sequence fromString(String text) {
+		return fromNode(Node.fromString(text));
+	}
+
 	public static Sequence fromNode(Node node) {
 
 		if (!node.hasTag("sequence:")) {

@@ -57,7 +57,17 @@ public class Processor {
 		// Sequence.
 		List<Move> moves = new ArrayList<Move>();
 		if (rcl instanceof Sequence) {
-			for (Event event : ((Sequence) rcl).events()) {
+
+			// Recognized sequence?
+			Sequence sequence = (Sequence) rcl;
+			Move move = matchRecognizedSequence(sequence);
+			if (move != null) {
+				moves.add(move);
+				return moves;
+			}
+
+			// Default sequence handling.
+			for (Event event : sequence.events()) {
 				moves.add(getMove(event));
 			}
 		}
@@ -70,6 +80,42 @@ public class Processor {
 			moves.add(getMove((Event) rcl));
 		}
 		return moves;
+	}
+
+	private Move matchRecognizedSequence(Sequence sequence) {
+
+		// Events.
+		List<Event> events = sequence.events();
+		if (events.size() != 2) {
+			return null;
+		}
+
+		// Take.
+		Event event1 = events.get(0);
+		if (event1.action() != Action.take || event1.destinations() == null
+				|| event1.destinations().size() > 0) {
+			return null;
+		}
+		Entity entity1 = event1.entity();
+		Integer id = entity1.id();
+		if (id == null) {
+			return null;
+		}
+
+		// Drop.
+		Event event2 = events.get(1);
+		if (event2.action() != Action.drop) {
+			return null;
+		}
+		Entity entity2 = event2.entity();
+		if (entity2.type() != Type.reference || entity2.referenceId() == null
+				|| !entity2.referenceId().equals(id)) {
+			return null;
+		}
+
+		// Translate equivalent move.
+		Event event3 = new Event(Action.move, entity1, event2.destinations());
+		return getMove(event3);
 	}
 
 	private Move getMove(Event event) {
