@@ -34,6 +34,7 @@ import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.DirectMove;
@@ -149,6 +150,16 @@ public class Processor {
 		}
 
 		WorldEntity entity = mapEntity(relation.entity());
+
+		// Stack?
+		if (entity.type() == Type.stack) {
+			if (indicator == SpatialIndicator.above) {
+				Stack stack = (Stack) entity;
+				return stack.getTop().position().add(0, 0, 1);
+			}
+			throw new CoreException("Invalid indicator for stack: " + indicator);
+		}
+
 		Position position = getPosition(entity);
 
 		switch (indicator) {

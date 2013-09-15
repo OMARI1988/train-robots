@@ -36,6 +36,10 @@ public class Stack implements WorldEntity {
 		return shapes;
 	}
 
+	public Shape getTop() {
+		return shapes.get(shapes.size() - 1);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();

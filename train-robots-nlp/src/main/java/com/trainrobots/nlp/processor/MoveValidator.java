@@ -49,6 +49,16 @@ public class MoveValidator {
 		int size1 = expectedMoves != null ? expectedMoves.size() : 0;
 		int size2 = actualMoves != null ? actualMoves.size() : 0;
 
+		// No move specified?
+		if (size2 == 1) {
+			if (actualMoves.get(0) instanceof DirectMove) {
+				DirectMove actualMove = (DirectMove) actualMoves.get(0);
+				if (actualMove.from.equals(actualMove.to)) {
+					throw new CoreException("Zero move specified.");
+				}
+			}
+		}
+
 		// Direct move vs drop.
 		if (size1 == 1 && size2 == 1
 				&& expectedMoves.get(0) instanceof DropMove

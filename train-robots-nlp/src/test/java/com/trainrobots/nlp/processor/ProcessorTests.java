@@ -20,6 +20,8 @@ package com.trainrobots.nlp.processor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.text.DecimalFormat;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,10 +41,10 @@ import com.trainrobots.nlp.parser.Parser;
 public class ProcessorTests {
 
 	@Test
-	public void shouldGroundBlockBySuitability() {
+	public void shouldPlaceBlockOntoStack() {
 		Event event = Event.fromNode(Parser
-				.parse("put the red block above the blue block"));
-		MoveValidator.validate(998, event);
+				.parse("Place pink pyramid on cyan tower"));
+		MoveValidator.validate(276, event);
 	}
 
 	@Test
@@ -65,7 +67,8 @@ public class ProcessorTests {
 
 		// Process.
 		int error = 0;
-		int total = 0;
+		int correct = 0;
+		int unmarked = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// RCL but not accurate?
@@ -85,7 +88,12 @@ public class ProcessorTests {
 			}
 
 			// Command.
-			if (command.rcl == null || command.mark != MarkType.Accurate) {
+			if (command.mark != MarkType.Unmarked
+					&& command.mark != MarkType.Accurate) {
+				continue;
+			}
+			if (command.rcl == null) {
+				unmarked++;
 				continue;
 			}
 
@@ -96,7 +104,7 @@ public class ProcessorTests {
 				System.out.println(++error + ") C" + command.id + ": "
 						+ e.getMessage() + " " + command.rcl);
 			}
-			total++;
+			correct++;
 		}
 
 		// Failed?
@@ -105,6 +113,14 @@ public class ProcessorTests {
 		}
 
 		// Count.
-		assertEquals(910, total);
+		int size = correct + unmarked;
+		assertEquals(933, correct);
+		assertEquals(8590, size);
+
+		// Stats.
+		DecimalFormat df = new DecimalFormat("#.##");
+		double p = 100 * correct / (double) size;
+		System.out.println("RCL correct: " + correct + " / " + size + " = "
+				+ df.format(p) + " %");
 	}
 }
