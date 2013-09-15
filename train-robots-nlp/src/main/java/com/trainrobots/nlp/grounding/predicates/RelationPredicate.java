@@ -22,6 +22,7 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.grounding.Grounding;
+import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -40,9 +41,6 @@ public class RelationPredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Validate.
-		if (groundings.size() == 0) {
-			throw new CoreException("Relation predicate has no groundings.");
-		}
 		if (indicator != SpatialIndicator.above) {
 			throw new CoreException("Invalid relation predicate indicator: "
 					+ indicator);
@@ -55,11 +53,22 @@ public class RelationPredicate implements Predicate {
 
 		// Match?
 		for (Grounding grounding : groundings) {
+
+			// Board.
+			if (grounding.entity() instanceof Board) {
+				if (left.position().z == 0) {
+					return true;
+				}
+				continue;
+			}
+
+			// Shape.
 			if (grounding.entity() instanceof Shape) {
 				Shape right = (Shape) grounding.entity();
 				if (left.position().equals(right.position().add(0, 0, 1))) {
 					return true;
 				}
+				continue;
 			}
 		}
 

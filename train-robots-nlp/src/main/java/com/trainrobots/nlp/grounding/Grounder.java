@@ -30,6 +30,7 @@ import com.trainrobots.nlp.grounding.predicates.Predicate;
 import com.trainrobots.nlp.grounding.predicates.PredicateList;
 import com.trainrobots.nlp.grounding.predicates.RelationPredicate;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
+import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
@@ -57,6 +58,9 @@ public class Grounder {
 		entities.add(Corner.BackLeft);
 		entities.add(Corner.FrontRight);
 		entities.add(Corner.FrontLeft);
+
+		// Board.
+		entities.add(Board.TheBoard);
 	}
 
 	public List<Grounding> ground(Entity entity) {
@@ -171,8 +175,12 @@ public class Grounder {
 					+ relation);
 		}
 		List<Grounding> groundings = ground(entity);
+		if (groundings.size() == 0) {
+			throw new CoreException(
+					"Entity in spatial relation has no groundings: " + entity);
+		}
 
-		// No match.
+		// Predicate.
 		return new RelationPredicate(indicator, groundings);
 	}
 }

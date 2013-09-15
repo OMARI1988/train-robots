@@ -74,6 +74,14 @@ public class GrounderTests {
 	}
 
 	@Test
+	public void shouldGroundBlueCubeAboveBoard() {
+		testGrounding(
+				337,
+				"(entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))) (event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))",
+				1);
+	}
+
+	@Test
 	public void shouldGroundYellowPrismAboveRedCube() {
 		testGrounding(
 				177,

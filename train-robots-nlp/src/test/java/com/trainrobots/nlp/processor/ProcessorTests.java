@@ -48,6 +48,13 @@ public class ProcessorTests {
 	}
 
 	@Test
+	public void shouldTakeBlockFromBoard() {
+		Event event = Event
+				.fromString("(event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))");
+		MoveValidator.validate(337, event);
+	}
+
+	@Test
 	@Ignore
 	public void shouldProcessSequence() {
 
@@ -114,8 +121,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(942, correct);
-		assertEquals(8555, size);
+		assertEquals(945, correct);
+		assertEquals(8552, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");
