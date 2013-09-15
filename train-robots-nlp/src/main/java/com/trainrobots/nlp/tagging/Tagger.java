@@ -59,6 +59,7 @@ public class Tagger {
 
 		add("right in", "(spatial-indicator: in)");
 
+		add("on the top of", "(spatial-indicator: above)");
 		add("on top of", "(spatial-indicator: above)");
 		add("the top of", "(spatial-indicator: above)");
 		add("on to", "(spatial-indicator: above)");
@@ -112,6 +113,7 @@ public class Tagger {
 
 		add("light blue", "(color: cyan)");
 		add("sky blue", "(color: cyan)");
+		add("blue sky", "(color: cyan)");
 		add("dark blue", "(color: blue)");
 		add("deep blue", "(color: blue)");
 		add("light gray", "(color: white)");

@@ -156,7 +156,7 @@ public class Lexicon {
 		add("one", "(cardinal: 1)");
 		add("ones", "(entity: (type: reference) (number: plural))");
 		add("only", "(spatial-indicator: only)");
-		add("onto", "(spatial-indicator: onto)");
+		add("onto", "(spatial-indicator: above)");
 		add("opposite", "(spatial-indicator: opposite)");
 		add("other", "(spatial-indicator: other)");
 		add("over", "(spatial-indicator: above)");

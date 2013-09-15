@@ -97,6 +97,15 @@ public class ParserTests {
 	}
 
 	@Test
+	public void shouldParse9() {
+		Node node = Parser
+				.parse("place the red prism on the top of blue sky block");
+		assertEquals(
+				node,
+				Node.fromString("(event: (action: move) (entity: (color: red) (type: prism)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: cyan) (type: cube)))))"));
+	}
+
+	@Test
 	@Ignore
 	public void shouldParseUnmarkedCommands() {
 
