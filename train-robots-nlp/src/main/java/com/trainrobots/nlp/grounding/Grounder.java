@@ -91,7 +91,6 @@ public class Grounder {
 		else if (entity.referenceId() != null) {
 			throw new CoreException("Unexpected reference ID: "
 					+ entity.referenceId());
-
 		}
 
 		// Type.

@@ -23,6 +23,7 @@ import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
+import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -66,6 +67,15 @@ public class RelationPredicate implements Predicate {
 			if (grounding.entity() instanceof Shape) {
 				Shape right = (Shape) grounding.entity();
 				if (left.position().equals(right.position().add(0, 0, 1))) {
+					return true;
+				}
+				continue;
+			}
+
+			// Corner.
+			if (grounding.entity() instanceof Corner) {
+				Corner right = (Corner) grounding.entity();
+				if (left.position().equals(right.position())) {
 					return true;
 				}
 				continue;

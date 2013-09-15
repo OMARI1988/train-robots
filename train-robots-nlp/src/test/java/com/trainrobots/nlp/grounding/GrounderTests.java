@@ -90,6 +90,14 @@ public class GrounderTests {
 	}
 
 	@Test
+	public void shouldGroundGrayCubeAboveBackLeftCorner() {
+		testGrounding(
+				849,
+				"(entity: (color: gray) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (spatial-indicator: back) (spatial-indicator: left) (type: corner))))",
+				1);
+	}
+
+	@Test
 	@Ignore
 	public void shouldGroundTopPartOfStack() {
 		testGrounding(

@@ -53,7 +53,7 @@ public class ProcessorTests {
 				.fromString("(event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))");
 		MoveValidator.validate(337, event);
 	}
-
+	
 	@Test
 	public void shouldProcessSequence1() {
 
@@ -117,7 +117,8 @@ public class ProcessorTests {
 				MoveValidator.validate(command.sceneNumber, command.rcl);
 			} catch (Exception e) {
 				System.out.println(++error + ") C" + command.id + ": "
-						+ e.getMessage() + " " + command.rcl);
+						+ e.getMessage());
+				System.out.println(command.rcl.format());
 			}
 			correct++;
 		}
@@ -129,7 +130,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1022, correct);
+		assertEquals(1025, correct);
 		assertEquals(8527, size);
 
 		// Stats.
