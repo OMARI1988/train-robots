@@ -114,8 +114,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(933, correct);
-		assertEquals(8590, size);
+		assertEquals(935, correct);
+		assertEquals(8588, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");

@@ -200,7 +200,8 @@ public class Processor {
 
 		// Otherwise, we expect a single grounding.
 		if (groundings.size() != 1) {
-			throw new CoreException("Failed to ground: " + entity);
+			throw new CoreException(groundings.size() + " grounding(s) : "
+					+ entity);
 		}
 		return groundings.get(0).entity();
 	}

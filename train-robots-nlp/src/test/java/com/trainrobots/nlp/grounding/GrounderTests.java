@@ -74,6 +74,14 @@ public class GrounderTests {
 	}
 
 	@Test
+	public void shouldGroundYellowPrismAboveRedCube() {
+		testGrounding(
+				177,
+				"(entity: (color: yellow) (type: prism) (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube))))",
+				1);
+	}
+
+	@Test
 	@Ignore
 	public void shouldGroundTopPartOfStack() {
 		testGrounding(

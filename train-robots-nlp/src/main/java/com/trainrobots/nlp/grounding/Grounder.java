@@ -26,7 +26,9 @@ import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.nlp.grounding.predicates.ColorPredicate;
 import com.trainrobots.nlp.grounding.predicates.IndicatorPredicate;
+import com.trainrobots.nlp.grounding.predicates.Predicate;
 import com.trainrobots.nlp.grounding.predicates.PredicateList;
+import com.trainrobots.nlp.grounding.predicates.RelationPredicate;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Shape;
@@ -106,31 +108,71 @@ public class Grounder {
 		if (entity.relations() != null) {
 			relations.addAll(entity.relations());
 		}
-		// if (indicators.size() == 1 && indicators.get(0) ==
-		// SpatialIndicator.top
-		// && relations.size() == 1
-		// && relations.get(0).indicator() == SpatialIndicator.part) {
-		// indicators.clear();
-		// relations.clear();
-		// }
 
 		// Indicators.
 		for (SpatialIndicator indicator : indicators) {
 			predicates.add(new IndicatorPredicate(indicator));
 		}
 
-		// Relations.
-		if (relations.size() > 0) {
-			throw new CoreException("Unexpected entity relations in " + entity);
-		}
-
 		// Apply predicates.
-		List<Grounding> list = new ArrayList<Grounding>();
+		List<Grounding> groundings = new ArrayList<Grounding>();
 		for (WorldEntity worldEntity : entities) {
 			if (predicates.match(worldEntity)) {
-				list.add(new Grounding(worldEntity));
+				groundings.add(new Grounding(worldEntity));
 			}
 		}
-		return list;
+
+		// Relations.
+		if (relations.size() > 0) {
+			filterGroundings(groundings, relations);
+		}
+		return groundings;
+	}
+
+	private void filterGroundings(List<Grounding> groundings,
+			List<SpatialRelation> relations) {
+
+		// Predicates.
+		PredicateList predicates = new PredicateList();
+		for (SpatialRelation relation : relations) {
+			Predicate predicate = createPredicateForRelation(relation);
+			if (predicate != null) {
+				predicates.add(predicate);
+			}
+		}
+
+		// Filter.
+		for (int i = groundings.size() - 1; i >= 0; i--) {
+			if (!predicates.match(groundings.get(i).entity())) {
+				groundings.remove(i);
+			}
+		}
+	}
+
+	private Predicate createPredicateForRelation(SpatialRelation relation) {
+
+		// Measure.
+		if (relation.measure() != null) {
+			throw new CoreException("Failed to create predicate for measure: "
+					+ relation.measure());
+		}
+
+		// Indicator.
+		SpatialIndicator indicator = relation.indicator();
+		if (indicator == null) {
+			throw new CoreException(
+					"Spatial relation indicator not specified: " + indicator);
+		}
+
+		// Entity.
+		Entity entity = relation.entity();
+		if (entity == null) {
+			throw new CoreException("Spatial relation entity not specified: "
+					+ relation);
+		}
+		List<Grounding> groundings = ground(entity);
+
+		// No match.
+		return new RelationPredicate(indicator, groundings);
 	}
 }
