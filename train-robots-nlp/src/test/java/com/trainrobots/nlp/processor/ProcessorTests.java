@@ -111,6 +111,6 @@ public class ProcessorTests {
 		}
 
 		// Count.
-		assertEquals(41, total);
+		assertEquals(701, total);
 	}
 }

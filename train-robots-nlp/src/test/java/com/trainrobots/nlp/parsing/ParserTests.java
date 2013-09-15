@@ -24,10 +24,11 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.core.io.FileWriter;
+import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.processor.MoveValidator;
 
 public class ParserTests {
 
@@ -60,7 +61,7 @@ public class ParserTests {
 		Node node = Parser.parse("the top left corner");
 		assertEquals(
 				node,
-				Node.fromString("(entity: (spatial-indicator: top) (spatial-indicator: left) (type: corner))"));
+				Node.fromString("(entity: (spatial-indicator: front) (spatial-indicator: left) (type: corner))"));
 	}
 
 	@Test
@@ -97,19 +98,33 @@ public class ParserTests {
 
 	@Test
 	@Ignore
-	public void shouldWriteCommand() {
-		FileWriter writer = new FileWriter("c:/temp/commands.txt");
-		for (int i = 1; i <= 1000; i++) {
-			writer.writeLine();
-			writer.writeLine("// ==============================");
-			writer.writeLine("// Scene " + i);
-			for (Command command : Corpus.getCommands(i)) {
-				writer.writeLine();
-				writer.writeLine("// C" + command.id + ": " + command.text);
-				writer.writeLine();
-				writer.writeLine(Parser.parse(command.text).format());
+	public void shouldParseUnmarkedCommands() {
+
+		// Parse.
+		int total = 0;
+		for (Command command : Corpus.getCommands()) {
+
+			// Already marked?
+			if (command.rcl != null || command.mark != MarkType.Unmarked) {
+				continue;
+			}
+
+			// Parse.
+			Rcl rcl;
+			try {
+				Node node = Parser.parse(command.text);
+				rcl = Rcl.fromNode(node);
+			} catch (Exception e) {
+				continue;
+			}
+			try {
+				MoveValidator.validate(command.sceneNumber, rcl);
+				System.out
+						.println("VALID: " + command.id + ": " + command.text);
+			} catch (Exception e) {
+				System.out.println(++total + ") " + command.id + ": "
+						+ e.getMessage());
 			}
 		}
-		writer.close();
 	}
 }
