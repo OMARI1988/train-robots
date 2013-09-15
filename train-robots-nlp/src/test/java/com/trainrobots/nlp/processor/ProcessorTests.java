@@ -34,21 +34,15 @@ import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.parser.Parser;
 
 public class ProcessorTests {
 
 	@Test
-	public void shouldDropPrism() {
-		Event event = Event
-				.fromString("(event: (action: drop) (entity: (type: prism)))");
-		MoveValidator.validate(20, event);
-	}
-
-	@Test
-	public void shouldDropGreenPrism() {
-		Event event = Event
-				.fromString("(event: (action: drop) (entity: (color: green) (type: prism)))");
-		MoveValidator.validate(20, event);
+	public void shouldGroundBlockBySuitability() {
+		Event event = Event.fromNode(Parser
+				.parse("put the red block above the blue block"));
+		MoveValidator.validate(998, event);
 	}
 
 	@Test
@@ -111,6 +105,6 @@ public class ProcessorTests {
 		}
 
 		// Count.
-		assertEquals(701, total);
+		assertEquals(910, total);
 	}
 }
