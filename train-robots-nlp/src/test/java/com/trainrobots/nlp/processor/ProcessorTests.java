@@ -130,7 +130,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1025, correct);
+		assertEquals(1031, correct);
 		assertEquals(8527, size);
 
 		// Stats.

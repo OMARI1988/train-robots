@@ -42,10 +42,6 @@ public class RelationPredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Validate.
-		if (indicator != SpatialIndicator.above) {
-			throw new CoreException("Invalid relation predicate indicator: "
-					+ indicator);
-		}
 		if (!(entity instanceof Shape)) {
 			throw new CoreException(
 					"Expected left hand side to be a shape in relation predicate.");
@@ -57,7 +53,8 @@ public class RelationPredicate implements Predicate {
 
 			// Board.
 			if (grounding.entity() instanceof Board) {
-				if (left.position().z == 0) {
+				if (indicator == SpatialIndicator.above
+						&& left.position().z == 0) {
 					return true;
 				}
 				continue;
@@ -65,18 +62,23 @@ public class RelationPredicate implements Predicate {
 
 			// Shape.
 			if (grounding.entity() instanceof Shape) {
-				Shape right = (Shape) grounding.entity();
-				if (left.position().equals(right.position().add(0, 0, 1))) {
-					return true;
+				if (indicator == SpatialIndicator.above) {
+					Shape right = (Shape) grounding.entity();
+					if (left.position().equals(right.position().add(0, 0, 1))) {
+						return true;
+					}
 				}
 				continue;
 			}
 
 			// Corner.
 			if (grounding.entity() instanceof Corner) {
-				Corner right = (Corner) grounding.entity();
-				if (left.position().equals(right.position())) {
-					return true;
+				if (indicator == SpatialIndicator.above
+						|| indicator == SpatialIndicator.within) {
+					Corner right = (Corner) grounding.entity();
+					if (left.position().equals(right.position())) {
+						return true;
+					}
 				}
 				continue;
 			}
