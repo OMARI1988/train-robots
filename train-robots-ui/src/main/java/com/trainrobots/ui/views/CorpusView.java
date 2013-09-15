@@ -40,7 +40,6 @@ import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.tree.corpus.CommandNode;
 import com.trainrobots.ui.views.tree.corpus.CorpusTreeView;
 
 public class CorpusView extends JPanel {
@@ -229,12 +228,15 @@ public class CorpusView extends JPanel {
 	}
 
 	private void syncTreeNode() {
+
 		if (command == null) {
 			return;
 		}
+
 		CorpusTreeView tree = windowService.getMainWindow().getCorpusTreeView();
-		CommandNode node = tree.getCommandNode(command);
-		node.decorate();
+		tree.getCommandNode(command).decorate();
+		tree.getSceneNode(command.sceneNumber).decorate();
+
 		tree.repaint();
 	}
 

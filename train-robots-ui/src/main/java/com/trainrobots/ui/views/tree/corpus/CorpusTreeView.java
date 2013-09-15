@@ -47,17 +47,20 @@ public class CorpusTreeView extends TreeView {
 		}
 	}
 
-	public CommandNode getCommandNode(Command command) {
+	public SceneNode getSceneNode(int sceneNumber) {
 
 		// Root node.
 		RootNode rootNode = (RootNode) getModel().getRoot();
 		rootNode.getChildCount();
 
 		// Scene node.
-		SceneNode sceneNode = (SceneNode) rootNode
-				.getChildAt(command.sceneNumber - 1);
+		return (SceneNode) rootNode.getChildAt(sceneNumber - 1);
+	}
+
+	public CommandNode getCommandNode(Command command) {
 
 		// Command node.
+		SceneNode sceneNode = getSceneNode(command.sceneNumber);
 		int size = sceneNode.getChildCount();
 		for (int i = 0; i < size; i++) {
 			CommandNode node = (CommandNode) sceneNode.getChildAt(i);

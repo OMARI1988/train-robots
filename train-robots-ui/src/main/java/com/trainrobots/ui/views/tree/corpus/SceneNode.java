@@ -20,6 +20,7 @@ package com.trainrobots.ui.views.tree.corpus;
 import java.util.List;
 
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.TreeNode;
@@ -32,7 +33,7 @@ public class SceneNode extends TreeNode {
 
 	public SceneNode(CorpusService corpusService, WindowService windowService,
 			int sceneNumber) {
-		super("S" + sceneNumber, false);
+		super(generateName(corpusService, sceneNumber), false);
 		this.corpusService = corpusService;
 		this.windowService = windowService;
 		this.sceneNumber = sceneNumber;
@@ -47,5 +48,39 @@ public class SceneNode extends TreeNode {
 		for (Command command : commands) {
 			add(new CommandNode(windowService, command));
 		}
+	}
+
+	public void decorate() {
+		setName(generateName(corpusService, sceneNumber));
+	}
+
+	private static String generateName(CorpusService corpusService,
+			int sceneNumber) {
+
+		StringBuilder text = new StringBuilder();
+		text.append("S");
+		text.append(sceneNumber);
+		text.append(" (");
+
+		int accurate = 0;
+		int unmarked = 0;
+		for (Command command : corpusService.getCommands(sceneNumber)) {
+			if (command.mark == MarkType.Accurate) {
+				accurate++;
+			} else if (command.mark == MarkType.Unmarked) {
+				unmarked++;
+			}
+		}
+
+		if (unmarked == 0) {
+			text.append("completed");
+		} else {
+			text.append(accurate);
+			text.append(" / ");
+			text.append(accurate + unmarked);
+		}
+
+		text.append(')');
+		return text.toString();
 	}
 }
