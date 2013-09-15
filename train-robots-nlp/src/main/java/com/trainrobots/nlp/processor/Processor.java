@@ -164,10 +164,11 @@ public class Processor {
 
 	private WorldEntity mapEntity(Entity entity) {
 
-		// If there are multiple groundings, then match the shape in the
-		// gripper.
+		// Multiple groundings?
 		List<Grounding> groundings = grounder.ground(entity);
 		if (groundings.size() > 1) {
+
+			// Match the shape in the gripper.
 			Shape shape = world.getShapeInGripper();
 			if (shape != null) {
 				for (Grounding grounding : groundings) {
@@ -178,6 +179,12 @@ public class Processor {
 					}
 				}
 			}
+
+			// Match a single shape that supports no others.
+			shape = matchSingleUnsupportingShape(groundings);
+			if (shape != null) {
+				return shape;
+			}
 		}
 
 		// Otherwise, we expect a single grounding.
@@ -185,6 +192,24 @@ public class Processor {
 			throw new CoreException("Failed to ground: " + entity);
 		}
 		return groundings.get(0).entity();
+	}
+
+	private Shape matchSingleUnsupportingShape(List<Grounding> groundings) {
+		Shape match = null;
+		for (Grounding grounding : groundings) {
+			WorldEntity entity = grounding.entity();
+			if (!(entity instanceof Shape)) {
+				continue;
+			}
+			Shape shape = (Shape) entity;
+			if (world.getShape(shape.position().add(0, 0, 1)) == null) {
+				if (match != null) {
+					return null;
+				}
+				match = shape;
+			}
+		}
+		return match;
 	}
 
 	private static Position getPosition(WorldEntity entity) {

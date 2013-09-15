@@ -21,8 +21,12 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldModel;
+import com.trainrobots.nlp.scenes.moves.DirectMove;
+import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 
 public class MoveValidator {
@@ -33,24 +37,54 @@ public class MoveValidator {
 	public static void validate(int sceneNumber, Rcl rcl) {
 		Scene scene = SceneManager.getScene(sceneNumber);
 		List<Move> moves = new Processor(scene.before).getMoves(rcl);
-		if (!match(moves, scene.moves)) {
+		if (!match(scene.before, scene.moves, moves)) {
 			throw new CoreException("Incorrect move.");
 		}
 	}
 
-	private static boolean match(List<Move> moves1, List<Move> moves2) {
-		int size1 = moves1 != null ? moves1.size() : 0;
-		int size2 = moves2 != null ? moves2.size() : 0;
+	private static boolean match(WorldModel world, List<Move> expectedMoves,
+			List<Move> actualMoves) {
+
+		// Sizes.
+		int size1 = expectedMoves != null ? expectedMoves.size() : 0;
+		int size2 = actualMoves != null ? actualMoves.size() : 0;
+
+		// Direct move vs drop.
+		if (size1 == 1 && size2 == 1
+				&& expectedMoves.get(0) instanceof DropMove
+				&& actualMoves.get(0) instanceof DirectMove) {
+			DirectMove actualMove = (DirectMove) actualMoves.get(0);
+			Position expectedFrom = world.getShapeInGripper().position();
+			if (actualMove.from.equals(expectedFrom)
+					&& actualMove.to
+							.equals(getDropPosition(world, expectedFrom))) {
+				return true;
+			}
+		}
+
+		// Compare.
 		if (size1 != size2) {
 			return false;
 		}
 		for (int i = 0; i < size1; i++) {
-			Move m1 = moves1.get(i);
-			Move m2 = moves2.get(i);
-			if (!m1.equals(m2)) {
+			Move expectedMove = expectedMoves.get(i);
+			Move actualMove = actualMoves.get(i);
+			if (!actualMove.equals(expectedMove)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private static Position getDropPosition(WorldModel world, Position from) {
+		int x = from.x;
+		int y = from.y;
+		for (int z = 0; z <= 7; z++) {
+			Position p = new Position(x, y, z);
+			if (world.getShape(p) == null) {
+				return p;
+			}
+		}
+		throw new CoreException("Failed to find drop position.");
 	}
 }
