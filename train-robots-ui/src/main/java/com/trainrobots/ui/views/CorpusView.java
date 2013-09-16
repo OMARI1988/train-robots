@@ -157,7 +157,7 @@ public class CorpusView extends JPanel {
 
 		// Header.
 		int sceneNumber = command.sceneNumber;
-		headerLabel.setText("Scene " + sceneNumber + ". Command " + command.id
+		headerLabel.setText("Command " + command.id + ". Scene " + sceneNumber
 				+ ".");
 		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
 		statusBar.setText(headerLabel.getText());

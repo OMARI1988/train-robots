@@ -22,20 +22,13 @@ import static org.junit.Assert.fail;
 
 import java.text.DecimalFormat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.rcl.Action;
-import com.trainrobots.core.rcl.Color;
-import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Sequence;
-import com.trainrobots.core.rcl.SpatialIndicator;
-import com.trainrobots.core.rcl.SpatialRelation;
-import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.parser.Parser;
 
 public class ProcessorTests {
@@ -53,28 +46,13 @@ public class ProcessorTests {
 				.fromString("(event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))");
 		MoveValidator.validate(337, event);
 	}
-	
+
 	@Test
-	public void shouldProcessSequence1() {
+	public void shouldProcessSequence() {
 
 		Sequence sequence = Sequence
 				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: red) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: yellow) (type: cube))))))");
 		MoveValidator.validate(708, sequence);
-	}
-
-	@Test
-	@Ignore
-	public void shouldProcessSequence2() {
-
-		Sequence sequence = new Sequence(new Event(Action.take, new Entity(1,
-				SpatialIndicator.top, Type.cube, new SpatialRelation(
-						SpatialIndicator.part, new Entity(Color.blue,
-								Type.stack)))), new Event(Action.drop,
-				new Entity(Type.reference, 1),
-				new SpatialRelation(Entity.cardinal(2, Type.tile),
-						SpatialIndicator.forward)));
-
-		MoveValidator.validate(3, sequence);
 	}
 
 	@Test
@@ -130,8 +108,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1093, correct);
-		assertEquals(8514, size);
+		assertEquals(1163, correct);
+		assertEquals(8812, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.io.FileReader;
 import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.rcl.Rcl;
@@ -90,6 +91,9 @@ public class Corpus {
 		while ((line = reader.readLine()) != null) {
 			String[] items = line.split("\t");
 			Command command = commandsById.get(Integer.parseInt(items[0]));
+			if (command == null) {
+				throw new CoreException("Failed to find command ID " + items[0]);
+			}
 			if (items[1].equals("mark")) {
 				command.mark = MarkType.getMark(Integer.parseInt(items[2]));
 			} else if (items[1].equals("rcl")) {
