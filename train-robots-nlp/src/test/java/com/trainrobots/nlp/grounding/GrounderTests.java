@@ -98,6 +98,14 @@ public class GrounderTests {
 	}
 
 	@Test
+	public void shouldGroundCompositeColoredStack() {
+		testGrounding(
+				698,
+				"(entity: (color: yellow) (color: blue) (color: gray) (type: stack))",
+				1);
+	}
+
+	@Test
 	@Ignore
 	public void shouldGroundTopPartOfStack() {
 		testGrounding(

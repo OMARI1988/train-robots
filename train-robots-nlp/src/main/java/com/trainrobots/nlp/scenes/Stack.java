@@ -18,7 +18,9 @@
 package com.trainrobots.nlp.scenes;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Type;
@@ -26,14 +28,16 @@ import com.trainrobots.core.rcl.Type;
 public class Stack implements WorldEntity {
 
 	private final List<Shape> shapes = new ArrayList<Shape>();
+	private final Set<Color> colors = new HashSet<Color>();
 
 	@Override
 	public Type type() {
 		return Type.stack;
 	}
 
-	public List<Shape> shapes() {
-		return shapes;
+	public void add(Shape shape) {
+		shapes.add(shape);
+		colors.add(shape.color());
 	}
 
 	public Shape getTop() {
@@ -48,12 +52,7 @@ public class Stack implements WorldEntity {
 		return text.toString();
 	}
 
-	public boolean hasSingleColor(Color color) {
-		for (Shape shape : shapes) {
-			if (shape.color() != color) {
-				return false;
-			}
-		}
-		return true;
+	public boolean hasColors(Set<Color> colors) {
+		return this.colors.equals(colors);
 	}
 }

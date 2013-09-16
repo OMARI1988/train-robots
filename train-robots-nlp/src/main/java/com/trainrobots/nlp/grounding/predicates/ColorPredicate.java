@@ -17,6 +17,8 @@
 
 package com.trainrobots.nlp.grounding.predicates;
 
+import java.util.Set;
+
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
@@ -24,23 +26,23 @@ import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class ColorPredicate implements Predicate {
 
-	private final Color color;
+	private final Set<Color> colors;
 
-	public ColorPredicate(Color color) {
-		this.color = color;
+	public ColorPredicate(Set<Color> colors) {
+		this.colors = colors;
 	}
 
 	@Override
 	public boolean match(WorldEntity entity) {
 
-		if ((entity instanceof Shape)) {
+		if ((entity instanceof Shape) && colors.size() == 1) {
 			Shape shape = (Shape) entity;
-			return shape.color() == color;
+			return shape.color() == colors.iterator().next();
 		}
 
 		if ((entity instanceof Stack)) {
 			Stack stack = (Stack) entity;
-			return stack.hasSingleColor(color);
+			return stack.hasColors(colors);
 		}
 
 		return false;
@@ -48,6 +50,6 @@ public class ColorPredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(color: " + color + ")";
+		return "(color: " + colors + ")";
 	}
 }

@@ -18,7 +18,9 @@
 package com.trainrobots.core.rcl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
@@ -32,7 +34,7 @@ public class Entity extends Rcl {
 	private final Integer ordinal;
 	private final Integer cardinal;
 	private final boolean multiple;
-	private final List<Color> colors;
+	private final Set<Color> colors;
 	private final List<SpatialIndicator> indicators;
 	private final List<SpatialRelation> relations;
 
@@ -67,7 +69,7 @@ public class Entity extends Rcl {
 		this.ordinal = null;
 		this.cardinal = null;
 		this.multiple = false;
-		this.colors = new ArrayList<Color>();
+		this.colors = new LinkedHashSet<Color>();
 		this.colors.add(color);
 		this.indicators = null;
 		this.relations = null;
@@ -104,7 +106,7 @@ public class Entity extends Rcl {
 	}
 
 	public Entity(Integer id, Integer referenceId, Type type, Integer ordinal,
-			Integer cardinal, boolean multiple, List<Color> colors,
+			Integer cardinal, boolean multiple, Set<Color> colors,
 			List<SpatialIndicator> indicators, List<SpatialRelation> relations) {
 
 		this.id = id;
@@ -147,7 +149,7 @@ public class Entity extends Rcl {
 		return multiple;
 	}
 
-	public List<Color> colors() {
+	public Set<Color> colors() {
 		return colors;
 	}
 
@@ -235,7 +237,7 @@ public class Entity extends Rcl {
 		Integer ordinal = null;
 		Integer cardinal = null;
 		boolean multiple = false;
-		List<Color> colors = null;
+		Set<Color> colors = null;
 		List<SpatialIndicator> indicators = null;
 		List<SpatialRelation> relations = null;
 
@@ -265,7 +267,7 @@ public class Entity extends Rcl {
 				if (child.hasTag("color:")) {
 					Color color = Color.valueOf(child.getValue());
 					if (colors == null) {
-						colors = new ArrayList<Color>();
+						colors = new LinkedHashSet<Color>();
 					}
 					colors.add(color);
 					continue;

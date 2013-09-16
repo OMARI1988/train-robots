@@ -48,7 +48,7 @@ public class StackFinder {
 
 		// Look up.
 		Stack stack = new Stack();
-		stack.shapes().add(base);
+		stack.add(base);
 		int x = base.position().x;
 		int y = base.position().y;
 		for (int z = 1; z < 7; z++) {
@@ -67,7 +67,7 @@ public class StackFinder {
 
 			// Add.
 			else {
-				stack.shapes().add(shape);
+				stack.add(shape);
 			}
 		}
 
