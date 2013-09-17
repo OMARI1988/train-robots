@@ -111,6 +111,7 @@ public class ParserTests {
 
 		// Parse.
 		int total = 0;
+		boolean sep = false;
 		for (Command command : Corpus.getCommands()) {
 
 			// Already marked?
@@ -131,6 +132,10 @@ public class ParserTests {
 				System.out
 						.println("VALID: " + command.id + ": " + command.text);
 			} catch (Exception e) {
+				if (command.id > 6032 && !sep) {
+					System.out.println("------------------");
+					sep = true;
+				}
 				System.out.println(++total + ") " + command.id + ": "
 						+ e.getMessage());
 			}
