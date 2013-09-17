@@ -106,6 +106,20 @@ public class GrounderTests {
 	}
 
 	@Test
+	public void shouldGroundRobot() {
+		testGrounding(1, "(entity: (type: robot))", 1);
+	}
+
+	@Test
+	@Ignore
+	public void shouldGroundGreenCubeNearestRobot() {
+		testGrounding(
+				563,
+				"(entity: (color: green) (type: cube) (spatial-relation: (spatial-indicator: nearest) (entity: (type: robot)))))",
+				1);
+	}
+
+	@Test
 	@Ignore
 	public void shouldGroundTopPartOfStack() {
 		testGrounding(

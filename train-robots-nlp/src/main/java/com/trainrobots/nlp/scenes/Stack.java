@@ -52,6 +52,12 @@ public class Stack implements WorldEntity {
 		return text.toString();
 	}
 
+	@Override
+	public Position basePosition() {
+		Position p = shapes.get(0).position();
+		return new Position(p.x, p.y, 0);
+	}
+
 	public boolean hasColors(Set<Color> colors) {
 		return this.colors.equals(colors);
 	}

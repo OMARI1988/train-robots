@@ -280,7 +280,7 @@ public class Processor {
 		}
 
 		if (entity instanceof Corner) {
-			return ((Corner) entity).position();
+			return ((Corner) entity).basePosition();
 		}
 
 		throw new CoreException("Failed to get position for " + entity);

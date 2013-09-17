@@ -76,7 +76,7 @@ public class RelationPredicate implements Predicate {
 				if (indicator == SpatialIndicator.above
 						|| indicator == SpatialIndicator.within) {
 					Corner right = (Corner) grounding.entity();
-					if (left.position().equals(right.position())) {
+					if (left.position().equals(right.basePosition())) {
 						return true;
 					}
 				}

@@ -19,6 +19,7 @@ package com.trainrobots.nlp.grounding.predicates;
 
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.scenes.Corner;
+import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class IndicatorPredicate implements Predicate {
@@ -31,19 +32,28 @@ public class IndicatorPredicate implements Predicate {
 
 	@Override
 	public boolean match(WorldEntity entity) {
-		if (!(entity instanceof Corner)) {
-			return false;
+
+		// Edge.
+		if (entity instanceof Edge) {
+			Edge edge = (Edge) entity;
+			return edge.indicator() == indicator;
 		}
-		Corner corner = (Corner) entity;
-		switch (indicator) {
-		case front:
-			return corner == Corner.FrontLeft || corner == Corner.FrontRight;
-		case back:
-			return corner == Corner.BackLeft || corner == Corner.BackRight;
-		case left:
-			return corner == Corner.FrontLeft || corner == Corner.BackLeft;
-		case right:
-			return corner == Corner.FrontRight || corner == Corner.BackRight;
+
+		// Corner.
+		if (entity instanceof Corner) {
+			Corner corner = (Corner) entity;
+			switch (indicator) {
+			case front:
+				return corner == Corner.FrontLeft
+						|| corner == Corner.FrontRight;
+			case back:
+				return corner == Corner.BackLeft || corner == Corner.BackRight;
+			case left:
+				return corner == Corner.FrontLeft || corner == Corner.BackLeft;
+			case right:
+				return corner == Corner.FrontRight
+						|| corner == Corner.BackRight;
+			}
 		}
 		return false;
 	}

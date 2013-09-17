@@ -17,57 +17,28 @@
 
 package com.trainrobots.nlp.scenes;
 
-import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Type;
 
-public class Shape implements WorldEntity {
+public class Robot implements WorldEntity {
 
-	private final Color color;
-	private final Type type;
-	private final Position position;
-
-	public Shape(Color color, Type type, Position position) {
-		this.color = color;
-		this.type = type;
-		this.position = position;
+	private Robot() {
 	}
 
-	public Color color() {
-		return color;
+	public static final Robot TheRobot = new Robot();
+
+	@Override
+	public String toString() {
+		return "robot";
 	}
 
 	@Override
 	public Type type() {
-		return type;
-	}
-
-	public Position position() {
-		return position;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (object == null) {
-			return false;
-		}
-		Shape s = (Shape) object;
-		return s.color == color && s.type == type
-				&& s.position.equals(position);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder text = new StringBuilder();
-		text.append(color);
-		text.append(' ');
-		text.append(type);
-		text.append(' ');
-		text.append(position);
-		return text.toString();
+		return Type.robot;
 	}
 
 	@Override
 	public Position basePosition() {
-		return new Position(position.x, position.y, 0);
+		throw new CoreException("The robot does not have a base position.");
 	}
 }

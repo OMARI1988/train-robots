@@ -26,15 +26,15 @@ public class Corner implements WorldEntity {
 	public static Corner FrontRight = new Corner(new Position(7, 0, 0));
 	public static Corner FrontLeft = new Corner(new Position(7, 7, 0));
 
-	private final Position position;
+	private final Position basePosition;
 
-	private Corner(Position position) {
-		this.position = position;
+	private Corner(Position basePosition) {
+		this.basePosition = basePosition;
 	}
 
 	@Override
 	public String toString() {
-		return "corner " + position;
+		return "corner " + basePosition;
 	}
 
 	@Override
@@ -42,7 +42,8 @@ public class Corner implements WorldEntity {
 		return Type.corner;
 	}
 
-	public Position position() {
-		return position;
+	@Override
+	public Position basePosition() {
+		return basePosition;
 	}
 }

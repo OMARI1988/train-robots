@@ -132,7 +132,7 @@ public class ParserTests {
 				System.out
 						.println("VALID: " + command.id + ": " + command.text);
 			} catch (Exception e) {
-				if (command.id > 6032 && !sep) {
+				if (command.id > 7234 && !sep) {
 					System.out.println("------------------");
 					sep = true;
 				}

@@ -34,6 +34,9 @@ import com.trainrobots.nlp.grounding.predicates.RelationPredicate;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
+import com.trainrobots.nlp.scenes.Edge;
+import com.trainrobots.nlp.scenes.Position;
+import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
@@ -61,8 +64,17 @@ public class Grounder {
 		entities.add(Corner.FrontRight);
 		entities.add(Corner.FrontLeft);
 
+		// Edges.
+		entities.add(Edge.Front);
+		entities.add(Edge.Back);
+		entities.add(Edge.Left);
+		entities.add(Edge.Right);
+
 		// Board.
 		entities.add(Board.TheBoard);
+
+		// Robot.
+		entities.add(Robot.TheRobot);
 	}
 
 	public List<Grounding> ground(Rcl root, Entity entity) {
@@ -149,6 +161,15 @@ public class Grounder {
 	private void filterGroundings(Rcl root, List<Grounding> groundings,
 			List<SpatialRelation> relations) {
 
+		// Nearest?
+		if (relations.size() == 1) {
+			SpatialRelation relation = relations.get(0);
+			if (relation.indicator() == SpatialIndicator.nearest) {
+				filterNearest(root, groundings, relation);
+				return;
+			}
+		}
+
 		// Predicates.
 		PredicateList predicates = new PredicateList();
 		for (SpatialRelation relation : relations) {
@@ -164,6 +185,82 @@ public class Grounder {
 				groundings.remove(i);
 			}
 		}
+	}
+
+	private void filterNearest(Rcl root, List<Grounding> groundings,
+			SpatialRelation relation) {
+
+		Entity entity = relation.entity();
+		if (entity == null) {
+			throw new CoreException("Spatial relation entity not specified: "
+					+ relation);
+		}
+
+		List<Grounding> landmarks = ground(root, entity);
+		if (landmarks.size() == 0) {
+			throw new CoreException("No landmarks for nearest relation: "
+					+ landmarks.size() + " groundings: " + entity);
+		}
+
+		List<Double> distances = new ArrayList<Double>();
+		double best = Double.MAX_VALUE;
+		for (Grounding grounding : groundings) {
+			double min = Double.MAX_VALUE;
+			for (Grounding landmark : landmarks) {
+				double distance = getDistance(grounding.entity(),
+						landmark.entity());
+				if (distance < best) {
+					best = distance;
+				}
+				if (distance < min) {
+					min = distance;
+				}
+			}
+			distances.add(min);
+		}
+
+		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		groundings.clear();
+		for (int i = 0; i < copy.size(); i++) {
+			if (distances.get(i) == best) {
+				groundings.add(copy.get(i));
+			}
+		}
+	}
+
+	private static double getDistance(WorldEntity entity, WorldEntity landmark) {
+
+		// Robot?
+		if (landmark.type() == Type.robot) {
+			return entity.basePosition().x;
+		}
+
+		// Edges?
+		if (landmark.type() == Type.edge) {
+			Edge edge = (Edge) landmark;
+			switch (edge.indicator()) {
+			case left:
+				return 7 - entity.basePosition().y;
+			case right:
+				return entity.basePosition().y;
+			case front:
+				return 7 - entity.basePosition().x;
+			case back:
+				return entity.basePosition().x;
+			default:
+				throw new CoreException("Invalid edge: " + edge);
+			}
+		}
+
+		// Default.
+		Position p1 = entity.basePosition();
+		Position p2 = landmark.basePosition();
+		if (p1.z != 0 || p2.z != 0) {
+			throw new CoreException("Invalid base position.");
+		}
+		int dx = p1.x - p2.x;
+		int dy = p1.y - p2.y;
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 	private Predicate createPredicateForRelation(Rcl root,

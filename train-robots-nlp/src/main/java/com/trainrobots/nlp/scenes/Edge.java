@@ -18,27 +18,38 @@
 package com.trainrobots.nlp.scenes;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.Type;
 
-public class Board implements WorldEntity {
+public class Edge implements WorldEntity {
 
-	private Board() {
+	public static Edge Front = new Edge(SpatialIndicator.front);
+	public static Edge Back = new Edge(SpatialIndicator.back);
+	public static Edge Left = new Edge(SpatialIndicator.left);
+	public static Edge Right = new Edge(SpatialIndicator.right);
+
+	private final SpatialIndicator indicator;
+
+	private Edge(SpatialIndicator indicator) {
+		this.indicator = indicator;
 	}
-
-	public static final Board TheBoard = new Board();
 
 	@Override
 	public String toString() {
-		return "board";
+		return "edge " + indicator;
 	}
 
 	@Override
 	public Type type() {
-		return Type.board;
+		return Type.edge;
 	}
 
 	@Override
 	public Position basePosition() {
-		throw new CoreException("The board does not have a base position.");
+		throw new CoreException("The edge does not have a base position.");
+	}
+
+	public SpatialIndicator indicator() {
+		return indicator;
 	}
 }
