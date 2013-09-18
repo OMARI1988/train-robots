@@ -39,6 +39,10 @@ public class Position {
 		return p.x == x && p.y == y && p.z == z;
 	}
 
+	public boolean hasXY(Position p) {
+		return p.x == x && p.y == y;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
