@@ -56,6 +56,11 @@ public class Generator {
 			return;
 		}
 
+		// Region?
+		if (entity.type() == Type.region && generateRegion(entity)) {
+			return;
+		}
+
 		// Determiner.
 		if (entity.cardinal() == null) {
 			write("the");
@@ -127,6 +132,16 @@ public class Generator {
 		if (relation.entity() != null) {
 			generate(relation.entity());
 		}
+	}
+
+	private boolean generateRegion(Entity entity) {
+		if (entity.indicators() == null || entity.indicators().size() != 1) {
+			return false;
+		}
+		write("the ");
+		write(entity.indicators().get(0));
+		write("of the board");
+		return true;
 	}
 
 	private void write(Action action) {

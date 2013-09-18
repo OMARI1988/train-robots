@@ -78,4 +78,12 @@ public class GeneratorTests {
 		assertEquals(sequence.generate(),
 				"take the gray cube and drop it above the green one");
 	}
+
+	@Test
+	public void shouldGenerateRegion() {
+		Entity entity = Entity
+				.fromString("(entity: (spatial-indicator: right) (type: region))");
+		assertEquals(entity.generate(), "the right of the board");
+	}
+
 }

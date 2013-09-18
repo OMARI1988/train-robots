@@ -27,32 +27,14 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.rcl.Event;
-import com.trainrobots.core.rcl.Sequence;
-import com.trainrobots.nlp.parser.Parser;
 
 public class ProcessorTests {
 
 	@Test
-	public void shouldPlaceBlockOntoStackInCorner() {
-		Event event = Event.fromNode(Parser
-				.parse("move the yellow pyramid on the top left corner"));
-		MoveValidator.validate(822, event);
-	}
+	public void shouldProcessRegion() {
 
-	@Test
-	public void shouldTakeBlockFromBoard() {
-		Event event = Event
-				.fromString("(event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))");
-		MoveValidator.validate(337, event);
-	}
-
-	@Test
-	public void shouldProcessSequence() {
-
-		Sequence sequence = Sequence
-				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: red) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: yellow) (type: cube))))))");
-		MoveValidator.validate(708, sequence);
+		Command command = Corpus.getCommand(11566);
+		MoveValidator.validate(command.sceneNumber, command.rcl);
 	}
 
 	@Test
@@ -95,7 +77,8 @@ public class ProcessorTests {
 				MoveValidator.validate(command.sceneNumber, command.rcl);
 			} catch (Exception e) {
 				System.out.println(++error + ") C" + command.id + ": "
-						+ e.getMessage());
+						+ command.text);
+				System.out.println(e.getMessage());
 				System.out.println(command.rcl.format());
 			}
 			correct++;
@@ -108,8 +91,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1274, correct);
-		assertEquals(8760, size);
+		assertEquals(1301, correct);
+		assertEquals(8750, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");

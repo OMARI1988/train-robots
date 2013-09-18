@@ -115,7 +115,7 @@ public class Processor {
 
 		// Translate equivalent move.
 		Event event3 = new Event(Action.move, entity1, event2.destinations());
-		return getMove(root, event3);
+		return getMove(event3, event3);
 	}
 
 	private Move getMove(Rcl root, Event event) {
@@ -184,7 +184,15 @@ public class Processor {
 		}
 
 		SpatialRelation destination = event.destinations().get(0);
-		Position position2 = mapSpatialRelation(root, destination);
+
+		// Measure?
+		Position position2;
+		if (destination.measure() != null) {
+			position2 = mapSpatialRelationWithMeasure(root, position,
+					destination);
+		} else {
+			position2 = mapSpatialRelation(root, destination);
+		}
 		return new DirectMove(position, position2);
 	}
 
@@ -195,6 +203,10 @@ public class Processor {
 			throw new CoreException("Indicator not specified.");
 		}
 
+		if (relation.entity() == null) {
+			throw new CoreException("Spatial relation entity not specified: "
+					+ relation);
+		}
 		WorldEntity entity = mapEntity(root, relation.entity());
 
 		// Stack?
@@ -220,6 +232,53 @@ public class Processor {
 			throw new CoreException("Invalid indicator: " + indicator);
 		}
 		return getPosition(entity).add(0, 0, 1);
+	}
+
+	private Position mapSpatialRelationWithMeasure(Rcl root, Position position,
+			SpatialRelation relation) {
+
+		if (relation.entity() != null) {
+			List<Grounding> groundings = grounder.ground(root,
+					relation.entity());
+			if (groundings == null || groundings.size() != 1) {
+				throw new CoreException(
+						"Expected single grounding for entity with measure: "
+								+ relation.entity());
+			}
+			position = groundings.get(0).entity().basePosition();
+		}
+
+		Entity measure = relation.measure();
+		if (measure == null) {
+			throw new CoreException("Measure not specified: " + relation);
+		}
+		if (measure.type() != Type.tile) {
+			throw new CoreException("Unsupported measure type: " + relation);
+		}
+		if (measure.cardinal() == null) {
+			throw new CoreException("Cardinal not specified: " + relation);
+		}
+		int cardinal = measure.cardinal();
+
+		SpatialIndicator indicator = relation.indicator();
+		Position p;
+		switch (indicator) {
+		case left:
+			p = position.add(0, cardinal, 0);
+			break;
+		case right:
+			p = position.add(0, -cardinal, 0);
+			break;
+		case forward:
+			p = position.add(cardinal, 0, 0);
+			break;
+		case backward:
+			p = position.add(-cardinal, 0, 0);
+			break;
+		default:
+			throw new CoreException("Unsupported indicator type: " + indicator);
+		}
+		return world.getDropPosition(p.x, p.y);
 	}
 
 	private WorldEntity mapEntity(Rcl root, Entity entity) {

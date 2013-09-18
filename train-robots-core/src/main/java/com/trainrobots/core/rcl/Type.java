@@ -18,7 +18,7 @@
 package com.trainrobots.core.rcl;
 
 public enum Type {
-	reference, typeReference, cube, prism, corner, board, stack, row, column, edge, tile, robot;
+	reference, typeReference, cube, prism, corner, board, stack, row, column, edge, tile, robot, region;
 
 	@Override
 	public String toString() {

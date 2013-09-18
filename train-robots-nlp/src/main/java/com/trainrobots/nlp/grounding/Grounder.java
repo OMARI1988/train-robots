@@ -22,14 +22,17 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.predicates.ColorPredicate;
 import com.trainrobots.nlp.grounding.predicates.IndicatorPredicate;
+import com.trainrobots.nlp.grounding.predicates.MeasurePredicate;
 import com.trainrobots.nlp.grounding.predicates.Predicate;
 import com.trainrobots.nlp.grounding.predicates.PredicateList;
+import com.trainrobots.nlp.grounding.predicates.RegionPredicate;
 import com.trainrobots.nlp.grounding.predicates.RelationPredicate;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
 import com.trainrobots.nlp.scenes.Board;
@@ -196,7 +199,13 @@ public class Grounder {
 					+ relation);
 		}
 
-		List<Grounding> landmarks = ground(root, entity);
+		List<Grounding> landmarks;
+		if (entity.type() == Type.region) {
+			landmarks = new ArrayList<Grounding>();
+			landmarks.add(new Grounding(convertRegionToEdge(entity)));
+		} else {
+			landmarks = ground(root, entity);
+		}
 		if (landmarks.size() == 0) {
 			throw new CoreException("No landmarks for nearest relation: "
 					+ landmarks.size() + " groundings: " + entity);
@@ -226,6 +235,23 @@ public class Grounder {
 				groundings.add(copy.get(i));
 			}
 		}
+	}
+
+	private WorldEntity convertRegionToEdge(Entity entity) {
+		if (entity.type() == Type.region && entity.indicators() != null
+				&& entity.indicators().size() == 1) {
+			switch (entity.indicators().get(0)) {
+			case front:
+				return Edge.Front;
+			case back:
+				return Edge.Back;
+			case left:
+				return Edge.Left;
+			case right:
+				return Edge.Right;
+			}
+		}
+		throw new CoreException("Failed to convert region to edge: " + entity);
 	}
 
 	private static double getDistance(WorldEntity entity, WorldEntity landmark) {
@@ -266,17 +292,29 @@ public class Grounder {
 	private Predicate createPredicateForRelation(Rcl root,
 			SpatialRelation relation) {
 
-		// Measure.
-		if (relation.measure() != null) {
-			throw new CoreException("Failed to create predicate for measure: "
-					+ relation.measure());
-		}
-
 		// Indicator.
 		SpatialIndicator indicator = relation.indicator();
 		if (indicator == null) {
 			throw new CoreException(
 					"Spatial relation indicator not specified: " + indicator);
+		}
+
+		// Measure?
+		Entity measure = relation.measure();
+		if (measure != null) {
+			if (relation.entity() == null) {
+				Event event = (Event) root;
+				List<Grounding> landmarks = ground(root, event.entity());
+				if (landmarks == null || landmarks.size() != 1) {
+					throw new CoreException(
+							"Failed to ground single landmark for measure relation: "
+									+ event.entity());
+				}
+				return new MeasurePredicate(measure, relation.indicator(),
+						landmarks.get(0).entity());
+			}
+			throw new CoreException("Failed to create predicate for measure: "
+					+ relation.measure());
 		}
 
 		// Entity.
@@ -285,13 +323,19 @@ public class Grounder {
 			throw new CoreException("Spatial relation entity not specified: "
 					+ relation);
 		}
+
+		// Region?
+		if (entity.type() == Type.region && entity.indicators() != null
+				&& entity.indicators().size() == 1) {
+			return new RegionPredicate(indicator, entity.indicators().get(0));
+		}
+
+		// Groundings.
 		List<Grounding> groundings = ground(root, entity);
 		if (groundings.size() == 0) {
 			throw new CoreException(
 					"Entity in spatial relation has no groundings: " + entity);
 		}
-
-		// Predicate.
 		return new RelationPredicate(indicator, groundings);
 	}
 }
