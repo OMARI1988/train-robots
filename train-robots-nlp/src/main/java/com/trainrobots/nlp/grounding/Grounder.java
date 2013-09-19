@@ -36,6 +36,7 @@ import com.trainrobots.nlp.grounding.predicates.RegionPredicate;
 import com.trainrobots.nlp.grounding.predicates.RelationPredicate;
 import com.trainrobots.nlp.grounding.predicates.TypePredicate;
 import com.trainrobots.nlp.scenes.Board;
+import com.trainrobots.nlp.scenes.CenterOfBoard;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;
@@ -206,7 +207,7 @@ public class Grounder {
 		List<Grounding> landmarks;
 		if (entity.type() == Type.region) {
 			landmarks = new ArrayList<Grounding>();
-			landmarks.add(new Grounding(convertRegionToEdge(entity)));
+			landmarks.add(new Grounding(getRegion(entity)));
 		} else {
 			landmarks = ground(root, entity);
 		}
@@ -241,7 +242,7 @@ public class Grounder {
 		}
 	}
 
-	private WorldEntity convertRegionToEdge(Entity entity) {
+	private WorldEntity getRegion(Entity entity) {
 		if (entity.type() == Type.region && entity.indicators() != null
 				&& entity.indicators().size() == 1) {
 			switch (entity.indicators().get(0)) {
@@ -253,6 +254,8 @@ public class Grounder {
 				return Edge.Left;
 			case right:
 				return Edge.Right;
+			case center:
+				return new CenterOfBoard();
 			}
 		}
 		throw new CoreException("Failed to convert region to edge: " + entity);
@@ -282,14 +285,20 @@ public class Grounder {
 			}
 		}
 
-		// Default.
+		// Distance.
 		Position p1 = entity.basePosition();
-		Position p2 = landmark.basePosition();
-		if (p1.z != 0 || p2.z != 0) {
-			throw new CoreException("Invalid base position.");
+		double p2x;
+		double p2y;
+		if (landmark instanceof CenterOfBoard) {
+			p2x = 3.5;
+			p2y = 3.5;
+		} else {
+			Position p2 = landmark.basePosition();
+			p2x = p2.x;
+			p2y = p2.y;
 		}
-		int dx = p1.x - p2.x;
-		int dy = p1.y - p2.y;
+		double dx = p1.x - p2x;
+		double dy = p1.y - p2y;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
