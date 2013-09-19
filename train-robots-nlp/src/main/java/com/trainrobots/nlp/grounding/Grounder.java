@@ -47,9 +47,13 @@ import com.trainrobots.nlp.scenes.WorldModel;
 
 public class Grounder {
 
+	private final WorldModel world;
 	private final List<WorldEntity> entities = new ArrayList<WorldEntity>();
 
 	public Grounder(WorldModel world) {
+
+		// World.
+		this.world = world;
 
 		// Shapes.
 		for (Shape shape : world.shapes()) {
@@ -143,7 +147,7 @@ public class Grounder {
 
 		// Indicators.
 		for (SpatialIndicator indicator : indicators) {
-			predicates.add(new IndicatorPredicate(indicator));
+			predicates.add(new IndicatorPredicate(world, indicator));
 		}
 
 		// Apply predicates.

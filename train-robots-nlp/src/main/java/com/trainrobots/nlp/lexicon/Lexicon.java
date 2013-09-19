@@ -155,7 +155,7 @@ public class Lexicon {
 		add("on", "(spatial-indicator: above)");
 		add("one", "(cardinal: 1)");
 		add("ones", "(entity: (type: reference) (number: plural))");
-		add("only", "(spatial-indicator: only)");
+		add("only", "(spatial-indicator: unique)");
 		add("onto", "(spatial-indicator: above)");
 		add("opposite", "(spatial-indicator: opposite)");
 		add("other", "(spatial-indicator: other)");
@@ -191,7 +191,7 @@ public class Lexicon {
 		add("second", "(ordinal: 2)");
 		add("shift", "(event: (action: shift))");
 		add("side", "(entity: (type: edge))");
-		add("single", "(spatial-indicator: single)");
+		add("single", "(spatial-indicator: individual)");
 		add("sits", "(spatial-indicator: above)");
 		add("sitting", "(link: that-is)");
 		add("situated", "(link: that-is)");

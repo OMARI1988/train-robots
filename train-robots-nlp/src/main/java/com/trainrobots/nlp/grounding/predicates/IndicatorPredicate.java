@@ -20,18 +20,30 @@ package com.trainrobots.nlp.grounding.predicates;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
+import com.trainrobots.nlp.scenes.Position;
+import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
+import com.trainrobots.nlp.scenes.WorldModel;
 
 public class IndicatorPredicate implements Predicate {
 
+	private final WorldModel world;
 	private final SpatialIndicator indicator;
 
-	public IndicatorPredicate(SpatialIndicator indicator) {
+	public IndicatorPredicate(WorldModel world, SpatialIndicator indicator) {
+		this.world = world;
 		this.indicator = indicator;
 	}
 
 	@Override
 	public boolean match(WorldEntity entity) {
+
+		// Shape.
+		if (indicator == SpatialIndicator.individual && entity instanceof Shape) {
+			Shape shape = (Shape) entity;
+			Position p = shape.position();
+			return p.z == 0 && world.getShape(p.add(0, 0, 1)) == null;
+		}
 
 		// Edge.
 		if (entity instanceof Edge) {
@@ -55,6 +67,7 @@ public class IndicatorPredicate implements Predicate {
 						|| corner == Corner.BackRight;
 			}
 		}
+
 		return false;
 	}
 

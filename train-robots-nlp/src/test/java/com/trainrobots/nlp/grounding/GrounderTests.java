@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Entity;
@@ -111,7 +110,6 @@ public class GrounderTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldGroundGreenCubeNearestRobot() {
 		testGrounding(
 				563,
@@ -120,11 +118,10 @@ public class GrounderTests {
 	}
 
 	@Test
-	@Ignore
-	public void shouldGroundTopPartOfStack() {
+	public void shouldGroundIndividualGreenBlock() {
 		testGrounding(
-				3,
-				"(entity: (spatial-indicator: top) (type: cube) (spatial-relation: (spatial-indicator: part) (entity: (color: blue) (type: stack))))",
+				214,
+				"(entity: (spatial-indicator: individual) (color: green) (type: cube))",
 				1);
 	}
 
