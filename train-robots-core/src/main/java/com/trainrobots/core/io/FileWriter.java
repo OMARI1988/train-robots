@@ -68,6 +68,10 @@ public class FileWriter {
 		printStream.println();
 	}
 
+	public void writeLine(int value) {
+		printStream.println(value);
+	}
+
 	public void writeLine(String text) {
 		printStream.println(text);
 	}
