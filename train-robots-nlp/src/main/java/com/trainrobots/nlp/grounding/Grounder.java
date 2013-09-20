@@ -147,8 +147,21 @@ public class Grounder {
 		}
 
 		// Indicators.
+		SpatialIndicator postIndicator = null;
 		for (SpatialIndicator indicator : indicators) {
-			predicates.add(new IndicatorPredicate(world, indicator));
+			if ((type == Type.cube || type == Type.prism || type == Type.stack)
+					&& (indicator == SpatialIndicator.left
+							|| indicator == SpatialIndicator.leftmost
+							|| indicator == SpatialIndicator.right
+							|| indicator == SpatialIndicator.rightmost || indicator == SpatialIndicator.nearest)) {
+				if (postIndicator != null) {
+					throw new CoreException("Duplicate post indicator in "
+							+ entity);
+				}
+				postIndicator = indicator;
+			} else {
+				predicates.add(new IndicatorPredicate(world, indicator));
+			}
 		}
 
 		// Apply predicates.
@@ -159,15 +172,67 @@ public class Grounder {
 			}
 		}
 
-		// Relations.
-		if (relations.size() > 0) {
-			filterGroundings(root, groundings, relations);
+		// Post-relation (e.g. 25886).
+		boolean postRelation = false;
+		if (relations.size() == 1) {
+			SpatialRelation relation = relations.get(0);
+			if (relation.entity() != null
+					&& relation.entity().type() == Type.region) {
+				if (relation.entity().indicators().size() == 1
+						&& relation.entity().indicators().get(0) == SpatialIndicator.right) {
+					if (postIndicator != null) {
+						throw new CoreException("Duplicate post indicator in "
+								+ entity);
+					}
+					postIndicator = relation.entity().indicators().get(0);
+					postRelation = true;
+				}
+			}
 		}
+
+		// Relations.
+		if (!postRelation && relations.size() > 0) {
+			filterGroundingsByRelations(root, groundings, relations);
+		}
+
+		// Post-indicator.
+		if (postIndicator != null) {
+			filterGroundingsByPostIndicator(groundings, postIndicator);
+		}
+
+		// Groundings.
 		return groundings;
 	}
 
-	private void filterGroundings(Rcl root, List<Grounding> groundings,
-			List<SpatialRelation> relations) {
+	private void filterGroundingsByPostIndicator(List<Grounding> groundings,
+			SpatialIndicator postIndicator) {
+
+		if (postIndicator == SpatialIndicator.left
+				|| postIndicator == SpatialIndicator.leftmost) {
+			filterLeftmost(groundings);
+			return;
+		}
+
+		if (postIndicator == SpatialIndicator.right
+				|| postIndicator == SpatialIndicator.rightmost) {
+			filterRightmost(groundings);
+			return;
+		}
+
+		if (postIndicator == SpatialIndicator.nearest) {
+			List<Grounding> landmarks = new ArrayList<Grounding>();
+			landmarks.add(new Grounding(Robot.TheRobot));
+			filterNearest(groundings, landmarks);
+			return;
+		}
+
+		// No match.
+		throw new CoreException("Post-indicator not supported: "
+				+ postIndicator);
+	}
+
+	private void filterGroundingsByRelations(Rcl root,
+			List<Grounding> groundings, List<SpatialRelation> relations) {
 
 		// Nearest?
 		if (relations.size() == 1) {
@@ -216,6 +281,11 @@ public class Grounder {
 					+ landmarks.size() + " groundings: " + entity);
 		}
 
+		filterNearest(groundings, landmarks);
+	}
+
+	private void filterNearest(List<Grounding> groundings,
+			List<Grounding> landmarks) {
 		List<Double> distances = new ArrayList<Double>();
 		double best = Double.MAX_VALUE;
 		for (Grounding grounding : groundings) {
@@ -237,6 +307,48 @@ public class Grounder {
 		groundings.clear();
 		for (int i = 0; i < copy.size(); i++) {
 			if (distances.get(i) == best) {
+				groundings.add(copy.get(i));
+			}
+		}
+	}
+
+	private void filterLeftmost(List<Grounding> groundings) {
+
+		List<Integer> metrics = new ArrayList<Integer>();
+		int best = Integer.MIN_VALUE;
+		for (Grounding grounding : groundings) {
+			int metric = grounding.entity().basePosition().y;
+			if (metric > best) {
+				best = metric;
+			}
+			metrics.add(metric);
+		}
+
+		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		groundings.clear();
+		for (int i = 0; i < copy.size(); i++) {
+			if (metrics.get(i) == best) {
+				groundings.add(copy.get(i));
+			}
+		}
+	}
+
+	private void filterRightmost(List<Grounding> groundings) {
+
+		List<Integer> metrics = new ArrayList<Integer>();
+		int best = Integer.MAX_VALUE;
+		for (Grounding grounding : groundings) {
+			int metric = grounding.entity().basePosition().y;
+			if (metric < best) {
+				best = metric;
+			}
+			metrics.add(metric);
+		}
+
+		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		groundings.clear();
+		for (int i = 0; i < copy.size(); i++) {
+			if (metrics.get(i) == best) {
 				groundings.add(copy.get(i));
 			}
 		}

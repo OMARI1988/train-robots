@@ -83,7 +83,7 @@ public class GeneratorTests {
 	public void shouldGenerateRegion() {
 		Entity entity = Entity
 				.fromString("(entity: (spatial-indicator: right) (type: region))");
-		assertEquals(entity.generate(), "the right of the board");
+		assertEquals(entity.generate(), "the right");
 	}
 
 }

@@ -140,7 +140,6 @@ public class Generator {
 		}
 		write("the ");
 		write(entity.indicators().get(0));
-		write("of the board");
 		return true;
 	}
 

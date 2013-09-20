@@ -19,7 +19,6 @@ package com.trainrobots.nlp.grounding.predicates;
 
 import java.util.List;
 
-import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
@@ -41,21 +40,16 @@ public class RelationPredicate implements Predicate {
 	@Override
 	public boolean match(WorldEntity entity) {
 
-		// Validate.
-		if (!(entity instanceof Shape)) {
-			throw new CoreException(
-					"Expected left hand side to be a shape in relation predicate.");
-		}
-		Shape left = (Shape) entity;
-
 		// Match?
 		for (Grounding grounding : groundings) {
 
 			// Board.
 			if (grounding.entity() instanceof Board) {
-				if (indicator == SpatialIndicator.above
-						&& left.position().z == 0) {
-					return true;
+				if (indicator == SpatialIndicator.above) {
+					Shape left = (Shape) entity;
+					if (left.position().z == 0) {
+						return true;
+					}
 				}
 				continue;
 			}
@@ -63,6 +57,7 @@ public class RelationPredicate implements Predicate {
 			// Shape.
 			if (grounding.entity() instanceof Shape) {
 				if (indicator == SpatialIndicator.above) {
+					Shape left = (Shape) entity;
 					Shape right = (Shape) grounding.entity();
 					if (left.position().equals(right.position().add(0, 0, 1))) {
 						return true;
@@ -76,7 +71,7 @@ public class RelationPredicate implements Predicate {
 				if (indicator == SpatialIndicator.above
 						|| indicator == SpatialIndicator.within) {
 					Corner right = (Corner) grounding.entity();
-					if (left.position().hasXY(right.basePosition())) {
+					if (entity.basePosition().hasXY(right.basePosition())) {
 						return true;
 					}
 				}
