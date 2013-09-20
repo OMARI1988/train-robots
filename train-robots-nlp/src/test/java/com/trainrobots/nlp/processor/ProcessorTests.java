@@ -31,9 +31,9 @@ import com.trainrobots.core.corpus.MarkType;
 public class ProcessorTests {
 
 	@Test
-	public void shouldProcessRegion() {
+	public void shouldProcessCommand() {
 
-		Command command = Corpus.getCommand(3583);
+		Command command = Corpus.getCommand(13492);
 		MoveValidator.validate(command.sceneNumber, command.rcl);
 	}
 
@@ -91,8 +91,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1362, correct);
-		assertEquals(8728, size);
+		assertEquals(1381, correct);
+		assertEquals(8712, size);
 
 		// Stats.
 		DecimalFormat df = new DecimalFormat("#.##");

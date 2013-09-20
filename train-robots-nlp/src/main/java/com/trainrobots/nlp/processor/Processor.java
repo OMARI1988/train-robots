@@ -191,12 +191,13 @@ public class Processor {
 			position2 = mapSpatialRelationWithMeasure(root, position,
 					destination);
 		} else {
-			position2 = mapSpatialRelation(root, destination);
+			position2 = mapSpatialRelation(root, position, destination);
 		}
 		return new DirectMove(position, position2);
 	}
 
-	private Position mapSpatialRelation(Rcl root, SpatialRelation relation) {
+	private Position mapSpatialRelation(Rcl root, Position actionPosition,
+			SpatialRelation relation) {
 
 		SpatialIndicator indicator = relation.indicator();
 		if (indicator == null) {
@@ -225,6 +226,11 @@ public class Processor {
 					|| indicator == SpatialIndicator.above) {
 				return world.getDropPosition(position.x, position.y);
 			}
+		}
+
+		// Board?
+		if (entity.type() == Type.board && indicator == SpatialIndicator.above) {
+			return world.getDropPosition(actionPosition.x, actionPosition.y);
 		}
 
 		// Shape.
