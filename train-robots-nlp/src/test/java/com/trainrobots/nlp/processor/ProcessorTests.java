@@ -33,7 +33,7 @@ public class ProcessorTests {
 	@Test
 	public void shouldProcessCommand() {
 
-		Command command = Corpus.getCommand(20893);
+		Command command = Corpus.getCommand(18525);
 		MoveValidator.validate(command.sceneNumber, command.rcl);
 	}
 
@@ -44,6 +44,7 @@ public class ProcessorTests {
 		int error = 0;
 		int correct = 0;
 		int unmarked = 0;
+		int notGold = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// RCL but not accurate?
@@ -65,6 +66,7 @@ public class ProcessorTests {
 			// Command.
 			if (command.mark != MarkType.Unmarked
 					&& command.mark != MarkType.Accurate) {
+				notGold++;
 				continue;
 			}
 			if (command.rcl == null) {
@@ -91,13 +93,20 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1436, correct);
-		assertEquals(8692, size);
+		assertEquals(1461, correct);
+		assertEquals(8687, size);
 
-		// Stats.
+		// Progress.
 		DecimalFormat df = new DecimalFormat("#.##");
 		double p = 100 * correct / (double) size;
-		System.out.println("RCL correct: " + correct + " / " + size + " = "
+		System.out.println("Corpus: " + correct + " / " + size + " = "
+				+ df.format(p) + " %");
+
+		// Gold.
+		size = notGold + correct;
+		int gold = correct;
+		p = 100 * gold / (double) size;
+		System.out.println("Gold: " + gold + " / " + size + " = "
 				+ df.format(p) + " %");
 	}
 }

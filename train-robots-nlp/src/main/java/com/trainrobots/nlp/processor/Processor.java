@@ -171,7 +171,7 @@ public class Processor {
 	}
 
 	private Move mapMoveCommand(Rcl root, Event event) {
-
+		
 		Entity entity = event.entity();
 		if (entity == null) {
 			throw new CoreException("Event entity not specified.");
@@ -234,10 +234,24 @@ public class Processor {
 		}
 
 		// Shape.
-		if (indicator != SpatialIndicator.above) {
-			throw new CoreException("Invalid indicator: " + indicator);
+		Position p = null;
+		switch (indicator) {
+		case left:
+			p = getPosition(entity).add(0, 1, 0);
+			break;
+		case right:
+			p = getPosition(entity).add(0, -1, 0);
+			break;
+		case front:
+			p = getPosition(entity).add(1, 0, 0);
+			break;
+		case above:
+			return getPosition(entity).add(0, 0, 1);
 		}
-		return getPosition(entity).add(0, 0, 1);
+		if (p != null) {
+			return world.getDropPosition(p.x, p.y);
+		}
+		throw new CoreException("Invalid indicator: " + indicator);
 	}
 
 	private Position mapSpatialRelationWithMeasure(Rcl root, Position position,
@@ -291,7 +305,7 @@ public class Processor {
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<Grounding> groundings = grounder.ground(root, entity);
+		List<Grounding> groundings = grounder.ground(root, entity, excludePosition);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.

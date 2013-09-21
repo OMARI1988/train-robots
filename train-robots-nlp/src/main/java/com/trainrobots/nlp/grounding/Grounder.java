@@ -86,6 +86,11 @@ public class Grounder {
 	}
 
 	public List<Grounding> ground(Rcl root, Entity entity) {
+		return ground(root, entity, null);
+	}
+
+	public List<Grounding> ground(Rcl root, Entity entity,
+			Position excludePosition) {
 
 		// Predicates.
 		PredicateList predicates = new PredicateList();
@@ -197,7 +202,8 @@ public class Grounder {
 
 		// Post-indicator.
 		if (postIndicator != null) {
-			filterGroundingsByPostIndicator(groundings, postIndicator);
+			filterGroundingsByPostIndicator(groundings, postIndicator,
+					excludePosition);
 		}
 
 		// Groundings.
@@ -205,7 +211,19 @@ public class Grounder {
 	}
 
 	private void filterGroundingsByPostIndicator(List<Grounding> groundings,
-			SpatialIndicator postIndicator) {
+			SpatialIndicator postIndicator, Position excludePosition) {
+
+		// Tried to fix 21517, but failed for other reasons.
+		if (groundings.size() > 1 && excludePosition != null) {
+			for (int i = groundings.size() - 1; i >= 0; i--) {
+				WorldEntity e = groundings.get(i).entity();
+				if (e instanceof Shape) {
+					if (((Shape) e).position().equals(excludePosition)) {
+						groundings.remove(i);
+					}
+				}
+			}
+		}
 
 		if (postIndicator == SpatialIndicator.left
 				|| postIndicator == SpatialIndicator.leftmost) {

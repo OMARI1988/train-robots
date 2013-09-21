@@ -47,6 +47,17 @@ public class RelationPredicate implements Predicate {
 
 			// Adjacent.
 			if (indicator == SpatialIndicator.adjacent) {
+
+				// Edge.
+				if (grounding.entity() instanceof Edge) {
+					Edge right = (Edge) grounding.entity();
+					if (matchEdge(entity, SpatialIndicator.above, right)) {
+						return true;
+					}
+					continue;
+				}
+
+				// Shape.
 				Position left = entity.basePosition();
 				Position right = grounding.entity().basePosition();
 				int dx = left.x - right.x;
@@ -133,25 +144,33 @@ public class RelationPredicate implements Predicate {
 
 			// Edge.
 			if (grounding.entity() instanceof Edge) {
-				if (indicator == SpatialIndicator.above) {
-					Edge right = (Edge) grounding.entity();
-					if (right == Edge.Right) {
-						return entity.basePosition().y == 0;
-					}
-					if (right == Edge.Left) {
-						return entity.basePosition().y == 7;
-					}
-					if (right == Edge.Back) {
-						return entity.basePosition().x == 0;
-					}
-					if (right == Edge.Front) {
-						return entity.basePosition().x == 7;
-					}
+				Edge right = (Edge) grounding.entity();
+				if (matchEdge(entity, indicator, right)) {
+					return true;
 				}
 			}
 		}
 
 		// No match.
+		return false;
+	}
+
+	private static boolean matchEdge(WorldEntity entity,
+			SpatialIndicator indicator, Edge right) {
+		if (indicator == SpatialIndicator.above) {
+			if (right == Edge.Right && entity.basePosition().y == 0) {
+				return true;
+			}
+			if (right == Edge.Left && entity.basePosition().y == 7) {
+				return true;
+			}
+			if (right == Edge.Back & entity.basePosition().x == 0) {
+				return true;
+			}
+			if (right == Edge.Front && entity.basePosition().x == 7) {
+				return true;
+			}
+		}
 		return false;
 	}
 
