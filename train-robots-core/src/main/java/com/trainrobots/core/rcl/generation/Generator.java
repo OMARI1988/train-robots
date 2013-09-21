@@ -18,6 +18,7 @@
 package com.trainrobots.core.rcl.generation;
 
 import java.util.List;
+import java.util.Set;
 
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Color;
@@ -80,14 +81,22 @@ public class Generator {
 
 		// Colors.
 		if (entity.colors() != null) {
-			for (Color color : entity.colors()) {
-				write(color);
-			}
+			writeColors(entity.colors());
 		}
 
 		// Type reference?
 		if (entity.type() == Type.typeReference) {
 			write("one");
+		}
+
+		// Type reference group?
+		else if (entity.type() == Type.typeReferenceGroup) {
+			write("ones");
+		}
+
+		// Cube group?
+		else if (entity.type() == Type.cubeGroup) {
+			write("cubes");
 		}
 
 		// Type.
@@ -119,7 +128,7 @@ public class Generator {
 		if (relation.measure() != null) {
 			generate(relation.measure());
 		}
-		
+
 		boolean entity = relation.entity() != null;
 
 		switch (relation.indicator()) {
@@ -159,6 +168,23 @@ public class Generator {
 
 	private void write(Action action) {
 		write(action.toString());
+	}
+
+	private void writeColors(Set<Color> colors) {
+
+		int size = colors.size();
+		if (size == 0) {
+			return;
+		}
+
+		int i = 0;
+		for (Color color : colors) {
+			if (i > 0) {
+				text.append(i == size - 1 ? " and " : ", ");
+			}
+			write(color);
+			i++;
+		}
 	}
 
 	private void write(Color color) {

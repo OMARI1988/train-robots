@@ -18,12 +18,18 @@
 package com.trainrobots.core.rcl;
 
 public enum Type {
-	reference, typeReference, cube, prism, corner, board, stack, row, column, edge, tile, robot, region;
+	reference, typeReference, typeReferenceGroup, cube, cubeGroup, prism, corner, board, stack, row, column, edge, tile, robot, region;
 
 	@Override
 	public String toString() {
 		if (this == typeReference) {
 			return "type-reference";
+		}
+		if (this == typeReferenceGroup) {
+			return "type-reference-group";
+		}
+		if (this == cubeGroup) {
+			return "cube-group";
 		}
 		return name();
 	}
@@ -31,6 +37,12 @@ public enum Type {
 	public static Type parse(String name) {
 		if (name.equals("type-reference")) {
 			return typeReference;
+		}
+		if (name.equals("type-reference-group")) {
+			return typeReferenceGroup;
+		}
+		if (name.equals("cube-group")) {
+			return cubeGroup;
 		}
 		return Type.valueOf(name);
 	}

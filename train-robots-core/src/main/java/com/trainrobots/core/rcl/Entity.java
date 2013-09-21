@@ -33,7 +33,6 @@ public class Entity extends Rcl {
 	private final Type type;
 	private final Integer ordinal;
 	private final Integer cardinal;
-	private final boolean multiple;
 	private final Set<Color> colors;
 	private final List<SpatialIndicator> indicators;
 	private final List<SpatialRelation> relations;
@@ -44,7 +43,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.multiple = false;
 		this.colors = null;
 		this.indicators = null;
 		this.relations = null;
@@ -56,7 +54,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.multiple = false;
 		this.colors = null;
 		this.indicators = null;
 		this.relations = null;
@@ -68,7 +65,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.multiple = false;
 		this.colors = new LinkedHashSet<Color>();
 		this.colors.add(color);
 		this.indicators = null;
@@ -82,7 +78,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.multiple = false;
 		this.colors = null;
 		this.indicators = new ArrayList<SpatialIndicator>();
 		this.indicators.add(indicator);
@@ -97,7 +92,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.multiple = false;
 		this.colors = null;
 		this.indicators = new ArrayList<SpatialIndicator>();
 		this.indicators.add(indicator1);
@@ -114,7 +108,6 @@ public class Entity extends Rcl {
 		this.type = type;
 		this.ordinal = ordinal;
 		this.cardinal = cardinal;
-		this.multiple = multiple;
 		this.colors = colors;
 		this.indicators = indicators;
 		this.relations = relations;
@@ -143,10 +136,6 @@ public class Entity extends Rcl {
 
 	public Integer cardinal() {
 		return cardinal;
-	}
-
-	public boolean multiple() {
-		return multiple;
 	}
 
 	public Set<Color> colors() {
@@ -185,9 +174,6 @@ public class Entity extends Rcl {
 		if (cardinal != null) {
 			node.add("cardinal:", cardinal.toString());
 		}
-
-		// TODO: FIX!!
-		// multiple;
 
 		// Indicators.
 		if (indicators != null) {

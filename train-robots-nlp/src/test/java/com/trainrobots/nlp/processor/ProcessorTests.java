@@ -33,7 +33,7 @@ public class ProcessorTests {
 	@Test
 	public void shouldProcessCommand() {
 
-		Command command = Corpus.getCommand(18525);
+		Command command = Corpus.getCommand(24480);
 		MoveValidator.validate(command.sceneNumber, command.rcl);
 	}
 
@@ -93,8 +93,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1615, correct);
-		assertEquals(8654, size);
+		assertEquals(1647, correct);
+		assertEquals(8646, size);
 
 		// Gold.
 		DecimalFormat df = new DecimalFormat("#.##");

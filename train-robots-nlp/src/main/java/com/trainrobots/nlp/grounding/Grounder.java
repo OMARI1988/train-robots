@@ -100,7 +100,7 @@ public class Grounder {
 		if (type == null) {
 			throw new CoreException("Entity type not specified: " + entity);
 		}
-		if (type == Type.typeReference) {
+		if (type == Type.typeReference || type == Type.typeReferenceGroup) {
 			if (entity.referenceId() == null) {
 				throw new CoreException("Reference ID not specified: " + entity);
 			}
@@ -109,13 +109,22 @@ public class Grounder {
 				throw new CoreException("Failed to resolve reference: "
 						+ entity);
 			}
-			type = antecedent.type();
+			if (type == Type.typeReferenceGroup) {
+				type = makeGroup(antecedent.type());
+			} else {
+				type = antecedent.type();
+			}
 		}
 
 		// Reference ID.
 		else if (entity.referenceId() != null) {
 			throw new CoreException("Unexpected reference ID: "
 					+ entity.referenceId());
+		}
+
+		// Cube group?
+		if (type == Type.cubeGroup) {
+			type = Type.stack;
 		}
 
 		// Type.
@@ -129,11 +138,6 @@ public class Grounder {
 		// Cardinal.
 		if (entity.cardinal() != null) {
 			throw new CoreException("Unexpected cardinal: " + entity.cardinal());
-		}
-
-		// Multiple.
-		if (entity.multiple()) {
-			throw new CoreException("Unexpected multiple attribute.");
 		}
 
 		// Colors.
@@ -208,6 +212,14 @@ public class Grounder {
 
 		// Groundings.
 		return groundings;
+	}
+
+	private static Type makeGroup(Type type) {
+		if (type == Type.cube) {
+			return Type.cubeGroup;
+		}
+		throw new CoreException("Failed to determine group type for '" + type
+				+ "'.");
 	}
 
 	private void filterGroundingsByPostIndicator(List<Grounding> groundings,

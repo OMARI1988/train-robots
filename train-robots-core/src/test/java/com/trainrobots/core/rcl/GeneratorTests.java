@@ -82,6 +82,13 @@ public class GeneratorTests {
 	}
 
 	@Test
+	public void shouldGenerateTypeReferenceGroup() {
+		Rcl rcl = Corpus.getCommand(24480).rcl;
+		assertEquals(rcl.generate(),
+				"take the yellow cube and drop it above the green ones");
+	}
+
+	@Test
 	public void shouldGenerateRegion() {
 		Entity entity = Entity
 				.fromString("(entity: (spatial-indicator: right) (type: region))");
@@ -99,5 +106,26 @@ public class GeneratorTests {
 	public void shouldGenerateLeftRelation() {
 		Rcl rcl = Corpus.getCommand(7517).rcl;
 		assertEquals(rcl.generate(), "move the blue cube two tiles left");
+	}
+
+	@Test
+	public void shouldGenerateColorList1() {
+		Entity entity = Entity
+				.fromString("(entity: (color: red) (color: green) (type: stack))");
+		assertEquals(entity.generate(), "the red and green stack");
+	}
+
+	@Test
+	public void shouldGenerateColorList2() {
+		Entity entity = Entity
+				.fromString("(entity: (color: red) (color: green) (color: blue) (type: stack))");
+		assertEquals(entity.generate(), "the red, green and blue stack");
+	}
+
+	@Test
+	public void shouldGenerateCubeGroup() {
+		Rcl rcl = Corpus.getCommand(3548).rcl;
+		assertEquals(rcl.generate(),
+				"move the yellow prism above the green and red cubes");
 	}
 }
