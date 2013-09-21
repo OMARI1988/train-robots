@@ -17,6 +17,7 @@
 
 package com.trainrobots.ui.views.tree.corpus;
 
+import java.awt.Color;
 import java.util.List;
 
 import com.trainrobots.core.corpus.Command;
@@ -37,6 +38,7 @@ public class SceneNode extends TreeNode {
 		this.corpusService = corpusService;
 		this.windowService = windowService;
 		this.sceneNumber = sceneNumber;
+		decorate();
 	}
 
 	@Override
@@ -52,6 +54,26 @@ public class SceneNode extends TreeNode {
 
 	public void decorate() {
 		setName(generateName(corpusService, sceneNumber));
+		setColor(calculateColor());
+	}
+
+	private Color calculateColor() {
+
+		List<Command> commands = corpusService.getCommands(sceneNumber);
+		if (commands == null) {
+			return Color.BLACK;
+		}
+
+		boolean enhancement = false;
+		for (Command command : commands) {
+			if (command.enhancement != 0) {
+				enhancement = true;
+			} else if (command.mark == MarkType.Unmarked) {
+				return Color.BLACK;
+			}
+		}
+
+		return enhancement ? DARK_ORANGE : DARK_GREEN;
 	}
 
 	private static String generateName(CorpusService corpusService,

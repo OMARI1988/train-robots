@@ -29,7 +29,8 @@ public class Enhancement {
 			"edge", "furthest", "exclude surface layer", "stack availability",
 			"free/exposed/available", "only/unique", "multiple destinations",
 			"existence (there is...)", "complex block group",
-			"adjectives/compound noun phrase", "ellipsis" };
+			"adjectives/compound noun phrase", "ellipsis", "hold (in air)",
+			"current position", "drop anaphor" };
 
 	public static String[] getDesriptions() {
 		return descriptions;

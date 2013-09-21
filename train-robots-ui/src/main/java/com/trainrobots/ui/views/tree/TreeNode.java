@@ -28,6 +28,9 @@ public abstract class TreeNode extends DefaultMutableTreeNode {
 	private String name;
 	private Color color = Color.BLACK;
 
+	protected static final Color DARK_GREEN = new Color(0, 200, 0);
+	protected static final Color DARK_ORANGE = new Color(255, 69, 0);
+
 	protected TreeNode(String name, boolean isLeaf) {
 		this.name = name;
 		this.isLeaf = isLeaf;
