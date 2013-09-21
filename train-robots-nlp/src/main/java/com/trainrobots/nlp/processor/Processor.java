@@ -152,7 +152,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		WorldEntity worldEntity = mapEntity(root, entity);
+		WorldEntity worldEntity = mapEntity(root, entity, null);
 		if (!worldEntity.equals(shape)) {
 			throw new CoreException("Drop shape mismatch.");
 		}
@@ -167,7 +167,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		return new TakeMove(getPosition(mapEntity(root, entity)));
+		return new TakeMove(getPosition(mapEntity(root, entity, null)));
 	}
 
 	private Move mapMoveCommand(Rcl root, Event event) {
@@ -177,7 +177,7 @@ public class Processor {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		Position position = getPosition(mapEntity(root, entity));
+		Position position = getPosition(mapEntity(root, entity, null));
 
 		if (event.destinations() == null || event.destinations().size() != 1) {
 			throw new CoreException("Single destination not specified.");
@@ -208,7 +208,7 @@ public class Processor {
 			throw new CoreException("Spatial relation entity not specified: "
 					+ relation);
 		}
-		WorldEntity entity = mapEntity(root, relation.entity());
+		WorldEntity entity = mapEntity(root, relation.entity(), actionPosition);
 
 		// Stack?
 		if (entity.type() == Type.stack) {
@@ -287,7 +287,8 @@ public class Processor {
 		return world.getDropPosition(p.x, p.y);
 	}
 
-	private WorldEntity mapEntity(Rcl root, Entity entity) {
+	private WorldEntity mapEntity(Rcl root, Entity entity,
+			Position excludePosition) {
 
 		// Multiple groundings?
 		List<Grounding> groundings = grounder.ground(root, entity);
@@ -309,6 +310,17 @@ public class Processor {
 			shape = matchSingleUnsupportingShape(groundings);
 			if (shape != null) {
 				return shape;
+			}
+
+			// Exclude (e.g. 6652).
+			if (excludePosition != null && groundings.size() == 2) {
+				for (int i = 0; i < 2; i++) {
+					if (groundings.get(i).entity() instanceof Shape
+							&& ((Shape) groundings.get(i).entity()).position()
+									.equals(excludePosition)) {
+						return groundings.get(1 - i).entity();
+					}
+				}
 			}
 		}
 

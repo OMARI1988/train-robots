@@ -23,6 +23,7 @@ import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
+import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -40,7 +41,7 @@ public class RelationPredicate implements Predicate {
 	@Override
 	public boolean match(WorldEntity entity) {
 
-		// Match?
+		// Match.
 		for (Grounding grounding : groundings) {
 
 			// Board.
@@ -76,6 +77,25 @@ public class RelationPredicate implements Predicate {
 					}
 				}
 				continue;
+			}
+
+			// Edge.
+			if (grounding.entity() instanceof Edge) {
+				if (indicator == SpatialIndicator.above) {
+					Edge right = (Edge) grounding.entity();
+					if (right == Edge.Right) {
+						return entity.basePosition().y == 0;
+					}
+					if (right == Edge.Left) {
+						return entity.basePosition().y == 7;
+					}
+					if (right == Edge.Back) {
+						return entity.basePosition().x == 0;
+					}
+					if (right == Edge.Front) {
+						return entity.basePosition().x == 7;
+					}
+				}
 			}
 		}
 
