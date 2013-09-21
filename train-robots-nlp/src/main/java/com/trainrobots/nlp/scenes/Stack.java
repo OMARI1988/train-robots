@@ -29,10 +29,19 @@ public class Stack implements WorldEntity {
 
 	private final List<Shape> shapes = new ArrayList<Shape>();
 	private final Set<Color> colors = new HashSet<Color>();
+	private final boolean includesHead;
+
+	public Stack(boolean includesHead) {
+		this.includesHead = includesHead;
+	}
 
 	@Override
 	public Type type() {
 		return Type.stack;
+	}
+
+	public boolean includesHead() {
+		return includesHead;
 	}
 
 	public void add(Shape shape) {
@@ -47,7 +56,7 @@ public class Stack implements WorldEntity {
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
-		text.append("stack ");
+		text.append(includesHead ? "stack " : "headless-stack ");
 		text.append(shapes.get(0).position());
 		return text.toString();
 	}
@@ -60,5 +69,21 @@ public class Stack implements WorldEntity {
 
 	public boolean hasColors(Set<Color> colors) {
 		return this.colors.equals(colors);
+	}
+
+	public Stack excludeHead() {
+
+		// Must have at least 3 shapes.
+		int size = shapes.size();
+		if (size < 2) {
+			return null;
+		}
+
+		// Create new stack.
+		Stack headlessStack = new Stack(false);
+		for (int i = 0; i < size - 1; i++) {
+			headlessStack.add(shapes.get(i));
+		}
+		return headlessStack;
 	}
 }

@@ -171,7 +171,7 @@ public class Processor {
 	}
 
 	private Move mapMoveCommand(Rcl root, Event event) {
-		
+
 		Entity entity = event.entity();
 		if (entity == null) {
 			throw new CoreException("Event entity not specified.");
@@ -305,7 +305,8 @@ public class Processor {
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<Grounding> groundings = grounder.ground(root, entity, excludePosition);
+		List<Grounding> groundings = grounder.ground(root, entity,
+				excludePosition);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
@@ -333,6 +334,16 @@ public class Processor {
 							&& ((Shape) groundings.get(i).entity()).position()
 									.equals(excludePosition)) {
 						return groundings.get(1 - i).entity();
+					}
+				}
+			}
+
+			// Exclude headless stacks.
+			for (int i = groundings.size() - 1; i >= 0; i--) {
+				if (groundings.get(i).entity() instanceof Stack) {
+					Stack stack = (Stack) groundings.get(i).entity();
+					if (!stack.includesHead()) {
+						groundings.remove(i);
 					}
 				}
 			}

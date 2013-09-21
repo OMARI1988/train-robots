@@ -38,6 +38,10 @@ public class StackFinder {
 				Stack stack = getStack(world, shape);
 				if (stack != null) {
 					list.add(stack);
+					Stack headlessStack = stack.excludeHead();
+					if (headlessStack != null) {
+						list.add(headlessStack);
+					}
 				}
 			}
 		}
@@ -47,7 +51,7 @@ public class StackFinder {
 	private static Stack getStack(WorldModel world, Shape base) {
 
 		// Look up.
-		Stack stack = new Stack();
+		Stack stack = new Stack(true);
 		stack.add(base);
 		int x = base.position().x;
 		int y = base.position().y;

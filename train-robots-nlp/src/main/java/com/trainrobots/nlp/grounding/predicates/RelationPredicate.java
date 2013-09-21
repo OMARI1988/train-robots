@@ -26,6 +26,7 @@ import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class RelationPredicate implements Predicate {
@@ -147,6 +148,18 @@ public class RelationPredicate implements Predicate {
 				Edge right = (Edge) grounding.entity();
 				if (matchEdge(entity, indicator, right)) {
 					return true;
+				}
+			}
+
+			// Stack.
+			if (grounding.entity() instanceof Stack) {
+				if (indicator == SpatialIndicator.above) {
+					Shape left = (Shape) entity;
+					Stack right = (Stack) grounding.entity();
+					Shape top = right.getTop();
+					if (left.position().equals(top.position().add(0, 0, 1))) {
+						return true;
+					}
 				}
 			}
 		}

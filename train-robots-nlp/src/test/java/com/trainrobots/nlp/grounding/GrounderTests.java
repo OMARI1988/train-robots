@@ -68,11 +68,6 @@ public class GrounderTests {
 	}
 
 	@Test
-	public void shouldGroundBlueStack() {
-		testGrounding(3, "(entity: (color: blue) (type: stack))", 1);
-	}
-
-	@Test
 	public void shouldGroundBlueCubeAboveBoard() {
 		testGrounding(
 				337,
