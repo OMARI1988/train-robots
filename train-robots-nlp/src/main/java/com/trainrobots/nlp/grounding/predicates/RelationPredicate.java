@@ -60,6 +60,42 @@ public class RelationPredicate implements Predicate {
 				continue;
 			}
 
+			// Left.
+			if (indicator == SpatialIndicator.left) {
+				Position left = entity.basePosition();
+				Position right = grounding.entity().basePosition();
+				int dx = left.x - right.x;
+				int dy = left.y - right.y;
+				if (dx == 0 && dy == 1) {
+					return true;
+				}
+				continue;
+			}
+
+			// Right.
+			if (indicator == SpatialIndicator.right) {
+				Position left = entity.basePosition();
+				Position right = grounding.entity().basePosition();
+				int dx = left.x - right.x;
+				int dy = left.y - right.y;
+				if (dx == 0 && dy == -1) {
+					return true;
+				}
+				continue;
+			}
+
+			// Front.
+			if (indicator == SpatialIndicator.front) {
+				Position left = entity.basePosition();
+				Position right = grounding.entity().basePosition();
+				int dx = left.x - right.x;
+				int dy = left.y - right.y;
+				if (dy == 0 && dx == 1) {
+					return true;
+				}
+				continue;
+			}
+
 			// Board.
 			if (grounding.entity() instanceof Board) {
 				if (indicator == SpatialIndicator.above) {

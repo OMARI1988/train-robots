@@ -124,6 +124,15 @@ public class Generator {
 		case adjacent:
 			write("adjacent to");
 			break;
+		case left:
+			write("left of");
+			break;
+		case right:
+			write("right of");
+			break;
+		case front:
+			write("in front of");
+			break;
 		case part:
 			write("that is part of");
 			break;

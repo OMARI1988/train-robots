@@ -33,7 +33,7 @@ public class ProcessorTests {
 	@Test
 	public void shouldProcessCommand() {
 
-		Command command = Corpus.getCommand(6674);
+		Command command = Corpus.getCommand(20893);
 		MoveValidator.validate(command.sceneNumber, command.rcl);
 	}
 
@@ -91,7 +91,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1427, correct);
+		assertEquals(1436, correct);
 		assertEquals(8692, size);
 
 		// Stats.
