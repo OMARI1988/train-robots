@@ -121,6 +121,9 @@ public class Generator {
 		}
 
 		switch (relation.indicator()) {
+		case adjacent:
+			write("adjacent to");
+			break;
 		case part:
 			write("that is part of");
 			break;

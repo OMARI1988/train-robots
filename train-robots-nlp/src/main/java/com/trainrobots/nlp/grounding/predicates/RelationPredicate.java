@@ -24,6 +24,7 @@ import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
+import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -43,6 +44,21 @@ public class RelationPredicate implements Predicate {
 
 		// Match.
 		for (Grounding grounding : groundings) {
+
+			// Adjacent.
+			if (indicator == SpatialIndicator.adjacent) {
+				Position left = entity.basePosition();
+				Position right = grounding.entity().basePosition();
+				int dx = left.x - right.x;
+				int dy = left.y - right.y;
+				if (dx == 0 && (dy == 1 || dy == -1)) {
+					return true;
+				}
+				if (dy == 0 && (dx == 1 || dx == -1)) {
+					return true;
+				}
+				continue;
+			}
 
 			// Board.
 			if (grounding.entity() instanceof Board) {
@@ -72,7 +88,7 @@ public class RelationPredicate implements Predicate {
 				if (indicator == SpatialIndicator.above
 						|| indicator == SpatialIndicator.within) {
 					Corner right = (Corner) grounding.entity();
-					if (entity.basePosition().hasXY(right.basePosition())) {
+					if (entity.basePosition().equals(right.basePosition())) {
 						return true;
 					}
 				}

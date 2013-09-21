@@ -86,4 +86,10 @@ public class GeneratorTests {
 		assertEquals(entity.generate(), "the right");
 	}
 
+	@Test
+	public void shouldGenerateAdjacentRelation() {
+		Entity entity = Entity
+				.fromString("(entity: (type: cube) (spatial-relation: (spatial-indicator: adjacent) (entity: (type: prism))))");
+		assertEquals(entity.generate(), "the cube adjacent to the prism");
+	}
 }
