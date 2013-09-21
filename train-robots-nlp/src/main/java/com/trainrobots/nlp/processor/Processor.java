@@ -321,11 +321,8 @@ public class Processor {
 				}
 			}
 
-			// Match a single shape that supports no others.
-			shape = matchSingleUnsupportingShape(groundings);
-			if (shape != null) {
-				return shape;
-			}
+			// Remove shapes that support others.
+			removeSupportingShapes(groundings);
 
 			// Exclude (e.g. 6652).
 			if (excludePosition != null && groundings.size() == 2) {
@@ -357,22 +354,16 @@ public class Processor {
 		return groundings.get(0).entity();
 	}
 
-	private Shape matchSingleUnsupportingShape(List<Grounding> groundings) {
-		Shape match = null;
-		for (Grounding grounding : groundings) {
-			WorldEntity entity = grounding.entity();
-			if (!(entity instanceof Shape)) {
-				continue;
-			}
-			Shape shape = (Shape) entity;
-			if (world.getShape(shape.position().add(0, 0, 1)) == null) {
-				if (match != null) {
-					return null;
+	private void removeSupportingShapes(List<Grounding> groundings) {
+		for (int i = groundings.size() - 1; i >= 0; i--) {
+			WorldEntity entity = groundings.get(i).entity();
+			if (entity instanceof Shape) {
+				Shape shape = (Shape) entity;
+				if (world.getShape(shape.position().add(0, 0, 1)) != null) {
+					groundings.remove(i);
 				}
-				match = shape;
 			}
 		}
-		return match;
 	}
 
 	private static Position getPosition(WorldEntity entity) {
