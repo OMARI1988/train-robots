@@ -119,16 +119,18 @@ public class Generator {
 		if (relation.measure() != null) {
 			generate(relation.measure());
 		}
+		
+		boolean entity = relation.entity() != null;
 
 		switch (relation.indicator()) {
 		case adjacent:
 			write("adjacent to");
 			break;
 		case left:
-			write("left of");
+			write(entity ? "left of" : "left");
 			break;
 		case right:
-			write("right of");
+			write(entity ? "right of" : "right");
 			break;
 		case front:
 			write("in front of");

@@ -93,20 +93,21 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1461, correct);
-		assertEquals(8687, size);
-
-		// Progress.
-		DecimalFormat df = new DecimalFormat("#.##");
-		double p = 100 * correct / (double) size;
-		System.out.println("Corpus: " + correct + " / " + size + " = "
-				+ df.format(p) + " %");
+		assertEquals(1532, correct);
+		assertEquals(8674, size);
 
 		// Gold.
-		size = notGold + correct;
+		DecimalFormat df = new DecimalFormat("#.##");
+		int reviewed = notGold + correct;
 		int gold = correct;
-		p = 100 * gold / (double) size;
-		System.out.println("Gold: " + gold + " / " + size + " = "
+		double p = 100 * gold / (double) reviewed;
+		System.out.println("Gold: " + gold + " / " + reviewed + " = "
 				+ df.format(p) + " %");
+
+		// Progress.
+		int estimatedSize = (int) Math.round(size * 0.01 * p);
+		double p2 = 100 * correct / (double) estimatedSize;
+		System.out.println("Annotated: " + correct + " / " + estimatedSize
+				+ " (estimated) = " + df.format(p2) + " %");
 	}
 }

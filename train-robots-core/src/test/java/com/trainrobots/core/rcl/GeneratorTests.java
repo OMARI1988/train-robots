@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.trainrobots.core.corpus.Corpus;
+
 public class GeneratorTests {
 
 	@Test
@@ -91,5 +93,11 @@ public class GeneratorTests {
 		Entity entity = Entity
 				.fromString("(entity: (type: cube) (spatial-relation: (spatial-indicator: adjacent) (entity: (type: prism))))");
 		assertEquals(entity.generate(), "the cube adjacent to the prism");
+	}
+
+	@Test
+	public void shouldGenerateLeftRelation() {
+		Rcl rcl = Corpus.getCommand(7517).rcl;
+		assertEquals(rcl.generate(), "move the blue cube two tiles left");
 	}
 }
