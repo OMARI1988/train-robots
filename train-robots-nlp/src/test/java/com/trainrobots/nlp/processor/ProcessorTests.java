@@ -47,11 +47,6 @@ public class ProcessorTests {
 		int notGold = 0;
 		for (Command command : Corpus.getCommands()) {
 
-			// TODO: FIX!!
-			if (command.id == 17208) {
-				continue;
-			}
-
 			// RCL but not accurate?
 			if (command.rcl != null && command.mark != MarkType.Accurate) {
 				System.out
@@ -66,6 +61,12 @@ public class ProcessorTests {
 						.println("C"
 								+ command.id
 								+ ": Command marked as accurate but RCL was not specified.");
+			}
+
+			// Enhacement mismatch.
+			if (command.enhancement != 0 && command.mark != MarkType.Unmarked) {
+				System.out.println("C" + command.id
+						+ ": Marked command with enhancement.");
 			}
 
 			// Command.
@@ -98,7 +99,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1660, correct);
+		assertEquals(1663, correct);
 		assertEquals(8644, size);
 
 		// Gold.

@@ -28,6 +28,7 @@ public class CommandNode extends TreeNode {
 
 	private final WindowService windowService;
 	private final Command command;
+	private static final Color DARK_ORANGE = new Color(255, 69, 0);
 
 	public CommandNode(WindowService windowService, Command command) {
 		super("C" + command.id, true);
@@ -49,7 +50,7 @@ public class CommandNode extends TreeNode {
 		if (command.mark == MarkType.Accurate) {
 			setColor(new Color(0, 200, 0));
 		} else if (command.mark == MarkType.Unmarked) {
-			setColor(Color.BLACK);
+			setColor(command.enhancement == 0 ? Color.BLACK : DARK_ORANGE);
 		} else {
 			setColor(Color.GRAY);
 		}

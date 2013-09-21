@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Enhancement;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
@@ -50,6 +51,7 @@ public class CorpusView extends JPanel {
 	private final JLabel commandLabel = new JLabel();
 	private final JLabel infoLabel = new JLabel();
 	private final JComboBox markList;
+	private final JComboBox enhancementList;
 	private final EditorView editor = new EditorView();
 	private final GraphicsPanel beforePanel;
 	private final GraphicsPanel afterPanel;
@@ -92,7 +94,7 @@ public class CorpusView extends JPanel {
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 10));
 		add(infoLabel);
 
-		// List.
+		// Marks.
 		markList = new JComboBox(new String[] { "Unmarked",
 				"Inappropriate words or spam", "Invalid spelling or grammar",
 				"Before and after images confused",
@@ -111,12 +113,38 @@ public class CorpusView extends JPanel {
 				}
 			}
 		});
-		JPanel wrapperPanel = new JPanel();
-		wrapperPanel.setMaximumSize(new Dimension(240, 28));
-		wrapperPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		wrapperPanel.add(markList);
-		wrapperPanel.setBackground(Color.BLACK);
-		add(wrapperPanel);
+		{
+			JPanel wrapperPanel = new JPanel();
+			wrapperPanel.setMaximumSize(new Dimension(240, 28));
+			wrapperPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			wrapperPanel.add(markList);
+			wrapperPanel.setBackground(Color.BLACK);
+			add(wrapperPanel);
+		}
+
+		// Enhancements.
+		enhancementList = new JComboBox(Enhancement.getDesriptions());
+		enhancementList.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if (command != null) {
+						command.enhancement = enhancementList
+								.getSelectedIndex();
+						syncTreeNode();
+						setInfoText();
+					}
+				}
+			}
+		});
+		{
+			JPanel wrapperPanel = new JPanel();
+			wrapperPanel.setMaximumSize(new Dimension(240, 28));
+			wrapperPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			wrapperPanel.add(enhancementList);
+			wrapperPanel.setBackground(Color.BLACK);
+			add(wrapperPanel);
+		}
 
 		// Editor.
 		JScrollPane scrollPane = new JScrollPane(editor);
@@ -145,6 +173,7 @@ public class CorpusView extends JPanel {
 		}
 		validateCommand();
 		command.mark = MarkType.getMark(markList.getSelectedIndex());
+		command.enhancement = enhancementList.getSelectedIndex();
 	}
 
 	public void select(Command command) {
@@ -170,6 +199,9 @@ public class CorpusView extends JPanel {
 
 		// Mark.
 		markList.setSelectedIndex(command.mark.getValue());
+
+		// Enhancement.
+		enhancementList.setSelectedIndex(command.enhancement);
 
 		// Before.
 		beforePanel.getRobotControl().loadConfiguration(

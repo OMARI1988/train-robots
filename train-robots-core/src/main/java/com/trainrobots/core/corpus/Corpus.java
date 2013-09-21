@@ -31,6 +31,7 @@ public class Corpus {
 
 	private static final String COMMAND_FILE = "../data/commands.txt";
 	private static final String ANNOTATION_FILE = "../data/annotation.txt";
+	private static final String ENHANCEMENTS_FILE = "../data/enhancements.txt";
 
 	private static List<Command> commands;
 	private static Map<Integer, List<Command>> commandsByScene = new HashMap<Integer, List<Command>>();
@@ -52,7 +53,11 @@ public class Corpus {
 	}
 
 	public static void saveAnnotation() {
+
+		// Verify.
 		loadCommands();
+
+		// Annotations.
 		FileWriter writer = new FileWriter(ANNOTATION_FILE);
 		for (Command command : commands) {
 			if (command.mark != MarkType.Unmarked) {
@@ -61,6 +66,15 @@ public class Corpus {
 			}
 			if (command.rcl != null) {
 				writer.writeLine(command.id + "\trcl\t" + command.rcl);
+			}
+		}
+		writer.close();
+
+		// Enhancements.
+		writer = new FileWriter(ENHANCEMENTS_FILE);
+		for (Command command : commands) {
+			if (command.enhancement != 0) {
+				writer.writeLine(command.id + "\t" + command.enhancement);
 			}
 		}
 		writer.close();
@@ -99,6 +113,18 @@ public class Corpus {
 			} else if (items[1].equals("rcl")) {
 				command.rcl = Rcl.fromString(items[2]);
 			}
+		}
+		reader.close();
+
+		// Enhancements.
+		reader = new FileReader(ENHANCEMENTS_FILE);
+		while ((line = reader.readLine()) != null) {
+			String[] items = line.split("\t");
+			Command command = commandsById.get(Integer.parseInt(items[0]));
+			if (command == null) {
+				throw new CoreException("Failed to find command ID " + items[0]);
+			}
+			command.enhancement = Integer.parseInt(items[1]);
 		}
 		reader.close();
 	}

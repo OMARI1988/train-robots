@@ -17,14 +17,21 @@
 
 package com.trainrobots.core.corpus;
 
-import com.trainrobots.core.rcl.Rcl;
+public class Enhancement {
 
-public class Command {
+	private Enhancement() {
+	}
 
-	public int id;
-	public int sceneNumber;
-	public String text;
-	public Rcl rcl;
-	public MarkType mark;
-	public int enhancement;
+	private static String[] descriptions = { "No enhancement", "row/column",
+			"lowest/highest/tallest/shortest", "near",
+			"supplemantary cardinality", "complex measure", "between", "other",
+			"complex stack description", "implict proximity", "opposite",
+			"edge", "furthest", "exclude surface layer", "stack availability",
+			"free/exposed/available", "only/unique", "multiple destinations",
+			"existence (there is...)", "complex block group",
+			"adjectives/compound noun phrase" };
+
+	public static String[] getDesriptions() {
+		return descriptions;
+	}
 }
