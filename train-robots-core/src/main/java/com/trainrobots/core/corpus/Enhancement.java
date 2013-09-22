@@ -22,19 +22,20 @@ public class Enhancement {
 	private Enhancement() {
 	}
 
-	private static String[] descriptions = { "No enhancement", "row/column",
+	private static String[] descriptions = { "row/column/line",
 			"lowest/highest/tallest/shortest", "near",
 			"supplemantary cardinality", "complex measure", "between", "other",
 			"complex stack description", "implict proximity", "opposite",
-			"edge", "furthest", "exclude surface layer", "stack availability",
-			"free/exposed/available", "only/unique", "multiple destinations",
-			"existence (there is...)", "complex block group",
-			"adjectives/compound noun phrase", "ellipsis", "hold (in air)",
-			"current position", "drop anaphor", "post description (so that)",
-			"center of the board", "negation", "multiple relations",
-			"complex anaphor (that block)" };
+			"edge", "furthest", "exclude surface layer",
+			"stack/shape availability", "free/exposed/available",
+			"only/unique", "multiple destinations", "existence (there is...)",
+			"complex block group", "adjectives/compound noun phrase",
+			"ellipsis", "hold (in air)", "current position", "drop anaphor",
+			"post description (so that)", "center of the board", "negation",
+			"multiple relations", "complex anaphor (that block)",
+			"generic use of shape/object", "gripper movement" };
 
-	public static String[] getDesriptions() {
+	public static String[] getDescriptions() {
 		return descriptions;
 	}
 }

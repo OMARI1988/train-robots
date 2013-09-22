@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.corpus.Enhancement;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
@@ -95,7 +94,7 @@ public class CorpusView extends JPanel {
 		add(infoLabel);
 
 		// Marks.
-		markList = new JComboBox(new String[] { "Unmarked",
+		markList = new JComboBox(new String[] { "Not annotated",
 				"Inappropriate words or spam", "Invalid spelling or grammar",
 				"Before and after images confused",
 				"Incorrect or bad directions", "Not specific enough",
@@ -123,14 +122,14 @@ public class CorpusView extends JPanel {
 		}
 
 		// Enhancements.
-		enhancementList = new JComboBox(Enhancement.getDesriptions());
+		enhancementList = new JComboBox(EnhancementMap.getDescriptions());
 		enhancementList.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if (command != null) {
-						command.enhancement = enhancementList
-								.getSelectedIndex();
+						command.enhancement = EnhancementMap
+								.getId(enhancementList.getSelectedIndex());
 						syncTreeNode();
 						setInfoText();
 					}
@@ -173,7 +172,8 @@ public class CorpusView extends JPanel {
 		}
 		validateCommand();
 		command.mark = MarkType.getMark(markList.getSelectedIndex());
-		command.enhancement = enhancementList.getSelectedIndex();
+		command.enhancement = EnhancementMap.getId(enhancementList
+				.getSelectedIndex());
 	}
 
 	public void select(Command command) {
@@ -201,7 +201,8 @@ public class CorpusView extends JPanel {
 		markList.setSelectedIndex(command.mark.getValue());
 
 		// Enhancement.
-		enhancementList.setSelectedIndex(command.enhancement);
+		enhancementList.setSelectedIndex(EnhancementMap
+				.getDescriptionIndex(command.enhancement));
 
 		// Before.
 		beforePanel.getRobotControl().loadConfiguration(

@@ -148,6 +148,9 @@ public class Generator {
 		case adjacent:
 			write("adjacent to");
 			break;
+		case nearest:
+			write("nearest to");
+			break;
 		case left:
 			write(entity ? "left of" : "left");
 			break;
