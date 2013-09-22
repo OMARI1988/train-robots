@@ -31,7 +31,8 @@ public class Enhancement {
 			"existence (there is...)", "complex block group",
 			"adjectives/compound noun phrase", "ellipsis", "hold (in air)",
 			"current position", "drop anaphor", "post description (so that)",
-			"center of the board", "negation", "multiple relations" };
+			"center of the board", "negation", "multiple relations",
+			"complex anaphor (that block)" };
 
 	public static String[] getDesriptions() {
 		return descriptions;
