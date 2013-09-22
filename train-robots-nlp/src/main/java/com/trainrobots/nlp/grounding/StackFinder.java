@@ -55,7 +55,7 @@ public class StackFinder {
 		stack.add(base);
 		int x = base.position().x;
 		int y = base.position().y;
-		for (int z = 1; z < 7; z++) {
+		for (int z = 1; z <= 8; z++) {
 
 			// Empty?
 			Shape shape = world.getShape(new Position(x, y, z));

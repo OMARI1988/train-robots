@@ -58,6 +58,10 @@ public class Stack implements WorldEntity {
 		StringBuilder text = new StringBuilder();
 		text.append(includesHead ? "stack " : "headless-stack ");
 		text.append(shapes.get(0).position());
+		for (Color color : colors) {
+			text.append(' ');
+			text.append(color);
+		}
 		return text.toString();
 	}
 
