@@ -19,6 +19,14 @@ package com.trainrobots.core.corpus;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -62,5 +70,49 @@ public class CorpusTests {
 		}
 		writer.close();
 		System.out.println("Wrote: " + count + " commands");
+	}
+
+	@Test
+	@Ignore
+	public void shouldSummarizeEnhancements() {
+
+		class Item {
+			String description;
+			int count;
+		}
+
+		int count = 0;
+		Map<Integer, Item> map = new HashMap<Integer, Item>();
+		for (Command command : Corpus.getCommands()) {
+			int key = command.enhancement;
+			if (key == 0) {
+				continue;
+			}
+			Item item = map.get(key);
+			if (item == null) {
+				item = new Item();
+				item.description = Enhancement.getDescriptions()[key - 1];
+				map.put(key, item);
+			}
+			item.count++;
+			count++;
+		}
+
+		List<Item> items = new ArrayList<Item>(map.values());
+		Collections.sort(items, new Comparator<Item>() {
+			public int compare(Item a, Item b) {
+				if (a.count == b.count) {
+					return 0;
+				}
+				return a.count > b.count ? -1 : 1;
+			}
+		});
+
+		DecimalFormat df = new DecimalFormat("#.##");
+		for (Item item : items) {
+			double p = 100 * item.count / (double) count;
+			System.out.println(item.count + " (" + df.format(p) + " %) "
+					+ item.description);
+		}
 	}
 }

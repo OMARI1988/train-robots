@@ -33,7 +33,7 @@ public class Enhancement {
 			"ellipsis", "hold (in air)", "current position", "drop anaphor",
 			"post description (so that)", "center of the board", "negation",
 			"multiple relations", "complex anaphor (that block)",
-			"generic use of shape/object", "gripper movement" };
+			"generic use of shape/object", "gripper movement", "diagonal" };
 
 	public static String[] getDescriptions() {
 		return descriptions;
