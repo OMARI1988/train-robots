@@ -114,6 +114,7 @@ public class Event extends Rcl {
 	public String generate() {
 		Generator generator = new Generator();
 		generator.generate(this);
+		generator.end();
 		return generator.toString();
 	}
 

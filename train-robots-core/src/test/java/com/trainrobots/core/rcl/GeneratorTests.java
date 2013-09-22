@@ -28,13 +28,13 @@ public class GeneratorTests {
 	@Test
 	public void shouldGenerateEntity1() {
 		Entity entity = new Entity(Type.board);
-		assertEquals(entity.generate(), "the board");
+		assertEquals(entity.generate(), "The board.");
 	}
 
 	@Test
 	public void shouldGenerateEntity2() {
 		Entity entity = new Entity(Color.red, Type.cube);
-		assertEquals(entity.generate(), "the red cube");
+		assertEquals(entity.generate(), "The red cube.");
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class GeneratorTests {
 						SpatialIndicator.above,
 						new Entity(Color.red, Type.cube)));
 		assertEquals(event.generate(),
-				"move the green prism above the red cube");
+				"Move the green prism above the red cube.");
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class GeneratorTests {
 								SpatialIndicator.back, SpatialIndicator.left,
 								Type.corner)));
 		assertEquals(event.generate(),
-				"move the green prism within the back left corner");
+				"Move the green prism within the back left corner.");
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class GeneratorTests {
 						SpatialIndicator.forward)));
 		assertEquals(
 				sequence.generate(),
-				"take the top cube that is part of the blue stack and drop it two tiles forward");
+				"Pick up the top cube that is part of the blue stack and drop it two squares forward.");
 	}
 
 	@Test
@@ -78,54 +78,61 @@ public class GeneratorTests {
 				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: gray) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: green) (type: type-reference) (reference-id: 1))))))");
 
 		assertEquals(sequence.generate(),
-				"take the gray cube and drop it above the green one");
+				"Pick up the gray cube and drop it above the green one.");
 	}
 
 	@Test
 	public void shouldGenerateTypeReferenceGroup() {
 		Rcl rcl = Corpus.getCommand(24480).rcl;
 		assertEquals(rcl.generate(),
-				"take the yellow cube and drop it above the green ones");
+				"Pick up the yellow cube and drop it above the green ones.");
 	}
 
 	@Test
 	public void shouldGenerateRegion() {
 		Entity entity = Entity
 				.fromString("(entity: (spatial-indicator: right) (type: region))");
-		assertEquals(entity.generate(), "the right");
+		assertEquals(entity.generate(), "The right.");
 	}
 
 	@Test
 	public void shouldGenerateAdjacentRelation() {
 		Entity entity = Entity
 				.fromString("(entity: (type: cube) (spatial-relation: (spatial-indicator: adjacent) (entity: (type: prism))))");
-		assertEquals(entity.generate(), "the cube adjacent to the prism");
+		assertEquals(entity.generate(), "The cube adjacent to the prism.");
 	}
 
 	@Test
 	public void shouldGenerateLeftRelation() {
 		Rcl rcl = Corpus.getCommand(7517).rcl;
-		assertEquals(rcl.generate(), "move the blue cube two tiles left");
+		assertEquals(rcl.generate(), "Move the blue cube two squares left.");
 	}
 
 	@Test
 	public void shouldGenerateColorList1() {
 		Entity entity = Entity
 				.fromString("(entity: (color: red) (color: green) (type: stack))");
-		assertEquals(entity.generate(), "the red and green stack");
+		assertEquals(entity.generate(), "The red and green stack.");
 	}
 
 	@Test
 	public void shouldGenerateColorList2() {
 		Entity entity = Entity
 				.fromString("(entity: (color: red) (color: green) (color: blue) (type: stack))");
-		assertEquals(entity.generate(), "the red, green and blue stack");
+		assertEquals(entity.generate(), "The red, green and blue stack.");
 	}
 
 	@Test
 	public void shouldGenerateCubeGroup() {
 		Rcl rcl = Corpus.getCommand(3548).rcl;
 		assertEquals(rcl.generate(),
-				"move the yellow prism above the green and red cubes");
+				"Move the yellow prism above the green and red cubes.");
+	}
+
+	@Test
+	public void shouldGenerateMeasure() {
+		Rcl rcl = Corpus.getCommand(21001).rcl;
+		assertEquals(rcl.generate(),
+				"Move the individual yellow prism three squares in front of the gray prism.");
 	}
 }

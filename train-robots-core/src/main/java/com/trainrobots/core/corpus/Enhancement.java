@@ -30,7 +30,8 @@ public class Enhancement {
 			"free/exposed/available", "only/unique", "multiple destinations",
 			"existence (there is...)", "complex block group",
 			"adjectives/compound noun phrase", "ellipsis", "hold (in air)",
-			"current position", "drop anaphor" };
+			"current position", "drop anaphor", "post description (so that)",
+			"center of the board", "negation", "multiple relations" };
 
 	public static String[] getDesriptions() {
 		return descriptions;

@@ -20,6 +20,7 @@ package com.trainrobots.core.rcl.generation;
 import java.util.List;
 import java.util.Set;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Entity;
@@ -32,10 +33,22 @@ import com.trainrobots.core.rcl.Type;
 public class Generator {
 
 	private final StringBuilder text = new StringBuilder();
+	private boolean end;
 
 	@Override
 	public String toString() {
+		if (!end) {
+			throw new CoreException("Not completed.");
+		}
 		return text.toString();
+	}
+
+	public void end() {
+		if (end) {
+			throw new CoreException("Already completed.");
+		}
+		text.append('.');
+		end = true;
 	}
 
 	public void generate(Sequence sequence) {
@@ -147,6 +160,9 @@ public class Generator {
 		case part:
 			write("that is part of");
 			break;
+		case forward:
+			write(entity ? "in front of" : "forward");
+			break;
 		default:
 			write(relation.indicator());
 			break;
@@ -167,7 +183,11 @@ public class Generator {
 	}
 
 	private void write(Action action) {
-		write(action.toString());
+		if (action == Action.take) {
+			write("pick up");
+		} else {
+			write(action.toString());
+		}
 	}
 
 	private void writeColors(Set<Color> colors) {
@@ -192,7 +212,11 @@ public class Generator {
 	}
 
 	private void write(Type type, boolean plural) {
-		write(type.toString());
+		if (type == Type.tile) {
+			write("square");
+		} else {
+			write(type.toString());
+		}
 		if (plural) {
 			text.append('s');
 		}
@@ -238,7 +262,16 @@ public class Generator {
 	}
 
 	private void write(String text) {
+
+		// First word?
 		int size = this.text.length();
+		if (size == 0) {
+			this.text.append(Character.toUpperCase(text.charAt(0)));
+			this.text.append(text.substring(1));
+			return;
+		}
+
+		// Write.
 		if (size > 0 && this.text.charAt(size - 1) != ' ') {
 			this.text.append(' ');
 		}
