@@ -17,25 +17,32 @@
 
 package com.trainrobots.nlp.grounding.predicates;
 
+import java.util.List;
+
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class RegionPredicate implements Predicate {
 
-	private final SpatialIndicator indicator;
+	private final SpatialIndicator relation;
 	private final SpatialIndicator region;
 
-	public RegionPredicate(SpatialIndicator indicator, SpatialIndicator region) {
-		this.indicator = indicator;
-		this.region = region;
+	public RegionPredicate(SpatialIndicator relation,
+			List<SpatialIndicator> regions) {
+		this.relation = relation;
+		if (regions.size() != 1) {
+			throw new CoreException("Incorrectly specified region.");
+		}
+		this.region = regions.get(0);
 	}
 
 	@Override
 	public boolean match(WorldEntity entity) {
 
 		// Within center.
-		if (indicator == SpatialIndicator.within
+		if (relation == SpatialIndicator.within
 				&& region == SpatialIndicator.center) {
 			Position p = entity.basePosition();
 			if (p.x >= 3 && p.x <= 4 && p.y >= 3 && p.y <= 4) {
@@ -49,6 +56,6 @@ public class RegionPredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(" + region + " region: " + indicator + ")";
+		return "(" + region + " region: " + relation + ")";
 	}
 }

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -113,6 +114,18 @@ public class CorpusTests {
 			double p = 100 * item.count / (double) count;
 			System.out.println(item.count + " (" + df.format(p) + " %) "
 					+ item.description);
+		}
+	}
+
+	@Test
+	@Ignore
+	public void shouldListEnhancements() {
+		final int id = Arrays.asList(Enhancement.getDescriptions()).indexOf(
+				"supplemantary cardinality") + 1;
+		for (Command command : Corpus.getCommands()) {
+			if (command.enhancement == id) {
+				System.out.println("C" + command.id + ": " + command.text);
+			}
 		}
 	}
 }

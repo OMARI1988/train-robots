@@ -129,8 +129,11 @@ public class Generator {
 	public void generate(Event event) {
 		write(event.action());
 		generate(event.entity());
-		if (event.destinations() != null) {
-			for (SpatialRelation destination : event.destinations()) {
+
+		List<SpatialRelation> destinations = event.destinations();
+		if (destinations != null) {
+			for (int i = 0; i < destinations.size(); i++) {
+				SpatialRelation destination = destinations.get(i);
 				generate(destination);
 			}
 		}

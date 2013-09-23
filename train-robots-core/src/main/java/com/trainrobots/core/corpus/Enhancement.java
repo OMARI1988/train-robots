@@ -24,7 +24,7 @@ public class Enhancement {
 
 	private static String[] descriptions = { "row/column/line",
 			"lowest/highest/tallest/shortest", "near",
-			"supplemantary cardinality", "complex measure", "between", "other",
+			"-------------------------", "complex measure", "between", "other",
 			"complex stack description", "implict proximity", "opposite",
 			"edge", "furthest", "exclude surface layer",
 			"stack/shape availability", "free/exposed/available",

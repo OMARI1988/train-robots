@@ -136,7 +136,7 @@ public class Grounder {
 		}
 
 		// Cardinal.
-		if (entity.cardinal() != null) {
+		if (entity.cardinal() != null && entity.cardinal() != 1) {
 			throw new CoreException("Unexpected cardinal: " + entity.cardinal());
 		}
 
@@ -481,8 +481,8 @@ public class Grounder {
 
 		// Region?
 		if (entity.type() == Type.region && entity.indicators() != null
-				&& entity.indicators().size() == 1) {
-			return new RegionPredicate(indicator, entity.indicators().get(0));
+				&& entity.indicators().size() >= 1) {
+			return new RegionPredicate(indicator, entity.indicators());
 		}
 
 		// Groundings.
