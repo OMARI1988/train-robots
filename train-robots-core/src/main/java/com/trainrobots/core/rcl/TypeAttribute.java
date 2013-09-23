@@ -19,6 +19,7 @@ package com.trainrobots.core.rcl;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class TypeAttribute extends Rcl {
 
@@ -26,6 +27,12 @@ public class TypeAttribute extends Rcl {
 
 	public TypeAttribute(Type type) {
 		this.type = type;
+	}
+
+	public TypeAttribute(Type type, int tokenStart, int tokenEnd) {
+		this.type = type;
+		this.tokenStart = tokenStart;
+		this.tokenEnd = tokenEnd;
 	}
 
 	public static TypeAttribute fromString(String text) {
@@ -38,17 +45,21 @@ public class TypeAttribute extends Rcl {
 			throw new CoreException("Expected 'type:' not '" + node.tag + "'.");
 		}
 
-		Type type = Type.parse(node.getValue());
-		return new TypeAttribute(type);
+		Type type = Type.parse(node.getSingleLeaf());
+		int[] tokens = getTokens(node);
+		return tokens != null ? new TypeAttribute(type, tokens[0], tokens[1])
+				: new TypeAttribute(type);
 	}
 
 	@Override
 	public Node toNode() {
-		return new Node("type:", type.toString());
+		Node node = new Node("type:", type.toString());
+		addAlignment(node);
+		return node;
 	}
 
 	@Override
-	public String generate() {
+	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
 	}
 

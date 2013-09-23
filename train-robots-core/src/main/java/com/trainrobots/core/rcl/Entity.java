@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 import com.trainrobots.core.rcl.generation.Generator;
 
 public class Entity extends Rcl {
@@ -32,7 +33,7 @@ public class Entity extends Rcl {
 	private final Integer ordinal;
 	private final Integer cardinal;
 	private final List<ColorAttribute> colorAttributes;
-	private final List<SpatialIndicator> indicators;
+	private final List<IndicatorAttribute> indicatorAttributes;
 	private final List<SpatialRelation> relations;
 
 	public Entity(TypeAttribute typeAttribute) {
@@ -42,7 +43,7 @@ public class Entity extends Rcl {
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colorAttributes = null;
-		this.indicators = null;
+		this.indicatorAttributes = null;
 		this.relations = null;
 	}
 
@@ -53,7 +54,7 @@ public class Entity extends Rcl {
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colorAttributes = null;
-		this.indicators = null;
+		this.indicatorAttributes = null;
 		this.relations = null;
 	}
 
@@ -65,11 +66,11 @@ public class Entity extends Rcl {
 		this.cardinal = null;
 		this.colorAttributes = new ArrayList<ColorAttribute>();
 		this.colorAttributes.add(colorAttribute);
-		this.indicators = null;
+		this.indicatorAttributes = null;
 		this.relations = null;
 	}
 
-	public Entity(int id, SpatialIndicator indicator,
+	public Entity(int id, IndicatorAttribute indicatorAttribute,
 			TypeAttribute typeAttribute, SpatialRelation relation) {
 		this.id = id;
 		this.referenceId = null;
@@ -77,38 +78,39 @@ public class Entity extends Rcl {
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colorAttributes = null;
-		this.indicators = new ArrayList<SpatialIndicator>();
-		this.indicators.add(indicator);
+		this.indicatorAttributes = new ArrayList<IndicatorAttribute>();
+		this.indicatorAttributes.add(indicatorAttribute);
 		this.relations = new ArrayList<SpatialRelation>();
 		this.relations.add(relation);
 	}
 
-	public Entity(SpatialIndicator indicator1, SpatialIndicator indicator2,
-			TypeAttribute typeAttribute) {
+	public Entity(IndicatorAttribute indicatorAttribute1,
+			IndicatorAttribute indicatorAttribute2, TypeAttribute typeAttribute) {
 		this.id = null;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colorAttributes = null;
-		this.indicators = new ArrayList<SpatialIndicator>();
-		this.indicators.add(indicator1);
-		this.indicators.add(indicator2);
+		this.indicatorAttributes = new ArrayList<IndicatorAttribute>();
+		this.indicatorAttributes.add(indicatorAttribute1);
+		this.indicatorAttributes.add(indicatorAttribute2);
 		this.relations = null;
 	}
 
 	public Entity(Integer id, Integer referenceId, TypeAttribute typeAttribute,
 			Integer ordinal, Integer cardinal, boolean multiple,
-			List<ColorAttribute> colorAttribute,
-			List<SpatialIndicator> indicators, List<SpatialRelation> relations) {
+			List<ColorAttribute> colorAttributes,
+			List<IndicatorAttribute> indicatorAttributes,
+			List<SpatialRelation> relations) {
 
 		this.id = id;
 		this.referenceId = referenceId;
 		this.typeAttribute = typeAttribute;
 		this.ordinal = ordinal;
 		this.cardinal = cardinal;
-		this.colorAttributes = colorAttribute;
-		this.indicators = indicators;
+		this.colorAttributes = colorAttributes;
+		this.indicatorAttributes = indicatorAttributes;
 		this.relations = relations;
 	}
 
@@ -141,8 +143,8 @@ public class Entity extends Rcl {
 		return colorAttributes;
 	}
 
-	public List<SpatialIndicator> indicators() {
-		return indicators;
+	public List<IndicatorAttribute> indicatorAttributes() {
+		return indicatorAttributes;
 	}
 
 	public List<SpatialRelation> relations() {
@@ -175,9 +177,9 @@ public class Entity extends Rcl {
 		}
 
 		// Indicators.
-		if (indicators != null) {
-			for (SpatialIndicator indicator : indicators) {
-				node.add("spatial-indicator:", indicator.toString());
+		if (indicatorAttributes != null) {
+			for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
+				node.add(indicatorAttribute.toNode());
 			}
 		}
 
@@ -223,7 +225,7 @@ public class Entity extends Rcl {
 		Integer cardinal = null;
 		boolean multiple = false;
 		List<ColorAttribute> colorAttributes = null;
-		List<SpatialIndicator> indicators = null;
+		List<IndicatorAttribute> indicatorAttributes = null;
 		List<SpatialRelation> relations = null;
 
 		if (node.children != null) {
@@ -235,12 +237,12 @@ public class Entity extends Rcl {
 				}
 
 				if (child.hasTag("spatial-indicator:")) {
-					SpatialIndicator indicator = SpatialIndicator.valueOf(child
-							.getValue());
-					if (indicators == null) {
-						indicators = new ArrayList<SpatialIndicator>();
+					IndicatorAttribute indicatorAttribute = IndicatorAttribute
+							.fromNode(child);
+					if (indicatorAttributes == null) {
+						indicatorAttributes = new ArrayList<IndicatorAttribute>();
 					}
-					indicators.add(indicator);
+					indicatorAttributes.add(indicatorAttribute);
 					continue;
 				}
 
@@ -282,12 +284,12 @@ public class Entity extends Rcl {
 		}
 
 		return new Entity(id, referenceId, typeAttribute, ordinal, cardinal,
-				multiple, colorAttributes, indicators, relations);
+				multiple, colorAttributes, indicatorAttributes, relations);
 	}
 
 	@Override
-	public String generate() {
-		Generator generator = new Generator();
+	public String generate(GenerationContext context) {
+		Generator generator = new Generator(context);
 		generator.generate(this);
 		generator.end();
 		return generator.toString();

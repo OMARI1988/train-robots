@@ -26,6 +26,51 @@ import com.trainrobots.core.nodes.Node;
 public class ConversionTests {
 
 	@Test
+	public void shouldConvertActionAttribute() {
+		testConversion(new ActionAttribute(Action.take), "(action: take)");
+	}
+
+	@Test
+	public void shouldConvertActionAttributeWithAlignment() {
+		testConversion(new ActionAttribute(Action.take, 1, 2),
+				"(action: take (token: 1 2))");
+	}
+
+	@Test
+	public void shouldConvertColorAttribute() {
+		testConversion(new ColorAttribute(Color.cyan), "(color: cyan)");
+	}
+
+	@Test
+	public void shouldConvertColorAttributeWithAlignment() {
+		testConversion(new ColorAttribute(Color.cyan, 7, 7),
+				"(color: cyan (token: 7))");
+	}
+
+	@Test
+	public void shouldConvertTypeAttribute() {
+		testConversion(new TypeAttribute(Type.stack), "(type: stack)");
+	}
+
+	@Test
+	public void shouldConvertTypeAttributeWithAlignment() {
+		testConversion(new TypeAttribute(Type.stack, 4, 6),
+				"(type: stack (token: 4 6))");
+	}
+
+	@Test
+	public void shouldConvertIndicatorAttribute() {
+		testConversion(new IndicatorAttribute(SpatialIndicator.above),
+				"(spatial-indicator: above)");
+	}
+
+	@Test
+	public void shouldConvertIndicatorAttributeWithAlignment() {
+		testConversion(new IndicatorAttribute(SpatialIndicator.above, 12, 12),
+				"(spatial-indicator: above (token: 12))");
+	}
+
+	@Test
 	public void shouldConvertEntity() {
 		testConversion(new Entity(new ColorAttribute(Color.green),
 				new TypeAttribute(Type.prism)),
@@ -57,7 +102,8 @@ public class ConversionTests {
 	public void shouldConvertSequence() {
 		testConversion(
 				new Sequence(new Event(new ActionAttribute(Action.take),
-						new Entity(1, SpatialIndicator.top, new TypeAttribute(
+						new Entity(1, new IndicatorAttribute(
+								SpatialIndicator.top), new TypeAttribute(
 								Type.cube), new SpatialRelation(
 								new IndicatorAttribute(SpatialIndicator.part),
 								new Entity(new ColorAttribute(Color.blue),
@@ -82,10 +128,10 @@ public class ConversionTests {
 
 		// Format.
 		Node expectedNode = Node.fromString(expectedText);
-		assertEquals(expectedRcl.toNode(), expectedNode);
+		assertEquals(expectedNode, expectedRcl.toNode());
 
 		// Parse.
 		Rcl actualRcl = Rcl.fromNode(expectedNode);
-		assertEquals(actualRcl.toNode(), expectedNode);
+		assertEquals(expectedNode, actualRcl.toNode());
 	}
 }

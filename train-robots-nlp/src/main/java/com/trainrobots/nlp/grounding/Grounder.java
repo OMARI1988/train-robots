@@ -148,9 +148,9 @@ public class Grounder {
 		}
 
 		// Indicator/relation combinations.
-		List<SpatialIndicator> indicators = new ArrayList<SpatialIndicator>();
-		if (entity.indicators() != null) {
-			indicators.addAll(entity.indicators());
+		List<IndicatorAttribute> indicatorAttributes = new ArrayList<IndicatorAttribute>();
+		if (entity.indicatorAttributes() != null) {
+			indicatorAttributes.addAll(entity.indicatorAttributes());
 		}
 		List<SpatialRelation> relations = new ArrayList<SpatialRelation>();
 		if (entity.relations() != null) {
@@ -159,7 +159,8 @@ public class Grounder {
 
 		// Indicators.
 		SpatialIndicator postIndicator = null;
-		for (SpatialIndicator indicator : indicators) {
+		for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
+			SpatialIndicator indicator = indicatorAttribute.indicator();
 			if ((type == Type.cube || type == Type.prism || type == Type.stack)
 					&& (indicator == SpatialIndicator.left
 							|| indicator == SpatialIndicator.leftmost
@@ -189,13 +190,15 @@ public class Grounder {
 			SpatialRelation relation = relations.get(0);
 			if (relation.entity() != null
 					&& relation.entity().isType(Type.region)) {
-				if (relation.entity().indicators().size() == 1
-						&& relation.entity().indicators().get(0) == SpatialIndicator.right) {
+				if (relation.entity().indicatorAttributes().size() == 1
+						&& relation.entity().indicatorAttributes().get(0)
+								.indicator() == SpatialIndicator.right) {
 					if (postIndicator != null) {
 						throw new CoreException("Duplicate post indicator in "
 								+ entity);
 					}
-					postIndicator = relation.entity().indicators().get(0);
+					postIndicator = relation.entity().indicatorAttributes()
+							.get(0).indicator();
 					postRelation = true;
 				}
 			}
@@ -387,9 +390,9 @@ public class Grounder {
 	}
 
 	private WorldEntity getRegion(Entity entity) {
-		if (entity.isType(Type.region) && entity.indicators() != null
-				&& entity.indicators().size() == 1) {
-			switch (entity.indicators().get(0)) {
+		if (entity.isType(Type.region) && entity.indicatorAttributes() != null
+				&& entity.indicatorAttributes().size() == 1) {
+			switch (entity.indicatorAttributes().get(0).indicator()) {
 			case front:
 				return Edge.Front;
 			case back:
@@ -483,10 +486,10 @@ public class Grounder {
 		}
 
 		// Region?
-		if (entity.isType(Type.region) && entity.indicators() != null
-				&& entity.indicators().size() >= 1) {
-			return new RegionPredicate(indicatorAttribute.indicator(),
-					entity.indicators());
+		if (entity.isType(Type.region) && entity.indicatorAttributes() != null
+				&& entity.indicatorAttributes().size() >= 1) {
+			return new RegionPredicate(indicatorAttribute,
+					entity.indicatorAttributes());
 		}
 
 		// Groundings.

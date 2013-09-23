@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 import com.trainrobots.core.rcl.generation.Generator;
 
 public class Event extends Rcl {
@@ -112,8 +113,8 @@ public class Event extends Rcl {
 	}
 
 	@Override
-	public String generate() {
-		Generator generator = new Generator();
+	public String generate(GenerationContext context) {
+		Generator generator = new Generator(context);
 		generator.generate(this);
 		generator.end();
 		return generator.toString();

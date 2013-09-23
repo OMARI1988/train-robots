@@ -19,6 +19,7 @@ package com.trainrobots.core.rcl;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class ActionAttribute extends Rcl {
 
@@ -26,6 +27,12 @@ public class ActionAttribute extends Rcl {
 
 	public ActionAttribute(Action action) {
 		this.action = action;
+	}
+
+	public ActionAttribute(Action action, int tokenStart, int tokenEnd) {
+		this.action = action;
+		this.tokenStart = tokenStart;
+		this.tokenEnd = tokenEnd;
 	}
 
 	public static ActionAttribute fromString(String text) {
@@ -39,17 +46,21 @@ public class ActionAttribute extends Rcl {
 					+ "'.");
 		}
 
-		Action action = Action.valueOf(node.getValue());
-		return new ActionAttribute(action);
+		Action action = Action.valueOf(node.getSingleLeaf());
+		int[] tokens = getTokens(node);
+		return tokens != null ? new ActionAttribute(action, tokens[0],
+				tokens[1]) : new ActionAttribute(action);
 	}
 
 	@Override
 	public Node toNode() {
-		return new Node("action:", action.toString());
+		Node node = new Node("action:", action.toString());
+		addAlignment(node);
+		return node;
 	}
 
 	@Override
-	public String generate() {
+	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
 	}
 

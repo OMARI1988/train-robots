@@ -38,6 +38,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.processor.MoveValidator;
+import com.trainrobots.nlp.tokenizer.TokenizedGenerationContext;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.tree.corpus.CorpusTreeView;
@@ -279,9 +280,28 @@ public class CorpusView extends JPanel {
 			return;
 		}
 		try {
-			infoLabel.setText(command.rcl.generate());
+			infoLabel.setText(generateHtml());
 		} catch (Exception exception) {
 			infoLabel.setText(exception.getMessage());
+		}
+	}
+
+	private String generateHtml() {
+		StringBuilder text = new StringBuilder();
+		text.append("<html>");
+		text.append(command.rcl.generate(new TokenizedGenerationContext(
+				command.text)));
+		replace(text, "[", " <span color='gray'>(");
+		replace(text, "]", ")</span>");
+		text.append("</html>");
+		return text.toString();
+	}
+
+	private static void replace(StringBuilder sb, String oldStr, String newStr) {
+		int start = -1;
+		while ((start = sb.indexOf(oldStr)) > -1) {
+			int end = start + oldStr.length();
+			sb.replace(start, end, newStr);
 		}
 	}
 }

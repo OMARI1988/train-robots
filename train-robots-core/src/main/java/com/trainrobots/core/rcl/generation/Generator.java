@@ -22,19 +22,25 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.ActionAttribute;
-import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.IndicatorAttribute;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Sequence;
-import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.core.rcl.TypeAttribute;
 
 public class Generator {
 
+	private final GenerationContext context;
 	private final StringBuilder text = new StringBuilder();
 	private boolean end;
+
+	public Generator(GenerationContext context) {
+		this.context = context;
+	}
 
 	@Override
 	public String toString() {
@@ -68,6 +74,7 @@ public class Generator {
 		// Reference?
 		if (entity.isType(Type.reference)) {
 			write("it");
+			writeAlignment(entity.typeAttribute());
 			return;
 		}
 
@@ -87,9 +94,10 @@ public class Generator {
 		}
 
 		// Indicators.
-		if (entity.indicators() != null) {
-			for (SpatialIndicator indicator : entity.indicators()) {
-				write(indicator);
+		if (entity.indicatorAttributes() != null) {
+			for (IndicatorAttribute indicatorAttribute : entity
+					.indicatorAttributes()) {
+				write(indicatorAttribute);
 			}
 		}
 
@@ -116,7 +124,7 @@ public class Generator {
 		// Type.
 		else {
 			boolean plural = entity.cardinal() != null && entity.cardinal() > 1;
-			write(entity.typeAttribute().type(), plural);
+			write(entity.typeAttribute(), plural);
 		}
 
 		// Relation.
@@ -148,30 +156,38 @@ public class Generator {
 
 		boolean entity = relation.entity() != null;
 
-		switch (relation.indicatorAttribute().indicator()) {
+		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
+		switch (indicatorAttribute.indicator()) {
 		case adjacent:
 			write("adjacent to");
+			writeAlignment(indicatorAttribute);
 			break;
 		case nearest:
 			write("nearest to");
+			writeAlignment(indicatorAttribute);
 			break;
 		case left:
 			write(entity ? "left of" : "left");
+			writeAlignment(indicatorAttribute);
 			break;
 		case right:
 			write(entity ? "right of" : "right");
+			writeAlignment(indicatorAttribute);
 			break;
 		case front:
 			write("in front of");
+			writeAlignment(indicatorAttribute);
 			break;
 		case part:
 			write("that is part of");
+			writeAlignment(indicatorAttribute);
 			break;
 		case forward:
 			write(entity ? "in front of" : "forward");
+			writeAlignment(indicatorAttribute);
 			break;
 		default:
-			write(relation.indicatorAttribute().indicator());
+			write(relation.indicatorAttribute());
 			break;
 		}
 
@@ -181,20 +197,26 @@ public class Generator {
 	}
 
 	private boolean generateRegion(Entity entity) {
-		if (entity.indicators() == null || entity.indicators().size() != 1) {
+		if (entity.indicatorAttributes() == null
+				|| entity.indicatorAttributes().size() != 1) {
 			return false;
 		}
 		write("the ");
-		write(entity.indicators().get(0));
+		write(entity.indicatorAttributes().get(0));
 		return true;
 	}
 
 	private void write(ActionAttribute actionAttribute) {
+
+		// Action.
 		if (actionAttribute.action() == Action.take) {
 			write("pick up");
 		} else {
 			write(actionAttribute.action().toString());
 		}
+
+		// Alignment.
+		writeAlignment(actionAttribute);
 	}
 
 	private void writeColors(List<ColorAttribute> colorAttributes) {
@@ -209,28 +231,43 @@ public class Generator {
 			if (i > 0) {
 				text.append(i == size - 1 ? " and " : ", ");
 			}
-			write(colorAttribute.color());
+			write(colorAttribute);
 			i++;
 		}
 	}
 
-	private void write(Color color) {
-		write(color.toString());
+	private void write(ColorAttribute colorAttribute) {
+
+		// Color.
+		write(colorAttribute.color().toString());
+
+		// Alignment.
+		writeAlignment(colorAttribute);
 	}
 
-	private void write(Type type, boolean plural) {
-		if (type == Type.tile) {
+	private void write(TypeAttribute typeAttribute, boolean plural) {
+
+		// Type.
+		if (typeAttribute.type() == Type.tile) {
 			write("square");
 		} else {
-			write(type.toString());
+			write(typeAttribute.type().toString());
 		}
 		if (plural) {
 			text.append('s');
 		}
+
+		// Alignment.
+		writeAlignment(typeAttribute);
 	}
 
-	private void write(SpatialIndicator indicator) {
-		write(indicator.toString());
+	private void write(IndicatorAttribute indicatorAttribute) {
+
+		// Indicator.
+		write(indicatorAttribute.indicator().toString());
+
+		// Alignment.
+		writeAlignment(indicatorAttribute);
 	}
 
 	private void writeCardinal(int cardinal) {
@@ -283,5 +320,22 @@ public class Generator {
 			this.text.append(' ');
 		}
 		this.text.append(text);
+	}
+
+	private void writeAlignment(Rcl rcl) {
+		if (context == null || rcl.tokenStart() == 0) {
+			return;
+		}
+		text.append('[');
+		boolean first = true;
+		for (int i = rcl.tokenStart(); i <= rcl.tokenEnd(); i++) {
+			if (first) {
+				first = false;
+			} else {
+				text.append(' ');
+			}
+			text.append(context.getToken(i));
+		}
+		text.append(']');
 	}
 }

@@ -19,12 +19,28 @@ package com.trainrobots.core.rcl;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public abstract class Rcl {
 
+	protected int tokenStart;
+	protected int tokenEnd;
+
+	public int tokenStart() {
+		return tokenStart;
+	}
+
+	public int tokenEnd() {
+		return tokenEnd;
+	}
+
 	public abstract Node toNode();
 
-	public abstract String generate();
+	public String generate() {
+		return generate(null);
+	}
+
+	public abstract String generate(GenerationContext context);
 
 	public static Rcl fromString(String text) {
 		return fromNode(Node.fromString(text));
@@ -81,6 +97,46 @@ public abstract class Rcl {
 			return Sequence.fromNode(node);
 		}
 
+		if (node.hasTag("action:")) {
+			return ActionAttribute.fromNode(node);
+		}
+
+		if (node.hasTag("color:")) {
+			return ColorAttribute.fromNode(node);
+		}
+
+		if (node.hasTag("type:")) {
+			return TypeAttribute.fromNode(node);
+		}
+
+		if (node.hasTag("spatial-indicator:")) {
+			return IndicatorAttribute.fromNode(node);
+		}
+
 		throw new CoreException("Unrecognized RCL element '" + node.tag + "'.");
+	}
+
+	protected void addAlignment(Node node) {
+		if (tokenStart == 0) {
+			return;
+		}
+		Node tokenNode = new Node("token:", Integer.toString(tokenStart));
+		if (tokenEnd != tokenStart) {
+			tokenNode.add(Integer.toString(tokenEnd));
+		}
+		node.add(tokenNode);
+	}
+
+	protected static int[] getTokens(Node node) {
+		Node tokenNode = node.getChild("token:");
+		if (tokenNode == null) {
+			return null;
+		}
+		int tokenStart = Integer.parseInt(tokenNode.children.get(0).tag);
+		int tokenEnd = tokenStart;
+		if (tokenNode.children.size() >= 2) {
+			tokenEnd = Integer.parseInt(tokenNode.children.get(1).tag);
+		}
+		return new int[] { tokenStart, tokenEnd };
 	}
 }

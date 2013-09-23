@@ -53,12 +53,6 @@ public class Node {
 				&& children.get(0).isLeaf();
 	}
 
-	public boolean isChain() {
-		return isLeaf()
-				|| (children != null && children.size() == 1 && children.get(0)
-						.isChain());
-	}
-
 	public boolean allChildrenArePreTerminals() {
 		if (isLeaf()) {
 			return false;
@@ -100,6 +94,22 @@ public class Node {
 			}
 		}
 		return false;
+	}
+
+	public String getSingleLeaf() {
+		String leaf = null;
+		for (Node child : children) {
+			if (child.isLeaf()) {
+				if (leaf != null) {
+					throw new CoreException("Node has multiple leaves: " + this);
+				}
+				leaf = child.tag;
+			}
+		}
+		if (leaf == null) {
+			throw new CoreException("Node does not have a leaf: " + this);
+		}
+		return leaf;
 	}
 
 	public Node add(String tag) {
@@ -279,6 +289,22 @@ public class Node {
 			}
 			text.append(')');
 		}
+	}
+
+	private boolean isChain() {
+		if (isLeaf()) {
+			return true;
+		}
+		if (children != null) {
+			if (children.size() == 1 && children.get(0).isChain()) {
+				return true;
+			}
+			if (children.size() == 2 && children.get(0).isLeaf()
+					&& children.get(1).isChain()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void getText(StringBuilder text) {

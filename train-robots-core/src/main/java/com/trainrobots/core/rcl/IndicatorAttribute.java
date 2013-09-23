@@ -19,13 +19,21 @@ package com.trainrobots.core.rcl;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class IndicatorAttribute extends Rcl {
 
 	private final SpatialIndicator indicator;
 
-	public IndicatorAttribute(SpatialIndicator indicator) {
-		this.indicator = indicator;
+	public IndicatorAttribute(SpatialIndicator Indicator) {
+		this.indicator = Indicator;
+	}
+
+	public IndicatorAttribute(SpatialIndicator Indicator, int tokenStart,
+			int tokenEnd) {
+		this.indicator = Indicator;
+		this.tokenStart = tokenStart;
+		this.tokenEnd = tokenEnd;
 	}
 
 	public static IndicatorAttribute fromString(String text) {
@@ -39,17 +47,22 @@ public class IndicatorAttribute extends Rcl {
 					+ node.tag + "'.");
 		}
 
-		SpatialIndicator indicator = SpatialIndicator.valueOf(node.getValue());
-		return new IndicatorAttribute(indicator);
+		SpatialIndicator indicator = SpatialIndicator.valueOf(node
+				.getSingleLeaf());
+		int[] tokens = getTokens(node);
+		return tokens != null ? new IndicatorAttribute(indicator, tokens[0],
+				tokens[1]) : new IndicatorAttribute(indicator);
 	}
 
 	@Override
 	public Node toNode() {
-		return new Node("spatial-indicator:", indicator.toString());
+		Node node = new Node("spatial-indicator:", indicator.toString());
+		addAlignment(node);
+		return node;
 	}
 
 	@Override
-	public String generate() {
+	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
 	}
 

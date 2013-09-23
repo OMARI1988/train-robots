@@ -56,25 +56,29 @@ public class GeneratorTests {
 				new Entity(new ColorAttribute(Color.green), new TypeAttribute(
 						Type.prism)), new SpatialRelation(
 						new IndicatorAttribute(SpatialIndicator.within),
-						new Entity(SpatialIndicator.back,
-								SpatialIndicator.left, new TypeAttribute(
-										Type.corner))));
+						new Entity(
+								new IndicatorAttribute(SpatialIndicator.back),
+								new IndicatorAttribute(SpatialIndicator.left),
+								new TypeAttribute(Type.corner))));
 		assertEquals(event.generate(),
 				"Move the green prism within the back left corner.");
 	}
 
 	@Test
 	public void shouldGenerateSequence() {
-		Sequence sequence = new Sequence(new Event(new ActionAttribute(
-				Action.take), new Entity(1, SpatialIndicator.top,
-				new TypeAttribute(Type.cube), new SpatialRelation(
-						new IndicatorAttribute(SpatialIndicator.part),
-						new Entity(new ColorAttribute(Color.blue),
-								new TypeAttribute(Type.stack))))), new Event(
-				new ActionAttribute(Action.drop), new Entity(new TypeAttribute(
-						Type.reference), 1), new SpatialRelation(
-						Entity.cardinal(2, new TypeAttribute(Type.tile)),
-						new IndicatorAttribute(SpatialIndicator.forward))));
+		Sequence sequence = new Sequence(
+				new Event(new ActionAttribute(Action.take), new Entity(1,
+						new IndicatorAttribute(SpatialIndicator.top),
+						new TypeAttribute(Type.cube), new SpatialRelation(
+								new IndicatorAttribute(SpatialIndicator.part),
+								new Entity(new ColorAttribute(Color.blue),
+										new TypeAttribute(Type.stack))))),
+				new Event(
+						new ActionAttribute(Action.drop),
+						new Entity(new TypeAttribute(Type.reference), 1),
+						new SpatialRelation(
+								Entity.cardinal(2, new TypeAttribute(Type.tile)),
+								new IndicatorAttribute(SpatialIndicator.forward))));
 		assertEquals(
 				sequence.generate(),
 				"Pick up the top cube that is part of the blue stack and drop it two squares forward.");
