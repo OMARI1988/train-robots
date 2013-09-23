@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
+import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
@@ -127,7 +128,7 @@ public class Generator {
 	}
 
 	public void generate(Event event) {
-		write(event.action());
+		write(event.actionAttribute());
 		generate(event.entity());
 
 		List<SpatialRelation> destinations = event.destinations();
@@ -147,7 +148,7 @@ public class Generator {
 
 		boolean entity = relation.entity() != null;
 
-		switch (relation.indicator()) {
+		switch (relation.indicatorAttribute().indicator()) {
 		case adjacent:
 			write("adjacent to");
 			break;
@@ -170,7 +171,7 @@ public class Generator {
 			write(entity ? "in front of" : "forward");
 			break;
 		default:
-			write(relation.indicator());
+			write(relation.indicatorAttribute().indicator());
 			break;
 		}
 
@@ -188,11 +189,11 @@ public class Generator {
 		return true;
 	}
 
-	private void write(Action action) {
-		if (action == Action.take) {
+	private void write(ActionAttribute actionAttribute) {
+		if (actionAttribute.action() == Action.take) {
 			write("pick up");
 		} else {
-			write(action.toString());
+			write(actionAttribute.action().toString());
 		}
 	}
 

@@ -23,6 +23,7 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
@@ -141,7 +142,8 @@ public class Grounder {
 		}
 
 		// Colors.
-		if (entity.colorAttributes() != null && entity.colorAttributes().size() >= 1) {
+		if (entity.colorAttributes() != null
+				&& entity.colorAttributes().size() >= 1) {
 			predicates.add(new ColorPredicate(entity.colorAttributes()));
 		}
 
@@ -267,7 +269,7 @@ public class Grounder {
 		// Nearest?
 		if (relations.size() == 1) {
 			SpatialRelation relation = relations.get(0);
-			if (relation.indicator() == SpatialIndicator.nearest) {
+			if (relation.indicatorAttribute().indicator() == SpatialIndicator.nearest) {
 				filterNearest(root, groundings, relation);
 				return;
 			}
@@ -448,10 +450,10 @@ public class Grounder {
 			SpatialRelation relation) {
 
 		// Indicator.
-		SpatialIndicator indicator = relation.indicator();
-		if (indicator == null) {
+		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
+		if (indicatorAttribute == null) {
 			throw new CoreException(
-					"Spatial relation indicator not specified: " + indicator);
+					"Spatial relation indicator not specified: " + relation);
 		}
 
 		// Measure?
@@ -465,8 +467,9 @@ public class Grounder {
 							"Failed to ground single landmark for measure relation: "
 									+ event.entity());
 				}
-				return new MeasurePredicate(measure, relation.indicator(),
-						landmarks.get(0).entity());
+				return new MeasurePredicate(measure, relation
+						.indicatorAttribute().indicator(), landmarks.get(0)
+						.entity());
 			}
 			throw new CoreException("Failed to create predicate for measure: "
 					+ relation.measure());
@@ -482,7 +485,8 @@ public class Grounder {
 		// Region?
 		if (entity.isType(Type.region) && entity.indicators() != null
 				&& entity.indicators().size() >= 1) {
-			return new RegionPredicate(indicator, entity.indicators());
+			return new RegionPredicate(indicatorAttribute.indicator(),
+					entity.indicators());
 		}
 
 		// Groundings.
@@ -491,6 +495,6 @@ public class Grounder {
 			throw new CoreException(
 					"Entity in spatial relation has no groundings: " + entity);
 		}
-		return new RelationPredicate(indicator, groundings);
+		return new RelationPredicate(indicatorAttribute.indicator(), groundings);
 	}
 }

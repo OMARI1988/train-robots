@@ -35,19 +35,20 @@ public class ConversionTests {
 	@Test
 	public void shouldConvertSpatialRelation() {
 		testConversion(
-				new SpatialRelation(SpatialIndicator.above, new Entity(
-						new ColorAttribute(Color.red), new TypeAttribute(
-								Type.cube))),
+				new SpatialRelation(new IndicatorAttribute(
+						SpatialIndicator.above), new Entity(new ColorAttribute(
+						Color.red), new TypeAttribute(Type.cube))),
 				"(spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube)))");
 	}
 
 	@Test
 	public void shouldConvertEvent() {
 		testConversion(
-				new Event(Action.move, new Entity(new ColorAttribute(
-						Color.green), new TypeAttribute(Type.prism)),
-						new SpatialRelation(SpatialIndicator.above, new Entity(
-								new ColorAttribute(Color.red),
+				new Event(new ActionAttribute(Action.move), new Entity(
+						new ColorAttribute(Color.green), new TypeAttribute(
+								Type.prism)), new SpatialRelation(
+						new IndicatorAttribute(SpatialIndicator.above),
+						new Entity(new ColorAttribute(Color.red),
 								new TypeAttribute(Type.cube)))),
 				"(event: (action: move) (entity: (color: green) (type: prism)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube)))))");
 	}
@@ -55,16 +56,18 @@ public class ConversionTests {
 	@Test
 	public void shouldConvertSequence() {
 		testConversion(
-				new Sequence(new Event(Action.take, new Entity(1,
-						SpatialIndicator.top, new TypeAttribute(Type.cube),
-						new SpatialRelation(SpatialIndicator.part, new Entity(
-								new ColorAttribute(Color.blue),
-								new TypeAttribute(Type.stack))))), new Event(
-						Action.drop, new Entity(new TypeAttribute(
-								Type.reference), 1),
-						new SpatialRelation(Entity.cardinal(2,
-								new TypeAttribute(Type.tile)),
-								SpatialIndicator.forward))),
+				new Sequence(new Event(new ActionAttribute(Action.take),
+						new Entity(1, SpatialIndicator.top, new TypeAttribute(
+								Type.cube), new SpatialRelation(
+								new IndicatorAttribute(SpatialIndicator.part),
+								new Entity(new ColorAttribute(Color.blue),
+										new TypeAttribute(Type.stack))))),
+						new Event(new ActionAttribute(Action.drop), new Entity(
+								new TypeAttribute(Type.reference), 1),
+								new SpatialRelation(Entity.cardinal(2,
+										new TypeAttribute(Type.tile)),
+										new IndicatorAttribute(
+												SpatialIndicator.forward)))),
 				"(sequence: (event: (action: take) (entity: (id: 1) (spatial-indicator: top) (type: cube) (spatial-relation: (spatial-indicator: part) (entity: (color: blue) (type: stack))))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (measure: (entity: (cardinal: 2) (type: tile))) (spatial-indicator: forward)))))");
 	}
 

@@ -22,8 +22,10 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
+import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialIndicator;
@@ -92,7 +94,7 @@ public class Processor {
 
 		// Take.
 		Event event1 = events.get(0);
-		if (event1.action() != Action.take || event1.destinations() == null
+		if (!event1.isAction(Action.take) || event1.destinations() == null
 				|| event1.destinations().size() > 0) {
 			return null;
 		}
@@ -104,7 +106,7 @@ public class Processor {
 
 		// Drop.
 		Event event2 = events.get(1);
-		if (event2.action() != Action.drop) {
+		if (!event2.isAction(Action.drop)) {
 			return null;
 		}
 		Entity entity2 = event2.entity();
@@ -114,30 +116,31 @@ public class Processor {
 		}
 
 		// Translate equivalent move.
-		Event event3 = new Event(Action.move, entity1, event2.destinations());
+		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
+				event2.destinations());
 		return getMove(event3, event3);
 	}
 
 	private Move getMove(Rcl root, Event event) {
 
 		// Drop.
-		if (event.action() == Action.drop) {
+		if (event.isAction(Action.drop)) {
 			return mapDropCommand(root, event);
 		}
 
 		// Take.
-		if (event.action() == Action.take) {
+		if (event.isAction(Action.take)) {
 			return mapTakeCommand(root, event);
 		}
 
 		// Move.
-		if (event.action() == Action.move) {
+		if (event.isAction(Action.move)) {
 			return mapMoveCommand(root, event);
 		}
 
 		// No match.
-		throw new CoreException("Event action '" + event.action()
-				+ "' not recognized.");
+		throw new CoreException("Event action '"
+				+ event.actionAttribute().action() + "' not recognized.");
 	}
 
 	private Move mapDropCommand(Rcl root, Event event) {
@@ -199,8 +202,8 @@ public class Processor {
 	private Position mapSpatialRelation(Rcl root, Position actionPosition,
 			SpatialRelation relation) {
 
-		SpatialIndicator indicator = relation.indicator();
-		if (indicator == null) {
+		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
+		if (indicatorAttribute == null) {
 			throw new CoreException("Indicator not specified.");
 		}
 
@@ -212,30 +215,32 @@ public class Processor {
 
 		// Stack?
 		if (entity.type() == Type.stack) {
-			if (indicator == SpatialIndicator.above) {
+			if (indicatorAttribute.indicator() == SpatialIndicator.above) {
 				Stack stack = (Stack) entity;
 				return stack.getTop().position().add(0, 0, 1);
 			}
-			throw new CoreException("Invalid indicator for stack: " + indicator);
+			throw new CoreException("Invalid indicator for stack: "
+					+ indicatorAttribute);
 		}
 
 		// Corner?
 		if (entity.type() == Type.corner) {
 			Position position = getPosition(entity);
-			if (indicator == SpatialIndicator.within
-					|| indicator == SpatialIndicator.above) {
+			if (indicatorAttribute.indicator() == SpatialIndicator.within
+					|| indicatorAttribute.indicator() == SpatialIndicator.above) {
 				return world.getDropPosition(position.x, position.y);
 			}
 		}
 
 		// Board?
-		if (entity.type() == Type.board && indicator == SpatialIndicator.above) {
+		if (entity.type() == Type.board
+				&& indicatorAttribute.indicator() == SpatialIndicator.above) {
 			return world.getDropPosition(actionPosition.x, actionPosition.y);
 		}
 
 		// Shape.
 		Position p = null;
-		switch (indicator) {
+		switch (indicatorAttribute.indicator()) {
 		case left:
 			p = getPosition(entity).add(0, 1, 0);
 			break;
@@ -251,7 +256,7 @@ public class Processor {
 		if (p != null) {
 			return world.getDropPosition(p.x, p.y);
 		}
-		throw new CoreException("Invalid indicator: " + indicator);
+		throw new CoreException("Invalid indicator: " + indicatorAttribute);
 	}
 
 	private Position mapSpatialRelationWithMeasure(Rcl root, Position position,
@@ -280,9 +285,9 @@ public class Processor {
 		}
 		int cardinal = measure.cardinal();
 
-		SpatialIndicator indicator = relation.indicator();
+		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
 		Position p;
-		switch (indicator) {
+		switch (indicatorAttribute.indicator()) {
 		case left:
 			p = position.add(0, cardinal, 0);
 			break;
@@ -296,7 +301,8 @@ public class Processor {
 			p = position.add(-cardinal, 0, 0);
 			break;
 		default:
-			throw new CoreException("Unsupported indicator type: " + indicator);
+			throw new CoreException("Unsupported indicator type: "
+					+ indicatorAttribute);
 		}
 		return world.getDropPosition(p.x, p.y);
 	}

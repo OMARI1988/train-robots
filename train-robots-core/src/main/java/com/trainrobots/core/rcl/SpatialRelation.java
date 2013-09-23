@@ -24,25 +24,25 @@ import com.trainrobots.core.rcl.generation.Generator;
 public class SpatialRelation extends Rcl {
 
 	private final Entity measure;
-	private final SpatialIndicator indicator;
+	private final IndicatorAttribute indicatorAttribute;
 	private final Entity entity;
 
-	public SpatialRelation(Entity measure, SpatialIndicator indicator) {
+	public SpatialRelation(Entity measure, IndicatorAttribute indicatorAttribute) {
 		this.measure = measure;
-		this.indicator = indicator;
+		this.indicatorAttribute = indicatorAttribute;
 		this.entity = null;
 	}
 
-	public SpatialRelation(Entity measure, SpatialIndicator indicator,
-			Entity entity) {
+	public SpatialRelation(Entity measure,
+			IndicatorAttribute indicatorAttribute, Entity entity) {
 		this.measure = measure;
-		this.indicator = indicator;
+		this.indicatorAttribute = indicatorAttribute;
 		this.entity = entity;
 	}
 
-	public SpatialRelation(SpatialIndicator indicator, Entity entity) {
+	public SpatialRelation(IndicatorAttribute indicatorAttribute, Entity entity) {
 		this.measure = null;
-		this.indicator = indicator;
+		this.indicatorAttribute = indicatorAttribute;
 		this.entity = entity;
 	}
 
@@ -50,8 +50,8 @@ public class SpatialRelation extends Rcl {
 		return measure;
 	}
 
-	public SpatialIndicator indicator() {
-		return indicator;
+	public IndicatorAttribute indicatorAttribute() {
+		return indicatorAttribute;
 	}
 
 	public Entity entity() {
@@ -64,7 +64,7 @@ public class SpatialRelation extends Rcl {
 		if (measure != null) {
 			node.add("measure:", measure.toNode());
 		}
-		node.add("spatial-indicator:", indicator.toString().toLowerCase());
+		node.add(indicatorAttribute.toNode());
 		if (entity != null) {
 			node.add(entity.toNode());
 		}
@@ -79,7 +79,7 @@ public class SpatialRelation extends Rcl {
 		}
 
 		Entity measure = null;
-		SpatialIndicator indicator = null;
+		IndicatorAttribute indicatorAttribute = null;
 		Entity entity = null;
 
 		if (node.children != null) {
@@ -89,7 +89,7 @@ public class SpatialRelation extends Rcl {
 					continue;
 				}
 				if (child.hasTag("spatial-indicator:")) {
-					indicator = SpatialIndicator.valueOf(child.getValue());
+					indicatorAttribute = IndicatorAttribute.fromNode(child);
 					continue;
 				}
 				if (child.hasTag("entity:")) {
@@ -101,7 +101,7 @@ public class SpatialRelation extends Rcl {
 			}
 		}
 
-		return new SpatialRelation(measure, indicator, entity);
+		return new SpatialRelation(measure, indicatorAttribute, entity);
 	}
 
 	@Override

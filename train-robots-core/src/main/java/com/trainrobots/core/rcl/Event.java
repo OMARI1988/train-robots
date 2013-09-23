@@ -26,23 +26,24 @@ import com.trainrobots.core.rcl.generation.Generator;
 
 public class Event extends Rcl {
 
-	private final Action action;
+	private final ActionAttribute actionAttribute;
 	private final Entity entity;
 	private final List<SpatialRelation> destinations;
 
-	public Event(Action action, Entity entity,
+	public Event(ActionAttribute actionAttribute, Entity entity,
 			List<SpatialRelation> destinations) {
-		this.action = action;
+		this.actionAttribute = actionAttribute;
 		this.entity = entity;
 		this.destinations = destinations;
 	}
 
-	public Event(Action action, Entity entity, SpatialRelation... destinations) {
-		this(action, entity, Arrays.asList(destinations));
+	public Event(ActionAttribute actionAttribute, Entity entity,
+			SpatialRelation... destinations) {
+		this(actionAttribute, entity, Arrays.asList(destinations));
 	}
 
-	public Action action() {
-		return action;
+	public ActionAttribute actionAttribute() {
+		return actionAttribute;
 	}
 
 	public Entity entity() {
@@ -56,8 +57,8 @@ public class Event extends Rcl {
 	@Override
 	public Node toNode() {
 		Node node = new Node("event:");
-		if (action != null) {
-			node.add("action:", action.toString().toLowerCase());
+		if (actionAttribute != null) {
+			node.add(actionAttribute.toNode());
 		}
 		if (entity != null) {
 			node.add(entity.toNode());
@@ -80,14 +81,14 @@ public class Event extends Rcl {
 			throw new CoreException("Expected 'event:' not '" + node.tag + "'.");
 		}
 
-		Action action = null;
+		ActionAttribute actionAttribute = null;
 		Entity entity = null;
 		SpatialRelation destination = null;
 
 		if (node.children != null) {
 			for (Node child : node.children) {
 				if (child.hasTag("action:")) {
-					action = Action.valueOf(child.getValue());
+					actionAttribute = ActionAttribute.fromNode(child);
 					continue;
 				}
 				if (child.hasTag("entity:")) {
@@ -105,9 +106,9 @@ public class Event extends Rcl {
 		}
 
 		if (destination == null) {
-			return new Event(action, entity);
+			return new Event(actionAttribute, entity);
 		}
-		return new Event(action, entity, destination);
+		return new Event(actionAttribute, entity, destination);
 	}
 
 	@Override
@@ -128,5 +129,9 @@ public class Event extends Rcl {
 				destination.accept(visitor);
 			}
 		}
+	}
+
+	public boolean isAction(Action action) {
+		return actionAttribute.action() == action;
 	}
 }
