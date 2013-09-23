@@ -108,7 +108,7 @@ public class Processor {
 			return null;
 		}
 		Entity entity2 = event2.entity();
-		if (entity2.type() != Type.reference || entity2.referenceId() == null
+		if (!entity2.isType(Type.reference) || entity2.referenceId() == null
 				|| !entity2.referenceId().equals(id)) {
 			return null;
 		}
@@ -272,7 +272,7 @@ public class Processor {
 		if (measure == null) {
 			throw new CoreException("Measure not specified: " + relation);
 		}
-		if (measure.type() != Type.tile) {
+		if (!measure.isType(Type.tile)) {
 			throw new CoreException("Unsupported measure type: " + relation);
 		}
 		if (measure.cardinal() == null) {

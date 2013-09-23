@@ -27,33 +27,32 @@ public class GeneratorTests {
 
 	@Test
 	public void shouldGenerateEntity1() {
-		Entity entity = new Entity(Type.board);
+		Entity entity = new Entity(new TypeAttribute(Type.board));
 		assertEquals(entity.generate(), "The board.");
 	}
 
 	@Test
 	public void shouldGenerateEntity2() {
-		Entity entity = new Entity(Color.red, Type.cube);
+		Entity entity = new Entity(Color.red, new TypeAttribute(Type.cube));
 		assertEquals(entity.generate(), "The red cube.");
 	}
 
 	@Test
 	public void shouldGenerateEvent1() {
-		Event event = new Event(Action.move,
-				new Entity(Color.green, Type.prism), new SpatialRelation(
-						SpatialIndicator.above,
-						new Entity(Color.red, Type.cube)));
+		Event event = new Event(Action.move, new Entity(Color.green,
+				new TypeAttribute(Type.prism)), new SpatialRelation(
+				SpatialIndicator.above, new Entity(Color.red,
+						new TypeAttribute(Type.cube))));
 		assertEquals(event.generate(),
 				"Move the green prism above the red cube.");
 	}
 
 	@Test
 	public void shouldGenerateEvent2() {
-		Event event = new Event(Action.move,
-				new Entity(Color.green, Type.prism), new SpatialRelation(
-						SpatialIndicator.within, new Entity(
-								SpatialIndicator.back, SpatialIndicator.left,
-								Type.corner)));
+		Event event = new Event(Action.move, new Entity(Color.green,
+				new TypeAttribute(Type.prism)), new SpatialRelation(
+				SpatialIndicator.within, new Entity(SpatialIndicator.back,
+						SpatialIndicator.left, new TypeAttribute(Type.corner))));
 		assertEquals(event.generate(),
 				"Move the green prism within the back left corner.");
 	}
@@ -61,11 +60,12 @@ public class GeneratorTests {
 	@Test
 	public void shouldGenerateSequence() {
 		Sequence sequence = new Sequence(new Event(Action.take, new Entity(1,
-				SpatialIndicator.top, Type.cube, new SpatialRelation(
-						SpatialIndicator.part, new Entity(Color.blue,
-								Type.stack)))), new Event(Action.drop,
-				new Entity(Type.reference, 1),
-				new SpatialRelation(Entity.cardinal(2, Type.tile),
+				SpatialIndicator.top, new TypeAttribute(Type.cube),
+				new SpatialRelation(SpatialIndicator.part, new Entity(
+						Color.blue, new TypeAttribute(Type.stack))))),
+				new Event(Action.drop, new Entity(new TypeAttribute(
+						Type.reference), 1), new SpatialRelation(Entity
+						.cardinal(2, new TypeAttribute(Type.tile)),
 						SpatialIndicator.forward)));
 		assertEquals(
 				sequence.generate(),

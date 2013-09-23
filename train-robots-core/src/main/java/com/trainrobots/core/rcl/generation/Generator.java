@@ -65,13 +65,13 @@ public class Generator {
 	public void generate(Entity entity) {
 
 		// Reference?
-		if (entity.type() == Type.reference) {
+		if (entity.isType(Type.reference)) {
 			write("it");
 			return;
 		}
 
 		// Region?
-		if (entity.type() == Type.region && generateRegion(entity)) {
+		if (entity.isType(Type.region) && generateRegion(entity)) {
 			return;
 		}
 
@@ -98,24 +98,24 @@ public class Generator {
 		}
 
 		// Type reference?
-		if (entity.type() == Type.typeReference) {
+		if (entity.isType(Type.typeReference)) {
 			write("one");
 		}
 
 		// Type reference group?
-		else if (entity.type() == Type.typeReferenceGroup) {
+		else if (entity.isType(Type.typeReferenceGroup)) {
 			write("ones");
 		}
 
 		// Cube group?
-		else if (entity.type() == Type.cubeGroup) {
+		else if (entity.isType(Type.cubeGroup)) {
 			write("cubes");
 		}
 
 		// Type.
 		else {
 			boolean plural = entity.cardinal() != null && entity.cardinal() > 1;
-			write(entity.type(), plural);
+			write(entity.typeAttribute().type(), plural);
 		}
 
 		// Relation.

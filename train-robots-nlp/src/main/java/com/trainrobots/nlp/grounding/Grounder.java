@@ -96,7 +96,7 @@ public class Grounder {
 		PredicateList predicates = new PredicateList();
 
 		// Type reference?
-		Type type = entity.type();
+		Type type = entity.typeAttribute().type();
 		if (type == null) {
 			throw new CoreException("Entity type not specified: " + entity);
 		}
@@ -110,9 +110,9 @@ public class Grounder {
 						+ entity);
 			}
 			if (type == Type.typeReferenceGroup) {
-				type = makeGroup(antecedent.type());
+				type = makeGroup(antecedent.typeAttribute().type());
 			} else {
-				type = antecedent.type();
+				type = antecedent.typeAttribute().type();
 			}
 		}
 
@@ -186,7 +186,7 @@ public class Grounder {
 		if (relations.size() == 1) {
 			SpatialRelation relation = relations.get(0);
 			if (relation.entity() != null
-					&& relation.entity().type() == Type.region) {
+					&& relation.entity().isType(Type.region)) {
 				if (relation.entity().indicators().size() == 1
 						&& relation.entity().indicators().get(0) == SpatialIndicator.right) {
 					if (postIndicator != null) {
@@ -300,7 +300,7 @@ public class Grounder {
 		}
 
 		List<Grounding> landmarks;
-		if (entity.type() == Type.region) {
+		if (entity.isType(Type.region)) {
 			landmarks = new ArrayList<Grounding>();
 			landmarks.add(new Grounding(getRegion(entity)));
 		} else {
@@ -385,7 +385,7 @@ public class Grounder {
 	}
 
 	private WorldEntity getRegion(Entity entity) {
-		if (entity.type() == Type.region && entity.indicators() != null
+		if (entity.isType(Type.region) && entity.indicators() != null
 				&& entity.indicators().size() == 1) {
 			switch (entity.indicators().get(0)) {
 			case front:
@@ -480,7 +480,7 @@ public class Grounder {
 		}
 
 		// Region?
-		if (entity.type() == Type.region && entity.indicators() != null
+		if (entity.isType(Type.region) && entity.indicators() != null
 				&& entity.indicators().size() >= 1) {
 			return new RegionPredicate(indicator, entity.indicators());
 		}

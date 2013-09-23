@@ -30,17 +30,17 @@ public class Entity extends Rcl {
 
 	private final Integer id;
 	private final Integer referenceId;
-	private final Type type;
+	private final TypeAttribute typeAttribute;
 	private final Integer ordinal;
 	private final Integer cardinal;
 	private final Set<Color> colors;
 	private final List<SpatialIndicator> indicators;
 	private final List<SpatialRelation> relations;
 
-	public Entity(Type type) {
+	public Entity(TypeAttribute typeAttribute) {
 		this.id = null;
 		this.referenceId = null;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colors = null;
@@ -48,10 +48,10 @@ public class Entity extends Rcl {
 		this.relations = null;
 	}
 
-	public Entity(Type type, int referenceId) {
+	public Entity(TypeAttribute typeAttribute, int referenceId) {
 		this.id = null;
 		this.referenceId = referenceId;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colors = null;
@@ -59,10 +59,10 @@ public class Entity extends Rcl {
 		this.relations = null;
 	}
 
-	public Entity(Color color, Type type) {
+	public Entity(Color color, TypeAttribute typeAttribute) {
 		this.id = null;
 		this.referenceId = null;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colors = new LinkedHashSet<Color>();
@@ -71,11 +71,11 @@ public class Entity extends Rcl {
 		this.relations = null;
 	}
 
-	public Entity(int id, SpatialIndicator indicator, Type type,
-			SpatialRelation relation) {
+	public Entity(int id, SpatialIndicator indicator,
+			TypeAttribute typeAttribute, SpatialRelation relation) {
 		this.id = id;
 		this.referenceId = null;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colors = null;
@@ -86,10 +86,10 @@ public class Entity extends Rcl {
 	}
 
 	public Entity(SpatialIndicator indicator1, SpatialIndicator indicator2,
-			Type type) {
+			TypeAttribute typeAttribute) {
 		this.id = null;
 		this.referenceId = null;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
 		this.colors = null;
@@ -99,13 +99,14 @@ public class Entity extends Rcl {
 		this.relations = null;
 	}
 
-	public Entity(Integer id, Integer referenceId, Type type, Integer ordinal,
-			Integer cardinal, boolean multiple, Set<Color> colors,
-			List<SpatialIndicator> indicators, List<SpatialRelation> relations) {
+	public Entity(Integer id, Integer referenceId, TypeAttribute typeAttribute,
+			Integer ordinal, Integer cardinal, boolean multiple,
+			Set<Color> colors, List<SpatialIndicator> indicators,
+			List<SpatialRelation> relations) {
 
 		this.id = id;
 		this.referenceId = referenceId;
-		this.type = type;
+		this.typeAttribute = typeAttribute;
 		this.ordinal = ordinal;
 		this.cardinal = cardinal;
 		this.colors = colors;
@@ -113,7 +114,7 @@ public class Entity extends Rcl {
 		this.relations = relations;
 	}
 
-	public static Entity cardinal(int cardinal, Type type) {
+	public static Entity cardinal(int cardinal, TypeAttribute type) {
 		return new Entity(null, null, type, null, cardinal, false, null, null,
 				null);
 	}
@@ -126,8 +127,8 @@ public class Entity extends Rcl {
 		return referenceId;
 	}
 
-	public Type type() {
-		return type;
+	public TypeAttribute typeAttribute() {
+		return typeAttribute;
 	}
 
 	public Integer ordinal() {
@@ -190,8 +191,8 @@ public class Entity extends Rcl {
 		}
 
 		// Type.
-		if (type != null) {
-			node.add("type:", type.toString());
+		if (typeAttribute != null) {
+			node.add(typeAttribute.toNode());
 		}
 
 		// Reference.
@@ -219,7 +220,7 @@ public class Entity extends Rcl {
 
 		Integer id = null;
 		Integer referenceId = null;
-		Type type = null;
+		TypeAttribute typeAttribute = null;
 		Integer ordinal = null;
 		Integer cardinal = null;
 		boolean multiple = false;
@@ -260,7 +261,7 @@ public class Entity extends Rcl {
 				}
 
 				if (child.hasTag("type:")) {
-					type = Type.parse(child.getValue());
+					typeAttribute = TypeAttribute.fromNode(child);
 					continue;
 				}
 
@@ -283,8 +284,8 @@ public class Entity extends Rcl {
 			}
 		}
 
-		return new Entity(id, referenceId, type, ordinal, cardinal, multiple,
-				colors, indicators, relations);
+		return new Entity(id, referenceId, typeAttribute, ordinal, cardinal,
+				multiple, colors, indicators, relations);
 	}
 
 	@Override
@@ -303,5 +304,9 @@ public class Entity extends Rcl {
 				relation.accept(visitor);
 			}
 		}
+	}
+
+	public boolean isType(Type type) {
+		return typeAttribute != null && typeAttribute.type() == type;
 	}
 }

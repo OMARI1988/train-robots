@@ -40,7 +40,7 @@ public class MeasurePredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Tiles.
-		if (measure.type() == Type.tile && measure.cardinal() != null) {
+		if (measure.isType(Type.tile) && measure.cardinal() != null) {
 
 			Position p = entity.basePosition();
 			Position l = landmark.basePosition();
