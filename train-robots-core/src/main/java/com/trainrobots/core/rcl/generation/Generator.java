@@ -18,11 +18,11 @@
 package com.trainrobots.core.rcl.generation;
 
 import java.util.List;
-import java.util.Set;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Sequence;
@@ -93,8 +93,8 @@ public class Generator {
 		}
 
 		// Colors.
-		if (entity.colors() != null) {
-			writeColors(entity.colors());
+		if (entity.colorAttributes() != null) {
+			writeColors(entity.colorAttributes());
 		}
 
 		// Type reference?
@@ -196,19 +196,19 @@ public class Generator {
 		}
 	}
 
-	private void writeColors(Set<Color> colors) {
+	private void writeColors(List<ColorAttribute> colorAttributes) {
 
-		int size = colors.size();
+		int size = colorAttributes.size();
 		if (size == 0) {
 			return;
 		}
 
 		int i = 0;
-		for (Color color : colors) {
+		for (ColorAttribute colorAttribute : colorAttributes) {
 			if (i > 0) {
 				text.append(i == size - 1 ? " and " : ", ");
 			}
-			write(color);
+			write(colorAttribute.color());
 			i++;
 		}
 	}

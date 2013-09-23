@@ -17,9 +17,12 @@
 
 package com.trainrobots.nlp.grounding.predicates;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
@@ -28,8 +31,11 @@ public class ColorPredicate implements Predicate {
 
 	private final Set<Color> colors;
 
-	public ColorPredicate(Set<Color> colors) {
-		this.colors = colors;
+	public ColorPredicate(List<ColorAttribute> colorAttributes) {
+		colors = new HashSet<Color>();
+		for (ColorAttribute colorAttribute : colorAttributes) {
+			colors.add(colorAttribute.color());
+		}
 	}
 
 	@Override

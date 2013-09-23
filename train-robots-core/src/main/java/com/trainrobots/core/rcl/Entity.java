@@ -18,9 +18,7 @@
 package com.trainrobots.core.rcl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
@@ -33,7 +31,7 @@ public class Entity extends Rcl {
 	private final TypeAttribute typeAttribute;
 	private final Integer ordinal;
 	private final Integer cardinal;
-	private final Set<Color> colors;
+	private final List<ColorAttribute> colorAttributes;
 	private final List<SpatialIndicator> indicators;
 	private final List<SpatialRelation> relations;
 
@@ -43,7 +41,7 @@ public class Entity extends Rcl {
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.colors = null;
+		this.colorAttributes = null;
 		this.indicators = null;
 		this.relations = null;
 	}
@@ -54,19 +52,19 @@ public class Entity extends Rcl {
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.colors = null;
+		this.colorAttributes = null;
 		this.indicators = null;
 		this.relations = null;
 	}
 
-	public Entity(Color color, TypeAttribute typeAttribute) {
+	public Entity(ColorAttribute colorAttribute, TypeAttribute typeAttribute) {
 		this.id = null;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.colors = new LinkedHashSet<Color>();
-		this.colors.add(color);
+		this.colorAttributes = new ArrayList<ColorAttribute>();
+		this.colorAttributes.add(colorAttribute);
 		this.indicators = null;
 		this.relations = null;
 	}
@@ -78,7 +76,7 @@ public class Entity extends Rcl {
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.colors = null;
+		this.colorAttributes = null;
 		this.indicators = new ArrayList<SpatialIndicator>();
 		this.indicators.add(indicator);
 		this.relations = new ArrayList<SpatialRelation>();
@@ -92,7 +90,7 @@ public class Entity extends Rcl {
 		this.typeAttribute = typeAttribute;
 		this.ordinal = null;
 		this.cardinal = null;
-		this.colors = null;
+		this.colorAttributes = null;
 		this.indicators = new ArrayList<SpatialIndicator>();
 		this.indicators.add(indicator1);
 		this.indicators.add(indicator2);
@@ -101,15 +99,15 @@ public class Entity extends Rcl {
 
 	public Entity(Integer id, Integer referenceId, TypeAttribute typeAttribute,
 			Integer ordinal, Integer cardinal, boolean multiple,
-			Set<Color> colors, List<SpatialIndicator> indicators,
-			List<SpatialRelation> relations) {
+			List<ColorAttribute> colorAttribute,
+			List<SpatialIndicator> indicators, List<SpatialRelation> relations) {
 
 		this.id = id;
 		this.referenceId = referenceId;
 		this.typeAttribute = typeAttribute;
 		this.ordinal = ordinal;
 		this.cardinal = cardinal;
-		this.colors = colors;
+		this.colorAttributes = colorAttribute;
 		this.indicators = indicators;
 		this.relations = relations;
 	}
@@ -139,8 +137,8 @@ public class Entity extends Rcl {
 		return cardinal;
 	}
 
-	public Set<Color> colors() {
-		return colors;
+	public List<ColorAttribute> colorAttributes() {
+		return colorAttributes;
 	}
 
 	public List<SpatialIndicator> indicators() {
@@ -184,9 +182,9 @@ public class Entity extends Rcl {
 		}
 
 		// Colors.
-		if (colors != null) {
-			for (Color color : colors) {
-				node.add("color:", color.toString());
+		if (colorAttributes != null) {
+			for (ColorAttribute colorAttribute : colorAttributes) {
+				node.add(colorAttribute.toNode());
 			}
 		}
 
@@ -224,7 +222,7 @@ public class Entity extends Rcl {
 		Integer ordinal = null;
 		Integer cardinal = null;
 		boolean multiple = false;
-		Set<Color> colors = null;
+		List<ColorAttribute> colorAttributes = null;
 		List<SpatialIndicator> indicators = null;
 		List<SpatialRelation> relations = null;
 
@@ -252,11 +250,10 @@ public class Entity extends Rcl {
 				}
 
 				if (child.hasTag("color:")) {
-					Color color = Color.valueOf(child.getValue());
-					if (colors == null) {
-						colors = new LinkedHashSet<Color>();
+					if (colorAttributes == null) {
+						colorAttributes = new ArrayList<ColorAttribute>();
 					}
-					colors.add(color);
+					colorAttributes.add(ColorAttribute.fromNode(child));
 					continue;
 				}
 
@@ -285,7 +282,7 @@ public class Entity extends Rcl {
 		}
 
 		return new Entity(id, referenceId, typeAttribute, ordinal, cardinal,
-				multiple, colors, indicators, relations);
+				multiple, colorAttributes, indicators, relations);
 	}
 
 	@Override

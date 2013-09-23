@@ -141,8 +141,8 @@ public class Grounder {
 		}
 
 		// Colors.
-		if (entity.colors() != null && entity.colors().size() >= 1) {
-			predicates.add(new ColorPredicate(entity.colors()));
+		if (entity.colorAttributes() != null && entity.colorAttributes().size() >= 1) {
+			predicates.add(new ColorPredicate(entity.colorAttributes()));
 		}
 
 		// Indicator/relation combinations.
