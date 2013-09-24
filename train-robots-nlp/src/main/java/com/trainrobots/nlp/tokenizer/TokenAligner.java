@@ -86,6 +86,7 @@ public class TokenAligner {
 						|| match("on", "the", "top", "of")
 						|| match("on", "top", "of")
 						|| match("sitting", "on", "top", "of")
+						|| match("sat", "on", "the", "top", "of")
 						|| match("placed", "on", "top", "of")
 						|| match("placed", "on") || match("on", "top")) {
 					continue;

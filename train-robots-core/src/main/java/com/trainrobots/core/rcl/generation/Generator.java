@@ -110,16 +110,19 @@ public class Generator {
 		// Type reference?
 		if (entity.isType(Type.typeReference)) {
 			write("one");
+			writeAlignment(entity.typeAttribute());
 		}
 
 		// Type reference group?
 		else if (entity.isType(Type.typeReferenceGroup)) {
 			write("ones");
+			writeAlignment(entity.typeAttribute());
 		}
 
 		// Cube group?
 		else if (entity.isType(Type.cubeGroup)) {
 			write("cubes");
+			writeAlignment(entity.typeAttribute());
 		}
 
 		// Type.

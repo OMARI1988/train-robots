@@ -117,6 +117,14 @@ public abstract class Rcl {
 			return ColorAttribute.fromNode(node);
 		}
 
+		if (node.hasTag("ordinal:")) {
+			return OrdinalAttribute.fromNode(node);
+		}
+
+		if (node.hasTag("cardinal:")) {
+			return CardinalAttribute.fromNode(node);
+		}
+
 		if (node.hasTag("type:")) {
 			return TypeAttribute.fromNode(node);
 		}
