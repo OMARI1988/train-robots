@@ -87,6 +87,10 @@ public abstract class Rcl {
 		return toNode().format();
 	}
 
+	public Rcl clone() {
+		return fromNode(toNode().clone());
+	}
+
 	public static Rcl fromNode(Node node) {
 
 		if (node.hasTag("entity:")) {

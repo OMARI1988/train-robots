@@ -17,83 +17,146 @@
 
 package com.trainrobots.nlp.tokenizer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.RclVisitor;
+import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.TypeAttribute;
 
 public class TokenAligner {
 
-	private final Rcl rcl;
-	// private final Node tokens;
-	private int index = 0;
+	private final List<String> tokens = new ArrayList<String>();
+	private final List<Rcl> leaves = new ArrayList<Rcl>();
+	private int tokenIndex;
+	private int leafIndex;
 
 	private TokenAligner(Rcl rcl, String text) {
-		this.rcl = rcl;
-		// this.tokens = Tokenizer.getTokens(text);
+
+		// Leaves.
+		findLeaves(rcl);
+
+		// Tokens.
+		for (Node node : Tokenizer.getTokens(text).children) {
+			tokens.add(node.getValue());
+		}
 	}
 
-	public static void align(Rcl rcl, String text) {
-		new TokenAligner(rcl, text).align();
+	public static List<String> align(Rcl rcl, String text) {
+		TokenAligner aligner = new TokenAligner(rcl, text);
+		aligner.align();
+		return aligner.tokens;
 	}
 
 	private void align() {
 
-		// Clear.
-		clearAlignment();
+		int leafCount = leaves.size();
+		int tokenCount = tokens.size();
 
-		// Add.
-		rcl.accept(new RclVisitor() {
-			public void visit(ActionAttribute attribute) {
-				index++;
-				attribute.setTokenStart(index);
-				attribute.setTokenEnd(index);
+		for (tokenIndex = 0; tokenIndex < tokenCount; tokenIndex++) {
+			if (leafIndex >= leafCount) {
+				return;
+			}
+			Rcl leaf = leaves.get(leafIndex);
+
+			// Skip.
+			String token = tokens.get(tokenIndex);
+			if (token.equals("the") || token.equals("to")) {
+				continue;
 			}
 
-			public void visit(ColorAttribute attribute) {
-				index++;
-				attribute.setTokenStart(index);
-				attribute.setTokenEnd(index);
+			// Match.
+			if (isAbove(leaf) && match("top", "of")) {
+				continue;
+			}
+			if (isAbove(leaf) && match("on", "top", "of")) {
+				continue;
+			}
+			if (isAbove(leaf) && match("sitting", "on", "top", "of")) {
+				continue;
+			}
+			if (isAction(leaf) && match("pick", "up")) {
+				continue;
+			}
+			if (isColor(leaf) && match("light", "grey")) {
+				continue;
 			}
 
-			public void visit(IndicatorAttribute attribute) {
-				index++;
-				attribute.setTokenStart(index);
-				attribute.setTokenEnd(index);
-			}
-
-			public void visit(TypeAttribute attribute) {
-				index++;
-				attribute.setTokenStart(index);
-				attribute.setTokenEnd(index);
-			}
-		});
+			// Align.
+			leaf.setTokenStart(tokenIndex + 1);
+			leaf.setTokenEnd(tokenIndex + 1);
+			leafIndex++;
+		}
 	}
 
-	private void clearAlignment() {
+	private boolean isAbove(Rcl rcl) {
+		if (rcl instanceof IndicatorAttribute) {
+			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
+			if (attribute.indicator() == SpatialIndicator.above) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isAction(Rcl rcl) {
+		return rcl instanceof ActionAttribute;
+	}
+
+	private boolean isColor(Rcl rcl) {
+		return rcl instanceof ColorAttribute;
+	}
+
+	private boolean match(String... tokens) {
+
+		// Match.
+		for (int i = 0; i < tokens.length; i++) {
+			int j = tokenIndex + i;
+			if (j >= this.tokens.size()) {
+				return false;
+			}
+			if (!this.tokens.get(j).equals(tokens[i])) {
+				return false;
+			}
+		}
+
+		// Align.
+		Rcl leaf = leaves.get(leafIndex);
+		leaf.setTokenStart(tokenIndex + 1);
+		leaf.setTokenEnd(tokenIndex + tokens.length);
+		tokenIndex += tokens.length - 1;
+		leafIndex++;
+		return true;
+	}
+
+	private void findLeaves(Rcl rcl) {
 
 		rcl.accept(new RclVisitor() {
 			public void visit(ActionAttribute actionAttribute) {
-				actionAttribute.setTokenStart(0);
-				actionAttribute.setTokenEnd(0);
+				leaves.add(actionAttribute);
 			}
 
 			public void visit(ColorAttribute colorAttribute) {
-				colorAttribute.setTokenStart(0);
-				colorAttribute.setTokenEnd(0);
+				leaves.add(colorAttribute);
 			}
 
 			public void visit(IndicatorAttribute indicatorAttribute) {
-				indicatorAttribute.setTokenStart(0);
-				indicatorAttribute.setTokenEnd(0);
+				leaves.add(indicatorAttribute);
 			}
 
 			public void visit(TypeAttribute typeAttribute) {
-				typeAttribute.setTokenStart(0);
-				typeAttribute.setTokenEnd(0);
+				leaves.add(typeAttribute);
 			}
 		});
+
+		for (Rcl leaf : leaves) {
+			leaf.setTokenStart(0);
+			leaf.setTokenEnd(0);
+		}
 	}
 }
