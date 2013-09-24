@@ -113,7 +113,11 @@ public class TokenAlignerTests {
 								|| text.equals("in top of")
 								|| text.equals("over the top")
 								|| text.equals("at the top of")
-								|| text.equals("onto the top of")) {
+								|| text.equals("onto the top of")
+								|| text.equals("standing on")
+								|| text.equals("sitting on")
+								|| text.equals("standing over")
+								|| text.equals("standing on top of")) {
 							return;
 						}
 					}
@@ -127,7 +131,9 @@ public class TokenAlignerTests {
 								|| text.equals("on the left of")
 								|| text.equals("to the left")
 								|| text.equals("on the left")
-								|| text.equals("in the left of")) {
+								|| text.equals("in the left of")
+								|| text.equals("towards the left")
+								|| text.equals("located on the left of")) {
 							return;
 						}
 					}
@@ -141,21 +147,25 @@ public class TokenAlignerTests {
 								|| text.equals("on the right of")
 								|| text.equals("to the right")
 								|| text.equals("on the right")
-								|| text.equals("in the right of")) {
+								|| text.equals("in the right of")
+								|| text.equals("towards the right")
+								|| text.equals("located on the right of")) {
 							return;
 						}
 					}
 
 					if (keyword.equals("leftmost")) {
 						if (text.equals("left most")
-								|| text.equals("most left")) {
+								|| text.equals("most left")
+								|| text.equals("left - most")) {
 							return;
 						}
 					}
 
 					if (keyword.equals("rightmost")) {
 						if (text.equals("right most")
-								|| text.equals("most right")) {
+								|| text.equals("most right")
+								|| text.equals("right - most")) {
 							return;
 						}
 					}
@@ -164,7 +174,9 @@ public class TokenAlignerTests {
 						if (text.equals("closest") || text.equals("closer")
 								|| text.equals("near")
 								|| text.equals("placed closest to")
-								|| text.equals("closest to")) {
+								|| text.equals("closest to")
+								|| text.equals("nearest to")
+								|| text.equals("closet")) {
 							return;
 						}
 					}
@@ -178,7 +190,8 @@ public class TokenAlignerTests {
 					if (keyword.equals("within")) {
 						if (text.equals("in") || text.equals("at")
 								|| text.equals("into")
-								|| text.equals("placed in")) {
+								|| text.equals("placed in")
+								|| text.equals("standing in")) {
 							return;
 						}
 					}
@@ -190,7 +203,7 @@ public class TokenAlignerTests {
 					}
 
 					if (keyword.equals("edge")) {
-						if (text.equals("border")) {
+						if (text.equals("border") || text.equals("margin")) {
 							return;
 						}
 					}
@@ -233,10 +246,11 @@ public class TokenAlignerTests {
 					}
 
 					if (keyword.equals("prism")) {
-						if (text.equals("pyramid")
+						if (text.equals("pyramid") || text.equals("pryamid")
 								|| text.equals("tetrahedron")
 								|| text.equals("triangle")
-								|| text.equals("block") || text.equals("cube")) {
+								|| text.equals("block") || text.equals("cube")
+								|| text.equals("piece")) {
 							return;
 						}
 					}
@@ -244,7 +258,8 @@ public class TokenAlignerTests {
 					if (keyword.equals("cube")) {
 						if (text.equals("block") || text.equals("brick")
 								|| text.equals("box") || text.equals("cub")
-								|| text.equals("square")) {
+								|| text.equals("square")
+								|| text.equals("pyramid")) {
 							return;
 						}
 					}
@@ -262,14 +277,22 @@ public class TokenAlignerTests {
 						}
 					}
 
+					if (keyword.equals("type-reference-group")) {
+						if (text.equals("ones")) {
+							return;
+						}
+					}
+
 					if (keyword.equals("tile")) {
 						if (text.equals("cell") || text.equals("cells")
 								|| text.equals("square")
 								|| text.equals("squares")
-								|| text.equals("space")
+								|| text.equals("space") || text.equals("spot")
+								|| text.equals("spots")
 								|| text.equals("spaces") || text.equals("step")
 								|| text.equals("steps") || text.equals("place")
-								|| text.equals("places")) {
+								|| text.equals("places") || text.equals("grid")
+								|| text.equals("grids")) {
 							return;
 						}
 					}
@@ -362,7 +385,10 @@ public class TokenAlignerTests {
 					if (keyword.equals("forward")) {
 						if (text.equals("towards the top")
 								|| text.equals("to the top")
-								|| text.equals("above")) {
+								|| text.equals("above")
+								|| text.equals("in front of")
+								|| text.equals("up")
+								|| text.equals("closer to the top")) {
 							return;
 						}
 					}
