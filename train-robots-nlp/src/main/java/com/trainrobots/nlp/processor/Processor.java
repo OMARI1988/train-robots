@@ -280,10 +280,10 @@ public class Processor {
 		if (!measure.isType(Type.tile)) {
 			throw new CoreException("Unsupported measure type: " + relation);
 		}
-		if (measure.cardinal() == null) {
+		if (measure.cardinalAttribute() == null) {
 			throw new CoreException("Cardinal not specified: " + relation);
 		}
-		int cardinal = measure.cardinal();
+		int cardinal = measure.cardinalAttribute().cardinal();
 
 		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
 		Position p;

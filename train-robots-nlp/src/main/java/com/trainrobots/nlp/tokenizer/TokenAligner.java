@@ -22,8 +22,10 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.IndicatorAttribute;
+import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.RclVisitor;
 import com.trainrobots.core.rcl.SpatialIndicator;
@@ -66,25 +68,81 @@ public class TokenAligner {
 
 			// Skip.
 			String token = tokens.get(tokenIndex);
-			if (token.equals("the") || token.equals("to")) {
+			if (token.equals("the") || token.equals("to")
+					|| token.equals("then") || token.equals("and")
+					|| token.equals("from") || token.equals("-")
+					|| token.equals(".") || token.equals(",")
+					|| token.equals("an") || token.equals("a")) {
+				continue;
+			}
+			if (skip("that", "is") || skip("which", "is")
+					|| skip("of", "the", "board") || skip("of", "the", "grid")) {
 				continue;
 			}
 
-			// Match.
-			if (isAbove(leaf) && match("top", "of")) {
-				continue;
+			// Above.
+			if (isAbove(leaf)) {
+				if (match("located", "on", "top", "of") || match("top", "of")
+						|| match("on", "the", "top", "of")
+						|| match("on", "top", "of")
+						|| match("sitting", "on", "top", "of")
+						|| match("placed", "on", "top", "of")
+						|| match("placed", "on") || match("on", "top")) {
+					continue;
+				}
 			}
-			if (isAbove(leaf) && match("on", "top", "of")) {
-				continue;
+
+			// Right.
+			if (isRight(leaf)) {
+				if (match("placed", "on", "the", "right", "side", "of")
+						|| match("on", "the", "right", "side", "of")
+						|| match("placed", "on", "right")
+						|| match("in", "the", "right", "of")
+						|| match("right", "of")) {
+					continue;
+				}
 			}
-			if (isAbove(leaf) && match("sitting", "on", "top", "of")) {
-				continue;
+
+			// Left.
+			if (isLeft(leaf)) {
+				if (match("placed", "on", "the", "left", "side", "of")
+						|| match("on", "the", "left", "side", "of")
+						|| match("placed", "on", "left")
+						|| match("in", "the", "left", "of")
+						|| match("left", "of")) {
+					continue;
+				}
 			}
-			if (isAction(leaf) && match("pick", "up")) {
-				continue;
+
+			// Left most.
+			if (isLeftmost(leaf)) {
+				if (match("left", "most")) {
+					continue;
+				}
 			}
-			if (isColor(leaf) && match("light", "grey")) {
-				continue;
+
+			// Front.
+			if (isFront(leaf)) {
+				if (match("placed", "in", "front", "of")
+						|| match("in", "front", "of")
+						|| match("on", "front", "of")) {
+					continue;
+				}
+			}
+
+			// Action.
+			if (isAction(leaf)) {
+				if (match("pick", "up")) {
+					continue;
+				}
+			}
+
+			// Color.
+			if (isColor(leaf)) {
+				if (match("light", "grey") || match("dark", "blue")
+						|| match("sky", "blue")) {
+					continue;
+				}
 			}
 
 			// Align.
@@ -104,12 +162,70 @@ public class TokenAligner {
 		return false;
 	}
 
+	private boolean isRight(Rcl rcl) {
+		if (rcl instanceof IndicatorAttribute) {
+			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
+			if (attribute.indicator() == SpatialIndicator.right) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isLeft(Rcl rcl) {
+		if (rcl instanceof IndicatorAttribute) {
+			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
+			if (attribute.indicator() == SpatialIndicator.left) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isLeftmost(Rcl rcl) {
+		if (rcl instanceof IndicatorAttribute) {
+			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
+			if (attribute.indicator() == SpatialIndicator.leftmost) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isFront(Rcl rcl) {
+		if (rcl instanceof IndicatorAttribute) {
+			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
+			if (attribute.indicator() == SpatialIndicator.front) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean isAction(Rcl rcl) {
 		return rcl instanceof ActionAttribute;
 	}
 
 	private boolean isColor(Rcl rcl) {
 		return rcl instanceof ColorAttribute;
+	}
+
+	private boolean skip(String... tokens) {
+
+		// Match.
+		for (int i = 0; i < tokens.length; i++) {
+			int j = tokenIndex + i;
+			if (j >= this.tokens.size()) {
+				return false;
+			}
+			if (!this.tokens.get(j).equals(tokens[i])) {
+				return false;
+			}
+		}
+
+		// Skip.
+		tokenIndex += tokens.length - 1;
+		return true;
 	}
 
 	private boolean match(String... tokens) {
@@ -151,6 +267,14 @@ public class TokenAligner {
 
 			public void visit(TypeAttribute typeAttribute) {
 				leaves.add(typeAttribute);
+			}
+
+			public void visit(OrdinalAttribute ordinalAttribute) {
+				leaves.add(ordinalAttribute);
+			}
+
+			public void visit(CardinalAttribute cardinalAttribute) {
+				leaves.add(cardinalAttribute);
 			}
 		});
 

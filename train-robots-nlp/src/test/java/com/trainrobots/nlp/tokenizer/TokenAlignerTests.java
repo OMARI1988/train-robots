@@ -25,8 +25,10 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.IndicatorAttribute;
+import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.RclVisitor;
 import com.trainrobots.core.rcl.TypeAttribute;
@@ -42,7 +44,9 @@ public class TokenAlignerTests {
 			}
 			Rcl rcl = command.rcl.clone();
 			final List<String> tokens = TokenAligner.align(rcl, command.text);
-			System.out.println("------------------");
+			System.out.println();
+			System.out.println("C" + command.id);
+			System.out.println();
 
 			rcl.accept(new RclVisitor() {
 				public void visit(ActionAttribute attribute) {
@@ -61,12 +65,20 @@ public class TokenAlignerTests {
 					write(attribute);
 				}
 
+				public void visit(OrdinalAttribute attribute) {
+					write(attribute);
+				}
+
+				public void visit(CardinalAttribute attribute) {
+					write(attribute);
+				}
+
 				private void write(Rcl rcl) {
 					System.out.print(rcl);
 					int start = rcl.tokenStart();
 					int end = rcl.tokenEnd();
 					if (start == 0) {
-						System.out.println(" --> None");
+						System.out.println();
 						return;
 					}
 					System.out.print(" --> [");

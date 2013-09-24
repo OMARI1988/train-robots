@@ -110,7 +110,8 @@ public class ConversionTests {
 										new TypeAttribute(Type.stack))))),
 						new Event(new ActionAttribute(Action.drop), new Entity(
 								new TypeAttribute(Type.reference), 1),
-								new SpatialRelation(Entity.cardinal(2,
+								new SpatialRelation(Entity.cardinal(
+										new CardinalAttribute(2),
 										new TypeAttribute(Type.tile)),
 										new IndicatorAttribute(
 												SpatialIndicator.forward)))),

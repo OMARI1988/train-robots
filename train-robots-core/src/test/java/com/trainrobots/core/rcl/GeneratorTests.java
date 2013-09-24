@@ -66,19 +66,18 @@ public class GeneratorTests {
 
 	@Test
 	public void shouldGenerateSequence() {
-		Sequence sequence = new Sequence(
-				new Event(new ActionAttribute(Action.take), new Entity(1,
-						new IndicatorAttribute(SpatialIndicator.top),
-						new TypeAttribute(Type.cube), new SpatialRelation(
-								new IndicatorAttribute(SpatialIndicator.part),
-								new Entity(new ColorAttribute(Color.blue),
-										new TypeAttribute(Type.stack))))),
-				new Event(
-						new ActionAttribute(Action.drop),
-						new Entity(new TypeAttribute(Type.reference), 1),
-						new SpatialRelation(
-								Entity.cardinal(2, new TypeAttribute(Type.tile)),
-								new IndicatorAttribute(SpatialIndicator.forward))));
+		Sequence sequence = new Sequence(new Event(new ActionAttribute(
+				Action.take), new Entity(1, new IndicatorAttribute(
+				SpatialIndicator.top), new TypeAttribute(Type.cube),
+				new SpatialRelation(new IndicatorAttribute(
+						SpatialIndicator.part), new Entity(new ColorAttribute(
+						Color.blue), new TypeAttribute(Type.stack))))),
+				new Event(new ActionAttribute(Action.drop), new Entity(
+						new TypeAttribute(Type.reference), 1),
+						new SpatialRelation(Entity.cardinal(
+								new CardinalAttribute(2), new TypeAttribute(
+										Type.tile)), new IndicatorAttribute(
+								SpatialIndicator.forward))));
 		assertEquals(
 				sequence.generate(),
 				"Pick up the top cube that is part of the blue stack and drop it two squares forward.");

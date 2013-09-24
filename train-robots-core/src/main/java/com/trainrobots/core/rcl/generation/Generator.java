@@ -22,6 +22,7 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
@@ -84,13 +85,13 @@ public class Generator {
 		}
 
 		// Determiner.
-		if (entity.cardinal() == null) {
+		if (entity.cardinalAttribute() == null) {
 			write("the");
 		}
 
 		// Number.
-		if (entity.cardinal() != null) {
-			writeCardinal(entity.cardinal());
+		if (entity.cardinalAttribute() != null) {
+			writeCardinal(entity.cardinalAttribute());
 		}
 
 		// Indicators.
@@ -123,7 +124,8 @@ public class Generator {
 
 		// Type.
 		else {
-			boolean plural = entity.cardinal() != null && entity.cardinal() > 1;
+			boolean plural = entity.cardinalAttribute() != null
+					&& entity.cardinalAttribute().cardinal() > 1;
 			write(entity.typeAttribute(), plural);
 		}
 
@@ -270,8 +272,8 @@ public class Generator {
 		writeAlignment(indicatorAttribute);
 	}
 
-	private void writeCardinal(int cardinal) {
-		switch (cardinal) {
+	private void writeCardinal(CardinalAttribute cardinalAttribute) {
+		switch (cardinalAttribute.cardinal()) {
 		case 1:
 			write("one");
 			break;
@@ -300,9 +302,10 @@ public class Generator {
 			write("nine");
 			break;
 		default:
-			write(Integer.toString(cardinal));
+			write(Integer.toString(cardinalAttribute.cardinal()));
 			break;
 		}
+		writeAlignment(cardinalAttribute);
 	}
 
 	private void write(String text) {

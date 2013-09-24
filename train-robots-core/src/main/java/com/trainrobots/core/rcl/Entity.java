@@ -30,8 +30,8 @@ public class Entity extends Rcl {
 	private final Integer id;
 	private final Integer referenceId;
 	private final TypeAttribute typeAttribute;
-	private final Integer ordinal;
-	private final Integer cardinal;
+	private final OrdinalAttribute ordinalAttribute;
+	private final CardinalAttribute cardinalAttribute;
 	private final List<ColorAttribute> colorAttributes;
 	private final List<IndicatorAttribute> indicatorAttributes;
 	private final List<SpatialRelation> relations;
@@ -40,8 +40,8 @@ public class Entity extends Rcl {
 		this.id = null;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = null;
-		this.cardinal = null;
+		this.ordinalAttribute = null;
+		this.cardinalAttribute = null;
 		this.colorAttributes = null;
 		this.indicatorAttributes = null;
 		this.relations = null;
@@ -51,8 +51,8 @@ public class Entity extends Rcl {
 		this.id = null;
 		this.referenceId = referenceId;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = null;
-		this.cardinal = null;
+		this.ordinalAttribute = null;
+		this.cardinalAttribute = null;
 		this.colorAttributes = null;
 		this.indicatorAttributes = null;
 		this.relations = null;
@@ -62,8 +62,8 @@ public class Entity extends Rcl {
 		this.id = null;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = null;
-		this.cardinal = null;
+		this.ordinalAttribute = null;
+		this.cardinalAttribute = null;
 		this.colorAttributes = new ArrayList<ColorAttribute>();
 		this.colorAttributes.add(colorAttribute);
 		this.indicatorAttributes = null;
@@ -75,8 +75,8 @@ public class Entity extends Rcl {
 		this.id = id;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = null;
-		this.cardinal = null;
+		this.ordinalAttribute = null;
+		this.cardinalAttribute = null;
 		this.colorAttributes = null;
 		this.indicatorAttributes = new ArrayList<IndicatorAttribute>();
 		this.indicatorAttributes.add(indicatorAttribute);
@@ -89,8 +89,8 @@ public class Entity extends Rcl {
 		this.id = null;
 		this.referenceId = null;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = null;
-		this.cardinal = null;
+		this.ordinalAttribute = null;
+		this.cardinalAttribute = null;
 		this.colorAttributes = null;
 		this.indicatorAttributes = new ArrayList<IndicatorAttribute>();
 		this.indicatorAttributes.add(indicatorAttribute1);
@@ -99,7 +99,8 @@ public class Entity extends Rcl {
 	}
 
 	public Entity(Integer id, Integer referenceId, TypeAttribute typeAttribute,
-			Integer ordinal, Integer cardinal, boolean multiple,
+			OrdinalAttribute ordinalAttribute,
+			CardinalAttribute cardinalAttribute,
 			List<ColorAttribute> colorAttributes,
 			List<IndicatorAttribute> indicatorAttributes,
 			List<SpatialRelation> relations) {
@@ -107,16 +108,17 @@ public class Entity extends Rcl {
 		this.id = id;
 		this.referenceId = referenceId;
 		this.typeAttribute = typeAttribute;
-		this.ordinal = ordinal;
-		this.cardinal = cardinal;
+		this.ordinalAttribute = ordinalAttribute;
+		this.cardinalAttribute = cardinalAttribute;
 		this.colorAttributes = colorAttributes;
 		this.indicatorAttributes = indicatorAttributes;
 		this.relations = relations;
 	}
 
-	public static Entity cardinal(int cardinal, TypeAttribute type) {
-		return new Entity(null, null, type, null, cardinal, false, null, null,
-				null);
+	public static Entity cardinal(CardinalAttribute cardinalAttribute,
+			TypeAttribute typeAttribute) {
+		return new Entity(null, null, typeAttribute, null, cardinalAttribute,
+				null, null, null);
 	}
 
 	public Integer id() {
@@ -131,12 +133,12 @@ public class Entity extends Rcl {
 		return typeAttribute;
 	}
 
-	public Integer ordinal() {
-		return ordinal;
+	public OrdinalAttribute ordinalAttribute() {
+		return ordinalAttribute;
 	}
 
-	public Integer cardinal() {
-		return cardinal;
+	public CardinalAttribute cardinalAttribute() {
+		return cardinalAttribute;
 	}
 
 	public List<ColorAttribute> colorAttributes() {
@@ -167,13 +169,14 @@ public class Entity extends Rcl {
 		}
 
 		// Ordinal.
-		if (ordinal != null) {
-			node.add("ordinal:", ordinal.toString());
+		if (ordinalAttribute != null) {
+			node.add(ordinalAttribute.toNode());
 		}
 
 		// Cardinal.
-		if (cardinal != null) {
-			node.add("cardinal:", cardinal.toString());
+		if (cardinalAttribute != null) {
+			node.add(cardinalAttribute.toNode());
+			;
 		}
 
 		// Indicators.
@@ -221,9 +224,8 @@ public class Entity extends Rcl {
 		Integer id = null;
 		Integer referenceId = null;
 		TypeAttribute typeAttribute = null;
-		Integer ordinal = null;
-		Integer cardinal = null;
-		boolean multiple = false;
+		OrdinalAttribute ordinalAttribute = null;
+		CardinalAttribute cardinalAttribute = null;
 		List<ColorAttribute> colorAttributes = null;
 		List<IndicatorAttribute> indicatorAttributes = null;
 		List<SpatialRelation> relations = null;
@@ -246,8 +248,13 @@ public class Entity extends Rcl {
 					continue;
 				}
 
+				if (child.hasTag("ordinal:")) {
+					ordinalAttribute = OrdinalAttribute.fromNode(child);
+					continue;
+				}
+
 				if (child.hasTag("cardinal:")) {
-					cardinal = Integer.parseInt(child.getValue());
+					cardinalAttribute = CardinalAttribute.fromNode(child);
 					continue;
 				}
 
@@ -283,8 +290,9 @@ public class Entity extends Rcl {
 			}
 		}
 
-		return new Entity(id, referenceId, typeAttribute, ordinal, cardinal,
-				multiple, colorAttributes, indicatorAttributes, relations);
+		return new Entity(id, referenceId, typeAttribute, ordinalAttribute,
+				cardinalAttribute, colorAttributes, indicatorAttributes,
+				relations);
 	}
 
 	@Override
@@ -297,12 +305,19 @@ public class Entity extends Rcl {
 
 	@Override
 	public void accept(RclVisitor visitor) {
-	
+
 		// Visit.
 		visitor.visit(this);
 
-		// TODO: Ordinal.
-		// TODO: Cardinal.
+		// Ordinal.
+		if (ordinalAttribute != null) {
+			visitor.visit(ordinalAttribute);
+		}
+
+		// Cardinal.
+		if (cardinalAttribute != null) {
+			visitor.visit(cardinalAttribute);
+		}
 
 		// Indicators.
 		if (indicatorAttributes != null) {

@@ -33,4 +33,10 @@ public abstract class RclVisitor {
 
 	public void visit(TypeAttribute typeAttribute) {
 	}
+
+	public void visit(OrdinalAttribute ordinalAttribute) {
+	}
+
+	public void visit(CardinalAttribute cardinalAttribute) {
+	}
 }

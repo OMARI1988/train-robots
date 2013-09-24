@@ -132,13 +132,16 @@ public class Grounder {
 		predicates.add(new TypePredicate(type));
 
 		// Ordinal.
-		if (entity.ordinal() != null) {
-			throw new CoreException("Unexpected ordinal: " + entity.ordinal());
+		if (entity.ordinalAttribute() != null) {
+			throw new CoreException("Unexpected ordinal: "
+					+ entity.ordinalAttribute());
 		}
 
 		// Cardinal.
-		if (entity.cardinal() != null && entity.cardinal() != 1) {
-			throw new CoreException("Unexpected cardinal: " + entity.cardinal());
+		if (entity.cardinalAttribute() != null
+				&& entity.cardinalAttribute().cardinal() != 1) {
+			throw new CoreException("Unexpected cardinal: "
+					+ entity.cardinalAttribute());
 		}
 
 		// Colors.
