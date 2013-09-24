@@ -68,7 +68,7 @@ public class IndicatorAttribute extends Rcl {
 
 	@Override
 	public void accept(RclVisitor visitor) {
-		throw new CoreException("NOT_IMPLEMENTED");
+		visitor.visit(this);
 	}
 
 	public SpatialIndicator indicator() {

@@ -122,6 +122,7 @@ public class Event extends Rcl {
 
 	@Override
 	public void accept(RclVisitor visitor) {
+		actionAttribute.accept(visitor);
 		if (entity != null) {
 			entity.accept(visitor);
 		}

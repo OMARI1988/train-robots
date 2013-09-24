@@ -65,7 +65,7 @@ public class TypeAttribute extends Rcl {
 
 	@Override
 	public void accept(RclVisitor visitor) {
-		throw new CoreException("NOT_IMPLEMENTED");
+		visitor.visit(this);
 	}
 
 	public Type type() {

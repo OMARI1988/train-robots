@@ -117,6 +117,9 @@ public class SpatialRelation extends Rcl {
 		if (measure != null) {
 			measure.accept(visitor);
 		}
+		if (indicatorAttribute != null) {
+			indicatorAttribute.accept(visitor);
+		}
 		if (entity != null) {
 			entity.accept(visitor);
 		}

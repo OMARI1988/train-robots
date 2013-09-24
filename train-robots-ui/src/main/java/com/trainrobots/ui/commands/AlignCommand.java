@@ -15,28 +15,26 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.menus;
+package com.trainrobots.ui.commands;
+
+import java.awt.event.ActionEvent;
 
 import javax.inject.Inject;
+import javax.swing.AbstractAction;
 
-import com.trainrobots.ui.commands.AlignCommand;
-import com.trainrobots.ui.commands.ParseCommand;
-import com.trainrobots.ui.commands.ValidateCommand;
+import com.trainrobots.ui.services.WindowService;
 
-public class AnnotationMenu extends Menu {
+public class AlignCommand extends AbstractAction {
+
+	private final WindowService windowService;
 
 	@Inject
-	public AnnotationMenu(ParseCommand parseCommand, AlignCommand alignCommand,
-			ValidateCommand validateCommand) {
+	public AlignCommand(WindowService windowService) {
+		this.windowService = windowService;
+	}
 
-		// Initiate.
-		setText("Annotation");
-		setMnemonic('A');
-
-		// Items.
-		addItem("Parse", "control P", parseCommand);
-		addItem("Align", "control N", alignCommand);
-		addSeparator();
-		addItem("Validate", "F5", validateCommand);
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		windowService.getMainWindow().getCorpusView().align();
 	}
 }

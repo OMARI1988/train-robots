@@ -17,7 +17,20 @@
 
 package com.trainrobots.core.rcl;
 
-public interface RclVisitor {
-	
-	void visit(Entity entity);
+public abstract class RclVisitor {
+
+	public void visit(Entity entity) {
+	}
+
+	public void visit(ActionAttribute actionAttribute) {
+	}
+
+	public void visit(ColorAttribute colorAttribute) {
+	}
+
+	public void visit(IndicatorAttribute indicatorAttribute) {
+	}
+
+	public void visit(TypeAttribute typeAttribute) {
+	}
 }

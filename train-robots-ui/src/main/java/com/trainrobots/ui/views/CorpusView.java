@@ -38,6 +38,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.processor.MoveValidator;
+import com.trainrobots.nlp.tokenizer.TokenAligner;
 import com.trainrobots.nlp.tokenizer.TokenizedGenerationContext;
 import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.WindowService;
@@ -228,15 +229,31 @@ public class CorpusView extends JPanel {
 		statusBar.setText("Parsed command.");
 	}
 
-	public void validateCommand() {
-		if (command == null) {
+	public void align() {
+		if (!validateCommand()) {
 			return;
+		}
+		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		try {
+			TokenAligner.align(command.rcl, command.text);
+			editor.setText(command.rcl != null ? command.rcl.format().replace(
+					"\r", "") : null);
+			setInfoText();
+			statusBar.setText("Alignment completed.");
+		} catch (Exception exception) {
+			statusBar.setError(exception.getMessage());
+		}
+	}
+
+	public boolean validateCommand() {
+		if (command == null) {
+			return false;
 		}
 		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
 		String text = editor.getText();
 		if (text == null || text.length() == 0) {
 			statusBar.setText("RCL not specified.");
-			return;
+			return false;
 		}
 		try {
 			command.rcl = Rcl.fromString(text);
@@ -245,9 +262,10 @@ public class CorpusView extends JPanel {
 			setInfoText();
 			MoveValidator.validate(command.sceneNumber, command.rcl);
 			statusBar.setText("RCL executed successfully.");
+			return true;
 		} catch (Exception exception) {
 			statusBar.setError(exception.getMessage());
-			return;
+			return false;
 		}
 	}
 

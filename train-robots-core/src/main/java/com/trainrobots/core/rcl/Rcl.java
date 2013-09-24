@@ -30,8 +30,16 @@ public abstract class Rcl {
 		return tokenStart;
 	}
 
+	public void setTokenStart(int tokenStart) {
+		this.tokenStart = tokenStart;
+	}
+
 	public int tokenEnd() {
 		return tokenEnd;
+	}
+
+	public void setTokenEnd(int tokenEnd) {
+		this.tokenEnd = tokenEnd;
 	}
 
 	public abstract Node toNode();
@@ -55,7 +63,7 @@ public abstract class Rcl {
 
 	public Rcl getElement(final int id) {
 
-		class EntityVisitor implements RclVisitor {
+		class EntityVisitor extends RclVisitor {
 
 			public Entity match;
 

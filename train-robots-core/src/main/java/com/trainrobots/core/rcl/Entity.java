@@ -297,7 +297,33 @@ public class Entity extends Rcl {
 
 	@Override
 	public void accept(RclVisitor visitor) {
+	
+		// Visit.
 		visitor.visit(this);
+
+		// TODO: Ordinal.
+		// TODO: Cardinal.
+
+		// Indicators.
+		if (indicatorAttributes != null) {
+			for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
+				indicatorAttribute.accept(visitor);
+			}
+		}
+
+		// Colors.
+		if (colorAttributes != null) {
+			for (ColorAttribute colorAttribute : colorAttributes) {
+				colorAttribute.accept(visitor);
+			}
+		}
+
+		// Type.
+		if (typeAttribute != null) {
+			typeAttribute.accept(visitor);
+		}
+
+		// Relations.
 		if (relations != null) {
 			for (SpatialRelation relation : relations) {
 				relation.accept(visitor);
