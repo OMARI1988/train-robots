@@ -15,31 +15,22 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.core.rcl;
+package com.trainrobots.nlp.chunker;
 
-public abstract class RclVisitor {
+public class Token {
 
-	public void visit(Entity entity) {
+	public Token() {
 	}
 
-	public void visit(SpatialRelation spatialRelation) {
+	public Token(String token) {
+		this.token = token;
 	}
 
-	public void visit(ActionAttribute actionAttribute) {
+	public Token(String token, String tag) {
+		this.token = token;
+		this.tag = tag;
 	}
 
-	public void visit(ColorAttribute colorAttribute) {
-	}
-
-	public void visit(IndicatorAttribute indicatorAttribute) {
-	}
-
-	public void visit(TypeAttribute typeAttribute) {
-	}
-
-	public void visit(OrdinalAttribute ordinalAttribute) {
-	}
-
-	public void visit(CardinalAttribute cardinalAttribute) {
-	}
+	public String token;
+	public String tag;
 }
