@@ -253,28 +253,28 @@ public class TokenAligner {
 
 	private void findLeaves(Rcl rcl) {
 
-		rcl.accept(new RclVisitor() {
-			public void visit(ActionAttribute actionAttribute) {
+		rcl.recurse(new RclVisitor() {
+			public void visit(Rcl parent, ActionAttribute actionAttribute) {
 				leaves.add(actionAttribute);
 			}
 
-			public void visit(ColorAttribute colorAttribute) {
+			public void visit(Rcl parent, ColorAttribute colorAttribute) {
 				leaves.add(colorAttribute);
 			}
 
-			public void visit(IndicatorAttribute indicatorAttribute) {
+			public void visit(Rcl parent, IndicatorAttribute indicatorAttribute) {
 				leaves.add(indicatorAttribute);
 			}
 
-			public void visit(TypeAttribute typeAttribute) {
+			public void visit(Rcl parent, TypeAttribute typeAttribute) {
 				leaves.add(typeAttribute);
 			}
 
-			public void visit(OrdinalAttribute ordinalAttribute) {
+			public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
 				leaves.add(ordinalAttribute);
 			}
 
-			public void visit(CardinalAttribute cardinalAttribute) {
+			public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
 				leaves.add(cardinalAttribute);
 			}
 		});

@@ -77,9 +77,9 @@ public class Sequence extends Rcl {
 	}
 
 	@Override
-	public void accept(RclVisitor visitor) {
+	public void accept(Rcl parent, RclVisitor visitor) {
 		for (Event event : events) {
-			event.accept(visitor);
+			event.accept(this, visitor);
 		}
 	}
 }

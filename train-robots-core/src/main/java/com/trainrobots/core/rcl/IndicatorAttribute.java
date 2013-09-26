@@ -67,8 +67,8 @@ public class IndicatorAttribute extends Rcl {
 	}
 
 	@Override
-	public void accept(RclVisitor visitor) {
-		visitor.visit(this);
+	public void accept(Rcl parent, RclVisitor visitor) {
+		visitor.visit(parent, this);
 	}
 
 	public SpatialIndicator indicator() {

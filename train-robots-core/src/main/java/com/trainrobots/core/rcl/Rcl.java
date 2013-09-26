@@ -58,8 +58,12 @@ public abstract class Rcl {
 	public String toString() {
 		return toNode().toString();
 	}
+	
+	public void recurse(RclVisitor visitor) {
+		accept(null, visitor);
+	}
 
-	public abstract void accept(RclVisitor visitor);
+	protected abstract void accept(Rcl parent, RclVisitor visitor);
 
 	public Rcl getElement(final int id) {
 
@@ -68,7 +72,7 @@ public abstract class Rcl {
 			public Entity match;
 
 			@Override
-			public void visit(Entity entity) {
+			public void visit(Rcl parent, Entity entity) {
 				if (entity.id() != null && entity.id().equals(id)) {
 					if (match != null) {
 						throw new CoreException("Duplicate id " + id);
@@ -79,7 +83,7 @@ public abstract class Rcl {
 		}
 
 		EntityVisitor visitor = new EntityVisitor();
-		accept(visitor);
+		accept(null, visitor);
 		return visitor.match;
 	}
 

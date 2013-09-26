@@ -304,44 +304,44 @@ public class Entity extends Rcl {
 	}
 
 	@Override
-	public void accept(RclVisitor visitor) {
+	public void accept(Rcl parent, RclVisitor visitor) {
 
 		// Visit.
-		visitor.visit(this);
+		visitor.visit(parent, this);
 
 		// Ordinal.
 		if (ordinalAttribute != null) {
-			visitor.visit(ordinalAttribute);
+			visitor.visit(this, ordinalAttribute);
 		}
 
 		// Cardinal.
 		if (cardinalAttribute != null) {
-			visitor.visit(cardinalAttribute);
+			visitor.visit(this, cardinalAttribute);
 		}
 
 		// Indicators.
 		if (indicatorAttributes != null) {
 			for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
-				indicatorAttribute.accept(visitor);
+				indicatorAttribute.accept(this, visitor);
 			}
 		}
 
 		// Colors.
 		if (colorAttributes != null) {
 			for (ColorAttribute colorAttribute : colorAttributes) {
-				colorAttribute.accept(visitor);
+				colorAttribute.accept(this, visitor);
 			}
 		}
 
 		// Type.
 		if (typeAttribute != null) {
-			typeAttribute.accept(visitor);
+			typeAttribute.accept(this, visitor);
 		}
 
 		// Relations.
 		if (relations != null) {
 			for (SpatialRelation relation : relations) {
-				relation.accept(visitor);
+				relation.accept(this, visitor);
 			}
 		}
 	}

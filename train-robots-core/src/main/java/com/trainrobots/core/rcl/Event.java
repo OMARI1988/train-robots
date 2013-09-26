@@ -121,14 +121,14 @@ public class Event extends Rcl {
 	}
 
 	@Override
-	public void accept(RclVisitor visitor) {
-		actionAttribute.accept(visitor);
+	public void accept(Rcl parent, RclVisitor visitor) {
+		actionAttribute.accept(this, visitor);
 		if (entity != null) {
-			entity.accept(visitor);
+			entity.accept(this, visitor);
 		}
 		if (destinations != null) {
 			for (SpatialRelation destination : destinations) {
-				destination.accept(visitor);
+				destination.accept(this, visitor);
 			}
 		}
 	}

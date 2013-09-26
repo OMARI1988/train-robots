@@ -22,24 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.ActionAttribute;
-import com.trainrobots.core.rcl.CardinalAttribute;
-import com.trainrobots.core.rcl.ColorAttribute;
-import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.IndicatorAttribute;
-import com.trainrobots.core.rcl.OrdinalAttribute;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclVisitor;
-import com.trainrobots.core.rcl.SpatialRelation;
-import com.trainrobots.core.rcl.TypeAttribute;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class Chunker {
 
-	private final Map<String, String> mappings = new HashMap<String, String>();
+	private final List<Expression> expressions = new ArrayList<Expression>();
+	private final Map<String, String> tokenMap = new HashMap<String, String>();
 	private final List<Token> tokens = new ArrayList<Token>();
 
 	public List<Token> getSeqence(String text) {
@@ -53,46 +43,152 @@ public class Chunker {
 		// Chunks.
 		int size = tokens.size();
 		for (int i = 0; i < size; i++) {
-			String w = tokens.get(i).token;
-			String mapping = mappings.get(w);
-			tokens.get(i).tag = mapping != null ? mapping : "O";
+
+			// Match expression?
+			Expression expression = matchExpression(i);
+			if (expression != null) {
+				for (int k = 0; k < expression.tokens().length; k++) {
+					String prefix = k == 0 ? "B-" : "I-";
+					tokens.get(i + k).tag = prefix + expression.tag();
+				}
+				i += expression.tokens().length - 1;
+			}
+
+			// Default.
+			else {
+				String w = tokens.get(i).token;
+				String tag = tokenMap.get(w);
+				tokens.get(i).tag = tag != null ? tag : "O";
+			}
 		}
 		return tokens;
 	}
 
-	public void train(List<Command> commands) {
+	private Expression matchExpression(int index) {
 
-		class F {
-			String tag;
-			int count;
+		Expression match = null;
+		for (Expression expression : expressions) {
+			if (matchExpression(index, expression)) {
+				if (match == null
+						|| expression.tokens().length > match.tokens().length) {
+					match = expression;
+					continue;
+				}
+				if (match.tokens().length == expression.tokens().length) {
+					System.out.println("CONFLICT!! [" + match + "] vs ["
+							+ expression + "]");
+					continue;
+				}
+			}
 		}
 
-		Map<String, List<F>> map = new HashMap<String, List<F>>();
+		return match;
+	}
 
-		for (Command command : commands) {
-			Rcl rcl = command.rcl;
-			if (rcl == null) {
-				throw new CoreException("RCL not specified.");
+	private boolean matchExpression(int index, Expression expression) {
+		String[] list = expression.tokens();
+		for (int i = 0; i < list.length; i++) {
+			if (index + i >= tokens.size()) {
+				return false;
 			}
-			for (Token token : getGoldSequence(command)) {
+			if (!list[i].equals(tokens.get(index + i).token)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void train(List<Command> commands) {
+
+		// Gold sequences.
+		List<GoldSequence> goldSequences = new ArrayList<GoldSequence>();
+		for (Command command : commands) {
+			goldSequences.add(new GoldSequence(command));
+		}
+
+		// Expressions.
+		buildExpressions(goldSequences);
+
+		// Tag frequency.
+		buildTagFrequency(goldSequences);
+	}
+
+	private void buildExpressions(List<GoldSequence> goldSequences) {
+
+		Map<String, Expression> expressionMap = new HashMap<String, Expression>();
+
+		for (GoldSequence goldSequence : goldSequences) {
+			List<Token> tokens = goldSequence.tokens();
+			int size = tokens.size();
+			for (int i = 0; i < size; i++) {
+				Token token = tokens.get(i);
+				if (!token.tag.startsWith("B-")) {
+					continue;
+				}
+				String tag = token.tag.substring(2);
+				String inTag = "I-" + tag;
+
+				int count = 1;
+				for (int j = i + 1; j < size; j++) {
+					if (!tokens.get(j).tag.equals(inTag)) {
+						break;
+					}
+					count++;
+				}
+				if (count > 1) {
+
+					String[] expressionTokens = new String[count];
+					for (int k = 0; k < count; k++) {
+						expressionTokens[k] = tokens.get(i + k).token;
+					}
+
+					String key = Expression.buildKey(expressionTokens);
+					Expression existing = expressionMap.get(key);
+					if (existing == null) {
+						expressionMap.put(key,
+								new Expression(goldSequence.command(), tag,
+										expressionTokens));
+					} else if (!existing.tag().equals(tag)) {
+						System.out.println();
+						System.out.println("CONFLICT [" + key + "]:");
+						System.out.println("   " + existing.tag() + " in "
+								+ existing.command().id + ": "
+								+ existing.command().text);
+						System.out.println("   " + tag + " in "
+								+ goldSequence.command().id + ": "
+								+ goldSequence.command().text);
+					}
+				}
+			}
+		}
+
+		expressions.addAll(expressionMap.values());
+	}
+
+	private void buildTagFrequency(List<GoldSequence> goldSequences) {
+
+		Map<String, List<TagFrequency>> tagFrequency = new HashMap<String, List<TagFrequency>>();
+
+		for (GoldSequence goldSequence : goldSequences) {
+			for (Token token : goldSequence.tokens()) {
 
 				String key = token.token;
 
-				List<F> list = map.get(key);
+				List<TagFrequency> list = tagFrequency.get(key);
 				if (list == null) {
-					list = new ArrayList<F>();
-					map.put(key, list);
+					list = new ArrayList<TagFrequency>();
+					tagFrequency.put(key, list);
 				}
 
-				F m = null;
-				for (F f : list) {
+				TagFrequency m = null;
+				for (TagFrequency f : list) {
 					if (f.tag.equals(token.tag)) {
 						m = f;
 					}
 				}
 
 				if (m == null) {
-					m = new F();
+					m = new TagFrequency();
 					m.tag = token.tag;
 					list.add(m);
 				}
@@ -100,77 +196,20 @@ public class Chunker {
 			}
 		}
 
-		for (Map.Entry<String, List<F>> e : map.entrySet()) {
+		for (Map.Entry<String, List<TagFrequency>> e : tagFrequency.entrySet()) {
 			String token = e.getKey();
-			F b = null;
-			for (F f : e.getValue()) {
+			TagFrequency b = null;
+			for (TagFrequency f : e.getValue()) {
 				if (b == null || f.count > b.count) {
 					b = f;
 				}
 			}
-			mappings.put(token, b.tag);
+			tokenMap.put(token, b.tag);
 		}
 	}
 
-	public static List<Token> getGoldSequence(Command command) {
-
-		final List<Token> sequence = new ArrayList<Token>();
-
-		for (Node node : Tokenizer.getTokens(command.text).children) {
-			sequence.add(new Token(node.getValue(), "O"));
-		}
-
-		command.rcl.accept(new RclVisitor() {
-
-			private boolean rel;
-
-			public void visit(Entity entity) {
-				rel = false;
-			}
-
-			public void visit(SpatialRelation spatialRelation) {
-				rel = true;
-			}
-
-			public void visit(ActionAttribute attribute) {
-				write(attribute, "ACT");
-			}
-
-			public void visit(ColorAttribute attribute) {
-				write(attribute, "COLOR");
-			}
-
-			public void visit(IndicatorAttribute attribute) {
-				write(attribute, rel ? "REL" : "IND");
-			}
-
-			public void visit(TypeAttribute attribute) {
-				write(attribute, "TYPE");
-			}
-
-			public void visit(OrdinalAttribute attribute) {
-				write(attribute, "ORD");
-			}
-
-			public void visit(CardinalAttribute attribute) {
-				write(attribute, "CARD");
-			}
-
-			private void write(Rcl rcl, String tag) {
-
-				int start = rcl.tokenStart();
-				int end = rcl.tokenEnd();
-				if (start == 0) {
-					return;
-				}
-				for (int i = start; i <= end; i++) {
-					sequence.get(i - 1).tag = i == start ? "B-" + tag : "I-"
-							+ tag;
-				}
-			}
-		});
-
-		return sequence;
+	private static class TagFrequency {
+		String tag;
+		int count;
 	}
-
 }

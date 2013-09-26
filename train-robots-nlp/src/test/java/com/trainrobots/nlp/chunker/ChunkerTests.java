@@ -60,7 +60,7 @@ public class ChunkerTests {
 			chunker.train(trainList);
 
 			// Evaluate.
-			double p = evaluate(chunker, testList);
+			double p = evaluate(false, chunker, testList);
 			System.out.println("Fold " + (fold + 1) + ": " + df.format(p)
 					+ " %");
 			score += p;
@@ -69,16 +69,33 @@ public class ChunkerTests {
 		// Average.
 		System.out.println("-------------------");
 		System.out.println("Average: " + df.format(0.1 * score) + " %");
+
+		// Overfitted.
+		List<Command> all = new ArrayList<Command>();
+		for (Command command : Corpus.getCommands()) {
+			if (command.rcl != null) {
+				all.add(command);
+			}
+		}
+
+		// Train.
+		Chunker chunker = new Chunker();
+		chunker.train(all);
+
+		// Evaluate.
+		double p = evaluate(false, chunker, all);
+		System.out.println("Overfitted: " + df.format(p) + " %");
+		score += p;
 	}
 
-	private double evaluate(Chunker chunker, List<Command> testList) {
+	private double evaluate(boolean log, Chunker chunker, List<Command> testList) {
 
 		int count = 0;
 		int valid = 0;
 
 		for (Command command : testList) {
 
-			List<Token> goldSequence = Chunker.getGoldSequence(command);
+			List<Token> goldSequence = new GoldSequence(command).tokens();
 			List<Token> predSequence = chunker.getSeqence(command.text);
 
 			int size = goldSequence.size();
@@ -87,23 +104,29 @@ public class ChunkerTests {
 				valid += size;
 			} else {
 
-				// System.out.println("// Command " + command.id);
+				if (log) {
+					System.out.println("// Command " + command.id);
+				}
 
 				for (int i = 0; i < size; i++) {
 					Token gold = goldSequence.get(i);
 					Token pred = predSequence.get(i);
-					// System.out.print(gold.token + "\t" + gold.tag + "\t"
-					// + pred.tag);
-					// if (!gold.tag.equals(pred.tag)) {
-					// System.out.print(" // ERROR");
-					// }
-					// System.out.println();
+					if (log) {
+						System.out.print(gold.token + "\t" + gold.tag + "\t"
+								+ pred.tag);
+						if (!gold.tag.equals(pred.tag)) {
+							System.out.print(" // ERROR");
+						}
+						System.out.println();
+					}
 					if (gold.tag.equals(pred.tag)) {
 						valid++;
 					}
 					count++;
 				}
-				// System.out.println();
+				if (log) {
+					System.out.println();
+				}
 			}
 		}
 

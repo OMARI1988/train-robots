@@ -49,29 +49,29 @@ public class TokenAlignerTests {
 			final List<Node> tokens = Tokenizer.getTokens(command.text).children;
 			final int id = command.id;
 
-			rcl.accept(new RclVisitor() {
+			rcl.recurse(new RclVisitor() {
 
-				public void visit(ActionAttribute attribute) {
+				public void visit(Rcl parent, ActionAttribute attribute) {
 					write(attribute);
 				}
 
-				public void visit(ColorAttribute attribute) {
+				public void visit(Rcl parent, ColorAttribute attribute) {
 					write(attribute);
 				}
 
-				public void visit(IndicatorAttribute attribute) {
+				public void visit(Rcl parent, IndicatorAttribute attribute) {
 					write(attribute);
 				}
 
-				public void visit(TypeAttribute attribute) {
+				public void visit(Rcl parent, TypeAttribute attribute) {
 					write(attribute);
 				}
 
-				public void visit(OrdinalAttribute attribute) {
+				public void visit(Rcl parent, OrdinalAttribute attribute) {
 					write(attribute);
 				}
 
-				public void visit(CardinalAttribute attribute) {
+				public void visit(Rcl parent, CardinalAttribute attribute) {
 					write(attribute);
 				}
 

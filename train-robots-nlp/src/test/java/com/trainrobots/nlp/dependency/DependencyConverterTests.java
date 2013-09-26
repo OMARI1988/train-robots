@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.dependency;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
@@ -26,6 +27,7 @@ import com.trainrobots.core.rcl.Rcl;
 public class DependencyConverterTests {
 
 	@Test
+	@Ignore
 	public void shouldConvertCorpus() {
 		for (Command command : Corpus.getCommands()) {
 			Rcl rcl = command.rcl;

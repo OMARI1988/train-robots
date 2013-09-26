@@ -17,25 +17,51 @@
 
 package com.trainrobots.nlp.chunker;
 
-public class Token {
+import com.trainrobots.core.corpus.Command;
 
-	public Token() {
-	}
+public class Expression {
 
-	public Token(String token) {
-		this.token = token;
-	}
+	private final Command command;
+	private final String tag;
+	private final String[] tokens;
+	private final String key;
 
-	public Token(String token, String tag) {
-		this.token = token;
+	public Expression(Command command, String tag, String[] tokens) {
+		this.command = command;
 		this.tag = tag;
+		this.tokens = tokens;
+		this.key = buildKey(tokens);
 	}
 
-	public String token;
-	public String tag;
+	public Command command() {
+		return command;
+	}
+
+	public String tag() {
+		return tag;
+	}
+
+	public String[] tokens() {
+		return tokens;
+	}
+
+	public String key() {
+		return key;
+	}
 
 	@Override
 	public String toString() {
-		return token + " " + tag;
+		return key;
+	}
+
+	public static String buildKey(String[] tokens) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < tokens.length; i++) {
+			if (i > 0) {
+				sb.append('|');
+			}
+			sb.append(tokens[i]);
+		}
+		return sb.toString();
 	}
 }

@@ -113,20 +113,20 @@ public class SpatialRelation extends Rcl {
 	}
 
 	@Override
-	public void accept(RclVisitor visitor) {
-		
+	public void accept(Rcl parent, RclVisitor visitor) {
+
 		// Visit.
-		visitor.visit(this);
-		
+		visitor.visit(parent, this);
+
 		// Children.
 		if (measure != null) {
-			measure.accept(visitor);
+			measure.accept(this, visitor);
 		}
 		if (indicatorAttribute != null) {
-			indicatorAttribute.accept(visitor);
+			indicatorAttribute.accept(this, visitor);
 		}
 		if (entity != null) {
-			entity.accept(visitor);
+			entity.accept(this, visitor);
 		}
 	}
 }
