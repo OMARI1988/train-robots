@@ -45,6 +45,7 @@ import com.trainrobots.nlp.tokenizer.Tokenizer;
 public class ChunkerTests {
 
 	@Test
+	@Ignore
 	public void shouldEvaluateChunker() {
 
 		int count = 0;
