@@ -19,9 +19,7 @@ package com.trainrobots.nlp.chunker;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,18 +27,6 @@ import org.junit.Test;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.ActionAttribute;
-import com.trainrobots.core.rcl.CardinalAttribute;
-import com.trainrobots.core.rcl.ColorAttribute;
-import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.IndicatorAttribute;
-import com.trainrobots.core.rcl.OrdinalAttribute;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclVisitor;
-import com.trainrobots.core.rcl.SpatialRelation;
-import com.trainrobots.core.rcl.TypeAttribute;
-import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class ChunkerTests {
 
@@ -48,17 +34,52 @@ public class ChunkerTests {
 	@Ignore
 	public void shouldEvaluateChunker() {
 
+		// Cross-validation.
+		double score = 0;
+		DecimalFormat df = new DecimalFormat("#.##");
+		for (int fold = 0; fold < 10; fold++) {
+
+			// Data.
+			List<Command> trainList = new ArrayList<Command>();
+			List<Command> testList = new ArrayList<Command>();
+			int i = 0;
+			for (Command command : Corpus.getCommands()) {
+				if (command.rcl == null) {
+					continue;
+				}
+				if (i % 10 != fold) {
+					trainList.add(command);
+				} else {
+					testList.add(command);
+				}
+				i++;
+			}
+
+			// Train.
+			Chunker chunker = new Chunker();
+			chunker.train(trainList);
+
+			// Evaluate.
+			double p = evaluate(chunker, testList);
+			System.out.println("Fold " + (fold + 1) + ": " + df.format(p)
+					+ " %");
+			score += p;
+		}
+
+		// Average.
+		System.out.println("-------------------");
+		System.out.println("Average: " + df.format(0.1 * score) + " %");
+	}
+
+	private double evaluate(Chunker chunker, List<Command> testList) {
+
 		int count = 0;
 		int valid = 0;
 
-		for (Command command : Corpus.getCommands()) {
-			Rcl rcl = command.rcl;
-			if (rcl == null) {
-				continue;
-			}
+		for (Command command : testList) {
 
-			List<Token> goldSequence = getGoldSequence(command);
-			List<Token> predSequence = Chunker.getSeqence(command.text);
+			List<Token> goldSequence = Chunker.getGoldSequence(command);
+			List<Token> predSequence = chunker.getSeqence(command.text);
 
 			int size = goldSequence.size();
 			if (match(goldSequence, predSequence)) {
@@ -66,31 +87,28 @@ public class ChunkerTests {
 				valid += size;
 			} else {
 
-				System.out.println("// Command " + command.id);
+				// System.out.println("// Command " + command.id);
 
 				for (int i = 0; i < size; i++) {
 					Token gold = goldSequence.get(i);
 					Token pred = predSequence.get(i);
-					System.out.print(gold.token + "\t" + gold.tag + "\t"
-							+ pred.tag);
-					if (!gold.tag.equals(pred.tag)) {
-						System.out.print(" // ERROR");
-					}
-					System.out.println();
+					// System.out.print(gold.token + "\t" + gold.tag + "\t"
+					// + pred.tag);
+					// if (!gold.tag.equals(pred.tag)) {
+					// System.out.print(" // ERROR");
+					// }
+					// System.out.println();
 					if (gold.tag.equals(pred.tag)) {
 						valid++;
 					}
 					count++;
 				}
-				System.out.println();
+				// System.out.println();
 			}
 		}
 
 		// Score.
-		DecimalFormat df = new DecimalFormat("#.##");
-		double p = 100 * valid / (double) count;
-		System.out.println("Score: " + valid + " / " + count + " = "
-				+ df.format(p) + " %");
+		return 100 * valid / (double) count;
 	}
 
 	private static boolean match(List<Token> goldSequence,
@@ -105,120 +123,5 @@ public class ChunkerTests {
 			}
 		}
 		return true;
-	}
-
-	@Test
-	@Ignore
-	public void shouldCalculateMappings() {
-
-		class F {
-			String tag;
-			int count;
-		}
-
-		Map<String, List<F>> map = new HashMap<String, List<F>>();
-
-		for (Command command : Corpus.getCommands()) {
-			Rcl rcl = command.rcl;
-			if (rcl == null) {
-				continue;
-			}
-			for (Token token : getGoldSequence(command)) {
-
-				String key = token.token;
-
-				List<F> list = map.get(key);
-				if (list == null) {
-					list = new ArrayList<F>();
-					map.put(key, list);
-				}
-
-				F m = null;
-				for (F f : list) {
-					if (f.tag.equals(token.tag)) {
-						m = f;
-					}
-				}
-
-				if (m == null) {
-					m = new F();
-					m.tag = token.tag;
-					list.add(m);
-				}
-				m.count++;
-			}
-		}
-
-		for (Map.Entry<String, List<F>> e : map.entrySet()) {
-			String token = e.getKey();
-			F b = null;
-			for (F f : e.getValue()) {
-				if (b == null || f.count > b.count) {
-					b = f;
-				}
-			}
-			System.out.println("add(\"" + token + "\", \"" + b.tag + "\");");
-		}
-	}
-
-	private List<Token> getGoldSequence(Command command) {
-
-		final List<Token> sequence = new ArrayList<Token>();
-
-		for (Node node : Tokenizer.getTokens(command.text).children) {
-			sequence.add(new Token(node.getValue(), "O"));
-		}
-
-		command.rcl.accept(new RclVisitor() {
-
-			private boolean rel;
-
-			public void visit(Entity entity) {
-				rel = false;
-			}
-
-			public void visit(SpatialRelation spatialRelation) {
-				rel = true;
-			}
-
-			public void visit(ActionAttribute attribute) {
-				write(attribute, "ACT");
-			}
-
-			public void visit(ColorAttribute attribute) {
-				write(attribute, "COLOR");
-			}
-
-			public void visit(IndicatorAttribute attribute) {
-				write(attribute, rel ? "REL" : "IND");
-			}
-
-			public void visit(TypeAttribute attribute) {
-				write(attribute, "TYPE");
-			}
-
-			public void visit(OrdinalAttribute attribute) {
-				write(attribute, "ORD");
-			}
-
-			public void visit(CardinalAttribute attribute) {
-				write(attribute, "CARD");
-			}
-
-			private void write(Rcl rcl, String tag) {
-
-				int start = rcl.tokenStart();
-				int end = rcl.tokenEnd();
-				if (start == 0) {
-					return;
-				}
-				for (int i = start; i <= end; i++) {
-					sequence.get(i - 1).tag = i == start ? "B-" + tag : "I-"
-							+ tag;
-				}
-			}
-		});
-
-		return sequence;
 	}
 }

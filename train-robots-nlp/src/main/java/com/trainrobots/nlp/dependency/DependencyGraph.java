@@ -21,10 +21,10 @@ import com.trainrobots.core.CoreException;
 
 public class DependencyGraph {
 
-	private final String[] tokens;
+	//private final String[] tokens;
 
 	public DependencyGraph(String[] tokens) {
-		this.tokens = tokens;
+		//this.tokens = tokens;
 	}
 
 	public void addEdge(Span dep, Span head) {
