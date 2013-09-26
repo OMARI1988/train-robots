@@ -63,13 +63,7 @@ public class GoldSequence {
 
 			public void visit(Rcl parent, IndicatorAttribute attribute) {
 				if (parent instanceof Entity) {
-					// Entity entity = (Entity) parent;
-					// if (entity.isType(Type.region)
-					// && entity.typeAttribute().tokenStart() == 0) {
-					// write(attribute, "IND-REGION");
-					// } else {
 					write(attribute, "IND");
-					// }
 				} else {
 					write(attribute, "REL");
 				}

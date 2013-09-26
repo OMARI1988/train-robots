@@ -42,7 +42,7 @@ import eu.danieldk.nlp.jitar.wordhandler.KnownWordHandler;
 import eu.danieldk.nlp.jitar.wordhandler.SuffixWordHandler;
 import eu.danieldk.nlp.jitar.wordhandler.WordHandler;
 
-public class JitarChunker implements Chunker {
+public class JitarChunker extends Chunker {
 
 	private Model model;
 	private HMMTagger tagger;

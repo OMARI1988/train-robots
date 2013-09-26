@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-//import org.junit.Ignore;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -70,6 +69,25 @@ public class ChunkerTests {
 		// Average.
 		System.out.println("-------------------");
 		System.out.println("Average: " + df.format(0.1 * score) + " %");
+	}
+
+	@Test
+	@Ignore
+	public void shouldGetChunks() {
+
+		for (Command command : Corpus.getCommands()) {
+			if (command.rcl == null) {
+				continue;
+			}
+			System.out.println();
+			System.out.println("// " + command.id + ": " + command.text);
+			System.out.println();
+
+			GoldSequence sequence = new GoldSequence(command);
+			for (Chunk chunk : Chunker.getChunks(sequence.tokens())) {
+				System.out.println(chunk);
+			}
+		}
 	}
 
 	private double evaluate(boolean log, Chunker chunker, List<Command> testList) {

@@ -17,13 +17,46 @@
 
 package com.trainrobots.nlp.chunker;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 
-public interface Chunker {
+public abstract class Chunker {
 
-	public List<Token> getSequence(String text);
+	public abstract List<Token> getSequence(String text);
 
-	public void train(List<Command> commands);
+	public abstract void train(List<Command> commands);
+
+	public static List<Chunk> getChunks(List<Token> tokens) {
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		for (int i = 0; i < tokens.size(); i++) {
+
+			// O
+			Token token = tokens.get(i);
+			if (token.tag.equals("O") || token.tag.equals("DET")) {
+				// chunks.add(new Chunk(token.tag, new String[] { token.token
+				// }));
+				continue;
+			}
+
+			// Sequence.
+			else if (!token.tag.startsWith("B-")) {
+				throw new CoreException("Invalid sequence.");
+			}
+			int size = 1;
+			while (i + size < tokens.size()
+					&& tokens.get(i + size).tag.startsWith("I-")) {
+				size++;
+			}
+			String[] list = new String[size];
+			for (int j = 0; j < size; j++) {
+				list[j] = tokens.get(i + j).token;
+			}
+			chunks.add(new Chunk(token.tag.substring(2), list));
+			i += size - 1;
+		}
+		return chunks;
+	}
 }
