@@ -43,7 +43,12 @@ public class GoldSequence {
 		this.command = command;
 
 		for (Node node : Tokenizer.getTokens(command.text).children) {
-			tokens.add(new Token(node.getValue(), "O"));
+			String token = node.getValue();
+			String tag = "O";
+			if (token.equals("the")) {
+				tag = "DET";
+			}
+			tokens.add(new Token(token, tag));
 		}
 
 		command.rcl.recurse(new RclVisitor() {
@@ -57,7 +62,17 @@ public class GoldSequence {
 			}
 
 			public void visit(Rcl parent, IndicatorAttribute attribute) {
-				write(attribute, parent instanceof Entity ? "IND" : "REL");
+				if (parent instanceof Entity) {
+					// Entity entity = (Entity) parent;
+					// if (entity.isType(Type.region)
+					// && entity.typeAttribute().tokenStart() == 0) {
+					// write(attribute, "IND-REGION");
+					// } else {
+					write(attribute, "IND");
+					// }
+				} else {
+					write(attribute, "REL");
+				}
 			}
 
 			public void visit(Rcl parent, TypeAttribute attribute) {

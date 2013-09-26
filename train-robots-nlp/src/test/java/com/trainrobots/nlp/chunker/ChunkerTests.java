@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+//import org.junit.Ignore;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class ChunkerTests {
 			}
 
 			// Train.
-			Chunker chunker = new Chunker();
+			JitarChunker chunker = new JitarChunker();
 			chunker.train(trainList);
 
 			// Evaluate.
@@ -69,41 +70,25 @@ public class ChunkerTests {
 		// Average.
 		System.out.println("-------------------");
 		System.out.println("Average: " + df.format(0.1 * score) + " %");
-
-		// Overfitted.
-		List<Command> all = new ArrayList<Command>();
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl != null) {
-				all.add(command);
-			}
-		}
-
-		// Train.
-		Chunker chunker = new Chunker();
-		chunker.train(all);
-
-		// Evaluate.
-		double p = evaluate(false, chunker, all);
-		System.out.println("Overfitted: " + df.format(p) + " %");
-		score += p;
 	}
 
 	private double evaluate(boolean log, Chunker chunker, List<Command> testList) {
 
-		int count = 0;
-		int valid = 0;
-
+		int countToken = 0;
+		int validToken = 0;
+		int failed = 0;
 		for (Command command : testList) {
 
 			List<Token> goldSequence = new GoldSequence(command).tokens();
-			List<Token> predSequence = chunker.getSeqence(command.text);
+			List<Token> predSequence = chunker.getSequence(command.text);
 
 			int size = goldSequence.size();
 			if (match(goldSequence, predSequence)) {
-				count += size;
-				valid += size;
+				countToken += size;
+				validToken += size;
 			} else {
 
+				failed++;
 				if (log) {
 					System.out.println("// Command " + command.id);
 				}
@@ -120,9 +105,9 @@ public class ChunkerTests {
 						System.out.println();
 					}
 					if (gold.tag.equals(pred.tag)) {
-						valid++;
+						validToken++;
 					}
-					count++;
+					countToken++;
 				}
 				if (log) {
 					System.out.println();
@@ -131,7 +116,9 @@ public class ChunkerTests {
 		}
 
 		// Score.
-		return 100 * valid / (double) count;
+		System.out.println("Failed commands: " + failed + " / "
+				+ testList.size());
+		return 100 * validToken / (double) countToken;
 	}
 
 	private static boolean match(List<Token> goldSequence,
