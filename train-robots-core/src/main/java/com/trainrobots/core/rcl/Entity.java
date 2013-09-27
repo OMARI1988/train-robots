@@ -176,7 +176,6 @@ public class Entity extends Rcl {
 		// Cardinal.
 		if (cardinalAttribute != null) {
 			node.add(cardinalAttribute.toNode());
-			;
 		}
 
 		// Indicators.

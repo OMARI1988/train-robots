@@ -22,6 +22,10 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.ColorAttribute;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.TypeAttribute;
 
 public abstract class Chunker {
 
@@ -36,8 +40,6 @@ public abstract class Chunker {
 			// O
 			Token token = tokens.get(i);
 			if (token.tag.equals("O") || token.tag.equals("DET")) {
-				// chunks.add(new Chunk(token.tag, new String[] { token.token
-				// }));
 				continue;
 			}
 
@@ -50,13 +52,29 @@ public abstract class Chunker {
 					&& tokens.get(i + size).tag.startsWith("I-")) {
 				size++;
 			}
-			String[] list = new String[size];
-			for (int j = 0; j < size; j++) {
-				list[j] = tokens.get(i + j).token;
-			}
-			chunks.add(new Chunk(token.tag.substring(2), list));
+			String tag = token.tag.substring(2);
+			Rcl rcl = createRcl(tag);
+			rcl.setTokenStart(i + 1);
+			rcl.setTokenEnd(i + size);
 			i += size - 1;
 		}
 		return chunks;
+	}
+
+	private static Rcl createRcl(String tag) {
+
+		// Map.
+		if (tag.equals("ACT")) {
+			return new ActionAttribute(null);
+		}
+		if (tag.equals("COLOR")) {
+			return new ColorAttribute(null);
+		}
+		if (tag.equals("TYPE")) {
+			return new TypeAttribute(null);
+		}
+
+		// No match.
+		throw new CoreException("Failed to map chunk tag '" + tag + "' to RCL.");
 	}
 }
