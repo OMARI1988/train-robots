@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.parser;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
@@ -43,31 +44,44 @@ public class TokenizedTree {
 			}
 
 			public void visit(Rcl parent, ActionAttribute actionAttribute) {
+				check(actionAttribute);
 				actionAttribute.setAction(null);
 			}
 
 			public void visit(Rcl parent, ColorAttribute colorAttribute) {
+				check(colorAttribute);
 				colorAttribute.setColor(null);
 			}
 
 			public void visit(Rcl parent, IndicatorAttribute indicatorAttribute) {
+				check(indicatorAttribute);
 				indicatorAttribute.setIndicator(null);
 			}
 
 			public void visit(Rcl parent, RelationAttribute relationAttribute) {
+				check(relationAttribute);
 				relationAttribute.setRelation(null);
 			}
 
 			public void visit(Rcl parent, TypeAttribute typeAttribute) {
+				check(typeAttribute);
 				typeAttribute.setType(null);
 			}
 
 			public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
+				check(ordinalAttribute);
 				ordinalAttribute.setOrdinal(null);
 			}
 
 			public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
+				check(cardinalAttribute);
 				cardinalAttribute.setCardinal(null);
+			}
+
+			private void check(Rcl node) {
+				if (node.tokenStart() == 0) {
+					throw new CoreException("Missing alignment: " + node);
+				}
 			}
 		});
 
