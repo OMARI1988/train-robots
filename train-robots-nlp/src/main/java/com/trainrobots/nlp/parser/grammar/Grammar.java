@@ -36,7 +36,8 @@ public class Grammar {
 		if (!node.tag.equals("event:") && !node.tag.equals("sequence:")
 				&& !node.tag.equals("entity:")
 				&& !node.tag.equals("spatial-relation:")
-				&& !node.tag.equals("destination:")) {
+				&& !node.tag.equals("destination:")
+				&& !node.tag.equals("measure:")) {
 			return;
 		}
 
