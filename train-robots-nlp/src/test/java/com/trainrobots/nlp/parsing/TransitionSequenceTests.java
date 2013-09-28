@@ -17,12 +17,10 @@
 
 package com.trainrobots.nlp.parsing;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
@@ -33,58 +31,44 @@ import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.TokenizedTree;
 
-public class ParserTests {
+public class TransitionSequenceTests {
 
 	@Test
-	public void shouldParse1() {
-		assertTrue(match(84));
-	}
+	public void shouldExecuteTransitionSequence1() {
 
-	@Test
-	public void shouldParse2() {
-		assertTrue(match(14055));
-	}
-
-	@Test
-	@Ignore
-	public void shouldParse3() {
-		assertTrue(match(28));
-	}
-
-	@Test
-	@Ignore
-	public void shouldParseCorpus() {
-
-		// Parse.
-		int correct = 0;
-		int total = 0;
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl == null) {
-				continue;
+		validate(84, new TransitionSequence() {
+			public void parse(Parser p) {
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(2, "entity:");
+				p.reduce(2, "event:");
 			}
-
-			// Process.
-			try {
-				if (match(command.id)) {
-					correct++;
-					System.out.println(command.id + ": Valid.");
-				} else {
-					System.out.println(command.id + ": Misparsed.");
-				}
-			} catch (Exception e) {
-				System.out.println(command.id + ": " + e.getMessage());
-			}
-			total++;
-		}
-
-		// Gold.
-		DecimalFormat df = new DecimalFormat("#.##");
-		double p = 100 * correct / (double) total;
-		System.out.println("Parsed: " + correct + " / " + total + " = "
-				+ df.format(p) + " %");
+		});
 	}
 
-	private static boolean match(int id) {
+	@Test
+	public void shouldExecuteTransitionSequence2() {
+
+		validate(14055, new TransitionSequence() {
+			public void parse(Parser p) {
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(2, "entity:");
+				p.shift();
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(3, "entity:");
+				p.reduce(2, "spatial-relation:");
+				p.reduce(1, "destination:");
+				p.reduce(3, "event:");
+			}
+		});
+	}
+
+	private static void validate(int id, TransitionSequence sequence) {
 
 		// Command.
 		Command command = Corpus.getCommand(id);
@@ -92,11 +76,15 @@ public class ParserTests {
 		// Parse.
 		List<Node> chunks = Chunker.getChunks(command.rcl);
 		Parser parser = new Parser(chunks);
-		parser.parse();
+		sequence.parse(parser);
 		Node result = parser.result();
 
 		// Validate.
 		Rcl expected = TokenizedTree.getTree(command.rcl);
-		return (expected.toNode().equals(result));
+		assertEquals(result, expected.toNode());
+	}
+
+	private static interface TransitionSequence {
+		void parse(Parser p);
 	}
 }

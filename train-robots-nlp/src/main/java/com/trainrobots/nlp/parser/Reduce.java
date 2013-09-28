@@ -15,34 +15,23 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parsing;
+package com.trainrobots.nlp.parser;
 
-import org.junit.Ignore;
-import org.junit.Test;
+public class Reduce extends Action {
 
-import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.nlp.parser.grammar.Grammar;
-import com.trainrobots.nlp.parser.grammar.GrammarRule;
+	private final int size;
+	private final String type;
 
-public class GrammarTests {
+	public Reduce(int size, String type) {
+		this.size = size;
+		this.type = type;
+	}
 
-	@Test
-	@Ignore
-	public void shouldGetRules() {
+	public int size() {
+		return size;
+	}
 
-		// Create.
-		Grammar grammar = new Grammar();
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl == null) {
-				continue;
-			}
-			grammar.add(command.rcl.toNode());
-		}
-
-		// Display.
-		for (GrammarRule rule : grammar.rules()) {
-			System.out.println(rule + "\t" + rule.count);
-		}
+	public String type() {
+		return type;
 	}
 }

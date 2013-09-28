@@ -15,34 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parsing;
+package com.trainrobots.nlp.parser;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.nlp.parser.grammar.Grammar;
-import com.trainrobots.nlp.parser.grammar.GrammarRule;
-
-public class GrammarTests {
-
-	@Test
-	@Ignore
-	public void shouldGetRules() {
-
-		// Create.
-		Grammar grammar = new Grammar();
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl == null) {
-				continue;
-			}
-			grammar.add(command.rcl.toNode());
-		}
-
-		// Display.
-		for (GrammarRule rule : grammar.rules()) {
-			System.out.println(rule + "\t" + rule.count);
-		}
-	}
+public class Shift extends Action {
 }

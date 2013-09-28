@@ -40,7 +40,7 @@ public class Parser {
 
 		if (verbose) {
 			System.out.println("START");
-			System.out.println("    Q = " + queue);
+			System.out.println("Q = " + queue);
 		}
 	}
 
@@ -59,8 +59,8 @@ public class Parser {
 		if (verbose) {
 			System.out.println();
 			System.out.println("SHIFT");
-			System.out.println("    Q = " + queue);
-			System.out.println("    S = " + stack);
+			System.out.println("Q = " + queue);
+			printStack();
 		}
 	}
 
@@ -81,8 +81,77 @@ public class Parser {
 		stack.push(parent);
 
 		if (verbose) {
-			System.out.println("    Q = " + queue);
-			System.out.println("    S = " + stack);
+			System.out.println("Q = " + queue);
+			printStack();
+		}
+	}
+
+	public void parse() {
+
+		Action action;
+		while ((action = getAction()) != null) {
+			execute(action);
+		}
+	}
+
+	private Action getAction() {
+
+		if (stack("color:", "type:")) {
+			return Action.reduce(2, "entity:");
+		}
+
+		if (stack("indicator:", "indicator:", "type:")) {
+			return Action.reduce(3, "entity:");
+		}
+
+		if (stack("relation:", "entity:")) {
+			return Action.reduce(2, "spatial-relation:");
+		}
+
+		if (stack("action:", "entity:") && queue.empty()) {
+			return Action.reduce(2, "event:");
+		}
+
+		if (stack("action:", "entity:", "spatial-relation:") && queue.empty()) {
+			return Action.reduce(1, "destination:");
+		}
+
+		if (stack("action:", "entity:", "destination:")) {
+			return Action.reduce(3, "event:");
+		}
+
+		return !queue.empty() ? Action.shift() : null;
+	}
+
+	private boolean stack(String s1, String s0) {
+		return stack.size() >= 2 && stack.get(1).hasTag(s1)
+				&& stack.get(0).hasTag(s0);
+	}
+
+	private boolean stack(String s2, String s1, String s0) {
+		return stack.size() >= 3 && stack.get(2).hasTag(s2)
+				&& stack.get(1).hasTag(s1) && stack.get(0).hasTag(s0);
+	}
+
+	private void execute(Action action) {
+
+		// Shift.
+		if (action instanceof Shift) {
+			shift();
+		}
+
+		// Reduce.
+		else {
+			Reduce reduce = (Reduce) action;
+			reduce(reduce.size(), reduce.type());
+		}
+	}
+
+	private void printStack() {
+		int size = stack.size();
+		for (int i = 0; i < size; i++) {
+			Node node = stack.get(i);
+			System.out.println("S" + i + " = " + node.format());
 		}
 	}
 }
