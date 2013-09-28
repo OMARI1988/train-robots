@@ -23,24 +23,26 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.parser.grammar.GrammarRule;
+import com.trainrobots.nlp.parser.grammar.EllipsisRule;
+import com.trainrobots.nlp.parser.grammar.Grammar;
+import com.trainrobots.nlp.parser.grammar.ProductionRule;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
 	private final Queue queue;
-	private final List<GrammarRule> rules;
+	private final Grammar grammar;
 	private final List<GssNode> frontier = new ArrayList<GssNode>();
 	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
 	private final boolean verbose;
 
-	public Parser(List<GrammarRule> rules, List<Node> items) {
-		this(rules, items, false);
+	public Parser(Grammar grammar, List<Node> items) {
+		this(grammar, items, false);
 	}
 
-	public Parser(List<GrammarRule> rules, List<Node> items, boolean verbose) {
+	public Parser(Grammar grammar, List<Node> items, boolean verbose) {
 
-		this.rules = rules;
+		this.grammar = grammar;
 		this.queue = new Queue(items);
 		this.verbose = verbose;
 
@@ -57,7 +59,16 @@ public class Parser {
 	public List<Node> parse() {
 
 		// Parse.
-		while (!queue.empty()) {
+		while (true) {
+
+			if (ellipsis()) {
+				reduce();
+			}
+
+			if (queue.empty()) {
+				break;
+			}
+
 			shift();
 			reduce();
 		}
@@ -77,6 +88,58 @@ public class Parser {
 			}
 		}
 		return results;
+	}
+
+	private boolean ellipsis() {
+
+		String tag = matchEllipsis();
+		if (tag == null) {
+			return false;
+		}
+
+		// Diagnostics.
+		if (verbose) {
+			System.out.println();
+			System.out.println("ELLIPSIS");
+		}
+
+		// Add node to previous frontier.
+		GssNode node = gss.add(new Node(tag));
+		for (GssNode parent : frontier) {
+			node.parents().add(parent);
+		}
+
+		// Create new frontier.
+		frontier.clear();
+		frontier.add(node);
+
+		// Diagnostics.
+		if (verbose) {
+			printState();
+		}
+		return true;
+	}
+
+	private String matchEllipsis() {
+
+		Node previous = queue.get(-1);
+		Node next = queue.get(0);
+
+		if (previous != null) {
+			for (EllipsisRule rule : grammar.ellipsisRules()) {
+				if (previous.tag.equals(rule.before())) {
+					if (rule.after() == null && next == null) {
+						return rule.tag();
+					}
+					if (rule.after() != null && next != null
+							&& rule.after().equals(next.tag)) {
+						return rule.tag();
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private void shift() {
@@ -116,7 +179,7 @@ public class Parser {
 
 	private void reduce(GssNode top) {
 		List<GssNode> path = new ArrayList<GssNode>();
-		for (GrammarRule rule : rules) {
+		for (ProductionRule rule : grammar.productionRules()) {
 			path.clear();
 			path.add(top);
 			if (!match(rule, 0, path)) {
@@ -152,7 +215,8 @@ public class Parser {
 		}
 	}
 
-	private static boolean match(GrammarRule rule, int step, List<GssNode> path) {
+	private static boolean match(ProductionRule rule, int step,
+			List<GssNode> path) {
 
 		List<String> rhs = rule.rhs();
 		int index = rhs.size() - 1 - step;

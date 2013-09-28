@@ -15,29 +15,45 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parsing;
+package com.trainrobots.nlp.parser.grammar;
 
-import org.junit.Ignore;
-import org.junit.Test;
+public class EllipsisRule {
 
-import com.trainrobots.nlp.parser.grammar.EllipsisRule;
-import com.trainrobots.nlp.parser.grammar.Grammar;
-import com.trainrobots.nlp.parser.grammar.ProductionRule;
+	private final String before;
+	private final String tag;
+	private final String after;
+	public int count;
 
-public class GrammarTests {
+	public EllipsisRule(String before, String tag, String after) {
+		this.before = before;
+		this.tag = tag;
+		this.after = after;
+	}
 
-	@Test
-	@Ignore
-	public void shouldDeriveGrammar() {
+	public String before() {
+		return before;
+	}
 
-		Grammar grammar = Grammar.goldGrammar();
+	public String tag() {
+		return tag;
+	}
 
-		for (ProductionRule rule : grammar.productionRules()) {
-			System.out.println("Production: " + rule + "\t" + rule.count);
+	public String after() {
+		return after;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		if (before != null) {
+			text.append(before);
 		}
-
-		for (EllipsisRule rule : grammar.ellipsisRules()) {
-			System.out.println("Ellipsis: " + rule + "\t" + rule.count);
+		text.append('|');
+		text.append(tag);
+		text.append('|');
+		if (after != null) {
+			text.append(after);
 		}
+		return text.toString();
 	}
 }

@@ -20,13 +20,13 @@ package com.trainrobots.nlp.parser.grammar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrammarRule {
+public class ProductionRule {
 
 	private final String lhs;
 	private final List<String> rhs = new ArrayList<String>();
 	public int count;
 
-	public GrammarRule(String lhs) {
+	public ProductionRule(String lhs) {
 		this.lhs = lhs;
 	}
 

@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
@@ -31,7 +30,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.TokenizedTree;
-import com.trainrobots.nlp.parser.grammar.CorpusGrammar;
+import com.trainrobots.nlp.parser.grammar.Grammar;
 
 public class ParserTests {
 
@@ -58,13 +57,26 @@ public class ParserTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldParse5() {
-		assertTrue(match(7618, true));
+		assertTrue(match(7618));
 	}
 
 	@Test
-	@Ignore
+	public void shouldParse6() {
+		assertTrue(match(4108));
+	}
+
+	@Test
+	public void shouldParse7() {
+		assertTrue(match(6108));
+	}
+
+	@Test
+	public void shouldParse8() {
+		assertTrue(match(6652));
+	}
+
+	@Test
 	public void shouldParseCorpus() {
 
 		// Parse.
@@ -107,7 +119,7 @@ public class ParserTests {
 
 		// Parse.
 		List<Node> chunks = Chunker.getChunks(command.rcl);
-		Parser parser = new Parser(CorpusGrammar.rules(), chunks, verbose);
+		Parser parser = new Parser(Grammar.goldGrammar(), chunks, verbose);
 		List<Node> results = parser.parse();
 		gssSize = parser.gss().nodes().size();
 
