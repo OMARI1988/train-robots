@@ -18,140 +18,189 @@
 package com.trainrobots.nlp.parser;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.nlp.parser.grammar.GrammarRule;
 
 public class Parser {
 
-	private final Stack stack = new Stack();
+	private final Gss gss = new Gss();
 	private final Queue queue;
+	private final List<GrammarRule> rules;
+	private final List<GssNode> frontier = new ArrayList<GssNode>();
+	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
 	private final boolean verbose;
 
-	public Parser(List<Node> items) {
-		this(false, items);
+	public Parser(List<GrammarRule> rules, List<Node> items) {
+		this(rules, items, false);
 	}
 
-	public Parser(boolean verbose, List<Node> items) {
+	public Parser(List<GrammarRule> rules, List<Node> items, boolean verbose) {
 
-		this.verbose = verbose;
+		this.rules = rules;
 		this.queue = new Queue(items);
+		this.verbose = verbose;
 
 		if (verbose) {
-			System.out.println("START");
-			System.out.println("Q = " + queue);
+			System.out.println("INITIAL");
+			printState();
 		}
 	}
 
-	public Node result() {
-		if (queue.empty() && stack.size() == 1) {
-			return stack.get(0);
-		}
-		throw new CoreException("Failed to parse a single result.");
+	public Gss gss() {
+		return gss;
 	}
 
-	public void shift() {
+	public List<Node> parse() {
 
-		Node node = queue.read();
-		stack.push(node);
+		// Parse.
+		while (!queue.empty()) {
+			shift();
+			reduce();
+		}
 
+		// Results.
+		List<Node> results = new ArrayList<Node>();
+		for (GssNode node : frontier) {
+			if (node.parents().size() == 0) {
+				if (verbose) {
+					if (results.size() == 0) {
+						System.out.println();
+						System.out.println("RESULTS");
+					}
+					System.out.println(node.content());
+				}
+				results.add(node.content());
+			}
+		}
+		return results;
+	}
+
+	private void shift() {
+
+		// Diagnostics.
 		if (verbose) {
 			System.out.println();
 			System.out.println("SHIFT");
-			System.out.println("Q = " + queue);
-			printStack();
+		}
+
+		// Add node to previous frontier.
+		GssNode node = gss.add(queue.read());
+		for (GssNode parent : frontier) {
+			node.parents().add(parent);
+		}
+
+		// Create new frontier.
+		frontier.clear();
+		frontier.add(node);
+
+		// Diagnostics.
+		if (verbose) {
+			printState();
 		}
 	}
 
-	public void reduce(int size, String type) {
-
-		if (verbose) {
-			System.out.println();
-			System.out.println("REDUCE " + size + " " + type);
+	private void reduce() {
+		if (frontier.size() != 1) {
+			throw new CoreException("Expected single node in frontier.");
 		}
+		reductionQueue.clear();
+		reductionQueue.add(frontier.get(0));
+		while (!reductionQueue.isEmpty()) {
+			reduce(reductionQueue.pop());
+		}
+	}
 
-		Node parent = new Node(type);
-		for (int i = 0; i < size; i++) {
-			if (parent.children == null) {
-				parent.children = new ArrayList<Node>();
+	private void reduce(GssNode top) {
+		List<GssNode> path = new ArrayList<GssNode>();
+		for (GrammarRule rule : rules) {
+			path.clear();
+			path.add(top);
+			if (!match(rule, 0, path)) {
+				continue;
 			}
-			parent.children.add(0, stack.pop());
-		}
-		stack.push(parent);
 
-		if (verbose) {
-			System.out.println("Q = " + queue);
-			printStack();
-		}
-	}
+			List<String> rhs = rule.rhs();
+			int size = rhs.size();
+			Node node = new Node(rule.lhs());
+			node.children = new ArrayList<Node>();
+			for (int i = 0; i < size; i++) {
+				Node child = path.get(size - 1 - i).content();
+				if (!child.tag.equals(rhs.get(i))) {
+					throw new CoreException("Path/rule mismatch.");
+				}
+				node.children.add(child);
+			}
 
-	public void parse() {
-
-		Action action;
-		while ((action = getAction()) != null) {
-			execute(action);
-		}
-	}
-
-	private Action getAction() {
-
-		if (stack("color:", "type:")) {
-			return Action.reduce(2, "entity:");
-		}
-
-		if (stack("indicator:", "indicator:", "type:")) {
-			return Action.reduce(3, "entity:");
-		}
-
-		if (stack("relation:", "entity:")) {
-			return Action.reduce(2, "spatial-relation:");
-		}
-
-		if (stack("action:", "entity:") && queue.empty()) {
-			return Action.reduce(2, "event:");
-		}
-
-		if (stack("action:", "entity:", "spatial-relation:") && queue.empty()) {
-			return Action.reduce(1, "destination:");
-		}
-
-		if (stack("action:", "entity:", "destination:")) {
-			return Action.reduce(3, "event:");
-		}
-
-		return !queue.empty() ? Action.shift() : null;
-	}
-
-	private boolean stack(String s1, String s0) {
-		return stack.size() >= 2 && stack.get(1).hasTag(s1)
-				&& stack.get(0).hasTag(s0);
-	}
-
-	private boolean stack(String s2, String s1, String s0) {
-		return stack.size() >= 3 && stack.get(2).hasTag(s2)
-				&& stack.get(1).hasTag(s1) && stack.get(0).hasTag(s0);
-	}
-
-	private void execute(Action action) {
-
-		// Shift.
-		if (action instanceof Shift) {
-			shift();
-		}
-
-		// Reduce.
-		else {
-			Reduce reduce = (Reduce) action;
-			reduce(reduce.size(), reduce.type());
+			GssNode reducedNode = gss.add(node);
+			if (verbose) {
+				System.out.println();
+				System.out.println("REDUCE = " + reducedNode);
+			}
+			GssNode last = path.get(path.size() - 1);
+			for (GssNode parent : last.parents()) {
+				reducedNode.parents().add(parent);
+			}
+			reductionQueue.push(reducedNode);
+			frontier.add(reducedNode);
+			if (verbose) {
+				printState();
+			}
 		}
 	}
 
-	private void printStack() {
-		int size = stack.size();
-		for (int i = 0; i < size; i++) {
-			Node node = stack.get(i);
-			System.out.println("S" + i + " = " + node.format());
+	private static boolean match(GrammarRule rule, int step, List<GssNode> path) {
+
+		List<String> rhs = rule.rhs();
+		int index = rhs.size() - 1 - step;
+		if (index < 0) {
+			return false;
+		}
+
+		GssNode node = path.get(path.size() - 1);
+		String tag = rhs.get(index);
+		if (!node.content().tag.equals(tag)) {
+			return false;
+		}
+
+		for (GssNode parent : node.parents()) {
+			path.add(parent);
+			if (match(rule, step + 1, path)) {
+				return true;
+			}
+			path.remove(path.size() - 1);
+		}
+
+		return index == 0;
+	}
+
+	private void printState() {
+
+		// Queue.
+		System.out.println("Q = " + queue);
+
+		// Empty stack?
+		int size = gss.nodes().size();
+		if (size == 0) {
+			System.out.println("S = EMPTY");
+			return;
+		}
+
+		// Nodes.
+		for (GssNode node : gss.nodes()) {
+			System.out.print("N" + node.id());
+			if (node.parents().size() > 0) {
+				System.out.print(" (-->");
+				for (GssNode parent : node.parents()) {
+					System.out.print(' ');
+					System.out.print("N" + parent.id());
+				}
+				System.out.print(")");
+			}
+			System.out.println(" = " + node.content());
 		}
 	}
 }

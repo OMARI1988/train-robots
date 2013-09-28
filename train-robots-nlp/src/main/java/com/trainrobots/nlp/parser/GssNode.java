@@ -17,21 +17,36 @@
 
 package com.trainrobots.nlp.parser;
 
-public class Reduce extends Action {
+import java.util.ArrayList;
+import java.util.List;
 
-	private final int size;
-	private final String type;
+import com.trainrobots.core.nodes.Node;
 
-	public Reduce(int size, String type) {
-		this.size = size;
-		this.type = type;
+public class GssNode {
+
+	private final int id;
+	private final Node content;
+	private final List<GssNode> parents = new ArrayList<GssNode>();
+
+	public GssNode(int id, Node content) {
+		this.id = id;
+		this.content = content;
 	}
 
-	public int size() {
-		return size;
+	public int id() {
+		return id;
 	}
 
-	public String type() {
-		return type;
+	public Node content() {
+		return content;
+	}
+
+	public List<GssNode> parents() {
+		return parents;
+	}
+
+	@Override
+	public String toString() {
+		return content.toString();
 	}
 }

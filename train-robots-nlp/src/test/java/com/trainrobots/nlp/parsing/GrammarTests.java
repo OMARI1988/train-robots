@@ -17,8 +17,6 @@
 
 package com.trainrobots.nlp.parsing;
 
-import java.util.List;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -29,14 +27,8 @@ public class GrammarTests {
 
 	@Test
 	@Ignore
-	public void shouldGetRules() {
-
-		// Rules.
-		CorpusGrammar grammar = new CorpusGrammar();
-		List<GrammarRule> rules = grammar.deriveRules();
-
-		// Display.
-		for (GrammarRule rule : rules) {
+	public void shouldDeriveRules() {
+		for (GrammarRule rule : CorpusGrammar.rules()) {
 			System.out.println(rule + "\t" + rule.count);
 		}
 	}

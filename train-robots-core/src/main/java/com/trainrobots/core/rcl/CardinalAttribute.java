@@ -23,13 +23,13 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class CardinalAttribute extends Rcl {
 
-	private int cardinal;
+	private Integer cardinal;
 
-	public CardinalAttribute(int cardinal) {
+	public CardinalAttribute(Integer cardinal) {
 		this.cardinal = cardinal;
 	}
 
-	public CardinalAttribute(int cardinal, int tokenStart, int tokenEnd) {
+	public CardinalAttribute(Integer cardinal, int tokenStart, int tokenEnd) {
 		this.cardinal = cardinal;
 		this.tokenStart = tokenStart;
 		this.tokenEnd = tokenEnd;
@@ -54,7 +54,10 @@ public class CardinalAttribute extends Rcl {
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("cardinal:", Integer.toString(cardinal));
+		Node node = new Node("cardinal:");
+		if (cardinal != null) {
+			node.add(cardinal.toString());
+		}
 		addAlignment(node);
 		return node;
 	}
@@ -79,7 +82,7 @@ public class CardinalAttribute extends Rcl {
 		return cardinal;
 	}
 
-	public void setCardinal(int cardinal) {
+	public void setCardinal(Integer cardinal) {
 		this.cardinal = cardinal;
 	}
 }

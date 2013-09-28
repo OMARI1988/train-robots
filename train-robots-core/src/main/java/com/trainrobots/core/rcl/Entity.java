@@ -27,8 +27,8 @@ import com.trainrobots.core.rcl.generation.Generator;
 
 public class Entity extends Rcl {
 
-	private final Integer id;
-	private final Integer referenceId;
+	private Integer id;
+	private Integer referenceId;
 	private final TypeAttribute typeAttribute;
 	private final OrdinalAttribute ordinalAttribute;
 	private final CardinalAttribute cardinalAttribute;
@@ -125,8 +125,16 @@ public class Entity extends Rcl {
 		return id;
 	}
 
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public Integer referenceId() {
 		return referenceId;
+	}
+
+	public void setReferenceId(Integer referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	public TypeAttribute typeAttribute() {

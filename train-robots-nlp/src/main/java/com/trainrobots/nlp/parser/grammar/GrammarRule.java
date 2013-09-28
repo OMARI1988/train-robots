@@ -34,6 +34,10 @@ public class GrammarRule {
 		return lhs;
 	}
 
+	public List<String> rhs() {
+		return rhs;
+	}
+
 	public void add(String rhs) {
 		this.rhs.add(rhs);
 	}

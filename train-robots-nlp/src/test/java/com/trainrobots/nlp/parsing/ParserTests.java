@@ -28,12 +28,14 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.TokenizedTree;
+import com.trainrobots.nlp.parser.grammar.CorpusGrammar;
 
 public class ParserTests {
+
+	private int gssSize;
 
 	@Test
 	public void shouldParse1() {
@@ -46,9 +48,19 @@ public class ParserTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldParse3() {
 		assertTrue(match(28));
+	}
+
+	@Test
+	public void shouldParse4() {
+		assertTrue(match(1003));
+	}
+
+	@Test
+	@Ignore
+	public void shouldParse5() {
+		assertTrue(match(7618, true));
 	}
 
 	@Test
@@ -67,9 +79,9 @@ public class ParserTests {
 			try {
 				if (match(command.id)) {
 					correct++;
-					System.out.println(command.id + ": Valid.");
 				} else {
-					System.out.println(command.id + ": Misparsed.");
+					System.out.println(command.id + ": Misparsed. |GSS| = "
+							+ gssSize);
 				}
 			} catch (Exception e) {
 				System.out.println(command.id + ": " + e.getMessage());
@@ -84,19 +96,34 @@ public class ParserTests {
 				+ df.format(p) + " %");
 	}
 
-	private static boolean match(int id) {
+	private boolean match(int id) {
+		return match(id, false);
+	}
+
+	private boolean match(int id, boolean verbose) {
 
 		// Command.
 		Command command = Corpus.getCommand(id);
 
 		// Parse.
 		List<Node> chunks = Chunker.getChunks(command.rcl);
-		Parser parser = new Parser(chunks);
-		parser.parse();
-		Node result = parser.result();
+		Parser parser = new Parser(CorpusGrammar.rules(), chunks, verbose);
+		List<Node> results = parser.parse();
+		gssSize = parser.gss().nodes().size();
 
 		// Validate.
-		Rcl expected = TokenizedTree.getTree(command.rcl);
-		return (expected.toNode().equals(result));
+		Node expected = TokenizedTree.getTree(command.rcl).toNode();
+		for (Node result : results) {
+			if (expected.equals(result)) {
+				return true;
+			}
+		}
+
+		// No match.
+		if (verbose) {
+			System.out.println("EXPECTED:");
+			System.out.println(expected);
+		}
+		return false;
 	}
 }

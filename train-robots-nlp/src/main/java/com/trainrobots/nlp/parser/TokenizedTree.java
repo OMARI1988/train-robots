@@ -20,6 +20,7 @@ package com.trainrobots.nlp.parser;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
+import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
@@ -35,6 +36,11 @@ public class TokenizedTree {
 	public static Rcl getTree(Rcl rcl) {
 		Rcl clone = rcl.clone();
 		clone.recurse(new RclVisitor() {
+
+			public void visit(Rcl parent, Entity entity) {
+				entity.setId(null);
+				entity.setReferenceId(null);
+			}
 
 			public void visit(Rcl parent, ActionAttribute actionAttribute) {
 				actionAttribute.setAction(null);
@@ -57,11 +63,11 @@ public class TokenizedTree {
 			}
 
 			public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
-				ordinalAttribute.setOrdinal(0);
+				ordinalAttribute.setOrdinal(null);
 			}
 
 			public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
-				cardinalAttribute.setCardinal(0);
+				cardinalAttribute.setCardinal(null);
 			}
 		});
 

@@ -17,15 +17,22 @@
 
 package com.trainrobots.nlp.parser;
 
-public abstract class Action {
+import java.util.ArrayList;
+import java.util.List;
 
-	private static final Shift shift = new Shift();
+import com.trainrobots.core.nodes.Node;
 
-	public static Shift shift() {
-		return shift;
+public class Gss {
+
+	private final List<GssNode> nodes = new ArrayList<GssNode>();
+
+	public List<GssNode> nodes() {
+		return nodes;
 	}
 
-	public static Reduce reduce(int size, String type) {
-		return new Reduce(size, type);
+	public GssNode add(Node content) {
+		GssNode node = new GssNode(nodes.size() + 1, content);
+		nodes.add(node);
+		return node;
 	}
 }

@@ -23,13 +23,13 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class OrdinalAttribute extends Rcl {
 
-	private int ordinal;
+	private Integer ordinal;
 
-	public OrdinalAttribute(int ordinal) {
+	public OrdinalAttribute(Integer ordinal) {
 		this.ordinal = ordinal;
 	}
 
-	public OrdinalAttribute(int ordinal, int tokenStart, int tokenEnd) {
+	public OrdinalAttribute(Integer ordinal, int tokenStart, int tokenEnd) {
 		this.ordinal = ordinal;
 		this.tokenStart = tokenStart;
 		this.tokenEnd = tokenEnd;
@@ -54,7 +54,10 @@ public class OrdinalAttribute extends Rcl {
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("ordinal:", Integer.toString(ordinal));
+		Node node = new Node("ordinal:");
+		if (ordinal != null) {
+			node.add(ordinal.toString());
+		}
 		addAlignment(node);
 		return node;
 	}
@@ -75,11 +78,11 @@ public class OrdinalAttribute extends Rcl {
 		visitor.visit(parent, this);
 	}
 
-	public int ordinal() {
+	public Integer ordinal() {
 		return ordinal;
 	}
 
-	public void setOrdinal(int ordinal) {
+	public void setOrdinal(Integer ordinal) {
 		this.ordinal = ordinal;
 	}
 }

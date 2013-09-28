@@ -28,18 +28,26 @@ import com.trainrobots.core.nodes.Node;
 
 public class CorpusGrammar {
 
-	private final Map<String, GrammarRule> rules = new HashMap<String, GrammarRule>();
+	private static final List<GrammarRule> rules;
 
-	public List<GrammarRule> deriveRules() {
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl != null) {
-				add(command.rcl.toNode());
-			}
-		}
-		return new ArrayList(rules.values());
+	private CorpusGrammar() {
 	}
 
-	private void add(Node node) {
+	static {
+		Map<String, GrammarRule> map = new HashMap<String, GrammarRule>();
+		for (Command command : Corpus.getCommands()) {
+			if (command.rcl != null) {
+				add(map, command.rcl.toNode());
+			}
+		}
+		rules = new ArrayList<GrammarRule>(map.values());
+	}
+
+	public static List<GrammarRule> rules() {
+		return rules;
+	}
+
+	private static void add(Map<String, GrammarRule> map, Node node) {
 
 		// Terminal?
 		if (!node.tag.equals("event:") && !node.tag.equals("sequence:")
@@ -58,17 +66,17 @@ public class CorpusGrammar {
 			}
 		}
 		String key = rule.toString();
-		GrammarRule existingRule = rules.get(key);
+		GrammarRule existingRule = map.get(key);
 		if (existingRule != null) {
 			existingRule.count++;
 		} else {
 			rule.count = 1;
-			rules.put(key, rule);
+			map.put(key, rule);
 		}
 
 		// Recurse.
 		for (Node child : node.children) {
-			add(child);
+			add(map, child);
 		}
 	}
 }
