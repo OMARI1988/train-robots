@@ -62,6 +62,12 @@ public class IndicatorAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("indicator:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -78,9 +84,5 @@ public class IndicatorAttribute extends Rcl {
 
 	public void setIndicator(Indicator indicator) {
 		this.indicator = indicator;
-	}
-
-	public IndicatorAttribute cloneWithoutValue() {
-		return new IndicatorAttribute(null, tokenStart, tokenEnd);
 	}
 }

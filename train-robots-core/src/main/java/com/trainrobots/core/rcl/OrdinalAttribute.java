@@ -59,6 +59,12 @@ public class OrdinalAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("ordinal:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -75,9 +81,5 @@ public class OrdinalAttribute extends Rcl {
 
 	public void setOrdinal(int ordinal) {
 		this.ordinal = ordinal;
-	}
-
-	public OrdinalAttribute cloneWithoutValue() {
-		return new OrdinalAttribute(0, tokenStart, tokenEnd);
 	}
 }

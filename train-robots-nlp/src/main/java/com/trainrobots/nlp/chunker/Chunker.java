@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
@@ -38,46 +39,46 @@ public abstract class Chunker {
 
 	public abstract void train(List<Command> commands);
 
-	public static List<Rcl> getChunks(Rcl rcl) {
-		final List<Rcl> chunks = new ArrayList<Rcl>();
+	public static List<Node> getChunks(Rcl rcl) {
+		final List<Node> nodes = new ArrayList<Node>();
 
 		rcl.recurse(new RclVisitor() {
 			public void visit(Rcl parent, ActionAttribute actionAttribute) {
-				add(actionAttribute.cloneWithoutValue());
+				add(actionAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, ColorAttribute colorAttribute) {
-				add(colorAttribute.cloneWithoutValue());
+				add(colorAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, IndicatorAttribute indicatorAttribute) {
-				add(indicatorAttribute.cloneWithoutValue());
+				add(indicatorAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, RelationAttribute relationAttribute) {
-				add(relationAttribute.cloneWithoutValue());
+				add(relationAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, TypeAttribute typeAttribute) {
-				add(typeAttribute.cloneWithoutValue());
+				add(typeAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
-				add(ordinalAttribute.cloneWithoutValue());
+				add(ordinalAttribute.toNodeWithoutValue());
 			}
 
 			public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
-				add(cardinalAttribute.cloneWithoutValue());
+				add(cardinalAttribute.toNodeWithoutValue());
 			}
 
-			private void add(Rcl rcl) {
-				if (rcl.tokenStart() != 0) {
-					chunks.add(rcl);
+			private void add(Node node) {
+				if (node.getChild("token:") != null) {
+					nodes.add(node);
 				}
 			}
 		});
 
-		return chunks;
+		return nodes;
 	}
 
 	public static List<Rcl> getChunks(List<Token> tokens) {

@@ -61,6 +61,12 @@ public class ColorAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("color:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -77,9 +83,5 @@ public class ColorAttribute extends Rcl {
 
 	public void setColor(Color color) {
 		this.color = color;
-	}
-
-	public ColorAttribute cloneWithoutValue() {
-		return new ColorAttribute(null, tokenStart, tokenEnd);
 	}
 }

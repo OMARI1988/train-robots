@@ -59,6 +59,12 @@ public class CardinalAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("cardinal:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -75,9 +81,5 @@ public class CardinalAttribute extends Rcl {
 
 	public void setCardinal(int cardinal) {
 		this.cardinal = cardinal;
-	}
-
-	public CardinalAttribute cloneWithoutValue() {
-		return new CardinalAttribute(0, tokenStart, tokenEnd);
 	}
 }

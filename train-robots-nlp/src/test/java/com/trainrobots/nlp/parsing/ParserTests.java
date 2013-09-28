@@ -25,8 +25,8 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclType;
 import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.TokenizedTree;
@@ -36,21 +36,55 @@ public class ParserTests {
 	@Test
 	public void shouldParse1() {
 
+		validate(84, new TransitionSequence() {
+			public void parse(Parser p) {
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(2, "entity:");
+				p.reduce(2, "event:");
+			}
+		});
+	}
+
+	@Test
+	public void shouldParse2() {
+
+		validate(14055, new TransitionSequence() {
+			public void parse(Parser p) {
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(2, "entity:");
+				p.shift();
+				p.shift();
+				p.shift();
+				p.shift();
+				p.reduce(3, "entity:");
+				p.reduce(2, "spatial-relation:");
+				p.reduce(1, "destination:");
+				p.reduce(3, "event:");
+			}
+		});
+	}
+
+	private static void validate(int id, TransitionSequence sequence) {
+
 		// Command.
-		Command command = Corpus.getCommand(84);
+		Command command = Corpus.getCommand(id);
 
 		// Parse.
-		List<Rcl> chunks = Chunker.getChunks(command.rcl);
+		List<Node> chunks = Chunker.getChunks(command.rcl);
 		Parser parser = new Parser(chunks);
-		parser.shift();
-		parser.shift();
-		parser.shift();
-		parser.reduce(2, RclType.Entity);
-		parser.reduce(2, RclType.Event);
-		Rcl rcl = parser.rcl();
+		sequence.parse(parser);
+		Node result = parser.result();
 
 		// Validate.
 		Rcl expected = TokenizedTree.getTree(command.rcl);
-		assertEquals(rcl.toNode(), expected.toNode());
+		assertEquals(result, expected.toNode());
+	}
+
+	private static interface TransitionSequence {
+		void parse(Parser p);
 	}
 }

@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.nodes.Node;
 
 public class Stack {
 
-	private final List<Rcl> items = new ArrayList<Rcl>();
+	private final List<Node> items = new ArrayList<Node>();
 	private int size;
 
 	public boolean empty() {
@@ -36,12 +36,12 @@ public class Stack {
 		return size;
 	}
 
-	public Rcl get(int index) {
+	public Node get(int index) {
 		index = size - index - 1;
 		return index >= 0 && index < items.size() ? items.get(index) : null;
 	}
 
-	public void push(Rcl item) {
+	public void push(Node item) {
 		if (size < items.size()) {
 			items.set(size, item);
 		} else {
@@ -50,8 +50,8 @@ public class Stack {
 		size++;
 	}
 
-	public Rcl pop() {
-		Rcl item = get(0);
+	public Node pop() {
+		Node item = get(0);
 		pop(1);
 		return item;
 	}

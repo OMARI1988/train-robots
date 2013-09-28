@@ -62,6 +62,12 @@ public class RelationAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("relation:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -78,9 +84,5 @@ public class RelationAttribute extends Rcl {
 
 	public void setRelation(Relation relation) {
 		this.relation = relation;
-	}
-
-	public RelationAttribute cloneWithoutValue() {
-		return new RelationAttribute(null, tokenStart, tokenEnd);
 	}
 }

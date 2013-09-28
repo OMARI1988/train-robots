@@ -17,16 +17,11 @@
 
 package com.trainrobots.nlp.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.ActionAttribute;
-import com.trainrobots.core.rcl.ColorAttribute;
-import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.Event;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclType;
-import com.trainrobots.core.rcl.TypeAttribute;
+import com.trainrobots.core.nodes.Node;
 
 public class Parser {
 
@@ -34,11 +29,11 @@ public class Parser {
 	private final Queue queue;
 	private final boolean verbose;
 
-	public Parser(List<Rcl> items) {
+	public Parser(List<Node> items) {
 		this(false, items);
 	}
 
-	public Parser(boolean verbose, List<Rcl> items) {
+	public Parser(boolean verbose, List<Node> items) {
 
 		this.verbose = verbose;
 		this.queue = new Queue(items);
@@ -49,17 +44,17 @@ public class Parser {
 		}
 	}
 
-	public Rcl rcl() {
+	public Node result() {
 		if (queue.empty() && stack.size() == 1) {
 			return stack.get(0);
 		}
-		throw new CoreException("Failed to parse a single RCL element.");
+		throw new CoreException("Failed to parse a single result.");
 	}
 
 	public void shift() {
 
-		Rcl rcl = queue.read();
-		stack.push(rcl);
+		Node node = queue.read();
+		stack.push(node);
 
 		if (verbose) {
 			System.out.println();
@@ -69,64 +64,25 @@ public class Parser {
 		}
 	}
 
-	public void reduce(int size, RclType type) {
+	public void reduce(int size, String type) {
 
 		if (verbose) {
 			System.out.println();
 			System.out.println("REDUCE " + size + " " + type);
 		}
 
-		switch (type) {
-		case Entity:
-			reduceEntity(size);
-			break;
-		case Event:
-			reduceEvent(size);
-			break;
-		default:
-			throw new CoreException("Invalid RCL type '" + type
-					+ "'for reduce operation.");
+		Node parent = new Node(type);
+		for (int i = 0; i < size; i++) {
+			if (parent.children == null) {
+				parent.children = new ArrayList<Node>();
+			}
+			parent.children.add(0, stack.pop());
 		}
+		stack.push(parent);
 
 		if (verbose) {
 			System.out.println("    Q = " + queue);
 			System.out.println("    S = " + stack);
 		}
-	}
-
-	private void reduceEntity(int size) {
-
-		// entity --> color type
-		if (size == 2) {
-			Rcl s0 = stack.pop();
-			Rcl s1 = stack.pop();
-			if (s1 instanceof ColorAttribute && s0 instanceof TypeAttribute) {
-				ColorAttribute color = (ColorAttribute) s1;
-				TypeAttribute type = (TypeAttribute) s0;
-				stack.push(new Entity(color, type));
-				return;
-			}
-		}
-
-		// No match
-		throw new CoreException("Invalid entity reduction.");
-	}
-
-	private void reduceEvent(int size) {
-
-		// event --> action entity
-		if (size == 2) {
-			Rcl s0 = stack.pop();
-			Rcl s1 = stack.pop();
-			if (s1 instanceof ActionAttribute && s0 instanceof Entity) {
-				ActionAttribute action = (ActionAttribute) s1;
-				Entity entity = (Entity) s0;
-				stack.push(new Event(action, entity));
-				return;
-			}
-		}
-
-		// No match
-		throw new CoreException("Invalid event reduction.");
 	}
 }

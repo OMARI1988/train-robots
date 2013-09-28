@@ -22,18 +22,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.nodes.Node;
 
 public class Queue {
 
-	private final List<Rcl> items;
+	private final List<Node> items;
 	private int position;
 
-	public Queue(Rcl... items) {
+	public Queue(Node... items) {
 		this.items = new ArrayList(Arrays.asList(items));
 	}
 
-	public Queue(List<Rcl> items) {
+	public Queue(List<Node> items) {
 		this.items = items;
 	}
 
@@ -41,12 +41,12 @@ public class Queue {
 		return position >= items.size();
 	}
 
-	public Rcl get(int index) {
+	public Node get(int index) {
 		index += position;
 		return index >= 0 && index < items.size() ? items.get(index) : null;
 	}
 
-	public Rcl read() {
+	public Node read() {
 		if (position >= items.size()) {
 			throw new CoreException(
 					"Failed to read beyond the end of the queue.");

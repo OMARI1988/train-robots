@@ -62,6 +62,12 @@ public class ActionAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("action:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -78,9 +84,5 @@ public class ActionAttribute extends Rcl {
 
 	public void setAction(Action action) {
 		this.action = action;
-	}
-
-	public ActionAttribute cloneWithoutValue() {
-		return new ActionAttribute(null, tokenStart, tokenEnd);
 	}
 }

@@ -61,6 +61,12 @@ public class TypeAttribute extends Rcl {
 		return node;
 	}
 
+	public Node toNodeWithoutValue() {
+		Node node = new Node("type:");
+		addAlignment(node);
+		return node;
+	}
+
 	@Override
 	public String generate(GenerationContext context) {
 		throw new CoreException("NOT_IMPLEMENTED");
@@ -77,9 +83,5 @@ public class TypeAttribute extends Rcl {
 
 	public void setType(Type type) {
 		this.type = type;
-	}
-
-	public TypeAttribute cloneWithoutValue() {
-		return new TypeAttribute(null, tokenStart, tokenEnd);
 	}
 }
