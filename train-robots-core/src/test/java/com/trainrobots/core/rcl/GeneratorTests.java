@@ -43,8 +43,8 @@ public class GeneratorTests {
 		Event event = new Event(new ActionAttribute(Action.move),
 				new Entity(new ColorAttribute(Color.green), new TypeAttribute(
 						Type.prism)), new SpatialRelation(
-						new IndicatorAttribute(SpatialIndicator.above),
-						new Entity(new ColorAttribute(Color.red),
+						new RelationAttribute(Relation.above), new Entity(
+								new ColorAttribute(Color.red),
 								new TypeAttribute(Type.cube))));
 		assertEquals(event.generate(),
 				"Move the green prism above the red cube.");
@@ -55,10 +55,9 @@ public class GeneratorTests {
 		Event event = new Event(new ActionAttribute(Action.move),
 				new Entity(new ColorAttribute(Color.green), new TypeAttribute(
 						Type.prism)), new SpatialRelation(
-						new IndicatorAttribute(SpatialIndicator.within),
-						new Entity(
-								new IndicatorAttribute(SpatialIndicator.back),
-								new IndicatorAttribute(SpatialIndicator.left),
+						new RelationAttribute(Relation.within), new Entity(
+								new IndicatorAttribute(Indicator.back),
+								new IndicatorAttribute(Indicator.left),
 								new TypeAttribute(Type.corner))));
 		assertEquals(event.generate(),
 				"Move the green prism within the back left corner.");
@@ -68,16 +67,15 @@ public class GeneratorTests {
 	public void shouldGenerateSequence() {
 		Sequence sequence = new Sequence(new Event(new ActionAttribute(
 				Action.take), new Entity(1, new IndicatorAttribute(
-				SpatialIndicator.top), new TypeAttribute(Type.cube),
-				new SpatialRelation(new IndicatorAttribute(
-						SpatialIndicator.part), new Entity(new ColorAttribute(
-						Color.blue), new TypeAttribute(Type.stack))))),
-				new Event(new ActionAttribute(Action.drop), new Entity(
-						new TypeAttribute(Type.reference), 1),
-						new SpatialRelation(Entity.cardinal(
-								new CardinalAttribute(2), new TypeAttribute(
-										Type.tile)), new IndicatorAttribute(
-								SpatialIndicator.forward))));
+				Indicator.top), new TypeAttribute(Type.cube),
+				new SpatialRelation(new RelationAttribute(Relation.part),
+						new Entity(new ColorAttribute(Color.blue),
+								new TypeAttribute(Type.stack))))), new Event(
+				new ActionAttribute(Action.drop), new Entity(new TypeAttribute(
+						Type.reference), 1), new SpatialRelation(
+						Entity.cardinal(new CardinalAttribute(2),
+								new TypeAttribute(Type.tile)),
+						new RelationAttribute(Relation.forward))));
 		assertEquals(
 				sequence.generate(),
 				"Pick up the top cube that is part of the blue stack and drop it two squares forward.");
@@ -86,7 +84,7 @@ public class GeneratorTests {
 	@Test
 	public void shouldGenerateTypeReference() {
 		Sequence sequence = Sequence
-				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: gray) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (spatial-indicator: above) (entity: (color: green) (type: type-reference) (reference-id: 1))))))");
+				.fromString("(sequence: (event: (action: take) (entity: (id: 1) (color: gray) (type: cube))) (event: (action: drop) (entity: (type: reference) (reference-id: 1)) (destination: (spatial-relation: (relation: above) (entity: (color: green) (type: type-reference) (reference-id: 1))))))");
 
 		assertEquals(sequence.generate(),
 				"Pick up the gray cube and drop it above the green one.");
@@ -102,14 +100,14 @@ public class GeneratorTests {
 	@Test
 	public void shouldGenerateRegion() {
 		Entity entity = Entity
-				.fromString("(entity: (spatial-indicator: right) (type: region))");
+				.fromString("(entity: (indicator: right) (type: region))");
 		assertEquals(entity.generate(), "The right.");
 	}
 
 	@Test
 	public void shouldGenerateAdjacentRelation() {
 		Entity entity = Entity
-				.fromString("(entity: (type: cube) (spatial-relation: (spatial-indicator: adjacent) (entity: (type: prism))))");
+				.fromString("(entity: (type: cube) (spatial-relation: (relation: adjacent) (entity: (type: prism))))");
 		assertEquals(entity.generate(), "The cube adjacent to the prism.");
 	}
 

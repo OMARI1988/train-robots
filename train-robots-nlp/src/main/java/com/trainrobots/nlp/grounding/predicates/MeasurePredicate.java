@@ -18,7 +18,7 @@
 package com.trainrobots.nlp.grounding.predicates;
 
 import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.WorldEntity;
@@ -26,13 +26,13 @@ import com.trainrobots.nlp.scenes.WorldEntity;
 public class MeasurePredicate implements Predicate {
 
 	private final Entity measure;
-	private final SpatialIndicator indicator;
+	private final Relation relation;
 	private final WorldEntity landmark;
 
-	public MeasurePredicate(Entity measure, SpatialIndicator indicator,
+	public MeasurePredicate(Entity measure, Relation relation,
 			WorldEntity landmark) {
 		this.measure = measure;
-		this.indicator = indicator;
+		this.relation = relation;
 		this.landmark = landmark;
 	}
 
@@ -46,7 +46,7 @@ public class MeasurePredicate implements Predicate {
 			Position l = landmark.basePosition();
 			int n = measure.cardinalAttribute().cardinal();
 
-			switch (indicator) {
+			switch (relation) {
 			case right:
 				return p.x == l.x && p.y == l.y - n;
 			}
@@ -58,6 +58,6 @@ public class MeasurePredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(measure: " + measure + " " + indicator + " " + landmark + ")";
+		return "(measure: " + measure + " " + relation + " " + landmark + ")";
 	}
 }

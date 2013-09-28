@@ -25,10 +25,10 @@ import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
-import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.Relation;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.Sequence;
-import com.trainrobots.core.rcl.SpatialIndicator;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
@@ -202,9 +202,9 @@ public class Processor {
 	private Position mapSpatialRelation(Rcl root, Position actionPosition,
 			SpatialRelation relation) {
 
-		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
-		if (indicatorAttribute == null) {
-			throw new CoreException("Indicator not specified.");
+		RelationAttribute relationAttribute = relation.relationAttribute();
+		if (relationAttribute == null) {
+			throw new CoreException("Relation not specified.");
 		}
 
 		if (relation.entity() == null) {
@@ -215,32 +215,32 @@ public class Processor {
 
 		// Stack?
 		if (entity.type() == Type.stack) {
-			if (indicatorAttribute.indicator() == SpatialIndicator.above) {
+			if (relationAttribute.relation() == Relation.above) {
 				Stack stack = (Stack) entity;
 				return stack.getTop().position().add(0, 0, 1);
 			}
-			throw new CoreException("Invalid indicator for stack: "
-					+ indicatorAttribute);
+			throw new CoreException("Invalid relation for stack: "
+					+ relationAttribute);
 		}
 
 		// Corner?
 		if (entity.type() == Type.corner) {
 			Position position = getPosition(entity);
-			if (indicatorAttribute.indicator() == SpatialIndicator.within
-					|| indicatorAttribute.indicator() == SpatialIndicator.above) {
+			if (relationAttribute.relation() == Relation.within
+					|| relationAttribute.relation() == Relation.above) {
 				return world.getDropPosition(position.x, position.y);
 			}
 		}
 
 		// Board?
 		if (entity.type() == Type.board
-				&& indicatorAttribute.indicator() == SpatialIndicator.above) {
+				&& relationAttribute.relation() == Relation.above) {
 			return world.getDropPosition(actionPosition.x, actionPosition.y);
 		}
 
 		// Shape.
 		Position p = null;
-		switch (indicatorAttribute.indicator()) {
+		switch (relationAttribute.relation()) {
 		case left:
 			p = getPosition(entity).add(0, 1, 0);
 			break;
@@ -256,7 +256,7 @@ public class Processor {
 		if (p != null) {
 			return world.getDropPosition(p.x, p.y);
 		}
-		throw new CoreException("Invalid indicator: " + indicatorAttribute);
+		throw new CoreException("Invalid relation: " + relationAttribute);
 	}
 
 	private Position mapSpatialRelationWithMeasure(Rcl root, Position position,
@@ -285,9 +285,9 @@ public class Processor {
 		}
 		int cardinal = measure.cardinalAttribute().cardinal();
 
-		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
+		RelationAttribute relationAttribute = relation.relationAttribute();
 		Position p;
-		switch (indicatorAttribute.indicator()) {
+		switch (relationAttribute.relation()) {
 		case left:
 			p = position.add(0, cardinal, 0);
 			break;
@@ -301,8 +301,8 @@ public class Processor {
 			p = position.add(-cardinal, 0, 0);
 			break;
 		default:
-			throw new CoreException("Unsupported indicator type: "
-					+ indicatorAttribute);
+			throw new CoreException("Unsupported relation: "
+					+ relationAttribute);
 		}
 		return world.getDropPosition(p.x, p.y);
 	}

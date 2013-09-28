@@ -20,188 +20,113 @@ package com.trainrobots.nlp.parser;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.tagging.Tagger;
+import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.ColorAttribute;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.RclType;
+import com.trainrobots.core.rcl.TypeAttribute;
 
 public class Parser {
 
-	private final PartialList list;
+	private final Stack stack = new Stack();
+	private final Queue queue;
 	private final boolean verbose;
 
-	private Parser(boolean verbose, Node sentence) {
+	public Parser(List<Rcl> items) {
+		this(false, items);
+	}
+
+	public Parser(boolean verbose, List<Rcl> items) {
+
 		this.verbose = verbose;
-		list = new PartialList(sentence.children);
-	}
-
-	public static Node parse(String text) {
-		return parse(false, text);
-	}
-
-	public static Node parse(boolean verbose, String text) {
-		Node node = new Node("unknown-sequence:");
-		List<Node> sentences = Tagger.getSentences(text);
-		for (Node sentence : sentences) {
-			Parser parser = new Parser(verbose, sentence);
-			parser.parse();
-			Node result = parser.getResult();
-			node.add(result);
-		}
-		return node.hasSingleChild() ? node.getSingleChild() : node;
-	}
-
-	private void parse() {
+		this.queue = new Queue(items);
 
 		if (verbose) {
-			System.out.println(list.format());
+			System.out.println("START");
+			System.out.println("    Q = " + queue);
+		}
+	}
+
+	public Rcl rcl() {
+		if (queue.empty() && stack.size() == 1) {
+			return stack.get(0);
+		}
+		throw new CoreException("Failed to parse a single RCL element.");
+	}
+
+	public void shift() {
+
+		Rcl rcl = queue.read();
+		stack.push(rcl);
+
+		if (verbose) {
 			System.out.println();
-		}
-
-		Action action;
-		while ((action = next()) != null) {
-
-			switch (action.type()) {
-			case Left:
-				list.left(action.number());
-				break;
-			case Right:
-				list.right(action.number());
-				break;
-			case Unary:
-				list.unary(action.number(), action.tag());
-				break;
-			case Remove:
-				list.remove(action.number());
-				break;
-			default:
-				throw new CoreException("Unrecognized action: " + action);
-			}
-
-			if (verbose) {
-				System.out.println(action);
-				System.out.println();
-				System.out.println(list.format());
-				System.out.println();
-			}
+			System.out.println("SHIFT");
+			System.out.println("    Q = " + queue);
+			System.out.println("    S = " + stack);
 		}
 	}
 
-	private Action next() {
-		int size = list.size();
-		for (int i = 1; i <= size; i++) {
+	public void reduce(int size, RclType type) {
 
-			// Context.
-			Node left = list.get(i - 1);
-			Node node = list.get(i);
-			Node right = list.get(i + 1);
-			Node right2 = list.get(i + 2);
-
-			// attribute: conjunction: attribute:
-			if (conjunction(node) && attribute(right)) {
-				return Action.left(i);
-			}
-			if (attribute(node) && conjunction(right) && !right.isPreTerminal()) {
-				return Action.left(i);
-			}
-
-			// Attach attribute: or ordinal: to entity:
-			if ((attribute(node) || ordinal(node) || cardinal(node))
-					&& entity(right)) {
-				return Action.right(i);
-			}
-
-			// Attach entity: or anaphor: to event:
-			if (event(node) && (entity(right) || anaphor(right))) {
-				return Action.left(i);
-			}
-
-			// Attach entity: to spatial-relation:
-			if (spatialIndicator(node) && entity(right)) {
-				return Action.unary(i, "spatial-relation:");
-			}
-			if (spatialRelation(node) && entity(right)) {
-				return Action.left(i);
-			}
-
-			// Attach spatial-relation: to event:
-			if (event(node) && spatialRelation(right) && right2 == null) {
-				return Action.unary(i + 1, "destination:");
-			}
-			if (event(node) && destination(right) && right2 == null) {
-				return Action.left(i);
-			}
-
-			// event: conjunction: event:
-			if (event(left) && conjunction(node) && event(right)
-					&& right2 == null) {
-				return Action.remove(i);
-			}
-			if (event(node) && event(right) && right2 == null) {
-				return Action.unary(i, "sequence:");
-			}
-			if (sequence(node) && event(right) && right2 == null) {
-				return Action.left(i);
-			}
-		}
-		return null;
-	}
-
-	private Node getResult() {
-
-		// Single node?
-		if (list.size() == 1) {
-			return list.get(1);
+		if (verbose) {
+			System.out.println();
+			System.out.println("REDUCE " + size + " " + type);
 		}
 
-		// Multiple nodes.
-		Node node = new Node("unknown:");
-		for (Node child : list) {
-			node.add(child);
+		switch (type) {
+		case Entity:
+			reduceEntity(size);
+			break;
+		case Event:
+			reduceEvent(size);
+			break;
+		default:
+			throw new CoreException("Invalid RCL type '" + type
+					+ "'for reduce operation.");
 		}
-		return node;
+
+		if (verbose) {
+			System.out.println("    Q = " + queue);
+			System.out.println("    S = " + stack);
+		}
 	}
 
-	private static boolean sequence(Node node) {
-		return node != null && node.tag.equals("sequence:");
+	private void reduceEntity(int size) {
+
+		// entity --> color type
+		if (size == 2) {
+			Rcl s0 = stack.pop();
+			Rcl s1 = stack.pop();
+			if (s1 instanceof ColorAttribute && s0 instanceof TypeAttribute) {
+				ColorAttribute color = (ColorAttribute) s1;
+				TypeAttribute type = (TypeAttribute) s0;
+				stack.push(new Entity(color, type));
+				return;
+			}
+		}
+
+		// No match
+		throw new CoreException("Invalid entity reduction.");
 	}
 
-	private static boolean event(Node node) {
-		return node != null && node.tag.equals("event:");
-	}
+	private void reduceEvent(int size) {
 
-	private static boolean attribute(Node node) {
-		return node != null
-				&& (node.tag.equals("attribute:") || node.tag.equals("color:"));
-	}
+		// event --> action entity
+		if (size == 2) {
+			Rcl s0 = stack.pop();
+			Rcl s1 = stack.pop();
+			if (s1 instanceof ActionAttribute && s0 instanceof Entity) {
+				ActionAttribute action = (ActionAttribute) s1;
+				Entity entity = (Entity) s0;
+				stack.push(new Event(action, entity));
+				return;
+			}
+		}
 
-	private static boolean ordinal(Node node) {
-		return node != null && node.tag.equals("ordinal:");
-	}
-
-	private static boolean cardinal(Node node) {
-		return node != null && node.tag.equals("cardinal:");
-	}
-
-	private static boolean entity(Node node) {
-		return node != null && node.tag.equals("entity:");
-	}
-
-	private static boolean spatialIndicator(Node node) {
-		return node != null && node.tag.equals("spatial-indicator:");
-	}
-
-	private static boolean spatialRelation(Node node) {
-		return node != null && node.tag.equals("spatial-relation:");
-	}
-
-	private static boolean destination(Node node) {
-		return node != null && node.tag.equals("destination:");
-	}
-
-	private static boolean anaphor(Node node) {
-		return node != null && node.tag.equals("anaphor:");
-	}
-
-	private static boolean conjunction(Node node) {
-		return node != null && node.tag.equals("conjunction:");
+		// No match
+		throw new CoreException("Invalid event reduction.");
 	}
 }

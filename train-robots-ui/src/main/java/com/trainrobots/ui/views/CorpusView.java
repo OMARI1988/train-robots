@@ -36,7 +36,7 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.parser.partial.Parser;
 import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.nlp.tokenizer.TokenAligner;
 import com.trainrobots.nlp.tokenizer.TokenizedGenerationContext;

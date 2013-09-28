@@ -23,15 +23,14 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class IndicatorAttribute extends Rcl {
 
-	private final SpatialIndicator indicator;
+	private Indicator indicator;
 
-	public IndicatorAttribute(SpatialIndicator Indicator) {
-		this.indicator = Indicator;
+	public IndicatorAttribute(Indicator indicator) {
+		this.indicator = indicator;
 	}
 
-	public IndicatorAttribute(SpatialIndicator Indicator, int tokenStart,
-			int tokenEnd) {
-		this.indicator = Indicator;
+	public IndicatorAttribute(Indicator indicator, int tokenStart, int tokenEnd) {
+		this.indicator = indicator;
 		this.tokenStart = tokenStart;
 		this.tokenEnd = tokenEnd;
 	}
@@ -42,13 +41,12 @@ public class IndicatorAttribute extends Rcl {
 
 	public static IndicatorAttribute fromNode(Node node) {
 
-		if (!node.hasTag("spatial-indicator:")) {
-			throw new CoreException("Expected 'spatial-indicator:' not '"
-					+ node.tag + "'.");
+		if (!node.hasTag("indicator:")) {
+			throw new CoreException("Expected 'indicator:' not '" + node.tag
+					+ "'.");
 		}
 
-		SpatialIndicator indicator = SpatialIndicator.valueOf(node
-				.getSingleLeaf());
+		Indicator indicator = Indicator.valueOf(node.getSingleLeaf());
 		int[] tokens = getTokens(node);
 		return tokens != null ? new IndicatorAttribute(indicator, tokens[0],
 				tokens[1]) : new IndicatorAttribute(indicator);
@@ -56,7 +54,10 @@ public class IndicatorAttribute extends Rcl {
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("spatial-indicator:", indicator.toString());
+		Node node = new Node("indicator:");
+		if (indicator != null) {
+			node.add(indicator.toString());
+		}
 		addAlignment(node);
 		return node;
 	}
@@ -71,7 +72,15 @@ public class IndicatorAttribute extends Rcl {
 		visitor.visit(parent, this);
 	}
 
-	public SpatialIndicator indicator() {
+	public Indicator indicator() {
 		return indicator;
+	}
+
+	public void setIndicator(Indicator indicator) {
+		this.indicator = indicator;
+	}
+
+	public IndicatorAttribute cloneWithoutValue() {
+		return new IndicatorAttribute(null, tokenStart, tokenEnd);
 	}
 }

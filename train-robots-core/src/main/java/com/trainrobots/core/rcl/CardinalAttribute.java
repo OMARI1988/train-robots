@@ -23,7 +23,7 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class CardinalAttribute extends Rcl {
 
-	private final int cardinal;
+	private int cardinal;
 
 	public CardinalAttribute(int cardinal) {
 		this.cardinal = cardinal;
@@ -71,5 +71,13 @@ public class CardinalAttribute extends Rcl {
 
 	public int cardinal() {
 		return cardinal;
+	}
+
+	public void setCardinal(int cardinal) {
+		this.cardinal = cardinal;
+	}
+
+	public CardinalAttribute cloneWithoutValue() {
+		return new CardinalAttribute(0, tokenStart, tokenEnd);
 	}
 }

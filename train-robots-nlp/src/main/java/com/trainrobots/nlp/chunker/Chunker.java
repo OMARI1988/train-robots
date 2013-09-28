@@ -23,8 +23,13 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.rcl.ActionAttribute;
+import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
+import com.trainrobots.core.rcl.IndicatorAttribute;
+import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.RclVisitor;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.TypeAttribute;
 
 public abstract class Chunker {
@@ -33,8 +38,50 @@ public abstract class Chunker {
 
 	public abstract void train(List<Command> commands);
 
-	public static List<Chunk> getChunks(List<Token> tokens) {
-		List<Chunk> chunks = new ArrayList<Chunk>();
+	public static List<Rcl> getChunks(Rcl rcl) {
+		final List<Rcl> chunks = new ArrayList<Rcl>();
+
+		rcl.recurse(new RclVisitor() {
+			public void visit(Rcl parent, ActionAttribute actionAttribute) {
+				add(actionAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, ColorAttribute colorAttribute) {
+				add(colorAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, IndicatorAttribute indicatorAttribute) {
+				add(indicatorAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, RelationAttribute relationAttribute) {
+				add(relationAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, TypeAttribute typeAttribute) {
+				add(typeAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
+				add(ordinalAttribute.cloneWithoutValue());
+			}
+
+			public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
+				add(cardinalAttribute.cloneWithoutValue());
+			}
+
+			private void add(Rcl rcl) {
+				if (rcl.tokenStart() != 0) {
+					chunks.add(rcl);
+				}
+			}
+		});
+
+		return chunks;
+	}
+
+	public static List<Rcl> getChunks(List<Token> tokens) {
+		List<Rcl> chunks = new ArrayList<Rcl>();
 		for (int i = 0; i < tokens.size(); i++) {
 
 			// O
@@ -57,6 +104,7 @@ public abstract class Chunker {
 			rcl.setTokenStart(i + 1);
 			rcl.setTokenEnd(i + size);
 			i += size - 1;
+			chunks.add(rcl);
 		}
 		return chunks;
 	}
@@ -72,6 +120,15 @@ public abstract class Chunker {
 		}
 		if (tag.equals("TYPE")) {
 			return new TypeAttribute(null);
+		}
+		if (tag.equals("IND")) {
+			return new IndicatorAttribute(null);
+		}
+		if (tag.equals("REL")) {
+			return new RelationAttribute(null);
+		}
+		if (tag.equals("CARD")) {
+			return new CardinalAttribute(0);
 		}
 
 		// No match.

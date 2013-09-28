@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parser;
+package com.trainrobots.nlp.parser.partial;
 
 public enum ActionType {
 	Left, Right, Unary, Remove

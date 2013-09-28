@@ -17,32 +17,6 @@
 
 package com.trainrobots.core.rcl;
 
-public abstract class RclVisitor {
-
-	public void visit(Rcl parent, Entity entity) {
-	}
-
-	public void visit(Rcl parent, SpatialRelation spatialRelation) {
-	}
-
-	public void visit(Rcl parent, ActionAttribute actionAttribute) {
-	}
-
-	public void visit(Rcl parent, ColorAttribute colorAttribute) {
-	}
-
-	public void visit(Rcl parent, IndicatorAttribute indicatorAttribute) {
-	}
-
-	public void visit(Rcl parent, RelationAttribute relationAttribute) {
-	}
-
-	public void visit(Rcl parent, TypeAttribute typeAttribute) {
-	}
-
-	public void visit(Rcl parent, OrdinalAttribute ordinalAttribute) {
-	}
-
-	public void visit(Rcl parent, CardinalAttribute cardinalAttribute) {
-	}
+public enum Indicator {
+	front, back, left, leftmost, right, rightmost, individual, nearest, top, center
 }

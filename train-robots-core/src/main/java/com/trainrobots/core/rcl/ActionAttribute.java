@@ -23,7 +23,7 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class ActionAttribute extends Rcl {
 
-	private final Action action;
+	private Action action;
 
 	public ActionAttribute(Action action) {
 		this.action = action;
@@ -54,7 +54,10 @@ public class ActionAttribute extends Rcl {
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("action:", action.toString());
+		Node node = new Node("action:");
+		if (action != null) {
+			node.add(action.toString());
+		}
 		addAlignment(node);
 		return node;
 	}
@@ -71,5 +74,13 @@ public class ActionAttribute extends Rcl {
 
 	public Action action() {
 		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public ActionAttribute cloneWithoutValue() {
+		return new ActionAttribute(null, tokenStart, tokenEnd);
 	}
 }

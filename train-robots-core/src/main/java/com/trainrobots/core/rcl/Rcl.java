@@ -133,7 +133,7 @@ public abstract class Rcl {
 			return TypeAttribute.fromNode(node);
 		}
 
-		if (node.hasTag("spatial-indicator:")) {
+		if (node.hasTag("indicator:")) {
 			return IndicatorAttribute.fromNode(node);
 		}
 

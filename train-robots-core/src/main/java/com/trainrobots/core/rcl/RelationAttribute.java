@@ -21,41 +21,42 @@ import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.generation.GenerationContext;
 
-public class ColorAttribute extends Rcl {
+public class RelationAttribute extends Rcl {
 
-	private Color color;
+	private Relation relation;
 
-	public ColorAttribute(Color color) {
-		this.color = color;
+	public RelationAttribute(Relation relation) {
+		this.relation = relation;
 	}
 
-	public ColorAttribute(Color color, int tokenStart, int tokenEnd) {
-		this.color = color;
+	public RelationAttribute(Relation relation, int tokenStart, int tokenEnd) {
+		this.relation = relation;
 		this.tokenStart = tokenStart;
 		this.tokenEnd = tokenEnd;
 	}
 
-	public static ColorAttribute fromString(String text) {
+	public static RelationAttribute fromString(String text) {
 		return fromNode(Node.fromString(text));
 	}
 
-	public static ColorAttribute fromNode(Node node) {
+	public static RelationAttribute fromNode(Node node) {
 
-		if (!node.hasTag("color:")) {
-			throw new CoreException("Expected 'color:' not '" + node.tag + "'.");
+		if (!node.hasTag("relation:")) {
+			throw new CoreException("Expected 'relation:' not '" + node.tag
+					+ "'.");
 		}
 
-		Color color = Color.valueOf(node.getSingleLeaf());
+		Relation relation = Relation.valueOf(node.getSingleLeaf());
 		int[] tokens = getTokens(node);
-		return tokens != null ? new ColorAttribute(color, tokens[0], tokens[1])
-				: new ColorAttribute(color);
+		return tokens != null ? new RelationAttribute(relation, tokens[0],
+				tokens[1]) : new RelationAttribute(relation);
 	}
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("color:");
-		if (color != null) {
-			node.add(color.toString());
+		Node node = new Node("relation:");
+		if (relation != null) {
+			node.add(relation.toString());
 		}
 		addAlignment(node);
 		return node;
@@ -71,15 +72,15 @@ public class ColorAttribute extends Rcl {
 		visitor.visit(parent, this);
 	}
 
-	public Color color() {
-		return color;
+	public Relation relation() {
+		return relation;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setRelation(Relation relation) {
+		this.relation = relation;
 	}
 
-	public ColorAttribute cloneWithoutValue() {
-		return new ColorAttribute(null, tokenStart, tokenEnd);
+	public RelationAttribute cloneWithoutValue() {
+		return new RelationAttribute(null, tokenStart, tokenEnd);
 	}
 }

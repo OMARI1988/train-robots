@@ -25,11 +25,11 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.CardinalAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
-import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.RclVisitor;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.TypeAttribute;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 
@@ -62,11 +62,11 @@ public class GoldSequence {
 			}
 
 			public void visit(Rcl parent, IndicatorAttribute attribute) {
-				if (parent instanceof Entity) {
-					write(attribute, "IND");
-				} else {
-					write(attribute, "REL");
-				}
+				write(attribute, "IND");
+			}
+
+			public void visit(Rcl parent, RelationAttribute attribute) {
+				write(attribute, "REL");
 			}
 
 			public void visit(Rcl parent, TypeAttribute attribute) {

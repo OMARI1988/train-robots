@@ -15,14 +15,14 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parsing;
+package com.trainrobots.nlp.parsing.partial;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.parser.PartialList;
+import com.trainrobots.nlp.parser.partial.PartialList;
 
 public class PartialListTests {
 

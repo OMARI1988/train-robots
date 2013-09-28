@@ -17,7 +17,7 @@
 
 package com.trainrobots.nlp.grounding.predicates;
 
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;
@@ -28,9 +28,9 @@ import com.trainrobots.nlp.scenes.WorldModel;
 public class IndicatorPredicate implements Predicate {
 
 	private final WorldModel world;
-	private final SpatialIndicator indicator;
+	private final Indicator indicator;
 
-	public IndicatorPredicate(WorldModel world, SpatialIndicator indicator) {
+	public IndicatorPredicate(WorldModel world, Indicator indicator) {
 		this.world = world;
 		this.indicator = indicator;
 	}
@@ -39,7 +39,7 @@ public class IndicatorPredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Shape.
-		if (indicator == SpatialIndicator.individual && entity instanceof Shape) {
+		if (indicator == Indicator.individual && entity instanceof Shape) {
 			Shape shape = (Shape) entity;
 			Position p = shape.position();
 			return p.z == 0 && world.getShape(p.add(0, 0, 1)) == null;
@@ -73,6 +73,6 @@ public class IndicatorPredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(spatial-indicator: " + indicator + ")";
+		return "(indicator: " + indicator + ")";
 	}
 }

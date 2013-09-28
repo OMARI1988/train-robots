@@ -19,7 +19,7 @@ package com.trainrobots.nlp.grounding.predicates;
 
 import java.util.List;
 
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
@@ -31,12 +31,11 @@ import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class RelationPredicate implements Predicate {
 
-	private final SpatialIndicator indicator;
+	private final Relation relation;
 	private final List<Grounding> groundings;
 
-	public RelationPredicate(SpatialIndicator indicator,
-			List<Grounding> groundings) {
-		this.indicator = indicator;
+	public RelationPredicate(Relation relation, List<Grounding> groundings) {
+		this.relation = relation;
 		this.groundings = groundings;
 	}
 
@@ -47,12 +46,12 @@ public class RelationPredicate implements Predicate {
 		for (Grounding grounding : groundings) {
 
 			// Adjacent.
-			if (indicator == SpatialIndicator.adjacent) {
+			if (relation == Relation.adjacent) {
 
 				// Edge.
 				if (grounding.entity() instanceof Edge) {
 					Edge right = (Edge) grounding.entity();
-					if (matchEdge(entity, SpatialIndicator.above, right)) {
+					if (matchEdge(entity, Relation.above, right)) {
 						return true;
 					}
 					continue;
@@ -73,7 +72,7 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Left.
-			if (indicator == SpatialIndicator.left) {
+			if (relation == Relation.left) {
 				Position left = entity.basePosition();
 				Position right = grounding.entity().basePosition();
 				int dx = left.x - right.x;
@@ -85,7 +84,7 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Right.
-			if (indicator == SpatialIndicator.right) {
+			if (relation == Relation.right) {
 				Position left = entity.basePosition();
 				Position right = grounding.entity().basePosition();
 				int dx = left.x - right.x;
@@ -97,7 +96,7 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Front.
-			if (indicator == SpatialIndicator.front) {
+			if (relation == Relation.front) {
 				Position left = entity.basePosition();
 				Position right = grounding.entity().basePosition();
 				int dx = left.x - right.x;
@@ -110,7 +109,7 @@ public class RelationPredicate implements Predicate {
 
 			// Board.
 			if (grounding.entity() instanceof Board) {
-				if (indicator == SpatialIndicator.above) {
+				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
 					if (left.position().z == 0) {
 						return true;
@@ -121,7 +120,7 @@ public class RelationPredicate implements Predicate {
 
 			// Shape.
 			if (grounding.entity() instanceof Shape) {
-				if (indicator == SpatialIndicator.above) {
+				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
 					Shape right = (Shape) grounding.entity();
 					if (left.position().equals(right.position().add(0, 0, 1))) {
@@ -133,8 +132,7 @@ public class RelationPredicate implements Predicate {
 
 			// Corner.
 			if (grounding.entity() instanceof Corner) {
-				if (indicator == SpatialIndicator.above
-						|| indicator == SpatialIndicator.within) {
+				if (relation == Relation.above || relation == Relation.within) {
 					Corner right = (Corner) grounding.entity();
 					if (entity.basePosition().equals(right.basePosition())) {
 						return true;
@@ -146,14 +144,14 @@ public class RelationPredicate implements Predicate {
 			// Edge.
 			if (grounding.entity() instanceof Edge) {
 				Edge right = (Edge) grounding.entity();
-				if (matchEdge(entity, indicator, right)) {
+				if (matchEdge(entity, relation, right)) {
 					return true;
 				}
 			}
 
 			// Stack.
 			if (grounding.entity() instanceof Stack) {
-				if (indicator == SpatialIndicator.above) {
+				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
 					Stack right = (Stack) grounding.entity();
 					Shape top = right.getTop();
@@ -168,9 +166,9 @@ public class RelationPredicate implements Predicate {
 		return false;
 	}
 
-	private static boolean matchEdge(WorldEntity entity,
-			SpatialIndicator indicator, Edge right) {
-		if (indicator == SpatialIndicator.above) {
+	private static boolean matchEdge(WorldEntity entity, Relation relation,
+			Edge right) {
+		if (relation == Relation.above) {
 			if (right == Edge.Right && entity.basePosition().y == 0) {
 				return true;
 			}
@@ -189,6 +187,6 @@ public class RelationPredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(spatial-relation: " + indicator + ")";
+		return "(spatial-relation: " + relation + ")";
 	}
 }

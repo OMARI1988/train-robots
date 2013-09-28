@@ -28,6 +28,7 @@ import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
@@ -161,38 +162,38 @@ public class Generator {
 
 		boolean entity = relation.entity() != null;
 
-		IndicatorAttribute indicatorAttribute = relation.indicatorAttribute();
-		switch (indicatorAttribute.indicator()) {
+		RelationAttribute relationAttribute = relation.relationAttribute();
+		switch (relationAttribute.relation()) {
 		case adjacent:
 			write("adjacent to");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case nearest:
 			write("nearest to");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case left:
 			write(entity ? "left of" : "left");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case right:
 			write(entity ? "right of" : "right");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case front:
 			write("in front of");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case part:
 			write("that is part of");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		case forward:
 			write(entity ? "in front of" : "forward");
-			writeAlignment(indicatorAttribute);
+			writeAlignment(relationAttribute);
 			break;
 		default:
-			write(relation.indicatorAttribute());
+			write(relation.relationAttribute());
 			break;
 		}
 
@@ -273,6 +274,15 @@ public class Generator {
 
 		// Alignment.
 		writeAlignment(indicatorAttribute);
+	}
+
+	private void write(RelationAttribute relationAttribute) {
+
+		// Relation.
+		write(relationAttribute.relation().toString());
+
+		// Alignment.
+		writeAlignment(relationAttribute);
 	}
 
 	private void writeCardinal(CardinalAttribute cardinalAttribute) {

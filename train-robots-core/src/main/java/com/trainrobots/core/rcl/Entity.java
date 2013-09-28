@@ -237,7 +237,7 @@ public class Entity extends Rcl {
 					continue;
 				}
 
-				if (child.hasTag("spatial-indicator:")) {
+				if (child.hasTag("indicator:")) {
 					IndicatorAttribute indicatorAttribute = IndicatorAttribute
 							.fromNode(child);
 					if (indicatorAttributes == null) {

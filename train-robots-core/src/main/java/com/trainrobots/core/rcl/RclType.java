@@ -15,34 +15,8 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.chunker;
+package com.trainrobots.core.rcl;
 
-public class Chunk {
-
-	private final String tag;
-	private final String[] tokens;
-
-	public Chunk(String tag, String[] tokens) {
-		this.tag = tag;
-		this.tokens = tokens;
-	}
-
-	public String tag() {
-		return tag;
-	}
-
-	public String[] tokens() {
-		return tokens;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(tag);
-		for (int i = 0; i < tokens.length; i++) {
-			sb.append(' ');
-			sb.append(tokens[i]);
-		}
-		return sb.toString();
-	}
+public enum RclType {
+	Action, Cardinal, Color, Entity, Event, Indicator, Ordinal, Relation, Sequence, Type
 }

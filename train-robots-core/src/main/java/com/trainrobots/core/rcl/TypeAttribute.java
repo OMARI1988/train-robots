@@ -23,7 +23,7 @@ import com.trainrobots.core.rcl.generation.GenerationContext;
 
 public class TypeAttribute extends Rcl {
 
-	private final Type type;
+	private Type type;
 
 	public TypeAttribute(Type type) {
 		this.type = type;
@@ -53,7 +53,10 @@ public class TypeAttribute extends Rcl {
 
 	@Override
 	public Node toNode() {
-		Node node = new Node("type:", type.toString());
+		Node node = new Node("type:");
+		if (type != null) {
+			node.add(type.toString());
+		}
 		addAlignment(node);
 		return node;
 	}
@@ -70,5 +73,13 @@ public class TypeAttribute extends Rcl {
 
 	public Type type() {
 		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public TypeAttribute cloneWithoutValue() {
+		return new TypeAttribute(null, tokenStart, tokenEnd);
 	}
 }

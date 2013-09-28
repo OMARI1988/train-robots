@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.lexicon.Lexicon;
+import com.trainrobots.nlp.parser.partial.Lexicon;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class Tagger {
@@ -31,85 +31,85 @@ public class Tagger {
 
 	static {
 
-		add("left hand", "(spatial-indicator: left)");
-		add("right hand", "(spatial-indicator: right)");
+		add("left hand", "(indicator: left)");
+		add("right hand", "(indicator: right)");
 		add("far right",
-				"(spatial-indicator: front) (spatial-indicator: right)");
-		add("far left", "(spatial-indicator: front) (spatial-indicator: left)");
+				"(indicator: front) (indicator: right)");
+		add("far left", "(indicator: front) (indicator: left)");
 
 		add("pick up", "(event: (action: take))");
 
 		add("to the left bottom corner",
-				"(spatial-indicator: to (entity: (spatial-indicator: left) (spatial-indicator: back) (type: corner)))");
+				"(indicator: to (entity: (indicator: left) (indicator: back) (type: corner)))");
 
 		add("to the top left corner",
-				"(spatial-indicator: to (entity: (spatial-indicator: front) (spatial-indicator: left) (type: corner)))");
+				"(indicator: to (entity: (indicator: front) (indicator: left) (type: corner)))");
 
 		add("to the top right corner",
-				"(spatial-indicator: to (entity: (spatial-indicator: front) (spatial-indicator: right) (type: corner)))");
+				"(indicator: to (entity: (indicator: front) (indicator: right) (type: corner)))");
 
 		add("the left bottom corner",
-				"(entity: (spatial-indicator: left) (spatial-indicator: back) (type: corner))");
+				"(entity: (indicator: left) (indicator: back) (type: corner))");
 
 		add("the top left corner",
-				"(entity: (spatial-indicator: front) (spatial-indicator: left) (type: corner))");
+				"(entity: (indicator: front) (indicator: left) (type: corner))");
 
 		add("the top right corner",
-				"(entity: (spatial-indicator: front) (spatial-indicator: right) (type: corner))");
+				"(entity: (indicator: front) (indicator: right) (type: corner))");
 
-		add("right in", "(spatial-indicator: in)");
+		add("right in", "(indicator: in)");
 
-		add("on the top of", "(spatial-indicator: above)");
-		add("on top of", "(spatial-indicator: above)");
-		add("the top of", "(spatial-indicator: above)");
-		add("on to", "(spatial-indicator: above)");
+		add("on the top of", "(indicator: above)");
+		add("on top of", "(indicator: above)");
+		add("the top of", "(indicator: above)");
+		add("on to", "(indicator: above)");
 
 		add("the nearest", "(attribute: nearest)");
 		add("the farthest", "(attribute: furthest)");
 		add("the furthest", "(attribute: furthest)");
 
-		add("in front of", "(spatial-indicator: front)");
+		add("in front of", "(indicator: front)");
 
-		add("to right of", "(spatial-indicator: right)");
-		add("to left of", "(spatial-indicator: left)");
-		add("to the right of", "(spatial-indicator: right)");
-		add("to the left of", "(spatial-indicator: left)");
-		add("to the position of", "(spatial-indicator: at)");
-		add("to the position", "(spatial-indicator: at)");
-		add("to your right", "(spatial-indicator: right)");
-		add("to your left", "(spatial-indicator: left)");
-		add("to the right", "(spatial-indicator: right)");
-		add("to the left", "(spatial-indicator: left)");
-		add("to right", "(spatial-indicator: right)");
-		add("to left", "(spatial-indicator: left)");
+		add("to right of", "(indicator: right)");
+		add("to left of", "(indicator: left)");
+		add("to the right of", "(indicator: right)");
+		add("to the left of", "(indicator: left)");
+		add("to the position of", "(indicator: at)");
+		add("to the position", "(indicator: at)");
+		add("to your right", "(indicator: right)");
+		add("to your left", "(indicator: left)");
+		add("to the right", "(indicator: right)");
+		add("to the left", "(indicator: left)");
+		add("to right", "(indicator: right)");
+		add("to left", "(indicator: left)");
 
-		add("on right of", "(spatial-indicator: right)");
-		add("on left of", "(spatial-indicator: left)");
-		add("on the right of", "(spatial-indicator: right)");
-		add("on the left of", "(spatial-indicator: left)");
-		add("on the position of", "(spatial-indicator: at)");
-		add("on the position", "(spatial-indicator: at)");
-		add("on your right", "(spatial-indicator: right)");
-		add("on your left", "(spatial-indicator: left)");
-		add("on the right", "(spatial-indicator: right)");
-		add("on the left", "(spatial-indicator: left)");
-		add("on right", "(spatial-indicator: right)");
-		add("on left", "(spatial-indicator: left)");
+		add("on right of", "(indicator: right)");
+		add("on left of", "(indicator: left)");
+		add("on the right of", "(indicator: right)");
+		add("on the left of", "(indicator: left)");
+		add("on the position of", "(indicator: at)");
+		add("on the position", "(indicator: at)");
+		add("on your right", "(indicator: right)");
+		add("on your left", "(indicator: left)");
+		add("on the right", "(indicator: right)");
+		add("on the left", "(indicator: left)");
+		add("on right", "(indicator: right)");
+		add("on left", "(indicator: left)");
 
-		add("close to", "(spatial-indicator: near)");
-		add("closest to", "(spatial-indicator: nearest)");
-		add("near to", "(spatial-indicator: near)");
-		add("nearest to", "(spatial-indicator: nearest)");
-		add("next to", "(spatial-indicator: adjacent)");
-		add("furthest from", "(spatial-indicator: furthest)");
-		add("furthest away", "(spatial-indicator: furthest)");
-		add("furthest away from", "(spatial-indicator: furthest)");
-		add("farthest from", "(spatial-indicator: furthest)");
-		add("farthest away", "(spatial-indicator: furthest)");
-		add("farthest away from", "(spatial-indicator: furthest)");
+		add("close to", "(indicator: near)");
+		add("closest to", "(indicator: nearest)");
+		add("near to", "(indicator: near)");
+		add("nearest to", "(indicator: nearest)");
+		add("next to", "(indicator: adjacent)");
+		add("furthest from", "(indicator: furthest)");
+		add("furthest away", "(indicator: furthest)");
+		add("furthest away from", "(indicator: furthest)");
+		add("farthest from", "(indicator: furthest)");
+		add("farthest away", "(indicator: furthest)");
+		add("farthest away from", "(indicator: furthest)");
 		add("that is", "(link: that-is)");
 		add("which is", "(link: that-is)");
-		add("in between", "(spatial-indicator: between)");
+		add("in between", "(indicator: between)");
 
 		add("light blue", "(color: cyan)");
 		add("sky blue", "(color: cyan)");

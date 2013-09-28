@@ -28,7 +28,9 @@ import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.OrdinalAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.RclVisitor;
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Indicator;
+import com.trainrobots.core.rcl.Relation;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.TypeAttribute;
 
 public class TokenAligner {
@@ -154,9 +156,9 @@ public class TokenAligner {
 	}
 
 	private boolean isAbove(Rcl rcl) {
-		if (rcl instanceof IndicatorAttribute) {
-			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
-			if (attribute.indicator() == SpatialIndicator.above) {
+		if (rcl instanceof RelationAttribute) {
+			RelationAttribute attribute = (RelationAttribute) rcl;
+			if (attribute.relation() == Relation.above) {
 				return true;
 			}
 		}
@@ -164,9 +166,9 @@ public class TokenAligner {
 	}
 
 	private boolean isRight(Rcl rcl) {
-		if (rcl instanceof IndicatorAttribute) {
-			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
-			if (attribute.indicator() == SpatialIndicator.right) {
+		if (rcl instanceof RelationAttribute) {
+			RelationAttribute attribute = (RelationAttribute) rcl;
+			if (attribute.relation() == Relation.right) {
 				return true;
 			}
 		}
@@ -174,9 +176,9 @@ public class TokenAligner {
 	}
 
 	private boolean isLeft(Rcl rcl) {
-		if (rcl instanceof IndicatorAttribute) {
-			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
-			if (attribute.indicator() == SpatialIndicator.left) {
+		if (rcl instanceof RelationAttribute) {
+			RelationAttribute attribute = (RelationAttribute) rcl;
+			if (attribute.relation() == Relation.left) {
 				return true;
 			}
 		}
@@ -186,7 +188,7 @@ public class TokenAligner {
 	private boolean isLeftmost(Rcl rcl) {
 		if (rcl instanceof IndicatorAttribute) {
 			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
-			if (attribute.indicator() == SpatialIndicator.leftmost) {
+			if (attribute.indicator() == Indicator.leftmost) {
 				return true;
 			}
 		}
@@ -194,9 +196,9 @@ public class TokenAligner {
 	}
 
 	private boolean isFront(Rcl rcl) {
-		if (rcl instanceof IndicatorAttribute) {
-			IndicatorAttribute attribute = (IndicatorAttribute) rcl;
-			if (attribute.indicator() == SpatialIndicator.front) {
+		if (rcl instanceof RelationAttribute) {
+			RelationAttribute attribute = (RelationAttribute) rcl;
+			if (attribute.relation() == Relation.front) {
 				return true;
 			}
 		}

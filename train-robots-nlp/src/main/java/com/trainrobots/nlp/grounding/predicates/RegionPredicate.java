@@ -21,18 +21,20 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.IndicatorAttribute;
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Indicator;
+import com.trainrobots.core.rcl.Relation;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class RegionPredicate implements Predicate {
 
-	private final SpatialIndicator relation;
-	private final SpatialIndicator region;
+	private final Relation relation;
+	private final Indicator region;
 
-	public RegionPredicate(IndicatorAttribute relation,
+	public RegionPredicate(RelationAttribute relation,
 			List<IndicatorAttribute> regions) {
-		this.relation = relation.indicator();
+		this.relation = relation.relation();
 		if (regions.size() != 1) {
 			throw new CoreException("Incorrectly specified region.");
 		}
@@ -43,8 +45,7 @@ public class RegionPredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Within center.
-		if (relation == SpatialIndicator.within
-				&& region == SpatialIndicator.center) {
+		if (relation == Relation.within && region == Indicator.center) {
 			Position p = entity.basePosition();
 			if (p.x >= 3 && p.x <= 4 && p.y >= 3 && p.y <= 4) {
 				return true;

@@ -18,19 +18,19 @@
 package com.trainrobots.nlp.scenes;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.SpatialIndicator;
+import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.Type;
 
 public class Edge implements WorldEntity {
 
-	public static Edge Front = new Edge(SpatialIndicator.front);
-	public static Edge Back = new Edge(SpatialIndicator.back);
-	public static Edge Left = new Edge(SpatialIndicator.left);
-	public static Edge Right = new Edge(SpatialIndicator.right);
+	public static Edge Front = new Edge(Indicator.front);
+	public static Edge Back = new Edge(Indicator.back);
+	public static Edge Left = new Edge(Indicator.left);
+	public static Edge Right = new Edge(Indicator.right);
 
-	private final SpatialIndicator indicator;
+	private final Indicator indicator;
 
-	private Edge(SpatialIndicator indicator) {
+	private Edge(Indicator indicator) {
 		this.indicator = indicator;
 	}
 
@@ -49,7 +49,7 @@ public class Edge implements WorldEntity {
 		throw new CoreException("The edge does not have a base position.");
 	}
 
-	public SpatialIndicator indicator() {
+	public Indicator indicator() {
 		return indicator;
 	}
 }

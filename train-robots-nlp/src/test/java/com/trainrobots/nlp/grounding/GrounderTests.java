@@ -63,7 +63,7 @@ public class GrounderTests {
 	@Test
 	public void shouldGroundCorner() {
 		Grounding grounding = getSingleGrounding(828,
-				"(entity: (spatial-indicator: back) (spatial-indicator: left) (type: corner))");
+				"(entity: (indicator: back) (indicator: left) (type: corner))");
 		assertEquals(grounding.entity(), Corner.BackLeft);
 	}
 
@@ -71,7 +71,7 @@ public class GrounderTests {
 	public void shouldGroundBlueCubeAboveBoard() {
 		testGrounding(
 				337,
-				"(entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))) (event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (type: board)))))",
+				"(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board)))) (event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (indicator: above) (entity: (type: board)))))",
 				1);
 	}
 
@@ -79,7 +79,7 @@ public class GrounderTests {
 	public void shouldGroundYellowPrismAboveRedCube() {
 		testGrounding(
 				177,
-				"(entity: (color: yellow) (type: prism) (spatial-relation: (spatial-indicator: above) (entity: (color: red) (type: cube))))",
+				"(entity: (color: yellow) (type: prism) (spatial-relation: (relation: above) (entity: (color: red) (type: cube))))",
 				1);
 	}
 
@@ -87,7 +87,7 @@ public class GrounderTests {
 	public void shouldGroundGrayCubeAboveBackLeftCorner() {
 		testGrounding(
 				849,
-				"(entity: (color: gray) (type: cube) (spatial-relation: (spatial-indicator: above) (entity: (spatial-indicator: back) (spatial-indicator: left) (type: corner))))",
+				"(entity: (color: gray) (type: cube) (spatial-relation: (relation: above) (entity: (indicator: back) (indicator: left) (type: corner))))",
 				1);
 	}
 
@@ -108,7 +108,7 @@ public class GrounderTests {
 	public void shouldGroundGreenCubeNearestRobot() {
 		testGrounding(
 				563,
-				"(entity: (color: green) (type: cube) (spatial-relation: (spatial-indicator: nearest) (entity: (type: robot)))))",
+				"(entity: (color: green) (type: cube) (spatial-relation: (relation: nearest) (entity: (type: robot)))))",
 				1);
 	}
 
@@ -116,7 +116,7 @@ public class GrounderTests {
 	public void shouldGroundIndividualGreenBlock() {
 		testGrounding(
 				214,
-				"(entity: (spatial-indicator: individual) (color: green) (type: cube))",
+				"(entity: (indicator: individual) (color: green) (type: cube))",
 				1);
 	}
 
