@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.lexicon;
+package com.trainrobots.nlp.parsing.partial;
 
 import java.util.ArrayList;
 import java.util.Collections;
