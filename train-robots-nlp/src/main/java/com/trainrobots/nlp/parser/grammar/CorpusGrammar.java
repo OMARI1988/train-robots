@@ -17,20 +17,29 @@
 
 package com.trainrobots.nlp.parser.grammar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.nodes.Node;
 
-public class Grammar {
+public class CorpusGrammar {
 
 	private final Map<String, GrammarRule> rules = new HashMap<String, GrammarRule>();
 
-	public Iterable<GrammarRule> rules() {
-		return rules.values();
+	public List<GrammarRule> deriveRules() {
+		for (Command command : Corpus.getCommands()) {
+			if (command.rcl != null) {
+				add(command.rcl.toNode());
+			}
+		}
+		return new ArrayList(rules.values());
 	}
 
-	public void add(Node node) {
+	private void add(Node node) {
 
 		// Terminal?
 		if (!node.tag.equals("event:") && !node.tag.equals("sequence:")

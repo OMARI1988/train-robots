@@ -17,12 +17,12 @@
 
 package com.trainrobots.nlp.parsing;
 
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.nlp.parser.grammar.Grammar;
+import com.trainrobots.nlp.parser.grammar.CorpusGrammar;
 import com.trainrobots.nlp.parser.grammar.GrammarRule;
 
 public class GrammarTests {
@@ -31,17 +31,12 @@ public class GrammarTests {
 	@Ignore
 	public void shouldGetRules() {
 
-		// Create.
-		Grammar grammar = new Grammar();
-		for (Command command : Corpus.getCommands()) {
-			if (command.rcl == null) {
-				continue;
-			}
-			grammar.add(command.rcl.toNode());
-		}
+		// Rules.
+		CorpusGrammar grammar = new CorpusGrammar();
+		List<GrammarRule> rules = grammar.deriveRules();
 
 		// Display.
-		for (GrammarRule rule : grammar.rules()) {
+		for (GrammarRule rule : rules) {
 			System.out.println(rule + "\t" + rule.count);
 		}
 	}
