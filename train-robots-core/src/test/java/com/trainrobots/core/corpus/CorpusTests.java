@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.io.FileWriter;
+import com.trainrobots.core.nodes.Node;
 
 public class CorpusTests {
 
@@ -49,7 +50,7 @@ public class CorpusTests {
 
 		writer.writeLine("// This file is part of Train Robots (www.TrainRobots.com).");
 		writer.writeLine("// Copyright (C) Kais Dukes, 2013. Contact: kais@kaisdukes.com.");
-		writer.writeLine("// Published: 19 Sep 2013.");
+		writer.writeLine("// Published: 29 Sep 2013.");
 		writer.writeLine("//");
 		writer.writeLine("// This file has five lines per command:");
 		writer.writeLine("//");
@@ -65,12 +66,28 @@ public class CorpusTests {
 				writer.writeLine(command.id);
 				writer.writeLine(command.sceneNumber);
 				writer.writeLine(command.text);
-				writer.writeLine(command.rcl.toString());
+				Node node = command.rcl.toNode();
+				clean(node);
+				writer.writeLine(node.toString());
 				count++;
 			}
 		}
 		writer.close();
 		System.out.println("Wrote: " + count + " commands");
+	}
+
+	private void clean(Node node) {
+		if (node.children == null) {
+			return;
+		}
+		for (int i = node.children.size() - 1; i >= 0; i--) {
+			Node child = node.children.get(i);
+			if (child.tag.equals("token:")) {
+				node.children.remove(i);
+			} else {
+				clean(child);
+			}
+		}
 	}
 
 	@Test
