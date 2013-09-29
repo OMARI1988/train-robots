@@ -15,16 +15,21 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.menus;
+package com.trainrobots.ui;
 
-import javax.inject.Inject;
-import javax.swing.JMenuBar;
+import com.trainrobots.ui.views.AnnotationWindow;
 
-public class MainMenu extends JMenuBar {
+import dagger.ObjectGraph;
 
-	@Inject
-	public MainMenu(FileMenu fileMenu, AnnotationMenu annotationMenu) {
-		add(fileMenu);
-		add(annotationMenu);
+public class AnnotationApp {
+
+	public static void main(String[] args) {
+
+		// Initiate object graph.
+		ObjectGraph graph = ObjectGraph.create(new AnnotationModule());
+
+		// Create window.
+		AnnotationWindow window = graph.get(AnnotationWindow.class);
+		window.setVisible(true);
 	}
 }

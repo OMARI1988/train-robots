@@ -25,7 +25,7 @@ import javax.swing.AbstractAction;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.views.AnnotationWindow;
 import com.trainrobots.ui.views.StatusBar;
 
 public class SearchCommand extends AbstractAction {
@@ -44,7 +44,7 @@ public class SearchCommand extends AbstractAction {
 	public void actionPerformed(ActionEvent event) {
 
 		// Try.
-		MainWindow mainWindow = windowService.getMainWindow();
+		AnnotationWindow mainWindow = windowService.get(AnnotationWindow.class);
 		StatusBar statusBar = mainWindow.getStatusBar();
 		try {
 

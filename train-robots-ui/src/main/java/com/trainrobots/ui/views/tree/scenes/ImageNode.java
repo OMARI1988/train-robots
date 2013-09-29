@@ -18,6 +18,7 @@
 package com.trainrobots.ui.views.tree.scenes;
 
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.AnnotationWindow;
 import com.trainrobots.ui.views.tree.TreeNode;
 
 public class ImageNode extends TreeNode {
@@ -36,7 +37,7 @@ public class ImageNode extends TreeNode {
 
 	@Override
 	public void select() {
-		windowService.getMainWindow().getSceneView()
+		windowService.get(AnnotationWindow.class).getSceneView()
 				.select(groupNumber, imageNumber);
 	}
 

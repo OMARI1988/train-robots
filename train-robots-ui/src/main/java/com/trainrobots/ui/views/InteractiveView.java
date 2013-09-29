@@ -15,21 +15,17 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui;
+package com.trainrobots.ui.views;
 
-import com.trainrobots.ui.views.MainWindow;
+import java.awt.Color;
 
-import dagger.ObjectGraph;
+import javax.inject.Inject;
+import javax.swing.JPanel;
 
-public class Main {
+public class InteractiveView extends JPanel {
 
-	public static void main(String[] args) {
-
-		// Initiate object graph.
-		ObjectGraph graph = ObjectGraph.create(new UiModule());
-
-		// Create window.
-		MainWindow window = graph.get(MainWindow.class);
-		window.setVisible(true);
+	@Inject
+	public InteractiveView() {
+		setBackground(Color.BLACK);
 	}
 }

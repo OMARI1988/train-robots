@@ -24,7 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.views.AnnotationWindow;
 
 public class SaveConfigurationCommand extends AbstractAction {
 
@@ -37,7 +37,7 @@ public class SaveConfigurationCommand extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		MainWindow window = windowService.getMainWindow();
+		AnnotationWindow window = windowService.get(AnnotationWindow.class);
 		JOptionPane
 				.showMessageDialog(window, "This command has been disabled.");
 		// window.getSceneView().update();

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.swing.AbstractAction;
 
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.AnnotationWindow;
 
 public class AlignCommand extends AbstractAction {
 
@@ -35,6 +36,6 @@ public class AlignCommand extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		windowService.getMainWindow().getCorpusView().align();
+		windowService.get(AnnotationWindow.class).getCorpusView().align();
 	}
 }

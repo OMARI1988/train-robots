@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 
 import com.trainrobots.ui.services.WindowService;
 
@@ -35,6 +36,6 @@ public class ExitCommand extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		windowService.getMainWindow().dispose();
+		windowService.get(JFrame.class).dispose();
 	}
 }

@@ -15,35 +15,39 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.commands;
+package com.trainrobots.ui;
 
-import java.awt.event.ActionEvent;
+import javax.inject.Singleton;
 
-import javax.inject.Inject;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-
+import com.trainrobots.ui.services.ConfigurationService;
 import com.trainrobots.ui.services.CorpusService;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.AnnotationWindow;
+import com.trainrobots.ui.services.defaults.DefaultConfigurationService;
+import com.trainrobots.ui.services.defaults.DefaultCorpusService;
+import com.trainrobots.ui.services.defaults.DefaultWindowService;
+import com.trainrobots.ui.views.InteractiveWindow;
 
-public class SaveAnnotationCommand extends AbstractAction {
+import dagger.Module;
+import dagger.Provides;
 
-	private final CorpusService corpusService;
-	private final WindowService windowService;
+@Module(entryPoints = { InteractiveWindow.class })
+public class InteractiveModule {
 
-	@Inject
-	public SaveAnnotationCommand(CorpusService corpusService,
-			WindowService windowService) {
-		this.corpusService = corpusService;
-		this.windowService = windowService;
+	@Provides
+	@Singleton
+	public WindowService provideWindowService() {
+		return new DefaultWindowService();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		AnnotationWindow window = windowService.get(AnnotationWindow.class);
-		window.getCorpusView().update();
-		corpusService.save();
-		JOptionPane.showMessageDialog(window, "Annotations saved.");
+	@Provides
+	@Singleton
+	public CorpusService provideCorpusService() {
+		return new DefaultCorpusService();
+	}
+
+	@Provides
+	@Singleton
+	public ConfigurationService provideConfigurationService() {
+		return new DefaultConfigurationService();
 	}
 }

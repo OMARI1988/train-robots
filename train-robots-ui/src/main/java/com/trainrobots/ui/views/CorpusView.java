@@ -192,7 +192,8 @@ public class CorpusView extends JPanel {
 		int sceneNumber = command.sceneNumber;
 		headerLabel.setText("Command " + command.id + ". Scene " + sceneNumber
 				+ ".");
-		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		StatusBar statusBar = windowService.get(AnnotationWindow.class)
+				.getStatusBar();
 		statusBar.setText(headerLabel.getText());
 
 		// Command.
@@ -225,7 +226,8 @@ public class CorpusView extends JPanel {
 		if (command == null) {
 			return;
 		}
-		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		StatusBar statusBar = windowService.get(AnnotationWindow.class)
+				.getStatusBar();
 		try {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 			Rcl rcl = GoldParser.parse(world, command.text);
@@ -243,7 +245,8 @@ public class CorpusView extends JPanel {
 		if (!validateCommand()) {
 			return;
 		}
-		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		StatusBar statusBar = windowService.get(AnnotationWindow.class)
+				.getStatusBar();
 		try {
 			TokenAligner.align(command.rcl, command.text);
 			editor.setText(command.rcl != null ? command.rcl.format().replace(
@@ -259,7 +262,8 @@ public class CorpusView extends JPanel {
 		if (command == null) {
 			return false;
 		}
-		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
+		StatusBar statusBar = windowService.get(AnnotationWindow.class)
+				.getStatusBar();
 		String text = editor.getText();
 		if (text == null || text.length() == 0) {
 			statusBar.setText("RCL not specified.");
@@ -295,7 +299,8 @@ public class CorpusView extends JPanel {
 			return;
 		}
 
-		CorpusTreeView tree = windowService.getMainWindow().getCorpusTreeView();
+		CorpusTreeView tree = windowService.get(AnnotationWindow.class)
+				.getCorpusTreeView();
 		tree.getCommandNode(command).decorate();
 		tree.getSceneNode(command.sceneNumber).decorate();
 

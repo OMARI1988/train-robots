@@ -15,27 +15,24 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.commands;
-
-import java.awt.event.ActionEvent;
+package com.trainrobots.ui.menus;
 
 import javax.inject.Inject;
-import javax.swing.AbstractAction;
+import javax.swing.JMenuBar;
 
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.AnnotationWindow;
+import com.trainrobots.ui.commands.ExitCommand;
 
-public class ParseCommand extends AbstractAction {
-
-	private final WindowService windowService;
+public class InteractiveMenu extends JMenuBar {
 
 	@Inject
-	public ParseCommand(WindowService windowService) {
-		this.windowService = windowService;
-	}
+	public InteractiveMenu(final ExitCommand exitCommand) {
 
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		windowService.get(AnnotationWindow.class).getCorpusView().parse();
+		add(new Menu() {
+			{
+				setText("File");
+				setMnemonic('F');
+				addItem("Exit", "x", exitCommand);
+			}
+		});
 	}
 }

@@ -24,68 +24,34 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 
-import com.trainrobots.ui.menus.MainMenu;
+import com.trainrobots.ui.menus.InteractiveMenu;
 import com.trainrobots.ui.resources.ResourceUtil;
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.tree.TreeView;
-import com.trainrobots.ui.views.tree.corpus.CorpusTreeView;
-import com.trainrobots.ui.views.tree.scenes.SceneTreeView;
 
-public class MainWindow extends JFrame {
+public class InteractiveWindow extends JFrame {
 
 	private final WindowService windowService;
-	private final MainMenu mainMenu;
-	private final ToolBar toolBar;
+	private final InteractiveMenu menu;
 	private final StatusBar statusBar;
-	private final CorpusTreeView corpusTreeView;
-	private final CorpusView corpusView;
-	private final SceneTreeView sceneTreeView;
-	private final SceneView sceneView;
-	private JTabbedPane tabs;
+	private final InteractiveView interactiveView;
 
 	@Inject
-	public MainWindow(WindowService windowService, MainMenu mainMenu,
-			ToolBar toolBar, StatusBar statusBar,
-			CorpusTreeView corpusTreeView, CorpusView corpusView,
-			SceneTreeView sceneTreeView, SceneView sceneView) {
+	public InteractiveWindow(WindowService windowService, InteractiveMenu menu,
+			StatusBar statusBar, InteractiveView interactiveView) {
 
 		// Dependencies.
 		this.windowService = windowService;
-		this.mainMenu = mainMenu;
-		this.toolBar = toolBar;
+		this.menu = menu;
 		this.statusBar = statusBar;
-		this.sceneTreeView = sceneTreeView;
-		this.sceneView = sceneView;
-		this.corpusTreeView = corpusTreeView;
-		this.corpusView = corpusView;
+		this.interactiveView = interactiveView;
 
 		// Initiate.
 		initiateWindow();
 	}
 
-	public ToolBar getToolBar() {
-		return toolBar;
-	}
-
 	public StatusBar getStatusBar() {
 		return statusBar;
-	}
-
-	public CorpusTreeView getCorpusTreeView() {
-		return corpusTreeView;
-	}
-
-	public CorpusView getCorpusView() {
-		return corpusView;
-	}
-
-	public SceneView getSceneView() {
-		return sceneView;
 	}
 
 	private void initiateWindow() {
@@ -109,16 +75,10 @@ public class MainWindow extends JFrame {
 		setTitle("Train Robots");
 
 		// Menu.
-		setJMenuBar(mainMenu);
+		setJMenuBar(menu);
 
-		// Tool bar.
-		add(toolBar, BorderLayout.NORTH);
-
-		// Tabs.
-		tabs = new JTabbedPane();
-		addTab("Corpus", corpusTreeView, corpusView);
-		addTab("Scene Editor", sceneTreeView, sceneView);
-		add(tabs, BorderLayout.CENTER);
+		// View.
+		add(interactiveView, BorderLayout.CENTER);
 
 		// Status bar.
 		add(statusBar, BorderLayout.SOUTH);
@@ -127,13 +87,5 @@ public class MainWindow extends JFrame {
 		setSize(650, 500);
 		setLocationRelativeTo(null);
 		setExtendedState(MAXIMIZED_BOTH);
-	}
-
-	private void addTab(String title, TreeView treeView, JPanel panel) {
-		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(treeView), panel);
-		splitter.setDividerLocation(250);
-		splitter.setDividerSize(2);
-		tabs.add(title, splitter);
 	}
 }

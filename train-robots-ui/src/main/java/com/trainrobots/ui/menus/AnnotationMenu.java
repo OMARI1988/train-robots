@@ -18,25 +18,47 @@
 package com.trainrobots.ui.menus;
 
 import javax.inject.Inject;
+import javax.swing.JMenuBar;
 
 import com.trainrobots.ui.commands.AlignCommand;
+import com.trainrobots.ui.commands.ExitCommand;
 import com.trainrobots.ui.commands.ParseCommand;
+import com.trainrobots.ui.commands.SaveAnnotationCommand;
 import com.trainrobots.ui.commands.ValidateCommand;
 
-public class AnnotationMenu extends Menu {
+public class AnnotationMenu extends JMenuBar {
 
 	@Inject
-	public AnnotationMenu(ParseCommand parseCommand, AlignCommand alignCommand,
-			ValidateCommand validateCommand) {
+	public AnnotationMenu(final SaveAnnotationCommand saveAnnotationCommand,
+			final ExitCommand exitCommand, final ParseCommand parseCommand,
+			final AlignCommand alignCommand,
+			final ValidateCommand validateCommand) {
 
-		// Initiate.
-		setText("Annotation");
-		setMnemonic('A');
+		add(new Menu() {
+			{
+				// Initiate.
+				setText("File");
+				setMnemonic('F');
 
-		// Items.
-		addItem("Parse", "control P", parseCommand);
-		addItem("Align", "control N", alignCommand);
-		addSeparator();
-		addItem("Validate", "F5", validateCommand);
+				// Items.
+				addItem("Save Annotation", "control S", saveAnnotationCommand);
+				addSeparator();
+				addItem("Exit", "x", exitCommand);
+			}
+		});
+
+		add(new Menu() {
+			{
+				// Initiate.
+				setText("Annotation");
+				setMnemonic('A');
+
+				// Items.
+				addItem("Parse", "control P", parseCommand);
+				addItem("Align", "control N", alignCommand);
+				addSeparator();
+				addItem("Validate", "F5", validateCommand);
+			}
+		});
 	}
 }

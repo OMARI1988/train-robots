@@ -22,6 +22,7 @@ import java.awt.Color;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.AnnotationWindow;
 import com.trainrobots.ui.views.tree.TreeNode;
 
 public class CommandNode extends TreeNode {
@@ -42,7 +43,7 @@ public class CommandNode extends TreeNode {
 
 	@Override
 	public void select() {
-		windowService.getMainWindow().getCorpusView().select(command);
+		windowService.get(AnnotationWindow.class).getCorpusView().select(command);
 	}
 
 	public void decorate() {

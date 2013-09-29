@@ -25,13 +25,13 @@ import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.services.defaults.DefaultConfigurationService;
 import com.trainrobots.ui.services.defaults.DefaultCorpusService;
 import com.trainrobots.ui.services.defaults.DefaultWindowService;
-import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.views.AnnotationWindow;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(entryPoints = { MainWindow.class })
-public class UiModule {
+@Module(entryPoints = { AnnotationWindow.class })
+public class AnnotationModule {
 
 	@Provides
 	@Singleton

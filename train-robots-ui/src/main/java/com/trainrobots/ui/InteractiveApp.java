@@ -15,26 +15,21 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.ui.menus;
+package com.trainrobots.ui;
 
-import javax.inject.Inject;
+import com.trainrobots.ui.views.InteractiveWindow;
 
-import com.trainrobots.ui.commands.ExitCommand;
-import com.trainrobots.ui.commands.SaveAnnotationCommand;
+import dagger.ObjectGraph;
 
-public class FileMenu extends Menu {
+public class InteractiveApp {
 
-	@Inject
-	public FileMenu(SaveAnnotationCommand saveAnnotationCommand,
-			ExitCommand exitCommand) {
+	public static void main(String[] args) {
 
-		// Initiate.
-		setText("File");
-		setMnemonic('F');
+		// Initiate object graph.
+		ObjectGraph graph = ObjectGraph.create(new InteractiveModule());
 
-		// Items.
-		addItem("Save Annotation", "control S", saveAnnotationCommand);
-		addSeparator();
-		addItem("Exit", "x", exitCommand);
+		// Create window.
+		InteractiveWindow window = graph.get(InteractiveWindow.class);
+		window.setVisible(true);
 	}
 }

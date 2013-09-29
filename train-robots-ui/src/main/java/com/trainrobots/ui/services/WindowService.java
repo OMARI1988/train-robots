@@ -17,11 +17,11 @@
 
 package com.trainrobots.ui.services;
 
-import com.trainrobots.ui.views.MainWindow;
+import javax.swing.JFrame;
 
 public interface WindowService {
 
-	MainWindow getMainWindow();
+	<T> T get(Class<T> type);
 
-	void setMainWindow(MainWindow window);
+	void setMainWindow(JFrame window);
 }

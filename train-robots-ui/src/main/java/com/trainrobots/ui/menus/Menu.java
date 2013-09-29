@@ -22,7 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-public class Menu extends JMenu {
+public abstract class Menu extends JMenu {
 
 	protected JMenuItem addItem(String name, String shortCutKey, Action action) {
 

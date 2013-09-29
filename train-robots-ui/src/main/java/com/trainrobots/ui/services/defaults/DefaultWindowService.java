@@ -17,20 +17,21 @@
 
 package com.trainrobots.ui.services.defaults;
 
+import javax.swing.JFrame;
+
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.MainWindow;
 
 public class DefaultWindowService implements WindowService {
 
-	private MainWindow mainWindow;
+	private JFrame mainWindow;
 
 	@Override
-	public MainWindow getMainWindow() {
-		return mainWindow;
+	public <T> T get(Class<T> type) {
+		return (T) mainWindow;
 	}
 
 	@Override
-	public void setMainWindow(MainWindow window) {
+	public void setMainWindow(JFrame window) {
 		this.mainWindow = window;
 	}
 }
