@@ -39,9 +39,8 @@ public class SemanticParser {
 	private final Lexicon lexicon;
 	private final List<Node> tokens;
 	private final Processor processor;
+	private final WorldModel world;
 	private final boolean verbose;
-
-	// private final WorldModel world;
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens) {
@@ -54,8 +53,8 @@ public class SemanticParser {
 		this.lexicon = lexicon;
 		this.tokens = tokens;
 		this.processor = new Processor(world);
+		this.world = world;
 		this.verbose = verbose;
-		// this.world = world;
 	}
 
 	public Rcl parse() {
@@ -67,6 +66,9 @@ public class SemanticParser {
 		List<Rcl> results = new ArrayList<Rcl>();
 		for (Node tree : trees) {
 			mapNode(tree);
+			if (verbose) {
+				System.out.println("Mapped: " + tree);
+			}
 			Rcl rcl;
 			try {
 				rcl = Rcl.fromNode(tree);
@@ -116,6 +118,18 @@ public class SemanticParser {
 					entity1.setId(1);
 					entity2.setReferenceId(1);
 				}
+			}
+		}
+
+		if (rcl instanceof Event) {
+			Event event = (Event) rcl;
+			if (event.isAction(Action.drop)
+					&& world.getShapeInGripper() == null) {
+				event.actionAttribute()
+						.setAction(
+								event.destinations() == null
+										|| event.destinations().size() == 0 ? Action.take
+										: Action.move);
 			}
 		}
 	}

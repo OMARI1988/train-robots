@@ -71,7 +71,7 @@ public class SemanticParserTests {
 
 			// Process.
 			try {
-				if (match(command.id, true)) {
+				if (match(command.id)) {
 					correct++;
 				} else {
 					System.out.println(command.id + ": Misparsed");
@@ -95,12 +95,11 @@ public class SemanticParserTests {
 	public void shouldParseUnmarkedCommands() {
 
 		// Parse.
-		// int total = 0;
-		// boolean sep = false;
 		for (Command command : Corpus.getCommands()) {
 
 			// Already marked?
-			if (command.rcl != null || command.mark != MarkType.Unmarked) {
+			if (command.rcl != null || command.mark != MarkType.Unmarked
+					|| command.enhancement != 0) {
 				continue;
 			}
 
@@ -108,9 +107,10 @@ public class SemanticParserTests {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 			Rcl rcl;
 			try {
-				if (command.id == 22766 || command.id == 23687
-						|| command.id == 25055 || command.id == 25082
-						|| command.id == 26504) {
+				if (command.id == 6454 || command.id == 9762
+						|| command.id == 22203 || command.id == 22766
+						|| command.id == 23687 || command.id == 25055
+						|| command.id == 25082 || command.id == 26504) {
 					continue; // Overflow
 				}
 				rcl = GoldParser.parse(world, command.text);
@@ -122,12 +122,6 @@ public class SemanticParserTests {
 				System.out
 						.println("VALID: " + command.id + ": " + command.text);
 			} catch (Exception e) {
-				// if (command.id > 26150 && !sep) {
-				// System.out.println("------------------");
-				// sep = true;
-				// }
-				// System.out.println(++total + ") " + command.id + ": "
-				// + e.getMessage());
 			}
 		}
 	}

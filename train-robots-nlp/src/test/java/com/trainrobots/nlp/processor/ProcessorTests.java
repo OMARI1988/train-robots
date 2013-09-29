@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
+import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class ProcessorTests {
 
@@ -45,6 +46,7 @@ public class ProcessorTests {
 		int correct = 0;
 		int unmarked = 0;
 		int notGold = 0;
+		int words = 0;
 		for (Command command : Corpus.getCommands()) {
 
 			// RCL but not accurate?
@@ -90,6 +92,7 @@ public class ProcessorTests {
 				System.out.println(command.rcl.format());
 			}
 			correct++;
+			words += Tokenizer.getTokens(command.text).children.size();
 		}
 
 		// Failed?
@@ -99,7 +102,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(1755, correct);
+		assertEquals(3249, correct);
 		assertEquals(8568, size);
 
 		// Gold.
@@ -115,5 +118,6 @@ public class ProcessorTests {
 		double p2 = 100 * correct / (double) estimatedSize;
 		System.out.println("Annotated: " + correct + " / " + estimatedSize
 				+ " (estimated) = " + df.format(p2) + " %");
+		System.out.println("Words: " + words);
 	}
 }
