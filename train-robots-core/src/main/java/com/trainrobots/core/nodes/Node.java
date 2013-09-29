@@ -96,6 +96,19 @@ public class Node {
 		return false;
 	}
 
+	public boolean hasSingleLeaf() {
+		boolean leaf = false;
+		for (Node child : children) {
+			if (child.isLeaf()) {
+				if (leaf) {
+					return false;
+				}
+				leaf = true;
+			}
+		}
+		return leaf;
+	}
+
 	public String getSingleLeaf() {
 		String leaf = null;
 		for (Node child : children) {

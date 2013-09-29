@@ -61,6 +61,14 @@ public class Lexicon {
 		return entries.values();
 	}
 
+	public String getMostFrequentMapping(String type, String token) {
+		LexiconEntry entry = entries.get(token);
+		if (entry == null) {
+			return null;
+		}
+		return entry.getMostFrequentMapping(type);
+	}
+
 	public Lexicon(List<Command> commands) {
 
 		for (Command command : commands) {

@@ -77,14 +77,15 @@ public class Parser {
 		List<Node> results = new ArrayList<Node>();
 		for (GssNode node : frontier) {
 			if (node.parents().size() == 0) {
+				Node result = node.content().clone();
 				if (verbose) {
 					if (results.size() == 0) {
 						System.out.println();
 						System.out.println("RESULTS");
 					}
-					System.out.println(node.content());
+					System.out.println(result);
 				}
-				results.add(node.content());
+				results.add(result);
 			}
 		}
 		return results;

@@ -33,6 +33,19 @@ public class LexiconEntry {
 		return token;
 	}
 
+	public String getMostFrequentMapping(String type) {
+		Mapping best = null;
+		for (Mapping mapping : mappings) {
+			if (!mapping.type().equals(type)) {
+				continue;
+			}
+			if (best == null || mapping.count > best.count) {
+				best = mapping;
+			}
+		}
+		return best != null ? best.value() : null;
+	}
+
 	public void add(Mapping mapping) {
 		for (Mapping existing : mappings) {
 			if (existing.type().equals(mapping.type())
