@@ -39,9 +39,9 @@ public class SemanticParser {
 	private final Lexicon lexicon;
 	private final List<Node> tokens;
 	private final Processor processor;
+	private final boolean verbose;
 
 	// private final WorldModel world;
-	// private final boolean verbose;
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens) {
@@ -54,8 +54,8 @@ public class SemanticParser {
 		this.lexicon = lexicon;
 		this.tokens = tokens;
 		this.processor = new Processor(world);
+		this.verbose = verbose;
 		// this.world = world;
-		// this.verbose = verbose;
 	}
 
 	public Rcl parse() {
@@ -71,8 +71,10 @@ public class SemanticParser {
 			try {
 				rcl = Rcl.fromNode(tree);
 			} catch (Exception exception) {
-				System.out.println("Failed to create RCL: " + tree);
-				exception.printStackTrace(System.out);
+				if (verbose) {
+					System.out.println("Failed to create RCL: " + tree);
+					exception.printStackTrace(System.out);
+				}
 				continue;
 			}
 			process(rcl);
@@ -165,7 +167,9 @@ public class SemanticParser {
 		// Map.
 		String mapping = lexicon.getMostFrequentMapping(node.tag, token);
 		if (mapping == null) {
-			System.out.println("Not in lexicon: " + token);
+			if (verbose) {
+				System.out.println("Not in lexicon: " + token);
+			}
 		} else {
 			node.children.add(0, new Node(mapping));
 		}

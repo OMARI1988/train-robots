@@ -20,17 +20,25 @@ package com.trainrobots.nlp.parsing;
 import static org.junit.Assert.assertTrue;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.GoldParser;
+import com.trainrobots.nlp.parser.SemanticParser;
+import com.trainrobots.nlp.parser.grammar.Grammar;
+import com.trainrobots.nlp.parser.lexicon.Lexicon;
+import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
+import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class SemanticParserTests {
 
@@ -82,6 +90,48 @@ public class SemanticParserTests {
 				+ df.format(p) + " %");
 	}
 
+	@Test
+	@Ignore
+	public void shouldParseUnmarkedCommands() {
+
+		// Parse.
+		// int total = 0;
+		// boolean sep = false;
+		for (Command command : Corpus.getCommands()) {
+
+			// Already marked?
+			if (command.rcl != null || command.mark != MarkType.Unmarked) {
+				continue;
+			}
+
+			// Parse.
+			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
+			Rcl rcl;
+			try {
+				if (command.id == 22766 || command.id == 23687
+						|| command.id == 25055 || command.id == 25082
+						|| command.id == 26504) {
+					continue; // Overflow
+				}
+				rcl = GoldParser.parse(world, command.text);
+			} catch (Exception e) {
+				continue;
+			}
+			try {
+				MoveValidator.validate(command.sceneNumber, rcl);
+				System.out
+						.println("VALID: " + command.id + ": " + command.text);
+			} catch (Exception e) {
+				// if (command.id > 26150 && !sep) {
+				// System.out.println("------------------");
+				// sep = true;
+				// }
+				// System.out.println(++total + ") " + command.id + ": "
+				// + e.getMessage());
+			}
+		}
+	}
+
 	private boolean match(int id) {
 		return match(id, false);
 	}
@@ -95,13 +145,13 @@ public class SemanticParserTests {
 		WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 
 		// Parse.
-		// List<Node> chunks = Chunker.getChunks(command.rcl);
-		// List<Node> tokens = Tokenizer.getTokens(command.text).children;
-		// SemanticParser parser = new SemanticParser(world,
-		// Grammar.goldGrammar(), Lexicon.goldLexicon(), chunks, tokens,
-		// verbose);
-		// Rcl result = parser.parse();
-		Rcl result = GoldParser.parse(world, command.text);
+		List<Node> chunks = Chunker.getChunks(command.rcl);
+		List<Node> tokens = Tokenizer.getTokens(command.text).children;
+		SemanticParser parser = new SemanticParser(world,
+				Grammar.goldGrammar(), Lexicon.goldLexicon(), chunks, tokens,
+				verbose);
+		Rcl result = parser.parse();
+		// Rcl result = GoldParser.parse(world, command.text);
 
 		// Validate.
 		Node expected = command.rcl.toNode();
