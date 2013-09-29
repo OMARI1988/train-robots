@@ -32,12 +32,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.MarkType;
-import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.nlp.parser.partial.Parser;
+import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.processor.MoveValidator;
+import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.tokenizer.TokenAligner;
 import com.trainrobots.nlp.tokenizer.TokenizedGenerationContext;
 import com.trainrobots.ui.services.ConfigurationService;
@@ -223,10 +225,18 @@ public class CorpusView extends JPanel {
 		if (command == null) {
 			return;
 		}
-		Node node = Parser.parse(command.text);
-		editor.setText(node.format().replace("\r", ""));
 		StatusBar statusBar = windowService.getMainWindow().getStatusBar();
-		statusBar.setText("Parsed command.");
+		try {
+			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
+			Rcl rcl = GoldParser.parse(world, command.text);
+			if (rcl == null) {
+				throw new CoreException("Failed to parse.");
+			}
+			editor.setText(rcl.format().replace("\r", ""));
+			statusBar.setText("Parsed command.");
+		} catch (Exception exception) {
+			statusBar.setError(exception.getMessage());
+		}
 	}
 
 	public void align() {

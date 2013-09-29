@@ -30,28 +30,35 @@ import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
+import com.trainrobots.nlp.processor.Processor;
+import com.trainrobots.nlp.scenes.WorldModel;
 
 public class SemanticParser {
 
 	private final Parser parser;
 	private final Lexicon lexicon;
 	private final List<Node> tokens;
-	private final boolean verbose;
+	private final Processor processor;
 
-	public SemanticParser(Grammar grammar, Lexicon lexicon, List<Node> items,
-			List<Node> tokens) {
-		this(grammar, lexicon, items, tokens, false);
+	// private final WorldModel world;
+	// private final boolean verbose;
+
+	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
+			List<Node> items, List<Node> tokens) {
+		this(world, grammar, lexicon, items, tokens, false);
 	}
 
-	public SemanticParser(Grammar grammar, Lexicon lexicon, List<Node> items,
-			List<Node> tokens, boolean verbose) {
+	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
+			List<Node> items, List<Node> tokens, boolean verbose) {
 		this.parser = new Parser(grammar, items);
 		this.lexicon = lexicon;
 		this.tokens = tokens;
-		this.verbose = verbose;
+		this.processor = new Processor(world);
+		// this.world = world;
+		// this.verbose = verbose;
 	}
 
-	public List<Rcl> parse() {
+	public Rcl parse() {
 
 		// Parse.
 		List<Node> trees = parser.parse();
@@ -73,13 +80,21 @@ public class SemanticParser {
 		}
 
 		// Diagnostics.
-		if (verbose) {
-			System.out.println("RCL");
-			for (Rcl rcl : results) {
-				System.out.println(rcl);
+		for (Rcl rcl : results) {
+			if (valid(rcl)) {
+				return rcl;
 			}
 		}
-		return results;
+		return null;
+	}
+
+	private boolean valid(Rcl rcl) {
+		try {
+			processor.getMoves(rcl);
+			return true;
+		} catch (Exception exception) {
+			return false;
+		}
 	}
 
 	private void process(Rcl rcl) {
@@ -149,7 +164,9 @@ public class SemanticParser {
 
 		// Map.
 		String mapping = lexicon.getMostFrequentMapping(node.tag, token);
-		if (mapping != null) {
+		if (mapping == null) {
+			System.out.println("Not in lexicon: " + token);
+		} else {
 			node.children.add(0, new Node(mapping));
 		}
 	}

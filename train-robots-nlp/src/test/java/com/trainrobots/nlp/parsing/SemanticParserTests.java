@@ -20,7 +20,6 @@ package com.trainrobots.nlp.parsing;
 import static org.junit.Assert.assertTrue;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,11 +28,9 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.nlp.chunker.Chunker;
-import com.trainrobots.nlp.parser.SemanticParser;
-import com.trainrobots.nlp.parser.grammar.Grammar;
-import com.trainrobots.nlp.parser.lexicon.Lexicon;
-import com.trainrobots.nlp.tokenizer.Tokenizer;
+import com.trainrobots.nlp.parser.GoldParser;
+import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldModel;
 
 public class SemanticParserTests {
 
@@ -66,7 +63,7 @@ public class SemanticParserTests {
 
 			// Process.
 			try {
-				if (match(command.id)) {
+				if (match(command.id, true)) {
 					correct++;
 				} else {
 					System.out.println(command.id + ": Misparsed");
@@ -94,28 +91,31 @@ public class SemanticParserTests {
 		// Command.
 		Command command = Corpus.getCommand(id);
 
+		// World.
+		WorldModel world = SceneManager.getScene(command.sceneNumber).before;
+
 		// Parse.
-		List<Node> chunks = Chunker.getChunks(command.rcl);
-		List<Node> tokens = Tokenizer.getTokens(command.text).children;
-		SemanticParser parser = new SemanticParser(Grammar.goldGrammar(),
-				Lexicon.goldLexicon(), chunks, tokens, verbose);
-		List<Rcl> results = parser.parse();
+		// List<Node> chunks = Chunker.getChunks(command.rcl);
+		// List<Node> tokens = Tokenizer.getTokens(command.text).children;
+		// SemanticParser parser = new SemanticParser(world,
+		// Grammar.goldGrammar(), Lexicon.goldLexicon(), chunks, tokens,
+		// verbose);
+		// Rcl result = parser.parse();
+		Rcl result = GoldParser.parse(world, command.text);
 
 		// Validate.
 		Node expected = command.rcl.toNode();
-		for (Rcl result : results) {
-			if (expected.equals(result.toNode())) {
-				return true;
-			}
+		if (result != null && expected.equals(result.toNode())) {
+			return true;
 		}
 
 		// No match.
 		if (verbose) {
 			System.out.println();
-			System.out.println("EXPECTED:");
-			System.out.println(expected);
-			System.out.println("COMMAND:");
-			System.out.println(command.text);
+			System.out.println("Command  : " + command.text);
+			System.out.println("Expected : " + expected);
+			System.out.println("Parsed   : "
+					+ (result != null ? result.toString() : "None."));
 		}
 		return false;
 	}

@@ -211,7 +211,7 @@ public class Grounder {
 
 		// Relations.
 		if (!postRelation && relations.size() > 0) {
-			filterGroundingsByRelations(root, groundings, relations);
+			filterGroundingsByRelations(root, entity, groundings, relations);
 		}
 
 		// Post-indicator.
@@ -271,7 +271,7 @@ public class Grounder {
 				+ postIndicator);
 	}
 
-	private void filterGroundingsByRelations(Rcl root,
+	private void filterGroundingsByRelations(Rcl root, Entity parent,
 			List<Grounding> groundings, List<SpatialRelation> relations) {
 
 		// Nearest?
@@ -286,7 +286,8 @@ public class Grounder {
 		// Predicates.
 		PredicateList predicates = new PredicateList();
 		for (SpatialRelation relation : relations) {
-			Predicate predicate = createPredicateForRelation(root, relation);
+			Predicate predicate = createPredicateForRelation(root, parent,
+					relation);
 			if (predicate != null) {
 				predicates.add(predicate);
 			}
@@ -454,7 +455,7 @@ public class Grounder {
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	private Predicate createPredicateForRelation(Rcl root,
+	private Predicate createPredicateForRelation(Rcl root, Entity parent,
 			SpatialRelation relation) {
 
 		// Relation.
@@ -469,6 +470,9 @@ public class Grounder {
 		if (measure != null) {
 			if (relation.entity() == null) {
 				Event event = (Event) root;
+				if (parent == event.entity()) {
+					throw new CoreException("Circular reference.");
+				}
 				List<Grounding> landmarks = ground(root, event.entity());
 				if (landmarks == null || landmarks.size() != 1) {
 					throw new CoreException(

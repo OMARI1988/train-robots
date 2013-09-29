@@ -129,7 +129,7 @@ public abstract class Chunker {
 			return new RelationAttribute(null);
 		}
 		if (tag.equals("CARD")) {
-			return new CardinalAttribute(0);
+			return new CardinalAttribute(null);
 		}
 
 		// No match.
