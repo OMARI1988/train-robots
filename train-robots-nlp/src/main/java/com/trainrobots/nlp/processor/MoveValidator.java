@@ -42,7 +42,7 @@ public class MoveValidator {
 		}
 	}
 
-	private static boolean match(WorldModel world, List<Move> expectedMoves,
+	public static boolean match(WorldModel world, List<Move> expectedMoves,
 			List<Move> actualMoves) {
 
 		// Sizes.

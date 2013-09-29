@@ -72,10 +72,10 @@ public class SceneManager {
 	}
 
 	private static List<Move> calculateMoves(Scene scene) {
+		return calculateMoves(scene.before, scene.after);
+	}
 
-		// Configuration.
-		WorldModel before = scene.before;
-		WorldModel after = scene.after;
+	public static List<Move> calculateMoves(WorldModel before, WorldModel after) {
 
 		// Removed.
 		List<Shape> removed = new ArrayList<Shape>();
@@ -95,8 +95,7 @@ public class SceneManager {
 
 		// Invalid?
 		if (removed.size() != added.size()) {
-			throw new CoreException("Failed to identify move for scene "
-					+ scene.number + ".");
+			throw new CoreException("Failed to identify move for scene.");
 		}
 
 		// Moves.
