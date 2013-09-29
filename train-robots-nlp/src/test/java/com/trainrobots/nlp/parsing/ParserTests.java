@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
@@ -77,6 +78,7 @@ public class ParserTests {
 	}
 
 	@Test
+	@Ignore
 	public void shouldParseCorpus() {
 
 		// Parse.

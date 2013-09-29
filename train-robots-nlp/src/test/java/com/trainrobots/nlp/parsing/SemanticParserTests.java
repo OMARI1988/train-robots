@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.parser.SemanticParser;
 import com.trainrobots.nlp.parser.grammar.Grammar;
@@ -47,6 +48,11 @@ public class SemanticParserTests {
 	}
 
 	@Test
+	public void shouldParse3() {
+		assertTrue(match(7564));
+	}
+
+	@Test
 	@Ignore
 	public void shouldParseCorpus() {
 
@@ -63,10 +69,11 @@ public class SemanticParserTests {
 				if (match(command.id)) {
 					correct++;
 				} else {
-					System.out.println(command.id + ": Misparsed.");
+					System.out.println(command.id + ": Misparsed");
 				}
 			} catch (Exception e) {
 				System.out.println(command.id + ": " + e.getMessage());
+				e.printStackTrace(System.out);
 			}
 			total++;
 		}
@@ -92,12 +99,12 @@ public class SemanticParserTests {
 		List<Node> tokens = Tokenizer.getTokens(command.text).children;
 		SemanticParser parser = new SemanticParser(Grammar.goldGrammar(),
 				Lexicon.goldLexicon(), chunks, tokens, verbose);
-		List<Node> results = parser.parse();
+		List<Rcl> results = parser.parse();
 
 		// Validate.
 		Node expected = command.rcl.toNode();
-		for (Node result : results) {
-			if (expected.equals(result)) {
+		for (Rcl result : results) {
+			if (expected.equals(result.toNode())) {
 				return true;
 			}
 		}

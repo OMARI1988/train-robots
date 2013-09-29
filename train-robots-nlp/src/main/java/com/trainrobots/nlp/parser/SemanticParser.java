@@ -17,10 +17,17 @@
 
 package com.trainrobots.nlp.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Action;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.Sequence;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
 
@@ -38,33 +45,75 @@ public class SemanticParser {
 
 	public SemanticParser(Grammar grammar, Lexicon lexicon, List<Node> items,
 			List<Node> tokens, boolean verbose) {
-		this.parser = new Parser(grammar, items, verbose);
+		this.parser = new Parser(grammar, items);
 		this.lexicon = lexicon;
 		this.tokens = tokens;
 		this.verbose = verbose;
 	}
 
-	public List<Node> parse() {
+	public List<Rcl> parse() {
 
 		// Parse.
 		List<Node> trees = parser.parse();
 
 		// Map.
+		List<Rcl> results = new ArrayList<Rcl>();
 		for (Node tree : trees) {
-			if (verbose) {
-				System.out.println();
-				System.out.println("SEMANTICS");
-				System.out.println(tree);
-			}
 			mapNode(tree);
+			Rcl rcl;
+			try {
+				rcl = Rcl.fromNode(tree);
+			} catch (Exception exception) {
+				System.out.println("Failed to create RCL: " + tree);
+				exception.printStackTrace(System.out);
+				continue;
+			}
+			process(rcl);
+			results.add(rcl);
 		}
-		return trees;
+
+		// Diagnostics.
+		if (verbose) {
+			System.out.println("RCL");
+			for (Rcl rcl : results) {
+				System.out.println(rcl);
+			}
+		}
+		return results;
+	}
+
+	private void process(Rcl rcl) {
+
+		if (rcl instanceof Sequence) {
+			Sequence sequence = (Sequence) rcl;
+			if (sequence.events().size() == 2) {
+				Event event1 = sequence.events().get(0);
+				Event event2 = sequence.events().get(1);
+				event1.actionAttribute().setAction(Action.take);
+				event2.actionAttribute().setAction(Action.drop);
+
+				Entity entity1 = event1.entity();
+				Entity entity2 = event2.entity();
+
+				if (entity2.isType(Type.reference)) {
+					entity1.setId(1);
+					entity2.setReferenceId(1);
+				}
+			}
+		}
 	}
 
 	private void mapNode(Node node) {
 
 		// No children?
 		if (node.children == null) {
+
+			// Ellipsis?
+			if (node.tag.equals("relation:")) {
+				node.add("above");
+			} else if (node.tag.equals("type:")) {
+				node.add("reference");
+			}
 			return;
 		}
 
@@ -102,11 +151,6 @@ public class SemanticParser {
 		String mapping = lexicon.getMostFrequentMapping(node.tag, token);
 		if (mapping != null) {
 			node.children.add(0, new Node(mapping));
-		}
-
-		// Diagnostics.
-		if (verbose) {
-			System.out.println("Mapped: " + node);
 		}
 	}
 
