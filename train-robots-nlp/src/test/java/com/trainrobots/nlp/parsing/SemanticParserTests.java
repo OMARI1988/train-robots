@@ -70,6 +70,7 @@ public class SemanticParserTests {
 			}
 
 			// Process.
+			System.out.println(command.id);
 			try {
 				if (match(command.id)) {
 					correct++;

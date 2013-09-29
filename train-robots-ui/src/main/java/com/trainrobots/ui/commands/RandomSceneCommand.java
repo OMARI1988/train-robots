@@ -15,44 +15,28 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.scenes;
+package com.trainrobots.ui.commands;
 
-public class Position {
+import java.awt.event.ActionEvent;
 
-	public Position(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+import javax.inject.Inject;
+import javax.swing.AbstractAction;
 
-	public final int x;
-	public final int y;
-	public final int z;
+import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.views.InteractiveWindow;
 
-	public Position add(int dx, int dy, int dz) {
-		return new Position(x + dx, y + dy, z + dz);
-	}
+public class RandomSceneCommand extends AbstractAction {
 
-	@Override
-	public boolean equals(Object object) {
-		Position p = (Position) object;
-		return p.x == x && p.y == y && p.z == z;
+	private final WindowService windowService;
+
+	@Inject
+	public RandomSceneCommand(WindowService windowService) {
+		this.windowService = windowService;
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder text = new StringBuilder();
-		text.append('(');
-		text.append(x);
-		text.append(", ");
-		text.append(y);
-		text.append(", ");
-		text.append(z);
-		text.append(')');
-		return text.toString();
-	}
-
-	public Position clone() {
-		return new Position(x, y, z);
+	public void actionPerformed(ActionEvent event) {
+		InteractiveWindow window = windowService.get(InteractiveWindow.class);
+		window.getInteractiveView().randomScene();
 	}
 }

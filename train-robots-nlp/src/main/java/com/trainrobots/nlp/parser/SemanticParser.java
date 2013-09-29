@@ -30,7 +30,7 @@ import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
-import com.trainrobots.nlp.processor.Processor;
+import com.trainrobots.nlp.processor.Planner;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class SemanticParser {
@@ -38,7 +38,7 @@ public class SemanticParser {
 	private final Parser parser;
 	private final Lexicon lexicon;
 	private final List<Node> tokens;
-	private final Processor processor;
+	private final Planner planner;
 	private final WorldModel world;
 	private final boolean verbose;
 
@@ -52,7 +52,7 @@ public class SemanticParser {
 		this.parser = new Parser(grammar, items);
 		this.lexicon = lexicon;
 		this.tokens = tokens;
-		this.processor = new Processor(world);
+		this.planner = new Planner(world);
 		this.world = world;
 		this.verbose = verbose;
 	}
@@ -94,7 +94,7 @@ public class SemanticParser {
 
 	private boolean valid(Rcl rcl) {
 		try {
-			processor.getMoves(rcl);
+			planner.getMoves(rcl);
 			return true;
 		} catch (Exception exception) {
 			return false;
@@ -122,14 +122,16 @@ public class SemanticParser {
 		}
 
 		if (rcl instanceof Event) {
+
 			Event event = (Event) rcl;
-			if (event.isAction(Action.drop)
-					&& world.getShapeInGripper() == null) {
-				event.actionAttribute()
-						.setAction(
-								event.destinations() == null
-										|| event.destinations().size() == 0 ? Action.take
-										: Action.move);
+			boolean destination = event.destinations() != null
+					&& event.destinations().size() >= 1;
+
+			boolean shapeInGripper = world.getShapeInGripper() != null;
+
+			if (event.isAction(Action.drop) && !shapeInGripper) {
+				event.actionAttribute().setAction(
+						destination ? Action.move : Action.take);
 			}
 		}
 	}

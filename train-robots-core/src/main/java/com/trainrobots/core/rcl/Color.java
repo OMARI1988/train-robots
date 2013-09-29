@@ -18,5 +18,17 @@
 package com.trainrobots.core.rcl;
 
 public enum Color {
-	blue, cyan, red, yellow, green, magenta, gray, white;
+
+	blue('B'), cyan('C'), red('R'), yellow('Y'), green('G'), magenta('M'), gray(
+			'X'), white('W');
+
+	private final char code;
+
+	private Color(char code) {
+		this.code = code;
+	}
+
+	public char code() {
+		return code;
+	}
 }

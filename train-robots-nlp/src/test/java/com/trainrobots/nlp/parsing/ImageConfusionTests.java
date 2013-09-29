@@ -29,7 +29,7 @@ import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.processor.MoveValidator;
-import com.trainrobots.nlp.processor.Processor;
+import com.trainrobots.nlp.processor.Planner;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
@@ -66,7 +66,7 @@ public class ImageConfusionTests {
 			}
 			try {
 				Scene scene = SceneManager.getScene(command.sceneNumber);
-				List<Move> moves = new Processor(scene.after).getMoves(rcl);
+				List<Move> moves = new Planner(scene.after).getMoves(rcl);
 				if (!MoveValidator.match(scene.after,
 						SceneManager.calculateMoves(scene.after, scene.before),
 						moves)) {

@@ -54,6 +54,10 @@ public class InteractiveWindow extends JFrame {
 		return statusBar;
 	}
 
+	public InteractiveView getInteractiveView() {
+		return interactiveView;
+	}
+
 	private void initiateWindow() {
 
 		// Register.

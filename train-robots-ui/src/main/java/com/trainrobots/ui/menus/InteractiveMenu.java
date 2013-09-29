@@ -20,18 +20,20 @@ package com.trainrobots.ui.menus;
 import javax.inject.Inject;
 import javax.swing.JMenuBar;
 
-import com.trainrobots.ui.commands.ExitCommand;
+import com.trainrobots.ui.commands.RandomSceneCommand;
 
 public class InteractiveMenu extends JMenuBar {
 
 	@Inject
-	public InteractiveMenu(final ExitCommand exitCommand) {
+	public InteractiveMenu(final RandomSceneCommand randomSceneCommand) {
 
 		add(new Menu() {
 			{
 				setText("File");
 				setMnemonic('F');
-				addItem("Exit", "x", exitCommand);
+				addItem("Random Scene", "F5", randomSceneCommand);
+				addSeparator();
+				addItem("Exit", "x", randomSceneCommand);
 			}
 		});
 	}

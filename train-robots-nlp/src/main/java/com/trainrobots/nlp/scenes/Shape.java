@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.scenes;
 
+import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.rcl.Color;
 import com.trainrobots.core.rcl.Type;
 
@@ -24,7 +25,7 @@ public class Shape implements WorldEntity {
 
 	private final Color color;
 	private final Type type;
-	private final Position position;
+	private Position position;
 
 	public Shape(Color color, Type type, Position position) {
 		this.color = color;
@@ -43,6 +44,10 @@ public class Shape implements WorldEntity {
 
 	public Position position() {
 		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 
 	@Override
@@ -69,5 +74,14 @@ public class Shape implements WorldEntity {
 	@Override
 	public Position basePosition() {
 		return new Position(position.x, position.y, 0);
+	}
+
+	public Shape clone() {
+		return new Shape(color, type, position.clone());
+	}
+
+	public Block toBlock() {
+		return new Block(color.code(), type == Type.cube ? Block.CUBE
+				: Block.PYRAMID, position.x, position.y, position.z);
 	}
 }

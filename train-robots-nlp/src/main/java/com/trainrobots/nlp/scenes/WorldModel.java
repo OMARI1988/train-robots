@@ -17,28 +17,50 @@
 
 package com.trainrobots.nlp.scenes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.configuration.Block;
+import com.trainrobots.core.configuration.Configuration;
 
 public class WorldModel {
 
-	private final Position arm;
-	private final boolean gripperOpen;
+	private Position arm;
+	private boolean gripperOpen;
 	private final List<Shape> shapes;
 	private final Map<Integer, Shape> map = new HashMap<Integer, Shape>();
 
 	public WorldModel(Position arm, boolean gripperOpen, List<Shape> shapes) {
-
 		this.arm = arm;
 		this.gripperOpen = gripperOpen;
 		this.shapes = shapes;
+		reindex();
+	}
 
+	public Position arm() {
+		return arm;
+	}
+
+	public void reindex() {
+		map.clear();
 		for (Shape shape : shapes) {
 			map.put(getKey(shape.position()), shape);
 		}
+	}
+
+	public void setArm(Position position) {
+		arm = position;
+	}
+
+	public void openGripper() {
+		gripperOpen = true;
+	}
+
+	public void closeGripper() {
+		gripperOpen = false;
 	}
 
 	public Shape getShape(Position position) {
@@ -85,5 +107,30 @@ public class WorldModel {
 
 	private int getKey(Position position) {
 		return position.x * 8 * 8 + position.y * 8 + position.z;
+	}
+
+	public WorldModel clone() {
+		List<Shape> shapes = new ArrayList<Shape>();
+		for (Shape shape : this.shapes) {
+			shapes.add(shape.clone());
+		}
+		return new WorldModel(arm.clone(), gripperOpen, shapes);
+	}
+
+	public Configuration toConfiguration() {
+
+		Configuration configuration = new Configuration();
+
+		configuration.armX = arm.x;
+		configuration.armY = arm.y;
+		configuration.armZ = arm.z;
+		configuration.gripperOpen = gripperOpen;
+		configuration.blocks = new ArrayList<Block>();
+
+		for (Shape shape : shapes) {
+			configuration.blocks.add(shape.toBlock());
+		}
+
+		return configuration;
 	}
 }
