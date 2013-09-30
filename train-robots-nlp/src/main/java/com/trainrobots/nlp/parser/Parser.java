@@ -163,9 +163,10 @@ public class Parser {
 		}
 
 		// Add.
-		Node[] content = getMappedNodes(queue.read());
+		Node next = queue.read();
+		Node[] content = getMappedNodes(next);
 		if (content == null || content.length == 0) {
-			throw new CoreException("DEFAULT_MAPPING_NOT_IMPLEMENTED");
+			throw new CoreException("Failed to map: " + next);
 		}
 		add(content);
 	}
@@ -202,7 +203,7 @@ public class Parser {
 		// Alignment?
 		int[] span = getTokens(node);
 		if (span == null) {
-			return null;
+			throw new CoreException("Not aligned: " + node);
 		}
 
 		// Build token.
@@ -225,10 +226,8 @@ public class Parser {
 		// Map.
 		MappingList mappings = lexicon.getMappings(node.tag, token);
 		if (mappings == null || mappings.size() == 0) {
-			if (verbose) {
-				System.out.println("Not in lexicon: " + token);
-			}
-			return null;
+			throw new CoreException("Not in lexicon: '" + token + "' as "
+					+ node);
 		}
 
 		// Result.

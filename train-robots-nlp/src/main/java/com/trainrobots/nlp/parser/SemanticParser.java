@@ -24,6 +24,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.RclVisitor;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.parser.grammar.Grammar;
@@ -35,7 +36,6 @@ public class SemanticParser {
 
 	private final Parser parser;
 	private final Planner planner;
-	// private final WorldModel world;
 	private final boolean verbose;
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
@@ -48,7 +48,6 @@ public class SemanticParser {
 		this.planner = new Planner(world);
 		this.parser = new Parser(planner.grounder(), grammar, lexicon, items,
 				tokens);
-		// this.world = world;
 		this.verbose = verbose;
 	}
 
@@ -77,6 +76,7 @@ public class SemanticParser {
 				continue;
 			}
 			mapReferences(candidate.rcl);
+			mapTypeReferences(candidate.rcl);
 			candidates.add(candidate);
 		}
 
@@ -135,7 +135,6 @@ public class SemanticParser {
 	}
 
 	private void mapReferences(Rcl rcl) {
-
 		if (rcl instanceof Sequence) {
 			Sequence sequence = (Sequence) rcl;
 			if (sequence.events().size() == 2) {
@@ -151,5 +150,30 @@ public class SemanticParser {
 				}
 			}
 		}
+	}
+
+	private void mapTypeReferences(Rcl rcl) {
+		rcl.recurse(new RclVisitor() {
+			private Entity last;
+
+			public void visit(Rcl parent, Entity entity) {
+				if ((entity.isType(Type.typeReference) || entity
+						.isType(Type.typeReferenceGroup))
+						&& entity.referenceId() == null) {
+					if (last != null) {
+						if (last.id() == null) {
+							last.setId(1);
+						}
+						entity.setReferenceId(last.id());
+					}
+				}
+
+				if (!entity.isType(Type.reference)
+						&& !entity.isType(Type.typeReference)
+						&& !entity.isType(Type.typeReferenceGroup)) {
+					last = entity;
+				}
+			}
+		});
 	}
 }

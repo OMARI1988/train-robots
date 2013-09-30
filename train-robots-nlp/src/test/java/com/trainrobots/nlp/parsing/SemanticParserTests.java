@@ -60,8 +60,8 @@ public class SemanticParserTests {
 			}
 
 			// Process.
-			// System.out.println("------------------------");
-			// System.out.println(command.id);
+			System.out.println("------------------------");
+			System.out.println(command.id);
 			try {
 				if (match(command.id, true)) {
 					correct++;
