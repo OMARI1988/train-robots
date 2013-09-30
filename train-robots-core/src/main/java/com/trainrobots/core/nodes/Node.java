@@ -111,12 +111,15 @@ public class Node {
 
 	public String getSingleLeaf() {
 		String leaf = null;
-		for (Node child : children) {
-			if (child.isLeaf()) {
-				if (leaf != null) {
-					throw new CoreException("Node has multiple leaves: " + this);
+		if (children != null) {
+			for (Node child : children) {
+				if (child.isLeaf()) {
+					if (leaf != null) {
+						throw new CoreException("Node has multiple leaves: "
+								+ this);
+					}
+					leaf = child.tag;
 				}
-				leaf = child.tag;
 			}
 		}
 		if (leaf == null) {

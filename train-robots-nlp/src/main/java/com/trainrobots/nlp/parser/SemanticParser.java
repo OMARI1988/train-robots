@@ -20,7 +20,6 @@ package com.trainrobots.nlp.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Entity;
@@ -36,10 +35,8 @@ import com.trainrobots.nlp.scenes.WorldModel;
 public class SemanticParser {
 
 	private final Parser parser;
-	private final Lexicon lexicon;
-	private final List<Node> tokens;
 	private final Planner planner;
-	private final WorldModel world;
+	// private final WorldModel world;
 	private final boolean verbose;
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
@@ -49,11 +46,9 @@ public class SemanticParser {
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens, boolean verbose) {
-		this.parser = new Parser(grammar, items);
-		this.lexicon = lexicon;
-		this.tokens = tokens;
+		this.parser = new Parser(grammar, lexicon, items, tokens);
 		this.planner = new Planner(world);
-		this.world = world;
+		// this.world = world;
 		this.verbose = verbose;
 	}
 
@@ -61,14 +56,16 @@ public class SemanticParser {
 
 		// Parse.
 		List<Node> trees = parser.parse();
+		if (trees.size() == 0) {
+			if (verbose) {
+				System.out.println("No parse trees.");
+			}
+			return null;
+		}
 
 		// Map.
 		List<Rcl> results = new ArrayList<Rcl>();
 		for (Node tree : trees) {
-			mapNode(tree);
-			if (verbose) {
-				System.out.println("Mapped: " + tree);
-			}
 			Rcl rcl;
 			try {
 				rcl = Rcl.fromNode(tree);
@@ -79,14 +76,33 @@ public class SemanticParser {
 				}
 				continue;
 			}
-			process(rcl);
+			mapReferences(rcl);
 			results.add(rcl);
 		}
 
-		// Diagnostics.
+		// Validate.
+		List<Rcl> valid = new ArrayList<Rcl>();
 		for (Rcl rcl : results) {
 			if (valid(rcl)) {
-				return rcl;
+				valid.add(rcl);
+			}
+		}
+		if (valid.size() == 0) {
+			if (verbose) {
+				for (Rcl rcl : results) {
+					System.out.println("Not valid: " + rcl.format());
+				}
+			}
+			return null;
+		}
+		if (valid.size() == 1) {
+			return valid.get(0);
+		}
+
+		// Duplicates.
+		if (verbose) {
+			for (Rcl rcl : valid) {
+				System.out.println("Validated duplicate: " + rcl.format());
 			}
 		}
 		return null;
@@ -101,7 +117,7 @@ public class SemanticParser {
 		}
 	}
 
-	private void process(Rcl rcl) {
+	private void mapReferences(Rcl rcl) {
 
 		if (rcl instanceof Sequence) {
 			Sequence sequence = (Sequence) rcl;
@@ -120,87 +136,5 @@ public class SemanticParser {
 				}
 			}
 		}
-
-		if (rcl instanceof Event) {
-
-			Event event = (Event) rcl;
-			boolean destination = event.destinations() != null
-					&& event.destinations().size() >= 1;
-
-			boolean shapeInGripper = world.getShapeInGripper() != null;
-
-			if (event.isAction(Action.drop) && !shapeInGripper) {
-				event.actionAttribute().setAction(
-						destination ? Action.move : Action.take);
-			}
-		}
-	}
-
-	private void mapNode(Node node) {
-
-		// No children?
-		if (node.children == null) {
-
-			// Ellipsis?
-			if (node.tag.equals("relation:")) {
-				node.add("above");
-			} else if (node.tag.equals("type:")) {
-				node.add("reference");
-			}
-			return;
-		}
-
-		// Alignment?
-		int[] tokens = getTokens(node);
-		if (tokens != null) {
-			mapNode(node, tokens[0], tokens[1]);
-			return;
-		}
-
-		// Recurse.
-		for (Node child : node.children) {
-			mapNode(child);
-		}
-	}
-
-	private void mapNode(Node node, int tokenStart, int tokenEnd) {
-
-		// Build token.
-		StringBuilder text = new StringBuilder();
-		for (int i = tokenStart; i <= tokenEnd; i++) {
-			if (text.length() > 0) {
-				text.append('_');
-			}
-			text.append(tokens.get(i - 1).getValue());
-		}
-		String token = text.toString();
-
-		// Already mapped?
-		if (node.hasSingleLeaf()) {
-			throw new CoreException("Already mapped: " + node);
-		}
-
-		// Map.
-		String mapping = lexicon.getMostFrequentMapping(node.tag, token);
-		if (mapping == null) {
-			if (verbose) {
-				System.out.println("Not in lexicon: " + token);
-			}
-		} else {
-			node.children.add(0, new Node(mapping));
-		}
-	}
-
-	private static int[] getTokens(Node node) {
-		Node tokenNode = node.getChild("token:");
-		if (tokenNode == null) {
-			return null;
-		}
-		int tokenStart = Integer.parseInt(tokenNode.children.get(0).tag);
-		int tokenEnd = tokenStart;
-		if (tokenNode.children.size() >= 2) {
-			tokenEnd = Integer.parseInt(tokenNode.children.get(1).tag);
-		}
-		return new int[] { tokenStart, tokenEnd };
 	}
 }

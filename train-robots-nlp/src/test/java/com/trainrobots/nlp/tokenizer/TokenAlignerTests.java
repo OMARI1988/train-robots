@@ -208,12 +208,6 @@ public class TokenAlignerTests {
 						}
 					}
 
-					if (keyword.equals("corner")) {
-						if (text.equals("edge")) {
-							return;
-						}
-					}
-
 					if (keyword.equals("center")) {
 						if (text.equals("centre")) {
 							return;
@@ -249,7 +243,6 @@ public class TokenAlignerTests {
 						if (text.equals("pyramid") || text.equals("pryamid")
 								|| text.equals("tetrahedron")
 								|| text.equals("triangle")
-								|| text.equals("block") || text.equals("cube")
 								|| text.equals("piece")) {
 							return;
 						}
@@ -258,8 +251,7 @@ public class TokenAlignerTests {
 					if (keyword.equals("cube")) {
 						if (text.equals("block") || text.equals("brick")
 								|| text.equals("box") || text.equals("cub")
-								|| text.equals("square")
-								|| text.equals("pyramid")) {
+								|| text.equals("square")) {
 							return;
 						}
 					}

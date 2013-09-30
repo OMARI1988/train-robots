@@ -115,6 +115,12 @@ public class Planner {
 			return null;
 		}
 
+		// Validate.
+		if (entity2.relations() != null && entity2.relations().size() >= 1) {
+			throw new CoreException("References must not have relations: "
+					+ entity2);
+		}
+
 		// Translate equivalent move.
 		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
 				event2.destinations());
@@ -160,20 +166,22 @@ public class Planner {
 			throw new CoreException("Drop shape mismatch.");
 		}
 
-		// if (event.destinations() != null && event.destinations().size() >= 1)
-		// {
-		// try {
-		// Position position2 = mapDestination(root, event,
-		// shape.position());
-		// } catch (Exception exception) {
-		// exception.printStackTrace(System.out);
-		// }
-		// }
+		if (event.destinations() != null && event.destinations().size() >= 1) {
+			Position position2 = mapDestination(root, event, shape.position());
+			if (position2.x != world.arm().x || position2.y != world.arm().y) {
+				throw new CoreException("Invalid drop position.");
+			}
+		}
 
 		return new DropMove();
 	}
 
 	private Move mapTakeCommand(Rcl root, Event event) {
+
+		if (event.destinations() != null && event.destinations().size() != 0) {
+			throw new CoreException(
+					"Take command must not have destination specified.");
+		}
 
 		Entity entity = event.entity();
 		if (entity == null) {

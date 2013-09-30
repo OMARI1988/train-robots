@@ -61,12 +61,12 @@ public class Lexicon {
 		return entries.values();
 	}
 
-	public String getMostFrequentMapping(String type, String token) {
+	public List<String> getMappings(String type, String token) {
 		LexiconEntry entry = entries.get(token);
 		if (entry == null) {
 			return null;
 		}
-		return entry.getMostFrequentMapping(type);
+		return entry.getMappings(type);
 	}
 
 	public Lexicon(List<Command> commands) {

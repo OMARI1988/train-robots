@@ -98,11 +98,13 @@ public class Grounder {
 		// Predicates.
 		PredicateList predicates = new PredicateList();
 
-		// Type reference?
+		// Validate.
 		Type type = entity.typeAttribute().type();
 		if (type == null) {
 			throw new CoreException("Entity type not specified: " + entity);
 		}
+
+		// Type reference?
 		if (type == Type.typeReference || type == Type.typeReferenceGroup) {
 			if (entity.referenceId() == null) {
 				throw new CoreException("Reference ID not specified: " + entity);

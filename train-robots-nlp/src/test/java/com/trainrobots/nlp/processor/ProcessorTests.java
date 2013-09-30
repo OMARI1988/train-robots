@@ -102,8 +102,8 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(3250, correct);
-		assertEquals(8414, size);
+		assertEquals(1751, correct);
+		assertEquals(8568, size);
 
 		// Gold.
 		DecimalFormat df = new DecimalFormat("#.##");

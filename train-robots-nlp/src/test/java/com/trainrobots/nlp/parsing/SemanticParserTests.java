@@ -43,18 +43,9 @@ import com.trainrobots.nlp.tokenizer.Tokenizer;
 public class SemanticParserTests {
 
 	@Test
+	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(84));
-	}
-
-	@Test
-	public void shouldParse2() {
-		assertTrue(match(14055));
-	}
-
-	@Test
-	public void shouldParse3() {
-		assertTrue(match(7564));
+		assertTrue(match(8921, true));
 	}
 
 	@Test
@@ -70,7 +61,7 @@ public class SemanticParserTests {
 			}
 
 			// Process.
-			System.out.println(command.id);
+			// System.out.println(command.id);
 			try {
 				if (match(command.id)) {
 					correct++;

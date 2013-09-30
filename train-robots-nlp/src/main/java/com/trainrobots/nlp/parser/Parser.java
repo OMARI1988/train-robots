@@ -26,24 +26,31 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
+import com.trainrobots.nlp.parser.lexicon.Lexicon;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
 	private final Queue queue;
 	private final Grammar grammar;
+	private final Lexicon lexicon;
+	private final List<Node> tokens;
 	private final List<GssNode> frontier = new ArrayList<GssNode>();
 	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
 	private final boolean verbose;
 
-	public Parser(Grammar grammar, List<Node> items) {
-		this(grammar, items, false);
+	public Parser(Grammar grammar, Lexicon lexicon, List<Node> items,
+			List<Node> tokens) {
+		this(grammar, lexicon, items, tokens, false);
 	}
 
-	public Parser(Grammar grammar, List<Node> items, boolean verbose) {
+	public Parser(Grammar grammar, Lexicon lexicon, List<Node> items,
+			List<Node> tokens, boolean verbose) {
 
 		this.grammar = grammar;
+		this.lexicon = lexicon;
 		this.queue = new Queue(items);
+		this.tokens = tokens;
 		this.verbose = verbose;
 
 		if (verbose) {
@@ -104,20 +111,14 @@ public class Parser {
 			System.out.println("ELLIPSIS");
 		}
 
-		// Add node to previous frontier.
-		GssNode node = gss.add(new Node(tag));
-		for (GssNode parent : frontier) {
-			node.parents().add(parent);
+		// Add.
+		String[] values = tag.equals("relation:") ? new String[] { "above",
+				"within" } : new String[] { "reference", "region" };
+		Node[] content = new Node[values.length];
+		for (int i = 0; i < values.length; i++) {
+			content[i] = new Node(tag, values[i]);
 		}
-
-		// Create new frontier.
-		frontier.clear();
-		frontier.add(node);
-
-		// Diagnostics.
-		if (verbose) {
-			printState();
-		}
+		add(content);
 		return true;
 	}
 
@@ -151,15 +152,30 @@ public class Parser {
 			System.out.println("SHIFT");
 		}
 
+		// Add.
+		Node[] content = getMappedNodes(queue.read());
+		if (content == null || content.length == 0) {
+			throw new CoreException("DEFAULT_MAPPING_NOT_IMPLEMENTED");
+		}
+		add(content);
+	}
+
+	private void add(Node[] content) {
+
 		// Add node to previous frontier.
-		GssNode node = gss.add(queue.read());
-		for (GssNode parent : frontier) {
-			node.parents().add(parent);
+		GssNode[] nodes = new GssNode[content.length];
+		for (int i = 0; i < content.length; i++) {
+			nodes[i] = gss.add(content[i]);
+			for (GssNode parent : frontier) {
+				nodes[i].parents().add(parent);
+			}
 		}
 
 		// Create new frontier.
 		frontier.clear();
-		frontier.add(node);
+		for (GssNode node : nodes) {
+			frontier.add(node);
+		}
 
 		// Diagnostics.
 		if (verbose) {
@@ -167,12 +183,69 @@ public class Parser {
 		}
 	}
 
+	private Node[] getMappedNodes(Node node) {
+
+		// Alignment?
+		int[] span = getTokens(node);
+		if (span == null) {
+			return null;
+		}
+
+		// Build token.
+		int tokenStart = span[0];
+		int tokenEnd = span[1];
+		StringBuilder text = new StringBuilder();
+		for (int i = tokenStart; i <= tokenEnd; i++) {
+			if (text.length() > 0) {
+				text.append('_');
+			}
+			text.append(tokens.get(i - 1).getValue());
+		}
+		String token = text.toString();
+
+		// Already mapped?
+		if (node.hasSingleLeaf()) {
+			throw new CoreException("Already mapped: " + node);
+		}
+
+		// Map.
+		List<String> mappings = lexicon.getMappings(node.tag, token);
+		if (mappings == null || mappings.size() == 0) {
+			if (verbose) {
+				System.out.println("Not in lexicon: " + token);
+			}
+			return null;
+		}
+
+		// Result.
+		Node[] result = new Node[mappings.size()];
+		for (int i = 0; i < mappings.size(); i++) {
+			Node mappedNode = node.clone();
+			mappedNode.children.add(0, new Node(mappings.get(i)));
+			result[i] = mappedNode;
+		}
+		return result;
+	}
+
+	private static int[] getTokens(Node node) {
+		Node tokenNode = node.getChild("token:");
+		if (tokenNode == null) {
+			return null;
+		}
+		int tokenStart = Integer.parseInt(tokenNode.children.get(0).tag);
+		int tokenEnd = tokenStart;
+		if (tokenNode.children.size() >= 2) {
+			tokenEnd = Integer.parseInt(tokenNode.children.get(1).tag);
+		}
+		return new int[] { tokenStart, tokenEnd };
+	}
+
 	private void reduce() {
-		if (frontier.size() != 1) {
-			throw new CoreException("Expected single node in frontier.");
+		if (frontier.size() == 0) {
+			throw new CoreException("Frontier is empty.");
 		}
 		reductionQueue.clear();
-		reductionQueue.add(frontier.get(0));
+		reductionQueue.addAll(frontier);
 		while (!reductionQueue.isEmpty()) {
 			reduce(reductionQueue.pop());
 		}
