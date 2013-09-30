@@ -17,23 +17,21 @@
 
 package com.trainrobots.nlp.chunker;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 import eu.danieldk.nlp.jitar.corpus.TaggedWord;
+import eu.danieldk.nlp.jitar.data.BiGram;
 import eu.danieldk.nlp.jitar.data.Model;
+import eu.danieldk.nlp.jitar.data.TriGram;
+import eu.danieldk.nlp.jitar.data.UniGram;
 import eu.danieldk.nlp.jitar.languagemodel.LanguageModel;
 import eu.danieldk.nlp.jitar.languagemodel.LinearInterpolationLM;
 import eu.danieldk.nlp.jitar.tagger.HMMTagger;
@@ -63,29 +61,63 @@ public class JitarChunker extends Chunker {
 			trainHandler.handleSentence(sentence);
 		}
 
-		try {
-			writeLexicon(trainHandler.lexicon(), new BufferedWriter(
-					new FileWriter("jitar-data/lexicon.dat")));
-			writeNGrams(trainHandler.uniGrams(), trainHandler.biGrams(),
-					trainHandler.triGrams(), new BufferedWriter(new FileWriter(
-							"jitar-data/ngrams.dat")));
+		Map<String, Integer> uniGrams = trainHandler.uniGrams();
+		Map<String, Integer> biGrams = trainHandler.biGrams();
+		Map<String, Integer> triGrams = trainHandler.triGrams();
 
-			model = Model.readModel(new BufferedReader(new FileReader(
-					"jitar-data/lexicon.dat")), new BufferedReader(
-					new FileReader("jitar-data/ngrams.dat")));
+		Map<String, Integer> tagNumbers = new HashMap<String, Integer>();
+		Map<Integer, String> numberTags = new HashMap<Integer, String>();
+		Map<UniGram, Integer> uniGramFreqs = new HashMap<UniGram, Integer>();
+		Map<BiGram, Integer> biGramFreqs = new HashMap<BiGram, Integer>();
+		Map<TriGram, Integer> triGramFreqs = new HashMap<TriGram, Integer>();
 
-			SuffixWordHandler swh = new SuffixWordHandler(model.lexicon(),
-					model.uniGrams(), 2, 2, 8, 10, 10);
-			WordHandler wh = new KnownWordHandler(model.lexicon(),
-					model.uniGrams(), swh);
-			LanguageModel lm = new LinearInterpolationLM(model.uniGrams(),
-					model.biGrams(), model.triGrams());
-
-			tagger = new HMMTagger(model, wh, lm, 1000.0);
-
-		} catch (IOException exception) {
-			throw new CoreException(exception);
+		int tagNumber = 0;
+		for (Entry<String, Integer> entry : uniGrams.entrySet()) {
+			int freq = entry.getValue();
+			tagNumbers.put(entry.getKey(), tagNumber);
+			numberTags.put(tagNumber, entry.getKey());
+			uniGramFreqs.put(new UniGram(tagNumber), freq);
+			++tagNumber;
 		}
+		for (Entry<String, Integer> entry : biGrams.entrySet()) {
+			int freq = entry.getValue();
+			String[] parts = entry.getKey().split(" ");
+			biGramFreqs.put(
+					new BiGram(tagNumbers.get(parts[0]), tagNumbers
+							.get(parts[1])), freq);
+		}
+		for (Entry<String, Integer> entry : triGrams.entrySet()) {
+			int freq = entry.getValue();
+			String[] parts = entry.getKey().split(" ");
+			triGramFreqs.put(
+					new TriGram(tagNumbers.get(parts[0]), tagNumbers
+							.get(parts[1]), tagNumbers.get(parts[2])), freq);
+		}
+
+		Map<String, Map<Integer, Integer>> wordTagFreqs = new HashMap<String, Map<Integer, Integer>>();
+		Map<String, Map<String, Integer>> lexicon = trainHandler.lexicon();
+		for (Entry<String, Map<String, Integer>> wordEntry : lexicon.entrySet()) {
+			String word = wordEntry.getKey();
+
+			wordTagFreqs.put(word, new HashMap<Integer, Integer>());
+
+			for (Entry<String, Integer> tagEntry : lexicon.get(word).entrySet()) {
+				wordTagFreqs.get(word).put(tagNumbers.get(tagEntry.getKey()),
+						tagEntry.getValue());
+			}
+		}
+
+		model = new Model(wordTagFreqs, tagNumbers, numberTags, uniGramFreqs,
+				biGramFreqs, triGramFreqs);
+
+		SuffixWordHandler swh = new SuffixWordHandler(model.lexicon(),
+				model.uniGrams(), 2, 2, 8, 10, 10);
+		WordHandler wh = new KnownWordHandler(model.lexicon(),
+				model.uniGrams(), swh);
+		LanguageModel lm = new LinearInterpolationLM(model.uniGrams(),
+				model.biGrams(), model.triGrams());
+
+		tagger = new HMMTagger(model, wh, lm, 1000.0);
 	}
 
 	public List<Token> getSequence(String text) {
@@ -121,40 +153,5 @@ public class JitarChunker extends Chunker {
 		}
 
 		return result;
-	}
-
-	private static void writeNGrams(Map<String, Integer> uniGrams,
-			Map<String, Integer> biGrams, Map<String, Integer> triGrams,
-			BufferedWriter writer) throws IOException {
-		for (Entry<String, Integer> entry : uniGrams.entrySet())
-			writer.write(entry.getKey() + " " + entry.getValue() + "\n");
-
-		for (Entry<String, Integer> entry : biGrams.entrySet())
-			writer.write(entry.getKey() + " " + entry.getValue() + "\n");
-
-		for (Entry<String, Integer> entry : triGrams.entrySet())
-			writer.write(entry.getKey() + " " + entry.getValue() + "\n");
-
-		writer.flush();
-	}
-
-	private static void writeLexicon(Map<String, Map<String, Integer>> lexicon,
-			BufferedWriter writer) throws IOException {
-		for (Entry<String, Map<String, Integer>> wordEntry : lexicon.entrySet()) {
-			String word = wordEntry.getKey();
-
-			writer.write(word);
-
-			for (Entry<String, Integer> tagEntry : lexicon.get(word).entrySet()) {
-				writer.write(" ");
-				writer.write(tagEntry.getKey());
-				writer.write(" ");
-				writer.write(tagEntry.getValue().toString());
-			}
-
-			writer.newLine();
-		}
-
-		writer.flush();
 	}
 }

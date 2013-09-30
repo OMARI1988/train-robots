@@ -20,6 +20,7 @@ package com.trainrobots.ui.services.defaults;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.DataContext;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
 import com.trainrobots.core.configuration.ConfigurationWriter;
@@ -27,14 +28,14 @@ import com.trainrobots.ui.services.ConfigurationService;
 
 public class DefaultConfigurationService implements ConfigurationService {
 
-	private static final String FILE = "../data/configuration.txt";
 	private final SceneInfo[] scenes = new SceneInfo[1000];
 	private final Configuration[][] items = new Configuration[125][5];
 
 	public DefaultConfigurationService() {
 
 		// Configuration.
-		for (Configuration c : ConfigurationReader.read(FILE)) {
+		for (Configuration c : ConfigurationReader.read(DataContext
+				.getFile("configuration.txt"))) {
 			update(c);
 		}
 
@@ -88,7 +89,8 @@ public class DefaultConfigurationService implements ConfigurationService {
 				list.add(items[g][i]);
 			}
 		}
-		ConfigurationWriter.write(FILE, list);
+		ConfigurationWriter.write(DataContext.getFile("configuration.txt"),
+				list);
 	}
 
 	private static class SceneInfo {

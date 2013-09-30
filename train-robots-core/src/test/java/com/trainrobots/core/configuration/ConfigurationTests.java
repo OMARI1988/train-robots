@@ -24,12 +24,14 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.trainrobots.core.DataContext;
+
 public class ConfigurationTests {
 
 	@Test
 	public void shouldReadConfiguration() {
-		for (Configuration c : ConfigurationReader
-				.read("../data/configuration.txt")) {
+		for (Configuration c : ConfigurationReader.read(DataContext
+				.getFile("configuration.txt"))) {
 			assertTrue(c.blocks.size() >= 1);
 		}
 	}

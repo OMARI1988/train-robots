@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.DataContext;
 import com.trainrobots.core.configuration.Block;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
@@ -46,8 +47,8 @@ public class SceneManager {
 
 		// Load items.
 		WorldModel[][] items = new WorldModel[125][5];
-		for (Configuration c : ConfigurationReader
-				.read("../data/configuration.txt")) {
+		for (Configuration c : ConfigurationReader.read(DataContext
+				.getFile("configuration.txt"))) {
 			items[c.groupNumber - 1][c.imageNumber - 1] = buildWorldModel(c);
 		}
 

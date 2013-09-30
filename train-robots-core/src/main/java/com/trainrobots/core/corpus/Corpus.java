@@ -23,15 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.DataContext;
 import com.trainrobots.core.io.FileReader;
 import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.rcl.Rcl;
 
 public class Corpus {
-
-	private static final String COMMAND_FILE = "../data/commands.txt";
-	private static final String ANNOTATION_FILE = "../data/annotation.txt";
-	private static final String ENHANCEMENTS_FILE = "../data/enhancements.txt";
 
 	private static List<Command> commands;
 	private static Map<Integer, List<Command>> commandsByScene = new HashMap<Integer, List<Command>>();
@@ -58,7 +55,8 @@ public class Corpus {
 		loadCommands();
 
 		// Annotations.
-		FileWriter writer = new FileWriter(ANNOTATION_FILE);
+		FileWriter writer = new FileWriter(
+				DataContext.getFile("annotation.txt"));
 		for (Command command : commands) {
 			if (command.mark != MarkType.Unmarked) {
 				writer.writeLine(command.id + "\tmark\t"
@@ -71,7 +69,7 @@ public class Corpus {
 		writer.close();
 
 		// Enhancements.
-		writer = new FileWriter(ENHANCEMENTS_FILE);
+		writer = new FileWriter(DataContext.getFile("enhancements.txt"));
 		for (Command command : commands) {
 			if (command.enhancement != 0) {
 				writer.writeLine(command.id + "\t" + command.enhancement);
@@ -87,7 +85,7 @@ public class Corpus {
 
 		// Commands.
 		commands = new ArrayList<Command>();
-		FileReader reader = new FileReader(COMMAND_FILE);
+		FileReader reader = new FileReader(DataContext.getFile("commands.txt"));
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			String[] items = line.split("\t");
@@ -101,7 +99,7 @@ public class Corpus {
 		reader.close();
 
 		// Annotation.
-		reader = new FileReader(ANNOTATION_FILE);
+		reader = new FileReader(DataContext.getFile("annotation.txt"));
 		while ((line = reader.readLine()) != null) {
 			String[] items = line.split("\t");
 			Command command = commandsById.get(Integer.parseInt(items[0]));
@@ -117,7 +115,7 @@ public class Corpus {
 		reader.close();
 
 		// Enhancements.
-		reader = new FileReader(ENHANCEMENTS_FILE);
+		reader = new FileReader(DataContext.getFile("enhancements.txt"));
 		while ((line = reader.readLine()) != null) {
 			String[] items = line.split("\t");
 			Command command = commandsById.get(Integer.parseInt(items[0]));

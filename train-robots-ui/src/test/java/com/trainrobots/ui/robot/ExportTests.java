@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.core.DataContext;
 import com.trainrobots.core.configuration.Configuration;
 import com.trainrobots.core.configuration.ConfigurationReader;
 
@@ -32,14 +33,14 @@ public class ExportTests {
 	public void shouldExportImages() {
 
 		List<Configuration> configuration = ConfigurationReader
-				.read("../data/configuration.txt");
+				.read(DataContext.getFile("configuration.txt"));
 
 		RobotControl rc = new RobotControl();
 		RobotBuffer rb = new RobotBuffer(rc, 325, 350);
 
 		for (Configuration c : configuration) {
-			String path = "../data/g" + c.groupNumber + "/x" + c.imageNumber
-					+ ".png";
+			String path = DataContext.getFile("g" + c.groupNumber + "/x"
+					+ c.imageNumber + ".png");
 			rc.loadConfiguration(c);
 			rb.renderToFile(path);
 			System.out.println("Wrote: " + path);
