@@ -42,6 +42,10 @@ public class GoldParser {
 	}
 
 	public static Rcl parse(WorldModel world, String text) {
+		return parse(world, text, false);
+	}
+
+	public static Rcl parse(WorldModel world, String text, boolean verbose) {
 
 		if (lexicon == null) {
 			System.out.println("Initiating gold parser...");
@@ -73,7 +77,7 @@ public class GoldParser {
 		}
 
 		List<Node> tokens = Tokenizer.getTokens(text).children;
-		return new SemanticParser(world, grammar, lexicon, chunks, tokens)
-				.parse();
+		return new SemanticParser(world, grammar, lexicon, chunks, tokens,
+				verbose).parse();
 	}
 }

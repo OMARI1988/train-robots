@@ -37,8 +37,9 @@ import com.trainrobots.nlp.scenes.WorldModel;
 public class SemanticParserTests {
 
 	@Test
+	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(25886));
+		assertTrue(match(15170));
 	}
 
 	@Test
@@ -54,10 +55,10 @@ public class SemanticParserTests {
 			}
 
 			// Process.
-			System.out.println("------------------------");
-			System.out.println(command.id);
+			// System.out.println("------------------------");
+			// System.out.println(command.id);
 			try {
-				if (match(command.id, true)) {
+				if (match(command.id)) {
 					correct++;
 				} else {
 					System.out.println(command.id + ": Misparsed");
@@ -95,6 +96,9 @@ public class SemanticParserTests {
 			Rcl rcl;
 			try {
 				rcl = GoldParser.parse(world, command.text);
+				if (rcl == null) {
+					continue;
+				}
 			} catch (Exception e) {
 				continue;
 			}
@@ -105,10 +109,10 @@ public class SemanticParserTests {
 				command.rcl = rcl;
 				command.mark = MarkType.Accurate;
 			} catch (Exception e) {
+				System.out.println(++count + ") " + e.getMessage() + ": "
+						+ command.id + ": " + command.text);
 			}
 		}
-
-		Corpus.saveAnnotation();
 	}
 
 	private boolean match(int id) {
@@ -124,7 +128,7 @@ public class SemanticParserTests {
 		WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 
 		// Parse.
-		Rcl result = GoldParser.parse(world, command.text);
+		Rcl result = GoldParser.parse(world, command.text, verbose);
 
 		// Validate.
 		Node expected = command.rcl.toNode();
