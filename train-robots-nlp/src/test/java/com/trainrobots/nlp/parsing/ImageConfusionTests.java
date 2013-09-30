@@ -53,13 +53,6 @@ public class ImageConfusionTests {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).after;
 			Rcl rcl;
 			try {
-				if (command.id == 6454 || command.id == 9762
-						|| command.id == 22203 || command.id == 22766
-						|| command.id == 23687 || command.id == 25055
-						|| command.id == 25082 || command.id == 26478
-						|| command.id == 26504) {
-					continue; // Overflow
-				}
 				rcl = GoldParser.parse(world, command.text);
 			} catch (Exception e) {
 				continue;
