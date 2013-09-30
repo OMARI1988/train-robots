@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Action;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
@@ -46,8 +45,9 @@ public class SemanticParser {
 
 	public SemanticParser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens, boolean verbose) {
-		this.parser = new Parser(grammar, lexicon, items, tokens);
 		this.planner = new Planner(world);
+		this.parser = new Parser(planner.grounder(), grammar, lexicon, items,
+				tokens);
 		// this.world = world;
 		this.verbose = verbose;
 	}
@@ -90,7 +90,7 @@ public class SemanticParser {
 		if (valid.size() == 0) {
 			if (verbose) {
 				for (Rcl rcl : results) {
-					System.out.println("Not valid: " + rcl.format());
+					System.out.println("Not valid: " + rcl);
 				}
 			}
 			return null;
@@ -102,7 +102,7 @@ public class SemanticParser {
 		// Duplicates.
 		if (verbose) {
 			for (Rcl rcl : valid) {
-				System.out.println("Validated duplicate: " + rcl.format());
+				System.out.println("Validated duplicate: " + rcl);
 			}
 		}
 		return null;
@@ -124,8 +124,6 @@ public class SemanticParser {
 			if (sequence.events().size() == 2) {
 				Event event1 = sequence.events().get(0);
 				Event event2 = sequence.events().get(1);
-				event1.actionAttribute().setAction(Action.take);
-				event2.actionAttribute().setAction(Action.drop);
 
 				Entity entity1 = event1.entity();
 				Entity entity2 = event2.entity();

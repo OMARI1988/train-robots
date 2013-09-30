@@ -23,6 +23,10 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.grounding.Grounder;
+import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
@@ -31,6 +35,7 @@ import com.trainrobots.nlp.parser.lexicon.Lexicon;
 public class Parser {
 
 	private final Gss gss = new Gss();
+	private final Grounder grounder;
 	private final Queue queue;
 	private final Grammar grammar;
 	private final Lexicon lexicon;
@@ -39,14 +44,16 @@ public class Parser {
 	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
 	private final boolean verbose;
 
-	public Parser(Grammar grammar, Lexicon lexicon, List<Node> items,
-			List<Node> tokens) {
-		this(grammar, lexicon, items, tokens, false);
+	public Parser(Grounder grounder, Grammar grammar, Lexicon lexicon,
+			List<Node> items, List<Node> tokens) {
+		this(grounder, grammar, lexicon, items, tokens, false);
 	}
 
-	public Parser(Grammar grammar, Lexicon lexicon, List<Node> items,
-			List<Node> tokens, boolean verbose) {
+	public Parser(Grounder grounder, Grammar grammar, Lexicon lexicon,
+			List<Node> items, List<Node> tokens, boolean verbose) {
 
+		// verbose = true;
+		this.grounder = grounder;
 		this.grammar = grammar;
 		this.lexicon = lexicon;
 		this.queue = new Queue(items);
@@ -84,6 +91,7 @@ public class Parser {
 		List<Node> results = new ArrayList<Node>();
 		for (GssNode node : frontier) {
 			if (node.parents().size() == 0) {
+
 				Node result = node.content().clone();
 				if (verbose) {
 					if (results.size() == 0) {
@@ -165,16 +173,20 @@ public class Parser {
 		// Add node to previous frontier.
 		GssNode[] nodes = new GssNode[content.length];
 		for (int i = 0; i < content.length; i++) {
-			nodes[i] = gss.add(content[i]);
-			for (GssNode parent : frontier) {
-				nodes[i].parents().add(parent);
+			if (validate(content[i])) {
+				nodes[i] = gss.add(content[i]);
+				for (GssNode parent : frontier) {
+					nodes[i].parents().add(parent);
+				}
 			}
 		}
 
 		// Create new frontier.
 		frontier.clear();
 		for (GssNode node : nodes) {
-			frontier.add(node);
+			if (node != null) {
+				frontier.add(node);
+			}
 		}
 
 		// Diagnostics.
@@ -256,63 +268,89 @@ public class Parser {
 		for (ProductionRule rule : grammar.productionRules()) {
 			path.clear();
 			path.add(top);
-			if (!match(rule, 0, path)) {
-				continue;
-			}
-
-			List<String> rhs = rule.rhs();
-			int size = rhs.size();
-			Node node = new Node(rule.lhs());
-			node.children = new ArrayList<Node>();
-			for (int i = 0; i < size; i++) {
-				Node child = path.get(size - 1 - i).content();
-				if (!child.tag.equals(rhs.get(i))) {
-					throw new CoreException("Path/rule mismatch.");
-				}
-				node.children.add(child);
-			}
-
-			GssNode reducedNode = gss.add(node);
-			if (verbose) {
-				System.out.println();
-				System.out.println("REDUCE = " + reducedNode);
-			}
-			GssNode last = path.get(path.size() - 1);
-			for (GssNode parent : last.parents()) {
-				reducedNode.parents().add(parent);
-			}
-			reductionQueue.push(reducedNode);
-			frontier.add(reducedNode);
-			if (verbose) {
-				printState();
-			}
+			match(rule, 0, path);
 		}
 	}
 
-	private static boolean match(ProductionRule rule, int step,
-			List<GssNode> path) {
+	private void match(ProductionRule rule, int step, List<GssNode> path) {
 
 		List<String> rhs = rule.rhs();
 		int index = rhs.size() - 1 - step;
 		if (index < 0) {
-			return false;
+			return;
 		}
 
-		GssNode node = path.get(path.size() - 1);
+		GssNode n = path.get(path.size() - 1);
 		String tag = rhs.get(index);
-		if (!node.content().tag.equals(tag)) {
-			return false;
+		if (!n.content().tag.equals(tag)) {
+			return;
 		}
 
-		for (GssNode parent : node.parents()) {
+		for (GssNode parent : n.parents()) {
 			path.add(parent);
-			if (match(rule, step + 1, path)) {
-				return true;
-			}
+			match(rule, step + 1, path);
 			path.remove(path.size() - 1);
 		}
 
-		return index == 0;
+		if (index != 0) {
+			return;
+		}
+
+		int size = rhs.size();
+		Node node = new Node(rule.lhs());
+		node.children = new ArrayList<Node>();
+		for (int i = 0; i < size; i++) {
+			Node child = path.get(size - 1 - i).content();
+			if (!child.tag.equals(rhs.get(i))) {
+				throw new CoreException("Path/rule mismatch.");
+			}
+			node.children.add(child);
+		}
+		if (!validate(node)) {
+			return;
+		}
+		GssNode reducedNode = gss.add(node);
+		if (verbose) {
+			System.out.println();
+			System.out.println("REDUCE = " + reducedNode);
+		}
+		GssNode last = path.get(path.size() - 1);
+		for (GssNode parent : last.parents()) {
+			reducedNode.parents().add(parent);
+		}
+		reductionQueue.push(reducedNode);
+		frontier.add(reducedNode);
+		if (verbose) {
+			printState();
+		}
+	}
+
+	private boolean validate(Node node) {
+		try {
+			if (node.tag.equals("entity:")) {
+				Entity entity = Entity.fromNode(node);
+				if (entity.isType(Type.tile) || entity.isType(Type.reference)
+						|| entity.isType(Type.typeReference)
+						|| entity.isType(Type.typeReferenceGroup)
+						|| entity.isType(Type.region)) {
+					return true;
+				}
+				List<Grounding> groundings = grounder.ground(null, entity);
+				if (groundings == null || groundings.size() == 0) {
+					if (verbose) {
+						System.out.println("*** NO GROUNDINGS: " + node);
+					}
+					return false;
+				}
+			}
+			return true;
+		} catch (Exception exception) {
+			if (verbose) {
+				System.out.println("*** EXCLUDING: " + node);
+				exception.printStackTrace(System.out);
+			}
+			return false;
+		}
 	}
 
 	private void printState() {

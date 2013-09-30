@@ -54,6 +54,10 @@ public class Planner {
 		grounder = new Grounder(world);
 	}
 
+	public Grounder grounder() {
+		return grounder;
+	}
+
 	public List<Move> getMoves(Rcl rcl) {
 
 		// Sequence.
@@ -192,6 +196,10 @@ public class Planner {
 	}
 
 	private Move mapMoveCommand(Rcl root, Event event) {
+
+		if (world.getShapeInGripper() != null) {
+			throw new CoreException("Expected drop not move.");
+		}
 
 		Entity entity = event.entity();
 		if (entity == null) {
