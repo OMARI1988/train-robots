@@ -18,64 +18,61 @@
 package com.trainrobots.nlp.parser.lexicon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class LexiconEntry {
+public class MappingList implements Iterable<Mapping> {
 
-	private final String token;
-	private final List<MappingList> mappingLists = new ArrayList<MappingList>();
+	private final String type;
+	private final List<Mapping> mappings = new ArrayList<Mapping>();
 
-	public LexiconEntry(String token) {
-		this.token = token;
+	public MappingList(String type) {
+		this.type = type;
 	}
 
-	public String token() {
-		return token;
+	public String type() {
+		return type;
 	}
 
-	public void calculateP() {
-		for (MappingList mappings : mappingLists) {
-			mappings.calculateP();
-		}
-	}
-
-	public MappingList getMappings(String type) {
-		for (MappingList msppings : mappingLists) {
-			if (msppings.type() == type) {
-				return msppings;
-			}
-		}
-		return null;
+	@Override
+	public Iterator<Mapping> iterator() {
+		return mappings.iterator();
 	}
 
 	public void add(Mapping mapping) {
-
-		MappingList mappings = getMappings(mapping.type());
-		if (mappings == null) {
-			mappings = new MappingList(mapping.type());
-			mappingLists.add(mappings);
-		}
-
-		for (Mapping existing : mappings) {
-			if (existing.type().equals(mapping.type())
-					&& existing.value().equals(mapping.value())) {
-				existing.count++;
-				return;
-			}
-		}
 		mappings.add(mapping);
-		mapping.count = 1;
+	}
+
+	public int size() {
+		return mappings.size();
+	}
+
+	public Mapping get(int index) {
+		return mappings.get(index);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
-		text.append(token);
-		text.append(" -->");
-		for (MappingList mappings : mappingLists) {
+		text.append('(');
+		text.append(type);
+		for (Mapping mapping : mappings) {
 			text.append(' ');
-			text.append(mappings);
+			text.append(mapping.value());
+			text.append('=');
+			text.append(mapping.p);
 		}
+		text.append(")");
 		return text.toString();
+	}
+
+	public void calculateP() {
+		double sum = 0;
+		for (Mapping mapping : mappings) {
+			sum += mapping.count;
+		}
+		for (Mapping mapping : mappings) {
+			mapping.p = mapping.count / sum;
+		}
 	}
 }

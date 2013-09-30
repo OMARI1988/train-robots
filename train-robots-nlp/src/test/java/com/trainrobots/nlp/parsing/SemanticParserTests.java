@@ -43,14 +43,8 @@ import com.trainrobots.nlp.tokenizer.Tokenizer;
 public class SemanticParserTests {
 
 	@Test
-	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(25166));
-		// 358: Misparsed
-		// 400: Misparsed
-		// 403: Misparsed
-		// 424: Misparsed
-		// 503: Misparsed
+		assertTrue(match(25886));
 	}
 
 	@Test
@@ -66,8 +60,8 @@ public class SemanticParserTests {
 			}
 
 			// Process.
-			System.out.println("------------------------");
-			System.out.println(command.id);
+			// System.out.println("------------------------");
+			// System.out.println(command.id);
 			try {
 				if (match(command.id, true)) {
 					correct++;

@@ -15,35 +15,29 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.parser.lexicon;
+package com.trainrobots.nlp.parser;
 
-public class Mapping {
+import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.rcl.Rcl;
 
-	private final String type;
-	private final String value;
+public class Candidate {
 
-	public int count;
-	public double p;
+	public final Rcl rcl;
+	public double p = 1;
 
-	public Mapping(String type, String value) {
-		this.type = type;
-		this.value = value;
+	public Candidate(Node node) {
+		rcl = Rcl.fromNode(node);
+		calculateP(node);
 	}
 
-	public String type() {
-		return type;
-	}
-
-	public String value() {
-		return value;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder text = new StringBuilder();
-		text.append(type);
-		text.append('|');
-		text.append(value);
-		return text.toString();
+	private void calculateP(Node node) {
+		if (node.p != null) {
+			p *= node.p;
+		}
+		if (node.children != null) {
+			for (Node child : node.children) {
+				calculateP(child);
+			}
+		}
 	}
 }

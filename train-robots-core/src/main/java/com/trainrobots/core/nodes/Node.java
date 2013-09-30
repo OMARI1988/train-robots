@@ -27,6 +27,7 @@ public class Node {
 
 	public String tag;
 	public List<Node> children;
+	public Double p;
 
 	public Node() {
 	}
@@ -193,6 +194,7 @@ public class Node {
 
 	public Node clone() {
 		Node copy = new Node(tag);
+		copy.p = p;
 		if (children != null) {
 			for (Node child : children) {
 				copy.add(child.clone());

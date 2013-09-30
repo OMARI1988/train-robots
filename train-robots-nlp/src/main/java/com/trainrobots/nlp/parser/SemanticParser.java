@@ -64,11 +64,11 @@ public class SemanticParser {
 		}
 
 		// Map.
-		List<Rcl> results = new ArrayList<Rcl>();
+		List<Candidate> candidates = new ArrayList<Candidate>();
 		for (Node tree : trees) {
-			Rcl rcl;
+			Candidate candidate;
 			try {
-				rcl = Rcl.fromNode(tree);
+				candidate = new Candidate(tree);
 			} catch (Exception exception) {
 				if (verbose) {
 					System.out.println("Failed to create RCL: " + tree);
@@ -76,33 +76,50 @@ public class SemanticParser {
 				}
 				continue;
 			}
-			mapReferences(rcl);
-			results.add(rcl);
+			mapReferences(candidate.rcl);
+			candidates.add(candidate);
 		}
 
 		// Validate.
-		List<Rcl> valid = new ArrayList<Rcl>();
-		for (Rcl rcl : results) {
-			if (valid(rcl)) {
-				valid.add(rcl);
+		List<Candidate> valid = new ArrayList<Candidate>();
+		for (Candidate candidate : candidates) {
+			if (valid(candidate.rcl)) {
+				valid.add(candidate);
 			}
 		}
 		if (valid.size() == 0) {
 			if (verbose) {
-				for (Rcl rcl : results) {
-					System.out.println("Not valid: " + rcl);
+				for (Candidate candidate : candidates) {
+					System.out.println("Not valid: " + candidate.rcl);
 				}
 			}
 			return null;
 		}
 		if (valid.size() == 1) {
-			return valid.get(0);
+			return valid.get(0).rcl;
 		}
 
-		// Duplicates.
+		// Rank.
+		Candidate best = null;
+		boolean duplicate = false;
+		for (Candidate candidate : valid) {
+			if (best == null || candidate.p > best.p) {
+				best = candidate;
+			} else if (candidate.p == best.p) {
+				duplicate = true;
+			}
+		}
+
+		// Ranked?
+		if (!duplicate && best != null) {
+			return best.rcl;
+		}
+
+		// Duplicates?
 		if (verbose) {
-			for (Rcl rcl : valid) {
-				System.out.println("Validated duplicate: " + rcl);
+			for (Candidate candidate : valid) {
+				System.out.println("Validated duplicate (P=" + candidate.p
+						+ "): " + candidate.rcl);
 			}
 		}
 		return null;

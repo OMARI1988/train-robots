@@ -31,6 +31,8 @@ import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
+import com.trainrobots.nlp.parser.lexicon.Mapping;
+import com.trainrobots.nlp.parser.lexicon.MappingList;
 
 public class Parser {
 
@@ -221,7 +223,7 @@ public class Parser {
 		}
 
 		// Map.
-		List<String> mappings = lexicon.getMappings(node.tag, token);
+		MappingList mappings = lexicon.getMappings(node.tag, token);
 		if (mappings == null || mappings.size() == 0) {
 			if (verbose) {
 				System.out.println("Not in lexicon: " + token);
@@ -233,7 +235,9 @@ public class Parser {
 		Node[] result = new Node[mappings.size()];
 		for (int i = 0; i < mappings.size(); i++) {
 			Node mappedNode = node.clone();
-			mappedNode.children.add(0, new Node(mappings.get(i)));
+			Mapping mapping = mappings.get(i);
+			mappedNode.children.add(0, new Node(mapping.value()));
+			mappedNode.p = mapping.p;
 			result[i] = mappedNode;
 		}
 		return result;

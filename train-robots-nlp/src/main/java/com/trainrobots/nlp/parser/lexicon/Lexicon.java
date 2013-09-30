@@ -61,7 +61,7 @@ public class Lexicon {
 		return entries.values();
 	}
 
-	public List<String> getMappings(String type, String token) {
+	public MappingList getMappings(String type, String token) {
 		LexiconEntry entry = entries.get(token);
 		if (entry == null) {
 			return null;
@@ -102,6 +102,10 @@ public class Lexicon {
 					process(attribute);
 				}
 			});
+		}
+
+		for (LexiconEntry entry : entries.values()) {
+			entry.calculateP();
 		}
 	}
 
