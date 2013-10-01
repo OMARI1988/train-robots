@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -43,12 +44,12 @@ public class ExportTests {
 			if (command.rcl != null) {
 				writer.writeLine();
 				writer.writeLine("## id\t" + command.id);
-				List<Node> tokens = Tokenizer.getTokens(command.text).children;
+				List<String> tokens = getTokens(command.text);
 				for (int i = 0; i < tokens.size(); i++) {
 					if (i > 0) {
 						writer.write('\t');
 					}
-					writer.write(tokens.get(i).getValue());
+					writer.write(tokens.get(i));
 				}
 				writer.writeLine();
 				writer.writeLine(command.rcl.toString());
@@ -57,5 +58,21 @@ public class ExportTests {
 		}
 		writer.close();
 		System.out.println("Wrote: " + count + " commands");
+	}
+
+	private List<String> getTokens(String text) {
+		List<String> tokens = new ArrayList<String>();
+		List<Node> nodes = Tokenizer.getTokens(text).children;
+		for (int i = 0; i < nodes.size(); i++) {
+			Node node = nodes.get(i);
+			String token = node.getValue();
+			if (token.equals(".")) {
+				if (tokens.size() == 0 || i == nodes.size() - 1) {
+					continue;
+				}
+			}
+			tokens.add((i + 1) + ":" + token);
+		}
+		return tokens;
 	}
 }
