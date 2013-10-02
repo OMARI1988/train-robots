@@ -32,7 +32,7 @@ public class CorpusService {
 	private final List<int[]> sceneInfo = new ArrayList<int[]>();
 
 	static {
-		DataContext.setDataPath("data");
+		DataContext.setDataPath("c:/development/train-robots/data");
 	}
 
 	public CorpusService() {
