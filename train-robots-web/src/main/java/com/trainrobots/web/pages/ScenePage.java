@@ -20,23 +20,20 @@ package com.trainrobots.web.pages;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.web.WebUtil;
-import com.trainrobots.web.game.Command;
-import com.trainrobots.web.game.Options;
+import com.trainrobots.core.corpus.Command;
 import com.trainrobots.web.game.Scene;
-import com.trainrobots.web.game.User;
-import com.trainrobots.web.services.DataService;
+import com.trainrobots.web.services.CorpusService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
 public class ScenePage {
 
-	private final DataService dataService = ServiceContext.get().dataService();
+	private final CorpusService corpusService = ServiceContext.get()
+			.corpusService();
 	private final GameService gameService = ServiceContext.get().gameService();
 	private Scene scene;
 	private List<Command> commands;
@@ -44,19 +41,19 @@ public class ScenePage {
 	public void initiate(PageContext pageContext, String id) {
 
 		// Load.
-		HttpServletRequest request = (HttpServletRequest) pageContext
-				.getRequest();
-		User user = (User) request.getSession().getAttribute("user");
-		if (user != null && gameService.isAdmin(user.email)) {
-			loadScene(id);
-		}
+		loadScene(id);
 
 		// Response.
 		HttpServletResponse response = (HttpServletResponse) pageContext
 				.getResponse();
 
+		// Load commands.
+		if (scene != null) {
+			commands = corpusService.getCommands(scene.sceneNumber);
+		}
+
 		// Redirect.
-		if (scene == null) {
+		if (scene == null || commands == null || commands.size() == 0) {
 			try {
 				response.sendRedirect("/lost.jsp");
 				return;
@@ -70,10 +67,6 @@ public class ScenePage {
 				"no-cache, no-store, must-revalidate"); // HTTP 1.1.
 		response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 		response.setDateHeader("Expires", 0); // Proxies.
-
-		// Load commands.
-		commands = dataService.getSceneCommands(
-				pageContext.getServletContext(), scene.sceneNumber);
 	}
 
 	public int getSceneNumber() {
@@ -94,42 +87,36 @@ public class ScenePage {
 		return getImage(scene.toGroup, scene.toImage);
 	}
 
+	public String formatCommandsHeader() {
+
+		// No commands?
+		if (scene == null || commands == null || commands.size() == 0) {
+			return "No commands";
+		}
+
+		// Format.
+		int size = commands.size();
+		return size + (size == 1 ? " command" : " commands");
+	}
+
 	public String getCommands() {
 
-		// No scene?
-		if (scene == null) {
+		// No commands?
+		if (scene == null || commands == null || commands.size() == 0) {
 			return null;
 		}
 
 		// Commands.
-		int lastOption = -1;
 		StringBuilder text = new StringBuilder();
+		text.append("<table border=\"0\" class=\"commandTable\" cellpadding=\"0\" cellspacing=\"0\">");
 		for (Command command : commands) {
-
-			// Option.
-			int option = command.commandMark;
-			if (option != lastOption) {
-				text.append("<p class='option'>");
-				text.append(option > 0 ? Options.get(option) : "Unmarked");
-				text.append("</p>");
-				lastOption = option;
-			}
-
-			// Text.
-			text.append("<p class='text'><a href='command.jsp?u="
-					+ command.userId + "&r=" + command.round + "'>");
-			text.append(command.command);
-			text.append("</a></p>");
-
-			// Info.
-			text.append("<p class='info'>");
-			text.append(command.gameName);
-			text.append(" (");
-			text.append(command.email);
-			text.append(") - ");
-			text.append(WebUtil.formatTime(command.timeUtc));
-			text.append("</p>");
+			text.append("<tr><td><a href='command.jsp?id=" + command.id + "'>");
+			text.append(String.format("%05d", command.id));
+			text.append("</a></td><td>");
+			text.append(command.text);
+			text.append("</td></tr>");
 		}
+		text.append("</table>");
 		return text.toString();
 	}
 
@@ -140,7 +127,9 @@ public class ScenePage {
 		try {
 			sceneNumber = Integer.parseInt(id);
 		} catch (NumberFormatException e) {
-			sceneNumber = 1 + (int) (Math.random() * 1000);
+			do {
+				sceneNumber = 1 + (int) (Math.random() * 1000);
+			} while (corpusService.getCommands(sceneNumber) == null);
 		}
 
 		// Load.

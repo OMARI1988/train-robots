@@ -32,6 +32,7 @@ public class Corpus {
 
 	private static List<Command> commands;
 	private static Map<Integer, List<Command>> commandsByScene = new HashMap<Integer, List<Command>>();
+	private static Map<Integer, List<Command>> accurateCommands = new HashMap<Integer, List<Command>>();
 	private static Map<Integer, Command> commandsById = new HashMap<Integer, Command>();
 
 	public static Command getCommand(int id) {
@@ -47,6 +48,11 @@ public class Corpus {
 	public static List<Command> getCommands(int sceneNumber) {
 		loadCommands();
 		return commandsByScene.get(sceneNumber);
+	}
+
+	public static List<Command> getAccurateCommands(int sceneNumber) {
+		loadCommands();
+		return accurateCommands.get(sceneNumber);
 	}
 
 	public static void saveAnnotation() {
@@ -110,6 +116,12 @@ public class Corpus {
 				command.mark = MarkType.getMark(Integer.parseInt(items[2]));
 			} else if (items[1].equals("rcl")) {
 				command.rcl = Rcl.fromString(items[2]);
+				List<Command> list = accurateCommands.get(command.sceneNumber);
+				if (list == null) {
+					list = new ArrayList<Command>();
+					accurateCommands.put(command.sceneNumber, list);
+				}
+				list.add(command);
 			}
 		}
 		reader.close();

@@ -23,6 +23,7 @@ public class ServiceContext {
 	private final UserService userService = new UserService();
 	private final DataService dataService = new DataService();
 	private final MailService mailService = new MailService();
+	private final CorpusService corpusService = new CorpusService();
 	private final GameService gameService;
 
 	private ServiceContext() {
@@ -47,5 +48,9 @@ public class ServiceContext {
 
 	public MailService mailService() {
 		return mailService;
+	}
+
+	public CorpusService corpusService() {
+		return corpusService;
 	}
 }
