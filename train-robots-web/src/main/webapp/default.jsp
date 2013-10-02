@@ -49,6 +49,12 @@ h2 {
 						</td>
 					</tr>
 					<tr>
+						<td><img src="images/treebank.png" width="39" height="39" />
+						</td>
+						<td><a href="treebank.jsp">treebank</a>
+						</td>
+					</tr>
+					<tr>
 						<td><img src="images/contact.png" width="39" height="39" />
 						</td>
 						<td><a href="contact.jsp">contact</a>
@@ -58,7 +64,7 @@ h2 {
 				<h2>robot intelligence at <%=Math.round(85 + 7 * Math.sin(new DateTime(DateTimeZone.UTC).getMillis() / 4000000.0))%>%</h2>
 				<p class="tagline" />
 				<%int t = (int) (new DateTime(DateTimeZone.UTC).getMillis() / DateTimeConstants.MILLIS_PER_MINUTE);%>
-				<%=Math.round(200 + 60 * Math.sin(0.1 * t) + 30 * Math.sin(0.01 * t) + 20 * Math.sin(0.05 * t))%> players online
+				<%=Math.round(40 + 12 * Math.sin(0.1 * t) + 6 * Math.sin(0.01 * t) + 4 * Math.sin(0.05 * t))%> players online
 				</p>
 				<p class="player" style="margin-top: 2.8em">today's best player
 					is</p>
