@@ -43,6 +43,26 @@ public class RclTable {
 		return lines;
 	}
 
+	private void align(Node node) {
+		if (line.tokens != null) {
+			throw new CoreException("Duplicate RCL world alignment.");
+		}
+		List<Node> list = node.children;
+		int tokenStart = Integer.parseInt(list.get(0).tag);
+		int tokenEnd = tokenStart;
+		if (list.size() == 2) {
+			tokenEnd = Integer.parseInt(list.get(1).tag);
+		}
+		StringBuilder result = new StringBuilder();
+		for (int i = tokenStart; i <= tokenEnd; i++) {
+			if (result.length() > 0) {
+				result.append("&nbsp;");
+			}
+			result.append(tokens.get(i - 1).children.get(0).tag);
+		}
+		line.tokens = result.toString();
+	}
+
 	private void format(Node node, int level) {
 
 		// Leaf.
@@ -95,25 +115,5 @@ public class RclTable {
 			}
 			line.append(')');
 		}
-	}
-
-	private void align(Node node) {
-		if (line.tokens != null) {
-			throw new CoreException("Duplicate RCL world alignment.");
-		}
-		List<Node> list = node.children;
-		int tokenStart = Integer.parseInt(list.get(0).tag);
-		int tokenEnd = tokenStart;
-		if (list.size() == 2) {
-			tokenEnd = Integer.parseInt(list.get(1).tag);
-		}
-		StringBuilder result = new StringBuilder();
-		for (int i = tokenStart; i <= tokenEnd; i++) {
-			if (result.length() > 0) {
-				result.append("&nbsp;");
-			}
-			result.append(tokens.get(i - 1).children.get(0).tag);
-		}
-		line.tokens = result.toString();
 	}
 }

@@ -27,11 +27,11 @@ public class RclLine {
 		return text.toString();
 	}
 
-	public void append(char ch) {
-		text.append(ch);
-	}
-
 	public void append(String text) {
 		this.text.append(text);
+	}
+
+	public void append(char ch) {
+		text.append(ch);
 	}
 }

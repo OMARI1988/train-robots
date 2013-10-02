@@ -28,10 +28,12 @@ public class RclTableTests {
 	@Test
 	@Ignore
 	public void shouldBuildRclTable() {
+
 		for (Command command : Corpus.getCommands()) {
 			if (command.rcl == null) {
 				continue;
 			}
+
 			RclTable table = new RclTable(command);
 			System.out.println();
 			for (RclLine line : table.lines()) {

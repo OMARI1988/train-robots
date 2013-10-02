@@ -70,16 +70,6 @@ public class CommandPage {
 		return command != null ? command.id : 0;
 	}
 
-	public String getTreeImage() {
-		if (command == null) {
-			return null;
-		}
-		String key = String.format("%05d", command.id);
-		String a = key.substring(0, 3);
-		String b = key.substring(3);
-		return "/static/trees/" + a + "/" + b + ".png";
-	}
-
 	public String getImage1() {
 		if (scene == null) {
 			return null;
@@ -92,6 +82,16 @@ public class CommandPage {
 			return null;
 		}
 		return getImage(scene.toGroup, scene.toImage);
+	}
+
+	public String getTreeImage() {
+		if (command == null) {
+			return null;
+		}
+		String key = String.format("%05d", command.id);
+		String a = key.substring(0, 3);
+		String b = key.substring(3);
+		return "/static/trees/" + a + "/" + b + ".png";
 	}
 
 	public String getDescription() {
