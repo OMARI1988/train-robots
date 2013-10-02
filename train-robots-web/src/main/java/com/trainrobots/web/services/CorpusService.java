@@ -52,6 +52,10 @@ public class CorpusService {
 		return commandCount;
 	}
 
+	public Command getCommand(int id) {
+		return Corpus.getCommand(id);
+	}
+
 	public List<Command> getCommands(int sceneNumber) {
 		return Corpus.getAccurateCommands(sceneNumber);
 	}

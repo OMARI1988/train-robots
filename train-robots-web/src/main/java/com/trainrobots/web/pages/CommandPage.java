@@ -20,35 +20,29 @@ package com.trainrobots.web.pages;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.core.CoreException;
-import com.trainrobots.web.WebUtil;
-import com.trainrobots.web.game.Command;
-import com.trainrobots.web.game.Options;
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.web.game.Scene;
-import com.trainrobots.web.game.User;
-import com.trainrobots.web.services.DataService;
+import com.trainrobots.web.services.CorpusService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
 
 public class CommandPage {
 
-	private final DataService dataService = ServiceContext.get().dataService();
+	private final CorpusService corpusService = ServiceContext.get()
+			.corpusService();
 	private final GameService gameService = ServiceContext.get().gameService();
+	private Command command;
 	private Scene scene;
 
-	public void initiate(PageContext pageContext, String u, String r) {
+	public void initiate(PageContext pageContext, String id) {
 
 		// Load.
-		HttpServletRequest request = (HttpServletRequest) pageContext
-				.getRequest();
-		User user = (User) request.getSession().getAttribute("user");
-		if (user != null && gameService.isAdmin(user.email)) {
-			loadScene(pageContext.getServletContext(), u, r);
-		}
+		loadCommand(pageContext.getServletContext(), id);
 
 		// Response.
 		HttpServletResponse response = (HttpServletResponse) pageContext
@@ -71,8 +65,18 @@ public class CommandPage {
 		response.setDateHeader("Expires", 0); // Proxies.
 	}
 
-	public int getSceneNumber() {
-		return scene != null ? scene.sceneNumber : -1;
+	public int getId() {
+		return command != null ? command.id : 0;
+	}
+
+	public String getTreeImage() {
+		if (command == null) {
+			return null;
+		}
+		String key = String.format("%05d", command.id);
+		String a = key.substring(0, 3);
+		String b = key.substring(3);
+		return "/static/trees/" + a + "/" + b + ".png";
 	}
 
 	public String getImage1() {
@@ -91,73 +95,66 @@ public class CommandPage {
 
 	public String getDescription() {
 
-		// No scene?
-		if (scene == null) {
+		// No command?
+		if (command == null) {
 			return null;
 		}
 
-		// Option.
-		StringBuilder text = new StringBuilder();
-		int option = scene.expectedOption;
-		text.append("<p class='option'>");
-		text.append(option > 0 ? Options.get(option) : "Unmarked");
-		text.append("</p>");
-
 		// Text.
-		text.append("<p class='text'>");
-		text.append(scene.command);
-		text.append("</p>");
+		return command.text;
+	}
 
-		// Info.
-		text.append("<p class='info'>");
-		text.append(scene.gameName);
-		text.append(" (");
-		text.append(scene.email);
-		text.append(") - ");
-		text.append(WebUtil.formatTime(scene.timeUtc));
-		text.append("</p>");
+	public String getRclLines() {
+
+		// No command?
+		if (command == null || command.rcl == null) {
+			return null;
+		}
+
+		// Table.
+		StringBuilder text = new StringBuilder();
+		Node node = command.rcl.toNode();
+		removeAlignment(node);
+		for (String line : node.format().split("\r\n")) {
+			text.append("<tr>");
+			text.append("<td class=\"rcl\">");
+			text.append(line.replace(" ", "&nbsp;"));
+			text.append("</td>");
+			text.append("<td>X1</td>");
+			text.append("</tr>");
+		}
 		return text.toString();
 	}
 
-	private void loadScene(ServletContext context, String u, String r) {
-
-		// User ID.
-		int userId;
-		try {
-			userId = Integer.parseInt(u);
-		} catch (NumberFormatException e) {
-			return;
+	private static void removeAlignment(Node node) {
+		if (node.children != null) {
+			for (int i = node.children.size() - 1; i >= 0; i--) {
+				Node child = node.children.get(i);
+				if (child.tag.equals("token:")) {
+					node.children.remove(i);
+				} else {
+					removeAlignment(child);
+				}
+			}
 		}
+	}
 
-		// Round.
-		int round;
+	private void loadCommand(ServletContext context, String id) {
+
+		// Parse.
+		int commandNumber;
 		try {
-			round = Integer.parseInt(r);
+			commandNumber = Integer.parseInt(id);
 		} catch (NumberFormatException e) {
 			return;
 		}
 
 		// Load.
-		Command command = dataService.getCommand(context, userId, round);
-		if (command == null || command.command == null) {
+		command = corpusService.getCommand(commandNumber);
+		if (command == null || command.rcl == null) {
 			return;
 		}
-
-		// Scene.
-		Scene s = gameService.getAddCommandScene(command.sceneNumber);
-		scene = new Scene();
-		scene.sceneNumber = s.sceneNumber;
-		scene.fromGroup = s.fromGroup;
-		scene.toGroup = s.toGroup;
-		scene.fromImage = s.fromImage;
-		scene.toImage = s.toImage;
-		scene.command = command.command;
-		scene.expectedOption = command.commandMark;
-		scene.rateUserId = userId;
-		scene.rateRound = round;
-		scene.timeUtc = command.timeUtc;
-		scene.email = command.email;
-		scene.gameName = command.gameName;
+		scene = gameService.getAddCommandScene(command.sceneNumber);
 	}
 
 	private static String getImage(int groupNumber, int imageNumber) {

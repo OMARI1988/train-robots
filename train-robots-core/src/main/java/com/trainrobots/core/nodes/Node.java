@@ -309,7 +309,7 @@ public class Node {
 		}
 	}
 
-	private boolean isChain() {
+	public boolean isChain() {
 		if (isLeaf()) {
 			return true;
 		}
