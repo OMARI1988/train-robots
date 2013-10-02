@@ -25,8 +25,9 @@ import javax.servlet.jsp.PageContext;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.nodes.Node;
 import com.trainrobots.web.game.Scene;
+import com.trainrobots.web.rcl.RclLine;
+import com.trainrobots.web.rcl.RclTable;
 import com.trainrobots.web.services.CorpusService;
 import com.trainrobots.web.services.GameService;
 import com.trainrobots.web.services.ServiceContext;
@@ -113,30 +114,19 @@ public class CommandPage {
 
 		// Table.
 		StringBuilder text = new StringBuilder();
-		Node node = command.rcl.toNode();
-		removeAlignment(node);
-		for (String line : node.format().split("\r\n")) {
+		for (RclLine line : new RclTable(command).lines()) {
 			text.append("<tr>");
 			text.append("<td class=\"rcl\">");
-			text.append(line.replace(" ", "&nbsp;"));
+			text.append(line.toString());
 			text.append("</td>");
-			text.append("<td>X1</td>");
+			text.append("<td>");
+			if (line.tokens != null) {
+				text.append(line.tokens);
+			}
+			text.append("</td>");
 			text.append("</tr>");
 		}
 		return text.toString();
-	}
-
-	private static void removeAlignment(Node node) {
-		if (node.children != null) {
-			for (int i = node.children.size() - 1; i >= 0; i--) {
-				Node child = node.children.get(i);
-				if (child.tag.equals("token:")) {
-					node.children.remove(i);
-				} else {
-					removeAlignment(child);
-				}
-			}
-		}
 	}
 
 	private void loadCommand(ServletContext context, String id) {
