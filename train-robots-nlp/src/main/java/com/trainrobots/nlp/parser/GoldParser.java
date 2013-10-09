@@ -77,7 +77,7 @@ public class GoldParser {
 		}
 
 		List<Node> tokens = Tokenizer.getTokens(text).children;
-		return new SemanticParser(world, grammar, lexicon, chunks, tokens,
-				verbose).parse();
+		return new Parser(world, grammar, lexicon, chunks, tokens, verbose)
+				.parse();
 	}
 }

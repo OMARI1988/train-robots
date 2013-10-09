@@ -65,7 +65,7 @@ public class SemanticParserTests {
 				}
 			} catch (Exception e) {
 				System.out.println(command.id + ": " + e.getMessage());
-				e.printStackTrace(System.out);
+				//e.printStackTrace(System.out);
 			}
 			total++;
 		}

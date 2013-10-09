@@ -24,6 +24,10 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.RclVisitor;
+import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
 import com.trainrobots.nlp.grounding.Grounding;
@@ -33,10 +37,13 @@ import com.trainrobots.nlp.parser.grammar.ProductionRule;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
 import com.trainrobots.nlp.parser.lexicon.Mapping;
 import com.trainrobots.nlp.parser.lexicon.MappingList;
+import com.trainrobots.nlp.processor.Planner;
+import com.trainrobots.nlp.scenes.WorldModel;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
+	private final Planner planner;
 	private final Grounder grounder;
 	private final Queue queue;
 	private final Grammar grammar;
@@ -46,21 +53,20 @@ public class Parser {
 	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
 	private final boolean verbose;
 
-	public Parser(Grounder grounder, Grammar grammar, Lexicon lexicon,
+	public Parser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens) {
-		this(grounder, grammar, lexicon, items, tokens, false);
+		this(world, grammar, lexicon, items, tokens, false);
 	}
 
-	public Parser(Grounder grounder, Grammar grammar, Lexicon lexicon,
+	public Parser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens, boolean verbose) {
-
-		// verbose = true;
-		this.grounder = grounder;
+		this.planner = new Planner(world);
+		this.verbose = verbose;
+		this.grounder = planner.grounder();
 		this.grammar = grammar;
 		this.lexicon = lexicon;
 		this.queue = new Queue(items);
 		this.tokens = tokens;
-		this.verbose = verbose;
 
 		if (verbose) {
 			System.out.println("INITIAL");
@@ -68,11 +74,133 @@ public class Parser {
 		}
 	}
 
-	public Gss gss() {
-		return gss;
+	public Rcl parse() {
+
+		// Parse.
+		List<Node> trees = shiftReduce();
+		if (trees.size() == 0) {
+			if (verbose) {
+				System.out.println("No parse trees.");
+			}
+			return null;
+		}
+
+		// Map.
+		List<Candidate> candidates = new ArrayList<Candidate>();
+		for (Node tree : trees) {
+			Candidate candidate;
+			try {
+				candidate = new Candidate(tree);
+			} catch (Exception exception) {
+				if (verbose) {
+					System.out.println("Failed to create RCL: " + tree);
+					exception.printStackTrace(System.out);
+				}
+				continue;
+			}
+			mapReferences(candidate.rcl);
+			mapTypeReferences(candidate.rcl);
+			candidates.add(candidate);
+		}
+
+		// Validate.
+		List<Candidate> valid = new ArrayList<Candidate>();
+		for (Candidate candidate : candidates) {
+			if (valid(candidate.rcl)) {
+				valid.add(candidate);
+			}
+		}
+		if (valid.size() == 0) {
+			if (verbose) {
+				for (Candidate candidate : candidates) {
+					System.out.println("Not valid: " + candidate.rcl);
+				}
+			}
+			return null;
+		}
+		if (valid.size() == 1) {
+			return valid.get(0).rcl;
+		}
+
+		// Rank.
+		Candidate best = null;
+		boolean duplicate = false;
+		for (Candidate candidate : valid) {
+			if (best == null || candidate.p > best.p) {
+				best = candidate;
+			} else if (candidate.p == best.p) {
+				duplicate = true;
+			}
+		}
+
+		// Ranked?
+		if (!duplicate && best != null) {
+			return best.rcl;
+		}
+
+		// Duplicates?
+		if (verbose) {
+			for (Candidate candidate : valid) {
+				System.out.println("Validated duplicate (P=" + candidate.p
+						+ "): " + candidate.rcl);
+			}
+		}
+		return null;
 	}
 
-	public List<Node> parse() {
+	private boolean valid(Rcl rcl) {
+		try {
+			planner.getMoves(rcl);
+			return true;
+		} catch (Exception exception) {
+			return false;
+		}
+	}
+
+	private static void mapReferences(Rcl rcl) {
+		if (rcl instanceof Sequence) {
+			Sequence sequence = (Sequence) rcl;
+			if (sequence.events().size() == 2) {
+				Event event1 = sequence.events().get(0);
+				Event event2 = sequence.events().get(1);
+
+				Entity entity1 = event1.entity();
+				Entity entity2 = event2.entity();
+
+				if (entity2.isType(Type.reference)) {
+					entity1.setId(1);
+					entity2.setReferenceId(1);
+				}
+			}
+		}
+	}
+
+	private static void mapTypeReferences(Rcl rcl) {
+		rcl.recurse(new RclVisitor() {
+			private Entity last;
+
+			public void visit(Rcl parent, Entity entity) {
+				if ((entity.isType(Type.typeReference) || entity
+						.isType(Type.typeReferenceGroup))
+						&& entity.referenceId() == null) {
+					if (last != null) {
+						if (last.id() == null) {
+							last.setId(1);
+						}
+						entity.setReferenceId(last.id());
+					}
+				}
+
+				if (!entity.isType(Type.reference)
+						&& !entity.isType(Type.typeReference)
+						&& !entity.isType(Type.typeReferenceGroup)) {
+					last = entity;
+				}
+			}
+		});
+	}
+
+	private List<Node> shiftReduce() {
 
 		// Parse.
 		while (true) {

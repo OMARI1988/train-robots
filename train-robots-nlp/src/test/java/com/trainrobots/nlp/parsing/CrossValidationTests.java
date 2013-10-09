@@ -31,7 +31,7 @@ import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.chunker.Chunker;
 import com.trainrobots.nlp.chunker.JitarChunker;
 import com.trainrobots.nlp.chunker.Token;
-import com.trainrobots.nlp.parser.SemanticParser;
+import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
 import com.trainrobots.nlp.processor.MoveValidator;
@@ -105,8 +105,7 @@ public class CrossValidationTests {
 			List<Node> tokens = Tokenizer.getTokens(text).children;
 
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
-			SemanticParser parser = new SemanticParser(world, grammar, lexicon,
-					chunks, tokens);
+			Parser parser = new Parser(world, grammar, lexicon, chunks, tokens);
 
 			try {
 				Rcl rcl = parser.parse();
