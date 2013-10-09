@@ -203,6 +203,23 @@ public class Node {
 		return copy;
 	}
 
+	public void recurse(NodeVisitor visitor) {
+		accept(null, visitor);
+	}
+
+	private void accept(Node parent, NodeVisitor visitor) {
+
+		// Visit.
+		visitor.visit(parent, this);
+
+		// Children.
+		if (children != null) {
+			for (Node child : children) {
+				child.accept(this, visitor);
+			}
+		}
+	}
+
 	public static Node fromString(String text) {
 		return new NodeReader(text).read();
 	}

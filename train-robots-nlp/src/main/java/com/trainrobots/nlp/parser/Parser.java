@@ -23,11 +23,9 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.nodes.NodeVisitor;
 import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclVisitor;
-import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
 import com.trainrobots.nlp.grounding.Grounding;
@@ -86,33 +84,25 @@ public class Parser {
 		}
 
 		// Map.
-		List<Candidate> candidates = new ArrayList<Candidate>();
 		for (Node tree : trees) {
-			Candidate candidate;
-			try {
-				candidate = new Candidate(tree);
-			} catch (Exception exception) {
-				if (verbose) {
-					System.out.println("Failed to create RCL: " + tree);
-					exception.printStackTrace(System.out);
-				}
-				continue;
-			}
-			mapReferences(candidate.rcl);
-			mapTypeReferences(candidate.rcl);
-			candidates.add(candidate);
+			mapReferences(tree);
+			mapTypeReferences(tree);
 		}
 
 		// Validate.
 		List<Candidate> valid = new ArrayList<Candidate>();
-		for (Candidate candidate : candidates) {
+		List<Candidate> invalid = new ArrayList<Candidate>();
+		for (Node tree : trees) {
+			Candidate candidate = new Candidate(tree);
 			if (valid(candidate.rcl)) {
 				valid.add(candidate);
+			} else {
+				invalid.add(candidate);
 			}
 		}
 		if (valid.size() == 0) {
 			if (verbose) {
-				for (Candidate candidate : candidates) {
+				for (Candidate candidate : invalid) {
 					System.out.println("Not valid: " + candidate.rcl);
 				}
 			}
@@ -157,43 +147,44 @@ public class Parser {
 		}
 	}
 
-	private static void mapReferences(Rcl rcl) {
-		if (rcl instanceof Sequence) {
-			Sequence sequence = (Sequence) rcl;
-			if (sequence.events().size() == 2) {
-				Event event1 = sequence.events().get(0);
-				Event event2 = sequence.events().get(1);
-
-				Entity entity1 = event1.entity();
-				Entity entity2 = event2.entity();
-
-				if (entity2.isType(Type.reference)) {
-					entity1.setId(1);
-					entity2.setReferenceId(1);
-				}
+	private static void mapReferences(Node node) {
+		if (node.tag.equals("sequence:") && node.children.size() == 2) {
+			Node event1 = node.children.get(0);
+			Node event2 = node.children.get(1);
+			Node entity1 = event1.children.get(1);
+			Node entity2 = event2.children.get(1);
+			Node type = entity2.getChild("type:");
+			if (type.getSingleLeaf().equals("reference")) {
+				entity1.add("id:", "1");
+				entity2.add("reference-id:", "1");
 			}
 		}
 	}
 
-	private static void mapTypeReferences(Rcl rcl) {
-		rcl.recurse(new RclVisitor() {
-			private Entity last;
+	private static void mapTypeReferences(Node rcl) {
+		rcl.recurse(new NodeVisitor() {
+			private Node last;
 
-			public void visit(Rcl parent, Entity entity) {
-				if ((entity.isType(Type.typeReference) || entity
-						.isType(Type.typeReferenceGroup))
-						&& entity.referenceId() == null) {
+			public void visit(Node parent, Node entity) {
+
+				if (!entity.hasTag("entity:")) {
+					return;
+				}
+
+				String type = entity.getChild("type:").getSingleLeaf();
+				if ((type.equals("type-reference") || type
+						.equals("type-reference-group"))
+						&& entity.getChild("reference-id:") == null) {
 					if (last != null) {
-						if (last.id() == null) {
-							last.setId(1);
+						if (last.getChild("id:") == null) {
+							last.add("id:", "1");
 						}
-						entity.setReferenceId(last.id());
+						entity.add("reference-id:", "1");
 					}
 				}
 
-				if (!entity.isType(Type.reference)
-						&& !entity.isType(Type.typeReference)
-						&& !entity.isType(Type.typeReferenceGroup)) {
+				if (!type.equals("reference") && !type.equals("type-reference")
+						&& !type.equals("type-reference-group")) {
 					last = entity;
 				}
 			}
