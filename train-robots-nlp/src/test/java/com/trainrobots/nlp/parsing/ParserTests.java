@@ -34,7 +34,7 @@ import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 
-public class SemanticParserTests {
+public class ParserTests {
 
 	@Test
 	@Ignore
