@@ -23,7 +23,6 @@ import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.nodes.NodeVisitor;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Type;
@@ -83,17 +82,12 @@ public class Parser {
 			return null;
 		}
 
-		// Map.
-		for (Node tree : trees) {
-			mapReferences(tree);
-			mapTypeReferences(tree);
-		}
-
 		// Validate.
 		List<Candidate> valid = new ArrayList<Candidate>();
 		List<Candidate> invalid = new ArrayList<Candidate>();
 		for (Node tree : trees) {
 			Candidate candidate = new Candidate(tree);
+			AnaphoraResolver.resolve(candidate.rcl);
 			if (valid(candidate.rcl)) {
 				valid.add(candidate);
 			} else {
@@ -145,50 +139,6 @@ public class Parser {
 		} catch (Exception exception) {
 			return false;
 		}
-	}
-
-	private static void mapReferences(Node node) {
-		if (node.tag.equals("sequence:") && node.children.size() == 2) {
-			Node event1 = node.children.get(0);
-			Node event2 = node.children.get(1);
-			Node entity1 = event1.children.get(1);
-			Node entity2 = event2.children.get(1);
-			Node type = entity2.getChild("type:");
-			if (type.getSingleLeaf().equals("reference")) {
-				entity1.add("id:", "1");
-				entity2.add("reference-id:", "1");
-			}
-		}
-	}
-
-	private static void mapTypeReferences(Node rcl) {
-		rcl.recurse(new NodeVisitor() {
-			private Node last;
-
-			public void visit(Node parent, Node entity) {
-
-				if (!entity.hasTag("entity:")) {
-					return;
-				}
-
-				String type = entity.getChild("type:").getSingleLeaf();
-				if ((type.equals("type-reference") || type
-						.equals("type-reference-group"))
-						&& entity.getChild("reference-id:") == null) {
-					if (last != null) {
-						if (last.getChild("id:") == null) {
-							last.add("id:", "1");
-						}
-						entity.add("reference-id:", "1");
-					}
-				}
-
-				if (!type.equals("reference") && !type.equals("type-reference")
-						&& !type.equals("type-reference-group")) {
-					last = entity;
-				}
-			}
-		});
 	}
 
 	private List<Node> shiftReduce() {
@@ -426,7 +376,7 @@ public class Parser {
 			}
 			node.children.add(child);
 		}
-		if (!validate(node)) {
+		if (node.tag.equals("entity:") && !validateEntity(node)) {
 			return;
 		}
 		GssNode reducedNode = gss.add(node);
@@ -445,23 +395,25 @@ public class Parser {
 		}
 	}
 
-	private boolean validate(Node node) {
+	private boolean validateEntity(Node node) {
 		try {
-			if (node.tag.equals("entity:")) {
-				Entity entity = Entity.fromNode(node);
-				if (entity.isType(Type.tile) || entity.isType(Type.reference)
-						|| entity.isType(Type.typeReference)
-						|| entity.isType(Type.typeReferenceGroup)
-						|| entity.isType(Type.region)) {
-					return true;
+			Entity entity = Entity.fromNode(node);
+			if (entity.isType(Type.reference) && entity.relations() != null
+					&& entity.relations().size() >= 1) {
+				return false;
+			}
+			if (entity.isType(Type.tile) || entity.isType(Type.reference)
+					|| entity.isType(Type.typeReference)
+					|| entity.isType(Type.typeReferenceGroup)
+					|| entity.isType(Type.region)) {
+				return true;
+			}
+			List<Grounding> groundings = grounder.ground(null, entity);
+			if (groundings == null || groundings.size() == 0) {
+				if (verbose) {
+					System.out.println("*** NO GROUNDINGS: " + node);
 				}
-				List<Grounding> groundings = grounder.ground(null, entity);
-				if (groundings == null || groundings.size() == 0) {
-					if (verbose) {
-						System.out.println("*** NO GROUNDINGS: " + node);
-					}
-					return false;
-				}
+				return false;
 			}
 			return true;
 		} catch (Exception exception) {
