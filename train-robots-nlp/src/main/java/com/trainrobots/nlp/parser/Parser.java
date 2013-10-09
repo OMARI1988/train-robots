@@ -295,11 +295,9 @@ public class Parser {
 		// Add node to previous frontier.
 		GssNode[] nodes = new GssNode[content.length];
 		for (int i = 0; i < content.length; i++) {
-			if (validate(content[i])) {
-				nodes[i] = gss.add(content[i]);
-				for (GssNode parent : frontier) {
-					nodes[i].parents().add(parent);
-				}
+			nodes[i] = gss.add(content[i]);
+			for (GssNode parent : frontier) {
+				nodes[i].parents().add(parent);
 			}
 		}
 
