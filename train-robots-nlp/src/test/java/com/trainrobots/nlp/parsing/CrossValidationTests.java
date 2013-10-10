@@ -108,7 +108,7 @@ public class CrossValidationTests {
 			Parser parser = new Parser(world, grammar, lexicon, chunks, tokens);
 
 			try {
-				Rcl rcl = parser.parse();
+				Rcl rcl = parser.parse().rcl();
 				if (rcl != null) {
 					MoveValidator.validate(command.sceneNumber, rcl);
 					valid++;

@@ -230,7 +230,7 @@ public class CorpusView extends JPanel {
 				.getStatusBar();
 		try {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
-			Rcl rcl = GoldParser.parse(world, command.text);
+			Rcl rcl = GoldParser.parse(world, command.text).rcl();
 			if (rcl == null) {
 				throw new CoreException("Failed to parse.");
 			}

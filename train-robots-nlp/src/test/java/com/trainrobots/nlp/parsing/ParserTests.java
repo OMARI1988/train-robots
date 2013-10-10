@@ -30,6 +30,7 @@ import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
+import com.trainrobots.nlp.parser.ParserResult;
 import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
@@ -60,8 +61,6 @@ public class ParserTests {
 			try {
 				if (match(command.id)) {
 					correct++;
-				} else {
-					System.out.println(command.id + ": Misparsed");
 				}
 			} catch (Exception e) {
 				System.out.println(command.id + ": " + e.getMessage());
@@ -95,7 +94,7 @@ public class ParserTests {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 			Rcl rcl;
 			try {
-				rcl = GoldParser.parse(world, command.text);
+				rcl = GoldParser.parse(world, command.text).rcl();
 				if (rcl == null) {
 					continue;
 				}
@@ -128,11 +127,11 @@ public class ParserTests {
 		WorldModel world = SceneManager.getScene(command.sceneNumber).before;
 
 		// Parse.
-		Rcl result = GoldParser.parse(world, command.text, verbose);
+		ParserResult result = GoldParser.parse(world, command.text, verbose);
 
 		// Validate.
 		Node expected = command.rcl.toNode();
-		if (result != null && expected.equals(result.toNode())) {
+		if (result.rcl() != null && expected.equals(result.rcl().toNode())) {
 			return true;
 		}
 
@@ -144,6 +143,7 @@ public class ParserTests {
 			System.out.println("Parsed   : "
 					+ (result != null ? result.toString() : "None."));
 		}
+		System.out.println(command.id + ": " + result.reason());
 		return false;
 	}
 }

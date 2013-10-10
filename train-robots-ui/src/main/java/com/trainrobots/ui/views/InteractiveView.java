@@ -132,7 +132,7 @@ public class InteractiveView extends JPanel {
 
 	private void processCommand(String text) {
 
-		Rcl rcl = GoldParser.parse(world, text);
+		Rcl rcl = GoldParser.parse(world, text).rcl();
 		if (rcl == null) {
 			writeLine("Command not recognized.");
 			return;

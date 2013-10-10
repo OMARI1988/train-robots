@@ -53,7 +53,7 @@ public class ImageConfusionTests {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).after;
 			Rcl rcl;
 			try {
-				rcl = GoldParser.parse(world, command.text);
+				rcl = GoldParser.parse(world, command.text).rcl();
 			} catch (Exception e) {
 				continue;
 			}

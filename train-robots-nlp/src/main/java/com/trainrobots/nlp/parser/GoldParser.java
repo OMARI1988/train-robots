@@ -41,11 +41,12 @@ public class GoldParser {
 	private GoldParser() {
 	}
 
-	public static Rcl parse(WorldModel world, String text) {
+	public static ParserResult parse(WorldModel world, String text) {
 		return parse(world, text, false);
 	}
 
-	public static Rcl parse(WorldModel world, String text, boolean verbose) {
+	public static ParserResult parse(WorldModel world, String text,
+			boolean verbose) {
 
 		if (lexicon == null) {
 			System.out.println("Initiating gold parser...");

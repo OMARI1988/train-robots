@@ -71,15 +71,16 @@ public class Parser {
 		}
 	}
 
-	public Rcl parse() {
+	public ParserResult parse() {
 
 		// Parse.
 		List<Node> trees = shiftReduce();
 		if (trees.size() == 0) {
+			ParserResult result = new ParserResult("No parse trees.");
 			if (verbose) {
-				System.out.println("No parse trees.");
+				System.out.println(result.reason());
 			}
-			return null;
+			return result;
 		}
 
 		// Validate.
@@ -100,10 +101,10 @@ public class Parser {
 					System.out.println("Not valid: " + candidate.rcl);
 				}
 			}
-			return null;
+			return new ParserResult("All candidates were invalid.");
 		}
 		if (valid.size() == 1) {
-			return valid.get(0).rcl;
+			return new ParserResult(valid.get(0).rcl);
 		}
 
 		// Rank.
@@ -119,7 +120,7 @@ public class Parser {
 
 		// Ranked?
 		if (!duplicate && best != null) {
-			return best.rcl;
+			return new ParserResult(best.rcl);
 		}
 
 		// Duplicates?
@@ -129,7 +130,7 @@ public class Parser {
 						+ "): " + candidate.rcl);
 			}
 		}
-		return null;
+		return new ParserResult("Validated duplicates.");
 	}
 
 	private boolean valid(Rcl rcl) {
