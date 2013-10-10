@@ -102,7 +102,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(3394, correct);
+		assertEquals(3397, correct);
 		assertEquals(8414, size);
 
 		// Gold.

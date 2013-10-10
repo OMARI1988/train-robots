@@ -28,7 +28,6 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.parser.ParserResult;
 import com.trainrobots.nlp.processor.MoveValidator;
@@ -40,7 +39,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(15170));
+		assertTrue(match(27039, true));
 	}
 
 	@Test
@@ -92,24 +91,26 @@ public class ParserTests {
 
 			// Parse.
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
-			Rcl rcl;
+			ParserResult result;
 			try {
-				rcl = GoldParser.parse(world, command.text).rcl();
-				if (rcl == null) {
+				result = GoldParser.parse(world, command.text);
+				if (result.rcl() == null) {
+					// if (result.reason().equals("Validated duplicates.")) {
+					// System.out.println(++count + ") " + command.id + ": "
+					// + result.reason());
+					// }
 					continue;
 				}
 			} catch (Exception e) {
 				continue;
 			}
 			try {
-				MoveValidator.validate(command.sceneNumber, rcl);
+				MoveValidator.validate(command.sceneNumber, result.rcl());
 				System.out.println(++count + ") VALID: " + command.id + ": "
 						+ command.text);
-				command.rcl = rcl;
-				command.mark = MarkType.Accurate;
 			} catch (Exception e) {
-				System.out.println(++count + ") " + e.getMessage() + ": "
-						+ command.id + ": " + command.text);
+				// System.out.println(++count + ") " + e.getMessage() + ": "
+				// + command.id + ": " + command.text);
 			}
 		}
 	}
