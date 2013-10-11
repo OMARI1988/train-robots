@@ -157,7 +157,6 @@ public class Parser {
 		List<Node> results = new ArrayList<Node>();
 		for (GssNode node : frontier) {
 			if (node.parents().size() == 0) {
-
 				Node result = node.content().clone();
 				if (verbose) {
 					if (results.size() == 0) {
@@ -192,7 +191,7 @@ public class Parser {
 		for (int i = 0; i < values.length; i++) {
 			content[i] = new Node(tag, values[i]);
 		}
-		add(content);
+		createFrontier(content);
 		return true;
 	}
 
@@ -226,16 +225,30 @@ public class Parser {
 			System.out.println("SHIFT");
 		}
 
-		// Add.
-		Node next = queue.read();
-		Node[] content = getMappedNodes(next);
-		if (content == null || content.length == 0) {
-			throw new CoreException("Failed to map: " + next);
+		// Dequeue.
+		Node node = queue.read();
+
+		// Lexicon mappings.
+		String tokens = getTokens(node);
+		MappingList mappings = lexicon.getMappings(node.tag, tokens);
+		if (mappings == null || mappings.size() == 0) {
+			throw new CoreException("Not in lexicon: '" + tokens + "' as "
+					+ node);
 		}
-		add(content);
+
+		// Add.
+		Node[] content = new Node[mappings.size()];
+		for (int i = 0; i < mappings.size(); i++) {
+			Node mappedNode = node.clone();
+			Mapping mapping = mappings.get(i);
+			mappedNode.children.add(0, new Node(mapping.value()));
+			mappedNode.p = mapping.p;
+			content[i] = mappedNode;
+		}
+		createFrontier(content);
 	}
 
-	private void add(Node[] content) {
+	private void createFrontier(Node[] content) {
 
 		// Add node to previous frontier.
 		GssNode[] nodes = new GssNode[content.length];
@@ -249,72 +262,13 @@ public class Parser {
 		// Create new frontier.
 		frontier.clear();
 		for (GssNode node : nodes) {
-			if (node != null) {
-				frontier.add(node);
-			}
+			frontier.add(node);
 		}
 
 		// Diagnostics.
 		if (verbose) {
 			printState();
 		}
-	}
-
-	private Node[] getMappedNodes(Node node) {
-
-		// Alignment?
-		int[] span = getTokens(node);
-		if (span == null) {
-			throw new CoreException("Not aligned: " + node);
-		}
-
-		// Build token.
-		int tokenStart = span[0];
-		int tokenEnd = span[1];
-		StringBuilder text = new StringBuilder();
-		for (int i = tokenStart; i <= tokenEnd; i++) {
-			if (text.length() > 0) {
-				text.append('_');
-			}
-			text.append(tokens.get(i - 1).getValue());
-		}
-		String token = text.toString();
-
-		// Already mapped?
-		if (node.hasSingleLeaf()) {
-			throw new CoreException("Already mapped: " + node);
-		}
-
-		// Map.
-		MappingList mappings = lexicon.getMappings(node.tag, token);
-		if (mappings == null || mappings.size() == 0) {
-			throw new CoreException("Not in lexicon: '" + token + "' as "
-					+ node);
-		}
-
-		// Result.
-		Node[] result = new Node[mappings.size()];
-		for (int i = 0; i < mappings.size(); i++) {
-			Node mappedNode = node.clone();
-			Mapping mapping = mappings.get(i);
-			mappedNode.children.add(0, new Node(mapping.value()));
-			mappedNode.p = mapping.p;
-			result[i] = mappedNode;
-		}
-		return result;
-	}
-
-	private static int[] getTokens(Node node) {
-		Node tokenNode = node.getChild("token:");
-		if (tokenNode == null) {
-			return null;
-		}
-		int tokenStart = Integer.parseInt(tokenNode.children.get(0).tag);
-		int tokenEnd = tokenStart;
-		if (tokenNode.children.size() >= 2) {
-			tokenEnd = Integer.parseInt(tokenNode.children.get(1).tag);
-		}
-		return new int[] { tokenStart, tokenEnd };
 	}
 
 	private void reduce() {
@@ -418,6 +372,26 @@ public class Parser {
 			}
 			return false;
 		}
+	}
+
+	private String getTokens(Node node) {
+		Node tokenNode = node.getChild("token:");
+		if (tokenNode == null) {
+			throw new CoreException("Not aligned: " + node);
+		}
+		int start = Integer.parseInt(tokenNode.children.get(0).tag);
+		if (tokenNode.children.size() == 1) {
+			return tokens.get(start - 1).getValue();
+		}
+		int end = Integer.parseInt(tokenNode.children.get(1).tag);
+		StringBuilder text = new StringBuilder();
+		for (int i = start; i <= end; i++) {
+			if (text.length() > 0) {
+				text.append('_');
+			}
+			text.append(tokens.get(i - 1).getValue());
+		}
+		return text.toString();
 	}
 
 	private void printState() {

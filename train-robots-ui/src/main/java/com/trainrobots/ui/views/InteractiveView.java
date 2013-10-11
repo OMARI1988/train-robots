@@ -33,8 +33,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.trainrobots.core.configuration.Configuration;
-import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
+import com.trainrobots.nlp.parser.ParserResult;
 import com.trainrobots.nlp.processor.Planner;
 import com.trainrobots.nlp.processor.Processor;
 import com.trainrobots.nlp.scenes.SceneManager;
@@ -132,14 +132,14 @@ public class InteractiveView extends JPanel {
 
 	private void processCommand(String text) {
 
-		Rcl rcl = GoldParser.parse(world, text).rcl();
-		if (rcl == null) {
-			writeLine("Command not recognized.");
+		ParserResult result = GoldParser.parse(world, text);
+		if (result.rcl() == null) {
+			writeLine(result.reason());
 			return;
 		}
-		writeLine(rcl.format().replace("\r", ""));
+		writeLine(result.rcl().format().replace("\r", ""));
 
-		List<Move> moves = new Planner(world).getMoves(rcl);
+		List<Move> moves = new Planner(world).getMoves(result.rcl());
 		if (moves == null || moves.size() == 0) {
 			writeLine("Failed to plan move.");
 			return;
