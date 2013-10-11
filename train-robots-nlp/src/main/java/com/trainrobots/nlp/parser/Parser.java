@@ -145,18 +145,12 @@ public class Parser {
 	private List<Node> shiftReduce() {
 
 		// Parse.
-		while (true) {
-
+		while (!queue.empty()) {
+			shift();
+			reduce();
 			if (ellipsis()) {
 				reduce();
 			}
-
-			if (queue.empty()) {
-				break;
-			}
-
-			shift();
-			reduce();
 		}
 
 		// Results.
