@@ -39,10 +39,14 @@ public class LexiconEntry {
 		}
 	}
 
+	public List<MappingList> getMappings() {
+		return mappingLists;
+	}
+
 	public MappingList getMappings(String type) {
-		for (MappingList msppings : mappingLists) {
-			if (msppings.type() == type) {
-				return msppings;
+		for (MappingList mappings : mappingLists) {
+			if (mappings.type() == type) {
+				return mappings;
 			}
 		}
 		return null;
