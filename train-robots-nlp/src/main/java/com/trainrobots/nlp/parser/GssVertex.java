@@ -22,31 +22,31 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 
-public class GssNode {
+public class GssVertex {
 
 	private final int id;
-	private final Node content;
-	private final List<GssNode> parents = new ArrayList<GssNode>();
+	private final Node node;
+	private final List<GssVertex> parents = new ArrayList<GssVertex>();
 
-	public GssNode(int id, Node content) {
+	public GssVertex(int id, Node node) {
 		this.id = id;
-		this.content = content;
+		this.node = node;
 	}
 
 	public int id() {
 		return id;
 	}
 
-	public Node content() {
-		return content;
+	public Node node() {
+		return node;
 	}
 
-	public List<GssNode> parents() {
+	public List<GssVertex> parents() {
 		return parents;
 	}
 
 	@Override
 	public String toString() {
-		return content.toString();
+		return node.toString();
 	}
 }

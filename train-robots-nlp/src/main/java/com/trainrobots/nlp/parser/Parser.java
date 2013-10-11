@@ -46,8 +46,8 @@ public class Parser {
 	private final Grammar grammar;
 	private final Lexicon lexicon;
 	private final List<Node> tokens;
-	private final List<GssNode> frontier = new ArrayList<GssNode>();
-	private final LinkedList<GssNode> reductionQueue = new LinkedList<GssNode>();
+	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
+	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
 	private final boolean verbose;
 
 	public Parser(WorldModel world, Grammar grammar, Lexicon lexicon,
@@ -155,9 +155,9 @@ public class Parser {
 
 		// Results.
 		List<Node> results = new ArrayList<Node>();
-		for (GssNode node : frontier) {
-			if (node.parents().size() == 0) {
-				Node result = node.content();
+		for (GssVertex vertex : frontier) {
+			if (vertex.parents().size() == 0) {
+				Node result = vertex.node();
 				if (verbose) {
 					if (results.size() == 0) {
 						System.out.println();
@@ -187,11 +187,11 @@ public class Parser {
 		// Add.
 		String[] values = tag.equals("relation:") ? new String[] { "above",
 				"within" } : new String[] { "reference", "region" };
-		Node[] content = new Node[values.length];
+		Node[] nodes = new Node[values.length];
 		for (int i = 0; i < values.length; i++) {
-			content[i] = new Node(tag, values[i]);
+			nodes[i] = new Node(tag, values[i]);
 		}
-		createFrontier(content);
+		createFrontier(nodes);
 		return true;
 	}
 
@@ -237,32 +237,32 @@ public class Parser {
 		}
 
 		// Add.
-		Node[] content = new Node[mappings.size()];
+		Node[] nodes = new Node[mappings.size()];
 		for (int i = 0; i < mappings.size(); i++) {
 			Node mappedNode = node.clone();
 			Mapping mapping = mappings.get(i);
 			mappedNode.children.add(0, new Node(mapping.value()));
 			mappedNode.p = mapping.p;
-			content[i] = mappedNode;
+			nodes[i] = mappedNode;
 		}
-		createFrontier(content);
+		createFrontier(nodes);
 	}
 
-	private void createFrontier(Node[] content) {
+	private void createFrontier(Node[] nodes) {
 
 		// Add node to previous frontier.
-		GssNode[] nodes = new GssNode[content.length];
-		for (int i = 0; i < content.length; i++) {
-			nodes[i] = gss.add(content[i]);
-			for (GssNode parent : frontier) {
-				nodes[i].parents().add(parent);
+		GssVertex[] vertices = new GssVertex[nodes.length];
+		for (int i = 0; i < nodes.length; i++) {
+			vertices[i] = gss.add(nodes[i]);
+			for (GssVertex parent : frontier) {
+				vertices[i].parents().add(parent);
 			}
 		}
 
 		// Create new frontier.
 		frontier.clear();
-		for (GssNode node : nodes) {
-			frontier.add(node);
+		for (GssVertex vertex : vertices) {
+			frontier.add(vertex);
 		}
 
 		// Diagnostics.
@@ -282,8 +282,8 @@ public class Parser {
 		}
 	}
 
-	private void reduce(GssNode top) {
-		List<GssNode> path = new ArrayList<GssNode>();
+	private void reduce(GssVertex top) {
+		List<GssVertex> path = new ArrayList<GssVertex>();
 		for (ProductionRule rule : grammar.productionRules()) {
 			path.clear();
 			path.add(top);
@@ -291,7 +291,7 @@ public class Parser {
 		}
 	}
 
-	private void match(ProductionRule rule, int step, List<GssNode> path) {
+	private void match(ProductionRule rule, int step, List<GssVertex> path) {
 
 		List<String> rhs = rule.rhs();
 		int index = rhs.size() - 1 - step;
@@ -299,13 +299,13 @@ public class Parser {
 			return;
 		}
 
-		GssNode n = path.get(path.size() - 1);
+		GssVertex v = path.get(path.size() - 1);
 		String tag = rhs.get(index);
-		if (!n.content().tag.equals(tag)) {
+		if (!v.node().tag.equals(tag)) {
 			return;
 		}
 
-		for (GssNode parent : n.parents()) {
+		for (GssVertex parent : v.parents()) {
 			path.add(parent);
 			match(rule, step + 1, path);
 			path.remove(path.size() - 1);
@@ -319,7 +319,7 @@ public class Parser {
 		Node node = new Node(rule.lhs());
 		node.children = new ArrayList<Node>();
 		for (int i = 0; i < size; i++) {
-			Node child = path.get(size - 1 - i).content();
+			Node child = path.get(size - 1 - i).node();
 			if (!child.tag.equals(rhs.get(i))) {
 				throw new CoreException("Path/rule mismatch.");
 			}
@@ -328,17 +328,17 @@ public class Parser {
 		if (node.tag.equals("entity:") && !validateEntity(node)) {
 			return;
 		}
-		GssNode reducedNode = gss.add(node);
+		GssVertex r = gss.add(node);
 		if (verbose) {
 			System.out.println();
-			System.out.println("REDUCE = " + reducedNode);
+			System.out.println("REDUCE = " + r);
 		}
-		GssNode last = path.get(path.size() - 1);
-		for (GssNode parent : last.parents()) {
-			reducedNode.parents().add(parent);
+		GssVertex last = path.get(path.size() - 1);
+		for (GssVertex parent : last.parents()) {
+			r.parents().add(parent);
 		}
-		reductionQueue.push(reducedNode);
-		frontier.add(reducedNode);
+		reductionQueue.push(r);
+		frontier.add(r);
 		if (verbose) {
 			printState();
 		}
@@ -400,24 +400,24 @@ public class Parser {
 		System.out.println("Q = " + queue);
 
 		// Empty stack?
-		int size = gss.nodes().size();
+		int size = gss.vertices().size();
 		if (size == 0) {
 			System.out.println("S = EMPTY");
 			return;
 		}
 
-		// Nodes.
-		for (GssNode node : gss.nodes()) {
-			System.out.print("N" + node.id());
-			if (node.parents().size() > 0) {
+		// Vertices.
+		for (GssVertex vertex : gss.vertices()) {
+			System.out.print("V" + vertex.id());
+			if (vertex.parents().size() > 0) {
 				System.out.print(" (-->");
-				for (GssNode parent : node.parents()) {
+				for (GssVertex parent : vertex.parents()) {
 					System.out.print(' ');
-					System.out.print("N" + parent.id());
+					System.out.print("V" + parent.id());
 				}
 				System.out.print(")");
 			}
-			System.out.println(" = " + node.content());
+			System.out.println(" = " + vertex.node());
 		}
 	}
 }

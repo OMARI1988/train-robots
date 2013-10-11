@@ -24,15 +24,15 @@ import com.trainrobots.core.nodes.Node;
 
 public class Gss {
 
-	private final List<GssNode> nodes = new ArrayList<GssNode>();
+	private final List<GssVertex> vertices = new ArrayList<GssVertex>();
 
-	public List<GssNode> nodes() {
-		return nodes;
+	public List<GssVertex> vertices() {
+		return vertices;
 	}
 
-	public GssNode add(Node content) {
-		GssNode node = new GssNode(nodes.size() + 1, content);
-		nodes.add(node);
-		return node;
+	public GssVertex add(Node node) {
+		GssVertex vertex = new GssVertex(vertices.size() + 1, node);
+		vertices.add(vertex);
+		return vertex;
 	}
 }
