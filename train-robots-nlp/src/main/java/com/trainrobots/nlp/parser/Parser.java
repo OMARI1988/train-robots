@@ -250,18 +250,16 @@ public class Parser {
 
 	private void createFrontier(Node[] nodes) {
 
-		// Add node to previous frontier.
-		GssVertex[] vertices = new GssVertex[nodes.length];
-		for (int i = 0; i < nodes.length; i++) {
-			vertices[i] = gss.add(nodes[i]);
-			for (GssVertex parent : frontier) {
-				vertices[i].parents().add(parent);
-			}
-		}
-
-		// Create new frontier.
+		// Clear.
+		GssVertex[] parents = frontier.toArray(new GssVertex[0]);
 		frontier.clear();
-		for (GssVertex vertex : vertices) {
+
+		// Add nodes to new frontier, setting parents to the previous frontier.
+		for (int i = 0; i < nodes.length; i++) {
+			GssVertex vertex = gss.add(nodes[i]);
+			for (GssVertex parent : parents) {
+				vertex.parents().add(parent);
+			}
 			frontier.add(vertex);
 		}
 
@@ -293,37 +291,31 @@ public class Parser {
 
 	private void match(ProductionRule rule, int step, List<GssVertex> path) {
 
+		// Match.
 		List<String> rhs = rule.rhs();
 		int index = rhs.size() - 1 - step;
 		if (index < 0) {
 			return;
 		}
-
-		GssVertex v = path.get(path.size() - 1);
+		GssVertex vertex = path.get(path.size() - 1);
 		String tag = rhs.get(index);
-		if (!v.node().tag.equals(tag)) {
+		if (!vertex.node().tag.equals(tag)) {
 			return;
 		}
-
-		for (GssVertex parent : v.parents()) {
+		for (GssVertex parent : vertex.parents()) {
 			path.add(parent);
 			match(rule, step + 1, path);
 			path.remove(path.size() - 1);
 		}
-
 		if (index != 0) {
 			return;
 		}
 
+		// Reduce.
 		int size = rhs.size();
 		Node node = new Node(rule.lhs());
-		node.children = new ArrayList<Node>();
 		for (int i = 0; i < size; i++) {
-			Node child = path.get(size - 1 - i).node();
-			if (!child.tag.equals(rhs.get(i))) {
-				throw new CoreException("Path/rule mismatch.");
-			}
-			node.children.add(child);
+			node.add(path.get(size - 1 - i).node());
 		}
 		if (node.tag.equals("entity:") && !validateEntity(node)) {
 			return;
@@ -417,7 +409,7 @@ public class Parser {
 				}
 				System.out.print(")");
 			}
-			System.out.println(" = " + vertex.node());
+			System.out.println(" = " + vertex);
 		}
 	}
 }
