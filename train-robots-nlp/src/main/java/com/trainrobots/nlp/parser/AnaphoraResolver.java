@@ -45,7 +45,7 @@ public class AnaphoraResolver {
 						Sequence s = (Sequence) rcl;
 						Entity arg1 = s.events().get(0).entity();
 						map(entity, arg1);
-					} else {
+					} else if (last != null) {
 						map(entity, last);
 					}
 				}

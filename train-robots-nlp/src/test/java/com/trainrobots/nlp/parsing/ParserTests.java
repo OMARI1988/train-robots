@@ -144,7 +144,10 @@ public class ParserTests {
 			System.out.println("Parsed   : "
 					+ (result != null ? result.toString() : "None."));
 		}
-		System.out.println(command.id + ": " + result.reason());
+		System.out.println(command.id
+				+ ": "
+				+ (result.reason() == null ? "Single tree mismatched." : result
+						.reason()));
 		return false;
 	}
 }
