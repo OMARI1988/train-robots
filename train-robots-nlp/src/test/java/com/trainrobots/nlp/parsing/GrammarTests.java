@@ -17,12 +17,18 @@
 
 package com.trainrobots.nlp.parsing;
 
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.core.corpus.Command;
+import com.trainrobots.core.corpus.Corpus;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
+import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class GrammarTests {
 
@@ -39,5 +45,48 @@ public class GrammarTests {
 		for (EllipsisRule rule : grammar.ellipsisRules()) {
 			System.out.println("Ellipsis: " + rule + "\t" + rule.count);
 		}
+	}
+
+	@Test
+	@Ignore
+	public void shouldFindMarkers() {
+
+		int size = 0;
+		for (Command command : Corpus.getCommands()) {
+			if (command.rcl == null) {
+				continue;
+			}
+			Node tokens = getTokens(command.text);
+			boolean hit = false;
+			List<Node> children = tokens.children;
+			for (int i = 0; i < children.size(); i++) {
+				Node n = children.get(i);
+				// Node left = i > 0 ? children.get(i - 1) : null;
+				// if (n.hasTag("to")) {
+				// if (left.hasTag("closest") || left.hasTag("nearest")
+				// || left.hasTag("closer") || left.hasTag("nearer")
+				// || left.hasTag("next") || left.hasTag("close")
+				// || left.hasTag("near")) {
+				// continue;
+				// }
+				// hit = true;
+				// }
+				if (n.hasTag("from")) {
+					hit = true;
+				}
+			}
+			if (hit) {
+				System.out
+						.println(++size + ") ID " + command.id + " " + tokens);
+			}
+		}
+	}
+
+	private Node getTokens(String text) {
+		Node result = new Node("T");
+		for (Node node : Tokenizer.getTokens(text).children) {
+			result.add(node.getValue());
+		}
+		return result;
 	}
 }
