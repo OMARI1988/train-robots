@@ -37,6 +37,7 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
+import com.trainrobots.nlp.parser.ParserResult;
 import com.trainrobots.nlp.processor.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
@@ -230,11 +231,11 @@ public class CorpusView extends JPanel {
 				.getStatusBar();
 		try {
 			WorldModel world = SceneManager.getScene(command.sceneNumber).before;
-			Rcl rcl = GoldParser.parse(world, command.text).rcl();
-			if (rcl == null) {
-				throw new CoreException("Failed to parse.");
+			ParserResult result = GoldParser.parse(world, command.text);
+			if (result.rcl() == null) {
+				throw new CoreException(result.reason());
 			}
-			editor.setText(rcl.format().replace("\r", ""));
+			editor.setText(result.rcl().format().replace("\r", ""));
 			statusBar.setText("Parsed command.");
 		} catch (Exception exception) {
 			statusBar.setError(exception.getMessage());
