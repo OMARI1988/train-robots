@@ -27,7 +27,6 @@ import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
-import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
@@ -35,6 +34,7 @@ import com.trainrobots.nlp.parser.lexicon.Lexicon;
 import com.trainrobots.nlp.parser.lexicon.Mapping;
 import com.trainrobots.nlp.parser.lexicon.MappingList;
 import com.trainrobots.nlp.processor.Planner;
+import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class Parser {
@@ -349,7 +349,7 @@ public class Parser {
 					|| entity.isType(Type.region)) {
 				return true;
 			}
-			List<Grounding> groundings = grounder.ground(null, entity);
+			List<WorldEntity> groundings = grounder.ground(null, entity);
 			if (groundings == null || groundings.size() == 0) {
 				if (verbose) {
 					System.out.println("*** NO GROUNDINGS: " + node);

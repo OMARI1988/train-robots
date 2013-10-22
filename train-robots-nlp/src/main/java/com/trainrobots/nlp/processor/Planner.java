@@ -32,7 +32,6 @@ import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.grounding.Grounder;
-import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
@@ -291,14 +290,14 @@ public class Planner {
 			SpatialRelation relation) {
 
 		if (relation.entity() != null) {
-			List<Grounding> groundings = grounder.ground(root,
+			List<WorldEntity> groundings = grounder.ground(root,
 					relation.entity());
 			if (groundings == null || groundings.size() != 1) {
 				throw new CoreException(
 						"Expected single grounding for entity with measure: "
 								+ relation.entity());
 			}
-			position = groundings.get(0).entity().basePosition();
+			position = groundings.get(0).basePosition();
 		}
 
 		Entity measure = relation.measure();
@@ -339,16 +338,16 @@ public class Planner {
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<Grounding> groundings = grounder.ground(root, entity,
+		List<WorldEntity> groundings = grounder.ground(root, entity,
 				excludePosition);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
 			Shape shape = world.getShapeInGripper();
 			if (shape != null) {
-				for (Grounding grounding : groundings) {
-					if (grounding.entity() instanceof Shape) {
-						if (grounding.entity().equals(shape)) {
+				for (WorldEntity grounding : groundings) {
+					if (grounding instanceof Shape) {
+						if (grounding.equals(shape)) {
 							return shape;
 						}
 					}
@@ -361,18 +360,18 @@ public class Planner {
 			// Exclude (e.g. 6652).
 			if (excludePosition != null && groundings.size() == 2) {
 				for (int i = 0; i < 2; i++) {
-					if (groundings.get(i).entity() instanceof Shape
-							&& ((Shape) groundings.get(i).entity()).position()
-									.equals(excludePosition)) {
-						return groundings.get(1 - i).entity();
+					if (groundings.get(i) instanceof Shape
+							&& ((Shape) groundings.get(i)).position().equals(
+									excludePosition)) {
+						return groundings.get(1 - i);
 					}
 				}
 			}
 
 			// Exclude headless stacks.
 			for (int i = groundings.size() - 1; i >= 0; i--) {
-				if (groundings.get(i).entity() instanceof Stack) {
-					Stack stack = (Stack) groundings.get(i).entity();
+				if (groundings.get(i) instanceof Stack) {
+					Stack stack = (Stack) groundings.get(i);
 					if (!stack.includesHead()) {
 						groundings.remove(i);
 					}
@@ -385,12 +384,12 @@ public class Planner {
 			throw new CoreException(groundings.size() + " grounding(s) : "
 					+ entity);
 		}
-		return groundings.get(0).entity();
+		return groundings.get(0);
 	}
 
-	private void removeSupportingShapes(List<Grounding> groundings) {
+	private void removeSupportingShapes(List<WorldEntity> groundings) {
 		for (int i = groundings.size() - 1; i >= 0; i--) {
-			WorldEntity entity = groundings.get(i).entity();
+			WorldEntity entity = groundings.get(i);
 			if (entity instanceof Shape) {
 				Shape shape = (Shape) entity;
 				if (world.getShape(shape.position().add(0, 0, 1)) != null) {

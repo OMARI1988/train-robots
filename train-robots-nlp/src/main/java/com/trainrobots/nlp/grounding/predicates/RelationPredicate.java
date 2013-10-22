@@ -20,7 +20,6 @@ package com.trainrobots.nlp.grounding.predicates;
 import java.util.List;
 
 import com.trainrobots.core.rcl.Relation;
-import com.trainrobots.nlp.grounding.Grounding;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
@@ -32,9 +31,9 @@ import com.trainrobots.nlp.scenes.WorldEntity;
 public class RelationPredicate implements Predicate {
 
 	private final Relation relation;
-	private final List<Grounding> groundings;
+	private final List<WorldEntity> groundings;
 
-	public RelationPredicate(Relation relation, List<Grounding> groundings) {
+	public RelationPredicate(Relation relation, List<WorldEntity> groundings) {
 		this.relation = relation;
 		this.groundings = groundings;
 	}
@@ -43,14 +42,14 @@ public class RelationPredicate implements Predicate {
 	public boolean match(WorldEntity entity) {
 
 		// Match.
-		for (Grounding grounding : groundings) {
+		for (WorldEntity grounding : groundings) {
 
 			// Adjacent.
 			if (relation == Relation.adjacent) {
 
 				// Edge.
-				if (grounding.entity() instanceof Edge) {
-					Edge right = (Edge) grounding.entity();
+				if (grounding instanceof Edge) {
+					Edge right = (Edge) grounding;
 					if (matchEdge(entity, Relation.above, right)) {
 						return true;
 					}
@@ -59,7 +58,7 @@ public class RelationPredicate implements Predicate {
 
 				// Shape.
 				Position left = entity.basePosition();
-				Position right = grounding.entity().basePosition();
+				Position right = grounding.basePosition();
 				int dx = left.x - right.x;
 				int dy = left.y - right.y;
 				if (dx == 0 && (dy == 1 || dy == -1)) {
@@ -74,7 +73,7 @@ public class RelationPredicate implements Predicate {
 			// Left.
 			if (relation == Relation.left) {
 				Position left = entity.basePosition();
-				Position right = grounding.entity().basePosition();
+				Position right = grounding.basePosition();
 				int dx = left.x - right.x;
 				int dy = left.y - right.y;
 				if (dx == 0 && dy == 1) {
@@ -86,7 +85,7 @@ public class RelationPredicate implements Predicate {
 			// Right.
 			if (relation == Relation.right) {
 				Position left = entity.basePosition();
-				Position right = grounding.entity().basePosition();
+				Position right = grounding.basePosition();
 				int dx = left.x - right.x;
 				int dy = left.y - right.y;
 				if (dx == 0 && dy == -1) {
@@ -98,7 +97,7 @@ public class RelationPredicate implements Predicate {
 			// Front.
 			if (relation == Relation.front) {
 				Position left = entity.basePosition();
-				Position right = grounding.entity().basePosition();
+				Position right = grounding.basePosition();
 				int dx = left.x - right.x;
 				int dy = left.y - right.y;
 				if (dy == 0 && dx == 1) {
@@ -108,7 +107,7 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Board.
-			if (grounding.entity() instanceof Board) {
+			if (grounding instanceof Board) {
 				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
 					if (left.position().z == 0) {
@@ -119,10 +118,10 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Shape.
-			if (grounding.entity() instanceof Shape) {
+			if (grounding instanceof Shape) {
 				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
-					Shape right = (Shape) grounding.entity();
+					Shape right = (Shape) grounding;
 					if (left.position().equals(right.position().add(0, 0, 1))) {
 						return true;
 					}
@@ -131,9 +130,9 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Corner.
-			if (grounding.entity() instanceof Corner) {
+			if (grounding instanceof Corner) {
 				if (relation == Relation.above || relation == Relation.within) {
-					Corner right = (Corner) grounding.entity();
+					Corner right = (Corner) grounding;
 					if (entity.basePosition().equals(right.basePosition())) {
 						return true;
 					}
@@ -142,18 +141,18 @@ public class RelationPredicate implements Predicate {
 			}
 
 			// Edge.
-			if (grounding.entity() instanceof Edge) {
-				Edge right = (Edge) grounding.entity();
+			if (grounding instanceof Edge) {
+				Edge right = (Edge) grounding;
 				if (matchEdge(entity, relation, right)) {
 					return true;
 				}
 			}
 
 			// Stack.
-			if (grounding.entity() instanceof Stack) {
+			if (grounding instanceof Stack) {
 				if (relation == Relation.above) {
 					Shape left = (Shape) entity;
-					Stack right = (Stack) grounding.entity();
+					Stack right = (Stack) grounding;
 					Shape top = right.getTop();
 					if (left.position().equals(top.position().add(0, 0, 1))) {
 						return true;

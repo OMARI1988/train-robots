@@ -26,6 +26,7 @@ import org.junit.Test;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class GrounderTests {
@@ -62,9 +63,9 @@ public class GrounderTests {
 
 	@Test
 	public void shouldGroundCorner() {
-		Grounding grounding = getSingleGrounding(828,
+		WorldEntity grounding = getSingleGrounding(828,
 				"(entity: (indicator: back) (indicator: left) (type: corner))");
-		assertEquals(grounding.entity(), Corner.BackLeft);
+		assertEquals(grounding, Corner.BackLeft);
 	}
 
 	@Test
@@ -120,10 +121,10 @@ public class GrounderTests {
 				1);
 	}
 
-	private static Grounding getSingleGrounding(int sceneNumber, String text) {
+	private static WorldEntity getSingleGrounding(int sceneNumber, String text) {
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<Grounding> list = new Grounder(world).ground(entity, entity);
+		List<WorldEntity> list = new Grounder(world).ground(entity, entity);
 		assertEquals(list.size(), 1);
 		return list.get(0);
 	}
@@ -133,7 +134,7 @@ public class GrounderTests {
 
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<Grounding> list = new Grounder(world).ground(entity, entity);
+		List<WorldEntity> list = new Grounder(world).ground(entity, entity);
 		assertEquals(expectedCount, list.size());
 	}
 }

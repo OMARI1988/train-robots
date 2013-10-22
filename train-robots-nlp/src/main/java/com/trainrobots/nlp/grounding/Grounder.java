@@ -88,11 +88,11 @@ public class Grounder {
 		entities.add(Robot.TheRobot);
 	}
 
-	public List<Grounding> ground(Rcl root, Entity entity) {
+	public List<WorldEntity> ground(Rcl root, Entity entity) {
 		return ground(root, entity, null);
 	}
 
-	public List<Grounding> ground(Rcl root, Entity entity,
+	public List<WorldEntity> ground(Rcl root, Entity entity,
 			Position excludePosition) {
 
 		// Predicates.
@@ -184,10 +184,10 @@ public class Grounder {
 		}
 
 		// Apply predicates.
-		List<Grounding> groundings = new ArrayList<Grounding>();
+		List<WorldEntity> groundings = new ArrayList<WorldEntity>();
 		for (WorldEntity worldEntity : entities) {
 			if (predicates.match(worldEntity)) {
-				groundings.add(new Grounding(worldEntity));
+				groundings.add(worldEntity);
 			}
 		}
 
@@ -234,13 +234,13 @@ public class Grounder {
 				+ "'.");
 	}
 
-	private void filterGroundingsByPostIndicator(List<Grounding> groundings,
+	private void filterGroundingsByPostIndicator(List<WorldEntity> groundings,
 			Indicator postIndicator, Position excludePosition) {
 
 		// Tried to fix 21517, but failed for other reasons.
 		if (groundings.size() > 1 && excludePosition != null) {
 			for (int i = groundings.size() - 1; i >= 0; i--) {
-				WorldEntity e = groundings.get(i).entity();
+				WorldEntity e = groundings.get(i);
 				if (e instanceof Shape) {
 					if (((Shape) e).position().equals(excludePosition)) {
 						groundings.remove(i);
@@ -262,8 +262,8 @@ public class Grounder {
 		}
 
 		if (postIndicator == Indicator.nearest) {
-			List<Grounding> landmarks = new ArrayList<Grounding>();
-			landmarks.add(new Grounding(Robot.TheRobot));
+			List<WorldEntity> landmarks = new ArrayList<WorldEntity>();
+			landmarks.add(Robot.TheRobot);
 			filterNearest(groundings, landmarks);
 			return;
 		}
@@ -274,7 +274,7 @@ public class Grounder {
 	}
 
 	private void filterGroundingsByRelations(Rcl root, Entity parent,
-			List<Grounding> groundings, List<SpatialRelation> relations) {
+			List<WorldEntity> groundings, List<SpatialRelation> relations) {
 
 		// Nearest?
 		if (relations.size() == 1) {
@@ -297,13 +297,13 @@ public class Grounder {
 
 		// Filter.
 		for (int i = groundings.size() - 1; i >= 0; i--) {
-			if (!predicates.match(groundings.get(i).entity())) {
+			if (!predicates.match(groundings.get(i))) {
 				groundings.remove(i);
 			}
 		}
 	}
 
-	private void filterNearest(Rcl root, List<Grounding> groundings,
+	private void filterNearest(Rcl root, List<WorldEntity> groundings,
 			SpatialRelation relation) {
 
 		Entity entity = relation.entity();
@@ -312,10 +312,10 @@ public class Grounder {
 					+ relation);
 		}
 
-		List<Grounding> landmarks;
+		List<WorldEntity> landmarks;
 		if (entity.isType(Type.region)) {
-			landmarks = new ArrayList<Grounding>();
-			landmarks.add(new Grounding(getRegion(entity)));
+			landmarks = new ArrayList<WorldEntity>();
+			landmarks.add(getRegion(entity));
 		} else {
 			landmarks = ground(root, entity);
 		}
@@ -327,15 +327,14 @@ public class Grounder {
 		filterNearest(groundings, landmarks);
 	}
 
-	private void filterNearest(List<Grounding> groundings,
-			List<Grounding> landmarks) {
+	private void filterNearest(List<WorldEntity> groundings,
+			List<WorldEntity> landmarks) {
 		List<Double> distances = new ArrayList<Double>();
 		double best = Double.MAX_VALUE;
-		for (Grounding grounding : groundings) {
+		for (WorldEntity grounding : groundings) {
 			double min = Double.MAX_VALUE;
-			for (Grounding landmark : landmarks) {
-				double distance = getDistance(grounding.entity(),
-						landmark.entity());
+			for (WorldEntity landmark : landmarks) {
+				double distance = getDistance(grounding, landmark);
 				if (distance < best) {
 					best = distance;
 				}
@@ -346,7 +345,7 @@ public class Grounder {
 			distances.add(min);
 		}
 
-		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		List<WorldEntity> copy = new ArrayList<WorldEntity>(groundings);
 		groundings.clear();
 		for (int i = 0; i < copy.size(); i++) {
 			if (distances.get(i) == best) {
@@ -355,19 +354,19 @@ public class Grounder {
 		}
 	}
 
-	private void filterLeftmost(List<Grounding> groundings) {
+	private void filterLeftmost(List<WorldEntity> groundings) {
 
 		List<Integer> metrics = new ArrayList<Integer>();
 		int best = Integer.MIN_VALUE;
-		for (Grounding grounding : groundings) {
-			int metric = grounding.entity().basePosition().y;
+		for (WorldEntity grounding : groundings) {
+			int metric = grounding.basePosition().y;
 			if (metric > best) {
 				best = metric;
 			}
 			metrics.add(metric);
 		}
 
-		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		List<WorldEntity> copy = new ArrayList<WorldEntity>(groundings);
 		groundings.clear();
 		for (int i = 0; i < copy.size(); i++) {
 			if (metrics.get(i) == best) {
@@ -376,19 +375,19 @@ public class Grounder {
 		}
 	}
 
-	private void filterRightmost(List<Grounding> groundings) {
+	private void filterRightmost(List<WorldEntity> groundings) {
 
 		List<Integer> metrics = new ArrayList<Integer>();
 		int best = Integer.MAX_VALUE;
-		for (Grounding grounding : groundings) {
-			int metric = grounding.entity().basePosition().y;
+		for (WorldEntity grounding : groundings) {
+			int metric = grounding.basePosition().y;
 			if (metric < best) {
 				best = metric;
 			}
 			metrics.add(metric);
 		}
 
-		List<Grounding> copy = new ArrayList<Grounding>(groundings);
+		List<WorldEntity> copy = new ArrayList<WorldEntity>(groundings);
 		groundings.clear();
 		for (int i = 0; i < copy.size(); i++) {
 			if (metrics.get(i) == best) {
@@ -475,15 +474,14 @@ public class Grounder {
 				if (parent == event.entity()) {
 					throw new CoreException("Circular reference.");
 				}
-				List<Grounding> landmarks = ground(root, event.entity());
+				List<WorldEntity> landmarks = ground(root, event.entity());
 				if (landmarks == null || landmarks.size() != 1) {
 					throw new CoreException(
 							"Failed to ground single landmark for measure relation: "
 									+ event.entity());
 				}
 				return new MeasurePredicate(measure, relation
-						.relationAttribute().relation(), landmarks.get(0)
-						.entity());
+						.relationAttribute().relation(), landmarks.get(0));
 			}
 			throw new CoreException("Failed to create predicate for measure: "
 					+ relation.measure());
@@ -504,7 +502,7 @@ public class Grounder {
 		}
 
 		// Groundings.
-		List<Grounding> groundings = ground(root, entity);
+		List<WorldEntity> groundings = ground(root, entity);
 		if (groundings.size() == 0) {
 			throw new CoreException(
 					"Entity in spatial relation has no groundings: " + entity);
