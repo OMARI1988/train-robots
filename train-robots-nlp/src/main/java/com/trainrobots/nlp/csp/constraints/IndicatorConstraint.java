@@ -42,7 +42,9 @@ public class IndicatorConstraint extends CspConstraint {
 	}
 
 	@Override
-	public List<WorldEntity> filter(Model model, Iterable<WorldEntity> entities) {
+	public List<WorldEntity> filter(Model model, List<WorldEntity> entities) {
+
+		// Default.
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
 		for (WorldEntity entity : entities) {
 			if (match(model, entity)) {

@@ -26,7 +26,7 @@ import com.trainrobots.nlp.scenes.WorldEntity;
 public abstract class CspConstraint {
 
 	public abstract List<WorldEntity> filter(Model model,
-			Iterable<WorldEntity> entities);
+			List<WorldEntity> entities);
 
 	public abstract Node toNode();
 

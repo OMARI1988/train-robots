@@ -37,7 +37,7 @@ public class ColorConstraint extends CspConstraint {
 		colors.add(color);
 	}
 
-	public List<WorldEntity> filter(Model model, Iterable<WorldEntity> entities) {
+	public List<WorldEntity> filter(Model model, List<WorldEntity> entities) {
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
 		for (WorldEntity entity : entities) {
 

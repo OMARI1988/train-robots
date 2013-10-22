@@ -20,12 +20,14 @@ package com.trainrobots.nlp.csp;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
 import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
+import com.trainrobots.nlp.csp.constraints.PostIndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.RelationConstraint;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
@@ -117,21 +119,39 @@ public class CspConverter {
 		}
 
 		// Indicators.
-		if (entity.indicatorAttributes() != null
-				&& entity.indicatorAttributes().size() >= 1) {
+		Indicator postIndicator = null;
+		if (entity.indicatorAttributes() != null) {
 			for (IndicatorAttribute indicatorAttribute : entity
 					.indicatorAttributes()) {
-				v.add(new IndicatorConstraint(indicatorAttribute.indicator()));
+				Indicator indicator = indicatorAttribute.indicator();
+				if ((type == Type.cube || type == Type.prism || type == Type.stack)
+						&& (indicator == Indicator.left
+								|| indicator == Indicator.leftmost
+								|| indicator == Indicator.right
+								|| indicator == Indicator.rightmost || indicator == Indicator.nearest)) {
+					if (postIndicator != null) {
+						throw new CoreException("Duplicate post indicator in "
+								+ entity);
+					}
+					postIndicator = indicator;
+				} else {
+					v.add(new IndicatorConstraint(indicator));
+				}
 			}
 		}
 
 		// Relations.
-		if (entity.relations() != null && entity.relations().size() >= 1) {
+		if (entity.relations() != null) {
 			for (SpatialRelation relation : entity.relations()) {
 				CspVariable v2 = convert(relation.entity());
 				v.add(new RelationConstraint(relation.relationAttribute()
 						.relation(), v2));
 			}
+		}
+
+		// Post-indicator.
+		if (postIndicator != null) {
+			v.add(new PostIndicatorConstraint(postIndicator));
 		}
 
 		// Result.

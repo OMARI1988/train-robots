@@ -113,7 +113,6 @@ public class CspSolverTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldSolveGreenCubeNearestRobot() {
 		testSolution(
 				563,
@@ -133,6 +132,7 @@ public class CspSolverTests {
 	private int valid = 0;
 
 	@Test
+	@Ignore
 	public void shouldSolveCorpus() {
 		for (final Command command : Corpus.getCommands()) {
 			if (command.rcl == null) {
@@ -158,9 +158,21 @@ public class CspSolverTests {
 
 					// Actual.
 					Csp csp = Csp.fromRcl(command.rcl, entity);
-					List<WorldEntity> actual = csp.solve(new Model(world));
-					if (actual.size() == expected.size()) {
-						valid++;
+					try {
+						List<WorldEntity> actual = csp.solve(new Model(world));
+						if (actual.size() == expected.size()) {
+							valid++;
+						} else {
+							System.out.println("Scene " + command.sceneNumber);
+							System.out.println(expected.size() + " = " + entity);
+							System.out.println(actual.size() + " = " + csp);
+							System.out.println();
+						}
+					} catch (Exception exception) {
+						System.out.println("Scene " + command.sceneNumber);
+						System.out.println(expected.size() + " = " + entity);
+						System.out.println(exception.getMessage());
+						System.out.println();
 					}
 				}
 			});
