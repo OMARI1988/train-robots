@@ -17,13 +17,16 @@
 
 package com.trainrobots.nlp.csp.constraints;
 
+import java.util.List;
+
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.csp.Solution;
 import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.WorldEntity;
 
 public abstract class CspConstraint {
 
-	public abstract Solution solve(Model model);
+	public abstract List<WorldEntity> filter(Model model,
+			Iterable<WorldEntity> entities);
 
 	public abstract Node toNode();
 

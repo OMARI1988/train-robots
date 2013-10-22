@@ -19,10 +19,13 @@ package com.trainrobots.nlp.csp;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class CspSolverTests {
@@ -38,9 +41,87 @@ public class CspSolverTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldSolveYellowCube() {
 		testSolution(828, "(entity: (color: yellow) (type: cube))", 1);
+	}
+
+	@Test
+	public void shouldSolveRedCube() {
+		testSolution(828, "(entity: (color: red) (type: cube))", 5);
+	}
+
+	@Test
+	public void shouldSolveGrayPrism() {
+		testSolution(828, "(entity: (color: gray) (type: prism))", 3);
+	}
+
+	@Test
+	public void shouldSolveYellowPrism() {
+		testSolution(828, "(entity: (color: yellow) (type: prism))", 0);
+	}
+
+	@Test
+	public void shouldSolveBackLeftCorner() {
+		testSolution(828,
+				"(entity: (indicator: back) (indicator: left) (type: corner))",
+				1);
+	}
+
+	@Test
+	@Ignore
+	public void shouldSolveBlueCubeAboveBoard() {
+		testSolution(
+				337,
+				"(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))",
+				1);
+	}
+
+	@Test
+	@Ignore
+	public void shouldSolveYellowPrismAboveRedCube() {
+		testSolution(
+				177,
+				"(entity: (color: yellow) (type: prism) (spatial-relation: (relation: above) (entity: (color: red) (type: cube))))",
+				1);
+	}
+
+	@Test
+	@Ignore
+	public void shouldSolveGrayCubeAboveBackLeftCorner() {
+		testSolution(
+				849,
+				"(entity: (color: gray) (type: cube) (spatial-relation: (relation: above) (entity: (indicator: back) (indicator: left) (type: corner))))",
+				1);
+	}
+
+	@Test
+	public void shouldSolveCompositeColoredStack() {
+		testSolution(
+				698,
+				"(entity: (color: yellow) (color: blue) (color: gray) (type: stack))",
+				1);
+	}
+
+	@Test
+	public void shouldSolveRobot() {
+		testSolution(1, "(entity: (type: robot))", 1);
+	}
+
+	@Test
+	@Ignore
+	public void shouldSolveGreenCubeNearestRobot() {
+		testSolution(
+				563,
+				"(entity: (color: green) (type: cube) (spatial-relation: (relation: nearest) (entity: (type: robot)))))",
+				1);
+	}
+
+	@Test
+	public void shouldSolveIndividualGreenBlock() {
+		testSolution(
+				214,
+				"(entity: (indicator: individual) (color: green) (type: cube))",
+				1);
 	}
 
 	private static void testSolution(int sceneNumber, String text,
@@ -49,8 +130,8 @@ public class CspSolverTests {
 		Csp csp = Csp.fromRcl(text);
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		CspSolver solver = new CspSolver(world);
-		Solution solution = solver.solve(csp);
+		List<WorldEntity> entities = solver.solve(csp);
 
-		assertEquals(expectedCount, solution.size());
+		assertEquals(expectedCount, entities.size());
 	}
 }

@@ -17,9 +17,12 @@
 
 package com.trainrobots.nlp.csp;
 
+import java.util.List;
+
 import com.trainrobots.core.CoreException;
 import com.trainrobots.nlp.csp.constraints.CspConstraint;
 import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class CspSolver {
@@ -30,16 +33,18 @@ public class CspSolver {
 		model = new Model(world);
 	}
 
-	public Solution solve(Csp csp) {
+	public List<WorldEntity> solve(Csp csp) {
 		if (csp.variableCount() != 1) {
 			throw new CoreException("Failed to solve CSP.");
 		}
 		return solve(csp.getVariable(1));
 	}
 
-	private Solution solve(CspVariable variable) {
-		CspConstraint constraint = (CspConstraint) variable.constraints()
-				.iterator().next();
-		return constraint.solve(model);
+	private List<WorldEntity> solve(CspVariable variable) {
+		List<WorldEntity> entities = model.entities();
+		for (CspConstraint constraint : variable.constraints()) {
+			entities = constraint.filter(model, entities);
+		}
+		return entities;
 	}
 }

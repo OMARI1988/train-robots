@@ -18,12 +18,16 @@
 package com.trainrobots.nlp.csp;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.csp.constraints.ColorConstraint;
+import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
-public class RclConverter {
+public class CspConverter {
 
 	public static Csp convertRcl(Rcl rcl) {
 
@@ -48,6 +52,38 @@ public class RclConverter {
 		}
 		CspVariable variable = csp.add();
 		variable.add(new TypeConstraint(type));
+
+		// Ordinal.
+		if (entity.ordinalAttribute() != null) {
+			throw new CoreException("Unexpected ordinal: "
+					+ entity.ordinalAttribute());
+		}
+
+		// Cardinal.
+		if (entity.cardinalAttribute() != null
+				&& entity.cardinalAttribute().cardinal() != 1) {
+			throw new CoreException("Unexpected cardinal: "
+					+ entity.cardinalAttribute());
+		}
+
+		// Colors.
+		if (entity.colorAttributes() != null
+				&& entity.colorAttributes().size() >= 1) {
+			ColorConstraint constraint = new ColorConstraint();
+			for (ColorAttribute attribute : entity.colorAttributes()) {
+				constraint.add(attribute.color());
+			}
+			variable.add(constraint);
+		}
+
+		// Indicators.
+		if (entity.indicatorAttributes() != null) {
+			for (IndicatorAttribute indicatorAttribute : entity
+					.indicatorAttributes()) {
+				variable.add(new IndicatorConstraint(indicatorAttribute
+						.indicator()));
+			}
+		}
 
 		// Result.
 		return csp;

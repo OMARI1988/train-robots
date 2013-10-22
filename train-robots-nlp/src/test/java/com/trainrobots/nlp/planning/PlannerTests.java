@@ -73,7 +73,7 @@ public class PlannerTests {
 	public void shouldGroundBlueCubeAboveBoard() {
 		testGrounding(
 				337,
-				"(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board)))) (event: (action: take) (entity: (color: blue) (type: cube) (spatial-relation: (indicator: above) (entity: (type: board)))))",
+				"(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))",
 				1);
 	}
 

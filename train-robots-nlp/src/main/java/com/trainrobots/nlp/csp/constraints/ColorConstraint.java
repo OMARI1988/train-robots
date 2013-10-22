@@ -18,31 +18,39 @@
 package com.trainrobots.nlp.csp.constraints;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Type;
+import com.trainrobots.core.rcl.Color;
 import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class TypeConstraint extends CspConstraint {
+public class ColorConstraint extends CspConstraint {
 
-	private final Type type;
+	private final Set<Color> colors = new LinkedHashSet<Color>();
 
-	public TypeConstraint(Type type) {
-		this.type = type;
+	public void add(Color color) {
+		colors.add(color);
 	}
 
-	public Type type() {
-		return type;
-	}
-
-	@Override
 	public List<WorldEntity> filter(Model model, Iterable<WorldEntity> entities) {
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
 		for (WorldEntity entity : entities) {
-			if (entity.type() == type) {
-				result.add(entity);
+
+			if ((entity instanceof Shape) && colors.size() == 1) {
+				Shape shape = (Shape) entity;
+				if (shape.color() == colors.iterator().next()) {
+					result.add(entity);
+				}
+			} else if ((entity instanceof Stack)) {
+				Stack stack = (Stack) entity;
+				if (stack.hasColors(colors)) {
+					result.add(entity);
+				}
 			}
 		}
 		return result;
@@ -50,6 +58,10 @@ public class TypeConstraint extends CspConstraint {
 
 	@Override
 	public Node toNode() {
-		return new Node("type:", type.toString());
+		Node node = new Node("color:");
+		for (Color color : colors) {
+			node.add(color.toString());
+		}
+		return node;
 	}
 }

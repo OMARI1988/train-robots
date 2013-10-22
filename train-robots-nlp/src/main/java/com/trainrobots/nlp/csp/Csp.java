@@ -32,7 +32,7 @@ public class Csp {
 	}
 
 	public static Csp fromRcl(Rcl rcl) {
-		return RclConverter.convertRcl(rcl);
+		return CspConverter.convertRcl(rcl);
 	}
 
 	public int variableCount() {

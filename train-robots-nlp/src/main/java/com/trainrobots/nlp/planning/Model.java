@@ -83,7 +83,7 @@ public class Model {
 		return world;
 	}
 
-	public Iterable<WorldEntity> entities() {
+	public List<WorldEntity> entities() {
 		return entities;
 	}
 
