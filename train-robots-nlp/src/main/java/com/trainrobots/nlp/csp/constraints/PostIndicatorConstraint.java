@@ -24,6 +24,7 @@ import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -41,6 +42,10 @@ public class PostIndicatorConstraint extends CspConstraint {
 
 	@Override
 	public List<WorldEntity> filter(Model model, List<WorldEntity> entities) {
+
+		if (indicator == Indicator.center) {
+			return filterCenter(entities);
+		}
 
 		if (indicator == Indicator.left || indicator == Indicator.leftmost) {
 			return filterLeftmost(entities);
@@ -62,6 +67,17 @@ public class PostIndicatorConstraint extends CspConstraint {
 	@Override
 	public Node toNode() {
 		return new Node("post-indicator:", indicator.toString());
+	}
+
+	private static List<WorldEntity> filterCenter(List<WorldEntity> entities) {
+		List<WorldEntity> result = new ArrayList<WorldEntity>();
+		for (WorldEntity entity : entities) {
+			Position p = entity.basePosition();
+			if (p.x >= 3 && p.x <= 4 && p.y >= 3 && p.y <= 4) {
+				result.add(entity);
+			}
+		}
+		return result;
 	}
 
 	private static List<WorldEntity> filterLeftmost(List<WorldEntity> entities) {

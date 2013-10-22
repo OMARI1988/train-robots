@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.core.corpus.Command;
@@ -132,7 +131,6 @@ public class CspSolverTests {
 	private int valid = 0;
 
 	@Test
-	@Ignore
 	public void shouldSolveCorpus() {
 		for (final Command command : Corpus.getCommands()) {
 			if (command.rcl == null) {

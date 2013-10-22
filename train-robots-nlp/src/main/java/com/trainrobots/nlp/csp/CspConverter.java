@@ -23,6 +23,7 @@ import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
@@ -143,6 +144,20 @@ public class CspConverter {
 		// Relations.
 		if (entity.relations() != null) {
 			for (SpatialRelation relation : entity.relations()) {
+				if (relation.entity().isType(Type.region)) {
+					if (relation.entity().indicatorAttributes().size() == 1) {
+						Relation r = relation.relationAttribute().relation();
+						if (r == Relation.above || r == Relation.within) {
+							if (postIndicator != null) {
+								throw new CoreException(
+										"Duplicate post indicator in " + entity);
+							}
+							postIndicator = relation.entity()
+									.indicatorAttributes().get(0).indicator();
+							continue;
+						}
+					}
+				}
 				CspVariable v2 = convert(relation.entity());
 				v.add(new RelationConstraint(relation.relationAttribute()
 						.relation(), v2));

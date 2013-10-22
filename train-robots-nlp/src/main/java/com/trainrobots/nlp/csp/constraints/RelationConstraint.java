@@ -61,7 +61,7 @@ public class RelationConstraint extends CspConstraint {
 		if (relation == Relation.nearest) {
 			return filterNearest(model, entities);
 		}
-
+		
 		// Filter.
 		List<WorldEntity> groundings = variable.solve(model);
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
