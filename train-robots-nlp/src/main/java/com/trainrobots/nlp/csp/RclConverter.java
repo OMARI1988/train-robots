@@ -17,45 +17,39 @@
 
 package com.trainrobots.nlp.csp;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.trainrobots.core.nodes.Node;
+import com.trainrobots.core.CoreException;
+import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
-public class Csp {
+public class RclConverter {
 
-	private final List<CspVariable> variables = new ArrayList<CspVariable>();
+	public static Csp convertRcl(Rcl rcl) {
 
-	public static Csp fromRcl(String text) {
-		return fromRcl(Rcl.fromString(text));
-	}
-
-	public static Csp fromRcl(Rcl rcl) {
-		return RclConverter.convertRcl(rcl);
-	}
-
-	public CspVariable add() {
-		int id = variables.size() + 1;
-		CspVariable variable = new CspVariable(id);
-		variables.add(variable);
-		return variable;
-	}
-
-	public Node toNode() {
-		Node node = new Node("csp");
-		for (CspVariable variable : variables) {
-			node.add(variable.toNode());
+		// Entity.
+		if (rcl instanceof Entity) {
+			return convertEntity((Entity) rcl);
 		}
-		return node;
+
+		// No match.
+		throw new CoreException("Can't convert RCL to CSP.");
 	}
 
-	@Override
-	public String toString() {
-		return toNode().toString();
-	}
+	private static Csp convertEntity(Entity entity) {
 
-	public String format() {
-		return toNode().format();
+		// CSP.
+		Csp csp = new Csp();
+
+		// Type.
+		Type type = entity.typeAttribute().type();
+		if (type == null) {
+			throw new CoreException("Entity type not specified: " + entity);
+		}
+		CspVariable variable = csp.add();
+		variable.add(new TypeConstraint(type));
+
+		// Result.
+		return csp;
 	}
 }

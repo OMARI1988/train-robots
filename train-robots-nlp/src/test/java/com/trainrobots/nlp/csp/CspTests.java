@@ -37,4 +37,11 @@ public class CspTests {
 
 		assertEquals(csp.toString(), "(csp (var x1 (type cube)))");
 	}
+
+	@Test
+	public void shouldConvertRcl() {
+
+		Csp csp = Csp.fromRcl("(entity: (type: cube))");
+		assertEquals(csp.toString(), "(csp (var x1 (type cube)))");
+	}
 }
