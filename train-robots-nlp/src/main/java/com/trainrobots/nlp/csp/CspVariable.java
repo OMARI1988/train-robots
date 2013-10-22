@@ -40,8 +40,12 @@ public class CspVariable {
 		constraints.add(constraint);
 	}
 
+	public Iterable<CspConstraint> constraints() {
+		return constraints;
+	}
+
 	public Node toNode() {
-		Node node = new Node("var", "x" + id);
+		Node node = new Node("var:", "x" + id);
 		for (CspConstraint constraint : constraints) {
 			node.add(constraint.toNode());
 		}

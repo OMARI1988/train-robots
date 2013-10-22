@@ -57,12 +57,10 @@ import com.trainrobots.nlp.scenes.moves.TakeMove;
 
 public class Planner {
 
-	private final WorldModel world;
-	private final EntityList entities;
+	private final Model model;
 
 	public Planner(WorldModel world) {
-		this.world = world;
-		this.entities = new EntityList(world);
+		model = new Model(world);
 	}
 
 	public List<WorldEntity> ground(Rcl root, Entity entity) {
@@ -166,7 +164,7 @@ public class Planner {
 
 	private Move mapDropCommand(Rcl root, Event event) {
 
-		Shape shape = world.getShapeInGripper();
+		Shape shape = model.world().getShapeInGripper();
 		if (shape == null) {
 			throw new CoreException("Not holding anything to drop.");
 		}
@@ -183,7 +181,8 @@ public class Planner {
 
 		if (event.destinations() != null && event.destinations().size() >= 1) {
 			Position position2 = mapDestination(root, event, shape.position());
-			if (position2.x != world.arm().x || position2.y != world.arm().y) {
+			Position arm = model.world().arm();
+			if (position2.x != arm.x || position2.y != arm.y) {
 				throw new CoreException("Invalid drop position.");
 			}
 		}
@@ -208,7 +207,7 @@ public class Planner {
 
 	private Move mapMoveCommand(Rcl root, Event event) {
 
-		if (world.getShapeInGripper() != null) {
+		if (model.world().getShapeInGripper() != null) {
 			throw new CoreException("Expected drop not move.");
 		}
 
@@ -267,14 +266,15 @@ public class Planner {
 			Position position = getPosition(entity);
 			if (relationAttribute.relation() == Relation.within
 					|| relationAttribute.relation() == Relation.above) {
-				return world.getDropPosition(position.x, position.y);
+				return model.world().getDropPosition(position.x, position.y);
 			}
 		}
 
 		// Board?
 		if (entity.type() == Type.board
 				&& relationAttribute.relation() == Relation.above) {
-			return world.getDropPosition(actionPosition.x, actionPosition.y);
+			return model.world().getDropPosition(actionPosition.x,
+					actionPosition.y);
 		}
 
 		// Shape.
@@ -293,7 +293,7 @@ public class Planner {
 			return getPosition(entity).add(0, 0, 1);
 		}
 		if (p != null) {
-			return world.getDropPosition(p.x, p.y);
+			return model.world().getDropPosition(p.x, p.y);
 		}
 		throw new CoreException("Invalid relation: " + relationAttribute);
 	}
@@ -342,7 +342,7 @@ public class Planner {
 			throw new CoreException("Unsupported relation: "
 					+ relationAttribute);
 		}
-		return world.getDropPosition(p.x, p.y);
+		return model.world().getDropPosition(p.x, p.y);
 	}
 
 	private WorldEntity mapEntity(Rcl root, Entity entity,
@@ -353,7 +353,7 @@ public class Planner {
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
-			Shape shape = world.getShapeInGripper();
+			Shape shape = model.world().getShapeInGripper();
 			if (shape != null) {
 				for (WorldEntity grounding : groundings) {
 					if (grounding instanceof Shape) {
@@ -402,7 +402,7 @@ public class Planner {
 			WorldEntity entity = groundings.get(i);
 			if (entity instanceof Shape) {
 				Shape shape = (Shape) entity;
-				if (world.getShape(shape.position().add(0, 0, 1)) != null) {
+				if (model.world().getShape(shape.position().add(0, 0, 1)) != null) {
 					groundings.remove(i);
 				}
 			}
@@ -509,13 +509,14 @@ public class Planner {
 				}
 				postIndicator = indicator;
 			} else {
-				predicates.add(new IndicatorPredicate(world, indicator));
+				predicates
+						.add(new IndicatorPredicate(model.world(), indicator));
 			}
 		}
 
 		// Apply predicates.
 		List<WorldEntity> groundings = new ArrayList<WorldEntity>();
-		for (WorldEntity worldEntity : entities) {
+		for (WorldEntity worldEntity : model.entities()) {
 			if (predicates.match(worldEntity)) {
 				groundings.add(worldEntity);
 			}

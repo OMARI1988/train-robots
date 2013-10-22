@@ -18,7 +18,6 @@
 package com.trainrobots.nlp.planning;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.trainrobots.core.rcl.Type;
@@ -32,12 +31,12 @@ import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
-public class EntityList implements Iterable<WorldEntity> {
+public class Model {
 
 	private final WorldModel world;
 	private final List<WorldEntity> entities = new ArrayList<WorldEntity>();
 
-	public EntityList(WorldModel world) {
+	public Model(WorldModel world) {
 
 		// World.
 		this.world = world;
@@ -80,9 +79,12 @@ public class EntityList implements Iterable<WorldEntity> {
 		entities.add(Robot.TheRobot);
 	}
 
-	@Override
-	public Iterator<WorldEntity> iterator() {
-		return entities.iterator();
+	public WorldModel world() {
+		return world;
+	}
+
+	public Iterable<WorldEntity> entities() {
+		return entities;
 	}
 
 	private Stack getStack(Shape base) {

@@ -15,39 +15,36 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.csp.constraints;
+package com.trainrobots.nlp.csp;
 
-import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.Solution;
-import com.trainrobots.nlp.planning.Model;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class TypeConstraint extends CspConstraint {
+public class Solution {
 
-	private final Type type;
+	private final List<WorldEntity> entities = new ArrayList<WorldEntity>();
 
-	public TypeConstraint(Type type) {
-		this.type = type;
+	public void add(WorldEntity entity) {
+		entities.add(entity);
 	}
 
-	public Type type() {
-		return type;
+	public int size() {
+		return entities.size();
 	}
 
 	@Override
-	public Solution solve(Model model) {
-		Solution solution = new Solution();
-		for (WorldEntity entity : model.entities()) {
-			if (entity.type() == type) {
-				solution.add(entity);
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		text.append('(');
+		for (WorldEntity entity : entities) {
+			if (text.length() > 1) {
+				text.append(", ");
 			}
+			text.append(entity.toString());
 		}
-		return solution;
-	}
-
-	@Override
-	public Node toNode() {
-		return new Node("type:", type.toString());
+		text.append('(');
+		return text.toString();
 	}
 }

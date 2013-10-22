@@ -18,8 +18,12 @@
 package com.trainrobots.nlp.csp.constraints;
 
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.nlp.csp.Solution;
+import com.trainrobots.nlp.planning.Model;
 
 public abstract class CspConstraint {
+
+	public abstract Solution solve(Model model);
 
 	public abstract Node toNode();
 

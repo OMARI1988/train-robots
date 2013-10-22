@@ -35,6 +35,14 @@ public class Csp {
 		return RclConverter.convertRcl(rcl);
 	}
 
+	public int variableCount() {
+		return variables.size();
+	}
+
+	public CspVariable getVariable(int id) {
+		return variables.get(id - 1);
+	}
+
 	public CspVariable add() {
 		int id = variables.size() + 1;
 		CspVariable variable = new CspVariable(id);
@@ -43,7 +51,7 @@ public class Csp {
 	}
 
 	public Node toNode() {
-		Node node = new Node("csp");
+		Node node = new Node("csp:");
 		for (CspVariable variable : variables) {
 			node.add(variable.toNode());
 		}

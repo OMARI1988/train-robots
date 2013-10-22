@@ -22,9 +22,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.Csp;
-import com.trainrobots.nlp.csp.CspVariable;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
+import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldModel;
 
 public class CspTests {
 
@@ -35,13 +35,29 @@ public class CspTests {
 		CspVariable x1 = csp.add();
 		x1.add(new TypeConstraint(Type.cube));
 
-		assertEquals(csp.toString(), "(csp (var x1 (type cube)))");
+		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
 	}
 
 	@Test
 	public void shouldConvertRcl() {
 
 		Csp csp = Csp.fromRcl("(entity: (type: cube))");
-		assertEquals(csp.toString(), "(csp (var x1 (type cube)))");
+		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
+	}
+
+	@Test
+	public void shouldSolveTypeConstraint() {
+		testSolution(828, "(entity: (type: cube))", 9);
+	}
+
+	private static void testSolution(int sceneNumber, String text,
+			int expectedCount) {
+
+		Csp csp = Csp.fromRcl(text);
+		WorldModel world = SceneManager.getScene(sceneNumber).before;
+		CspSolver solver = new CspSolver(world);
+		Solution solution = solver.solve(csp);
+
+		assertEquals(expectedCount, solution.size());
 	}
 }

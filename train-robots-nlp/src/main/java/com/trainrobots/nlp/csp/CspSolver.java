@@ -15,39 +15,31 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.csp.constraints;
+package com.trainrobots.nlp.csp;
 
-import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.Solution;
+import com.trainrobots.core.CoreException;
+import com.trainrobots.nlp.csp.constraints.CspConstraint;
 import com.trainrobots.nlp.planning.Model;
-import com.trainrobots.nlp.scenes.WorldEntity;
+import com.trainrobots.nlp.scenes.WorldModel;
 
-public class TypeConstraint extends CspConstraint {
+public class CspSolver {
 
-	private final Type type;
+	private final Model model;
 
-	public TypeConstraint(Type type) {
-		this.type = type;
+	public CspSolver(WorldModel world) {
+		model = new Model(world);
 	}
 
-	public Type type() {
-		return type;
-	}
-
-	@Override
-	public Solution solve(Model model) {
-		Solution solution = new Solution();
-		for (WorldEntity entity : model.entities()) {
-			if (entity.type() == type) {
-				solution.add(entity);
-			}
+	public Solution solve(Csp csp) {
+		if (csp.variableCount() != 1) {
+			throw new CoreException("Failed to solve CSP.");
 		}
-		return solution;
+		return solve(csp.getVariable(1));
 	}
 
-	@Override
-	public Node toNode() {
-		return new Node("type:", type.toString());
+	private Solution solve(CspVariable variable) {
+		CspConstraint constraint = (CspConstraint) variable.constraints()
+				.iterator().next();
+		return constraint.solve(model);
 	}
 }
