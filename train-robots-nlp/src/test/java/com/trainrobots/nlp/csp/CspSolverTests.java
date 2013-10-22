@@ -19,27 +19,38 @@ package com.trainrobots.nlp.csp;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.constraints.TypeConstraint;
+import com.trainrobots.nlp.scenes.SceneManager;
+import com.trainrobots.nlp.scenes.WorldModel;
 
-public class CspTests {
+public class CspSolverTests {
 
 	@Test
-	public void shouldFormatCsp() {
-
-		Csp csp = new Csp();
-		CspVariable x1 = csp.add();
-		x1.add(new TypeConstraint(Type.cube));
-
-		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
+	public void shouldSolveCube() {
+		testSolution(828, "(entity: (type: cube))", 9);
 	}
 
 	@Test
-	public void shouldConvertRcl() {
+	public void shouldSolvePrism() {
+		testSolution(828, "(entity: (type: prism))", 3);
+	}
 
-		Csp csp = Csp.fromRcl("(entity: (type: cube))");
-		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
+	@Test
+	@Ignore
+	public void shouldSolveYellowCube() {
+		testSolution(828, "(entity: (color: yellow) (type: cube))", 1);
+	}
+
+	private static void testSolution(int sceneNumber, String text,
+			int expectedCount) {
+
+		Csp csp = Csp.fromRcl(text);
+		WorldModel world = SceneManager.getScene(sceneNumber).before;
+		CspSolver solver = new CspSolver(world);
+		Solution solution = solver.solve(csp);
+
+		assertEquals(expectedCount, solution.size());
 	}
 }
