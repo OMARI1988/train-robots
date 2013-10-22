@@ -38,7 +38,7 @@ import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.parser.ParserResult;
-import com.trainrobots.nlp.processor.MoveValidator;
+import com.trainrobots.nlp.planning.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.tokenizer.TokenAligner;

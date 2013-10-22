@@ -15,26 +15,47 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.grounding.predicates;
+package com.trainrobots.nlp.planning.predicates;
 
-import com.trainrobots.core.rcl.Type;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.trainrobots.core.rcl.Color;
+import com.trainrobots.core.rcl.ColorAttribute;
+import com.trainrobots.nlp.scenes.Shape;
+import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class TypePredicate implements Predicate {
+public class ColorPredicate implements Predicate {
 
-	private final Type type;
+	private final Set<Color> colors;
 
-	public TypePredicate(Type type) {
-		this.type = type;
+	public ColorPredicate(List<ColorAttribute> colorAttributes) {
+		colors = new HashSet<Color>();
+		for (ColorAttribute colorAttribute : colorAttributes) {
+			colors.add(colorAttribute.color());
+		}
 	}
 
 	@Override
 	public boolean match(WorldEntity entity) {
-		return entity.type() == type;
+
+		if ((entity instanceof Shape) && colors.size() == 1) {
+			Shape shape = (Shape) entity;
+			return shape.color() == colors.iterator().next();
+		}
+
+		if ((entity instanceof Stack)) {
+			Stack stack = (Stack) entity;
+			return stack.hasColors(colors);
+		}
+
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "(type: " + type + ")";
+		return "(color: " + colors + ")";
 	}
 }

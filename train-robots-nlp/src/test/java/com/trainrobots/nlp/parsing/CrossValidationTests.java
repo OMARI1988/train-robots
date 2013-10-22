@@ -34,7 +34,7 @@ import com.trainrobots.nlp.chunker.Token;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
-import com.trainrobots.nlp.processor.MoveValidator;
+import com.trainrobots.nlp.planning.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.tokenizer.Tokenizer;

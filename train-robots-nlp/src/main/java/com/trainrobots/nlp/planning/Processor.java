@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.processor;
+package com.trainrobots.nlp.planning;
 
 import java.util.List;
 

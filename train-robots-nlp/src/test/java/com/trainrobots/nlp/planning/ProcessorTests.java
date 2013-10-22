@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.processor;
+package com.trainrobots.nlp.planning;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
+import com.trainrobots.nlp.planning.MoveValidator;
 import com.trainrobots.nlp.tokenizer.Tokenizer;
 
 public class ProcessorTests {

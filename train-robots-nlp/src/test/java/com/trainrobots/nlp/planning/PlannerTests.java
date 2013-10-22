@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.grounding;
+package com.trainrobots.nlp.planning;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,12 +24,13 @@ import java.util.List;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.nlp.planning.Planner;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
-public class GrounderTests {
+public class PlannerTests {
 
 	@Test
 	public void shouldGroundCube() {
@@ -124,7 +125,7 @@ public class GrounderTests {
 	private static WorldEntity getSingleGrounding(int sceneNumber, String text) {
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<WorldEntity> list = new Grounder(world).ground(entity, entity);
+		List<WorldEntity> list = new Planner(world).ground(entity, entity);
 		assertEquals(list.size(), 1);
 		return list.get(0);
 	}
@@ -134,7 +135,7 @@ public class GrounderTests {
 
 		WorldModel world = SceneManager.getScene(sceneNumber).before;
 		Entity entity = Entity.fromString(text);
-		List<WorldEntity> list = new Grounder(world).ground(entity, entity);
+		List<WorldEntity> list = new Planner(world).ground(entity, entity);
 		assertEquals(expectedCount, list.size());
 	}
 }

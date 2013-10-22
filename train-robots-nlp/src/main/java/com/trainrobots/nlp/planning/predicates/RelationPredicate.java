@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.grounding.predicates;
+package com.trainrobots.nlp.planning.predicates;
 
 import java.util.List;
 

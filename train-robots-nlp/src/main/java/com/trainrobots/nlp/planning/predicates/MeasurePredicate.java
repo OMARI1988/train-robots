@@ -15,40 +15,40 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.grounding.predicates;
+package com.trainrobots.nlp.planning.predicates;
 
-import java.util.List;
-
-import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.IndicatorAttribute;
-import com.trainrobots.core.rcl.Indicator;
+import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Relation;
-import com.trainrobots.core.rcl.RelationAttribute;
+import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class RegionPredicate implements Predicate {
+public class MeasurePredicate implements Predicate {
 
+	private final Entity measure;
 	private final Relation relation;
-	private final Indicator region;
+	private final WorldEntity landmark;
 
-	public RegionPredicate(RelationAttribute relation,
-			List<IndicatorAttribute> regions) {
-		this.relation = relation.relation();
-		if (regions.size() != 1) {
-			throw new CoreException("Incorrectly specified region.");
-		}
-		this.region = regions.get(0).indicator();
+	public MeasurePredicate(Entity measure, Relation relation,
+			WorldEntity landmark) {
+		this.measure = measure;
+		this.relation = relation;
+		this.landmark = landmark;
 	}
 
 	@Override
 	public boolean match(WorldEntity entity) {
 
-		// Within center.
-		if (relation == Relation.within && region == Indicator.center) {
+		// Tiles.
+		if (measure.isType(Type.tile) && measure.cardinalAttribute() != null) {
+
 			Position p = entity.basePosition();
-			if (p.x >= 3 && p.x <= 4 && p.y >= 3 && p.y <= 4) {
-				return true;
+			Position l = landmark.basePosition();
+			int n = measure.cardinalAttribute().cardinal();
+
+			switch (relation) {
+			case right:
+				return p.x == l.x && p.y == l.y - n;
 			}
 		}
 
@@ -58,6 +58,6 @@ public class RegionPredicate implements Predicate {
 
 	@Override
 	public String toString() {
-		return "(" + region + " region: " + relation + ")";
+		return "(measure: " + measure + " " + relation + " " + landmark + ")";
 	}
 }
