@@ -41,7 +41,6 @@ import com.trainrobots.nlp.planning.predicates.PredicateList;
 import com.trainrobots.nlp.planning.predicates.RegionPredicate;
 import com.trainrobots.nlp.planning.predicates.RelationPredicate;
 import com.trainrobots.nlp.planning.predicates.TypePredicate;
-import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.CenterOfBoard;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
@@ -59,40 +58,11 @@ import com.trainrobots.nlp.scenes.moves.TakeMove;
 public class Planner {
 
 	private final WorldModel world;
-	private final List<WorldEntity> entities = new ArrayList<WorldEntity>();
+	private final EntityList entities;
 
 	public Planner(WorldModel world) {
-
-		// World.
 		this.world = world;
-
-		// Shapes.
-		for (Shape shape : world.shapes()) {
-			entities.add(shape);
-		}
-
-		// Stacks.
-		for (Stack stack : StackFinder.getStacks(world)) {
-			entities.add(stack);
-		}
-
-		// Corners.
-		entities.add(Corner.BackRight);
-		entities.add(Corner.BackLeft);
-		entities.add(Corner.FrontRight);
-		entities.add(Corner.FrontLeft);
-
-		// Edges.
-		entities.add(Edge.Front);
-		entities.add(Edge.Back);
-		entities.add(Edge.Left);
-		entities.add(Edge.Right);
-
-		// Board.
-		entities.add(Board.TheBoard);
-
-		// Robot.
-		entities.add(Robot.TheRobot);
+		this.entities = new EntityList(world);
 	}
 
 	public List<WorldEntity> ground(Rcl root, Entity entity) {

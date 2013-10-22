@@ -18,37 +18,74 @@
 package com.trainrobots.nlp.planning;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.scenes.Board;
+import com.trainrobots.nlp.scenes.Corner;
+import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;
+import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
+import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
-public class StackFinder {
+public class EntityList implements Iterable<WorldEntity> {
 
-	private StackFinder() {
-	}
+	private final WorldModel world;
+	private final List<WorldEntity> entities = new ArrayList<WorldEntity>();
 
-	public static List<Stack> getStacks(WorldModel world) {
-		List<Stack> list = new ArrayList<Stack>();
+	public EntityList(WorldModel world) {
+
+		// World.
+		this.world = world;
+
+		// Shapes.
+		for (Shape shape : world.shapes()) {
+			entities.add(shape);
+		}
+
+		// Stacks.
 		for (Shape shape : world.shapes()) {
 			if (shape.type() == Type.cube && shape.position().z == 0) {
-				Stack stack = getStack(world, shape);
+				Stack stack = getStack(shape);
 				if (stack != null) {
-					list.add(stack);
+					entities.add(stack);
 					Stack headlessStack = stack.excludeHead();
 					if (headlessStack != null) {
-						list.add(headlessStack);
+						entities.add(headlessStack);
 					}
 				}
 			}
 		}
-		return list;
+
+		// Corners.
+		entities.add(Corner.BackRight);
+		entities.add(Corner.BackLeft);
+		entities.add(Corner.FrontRight);
+		entities.add(Corner.FrontLeft);
+
+		// Edges.
+		entities.add(Edge.Front);
+		entities.add(Edge.Back);
+		entities.add(Edge.Left);
+		entities.add(Edge.Right);
+
+		// Board.
+		entities.add(Board.TheBoard);
+
+		// Robot.
+		entities.add(Robot.TheRobot);
 	}
 
-	private static Stack getStack(WorldModel world, Shape base) {
+	@Override
+	public Iterator<WorldEntity> iterator() {
+		return entities.iterator();
+	}
+
+	private Stack getStack(Shape base) {
 
 		// Look up.
 		Stack stack = new Stack(true);
