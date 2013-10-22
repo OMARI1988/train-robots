@@ -37,11 +37,12 @@ public class Csp {
 	}
 
 	public static Csp fromRcl(String text) {
-		return fromRcl(Rcl.fromString(text));
+		Rcl rcl = Rcl.fromString(text);
+		return fromRcl(rcl, rcl);
 	}
 
-	public static Csp fromRcl(Rcl rcl) {
-		return new CspConverter(rcl).csp();
+	public static Csp fromRcl(Rcl rcl, Rcl element) {
+		return new CspConverter(rcl, element).csp();
 	}
 
 	public Node toNode() {

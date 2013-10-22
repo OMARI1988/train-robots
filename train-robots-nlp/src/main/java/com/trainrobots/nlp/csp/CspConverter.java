@@ -31,18 +31,22 @@ import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
 public class CspConverter {
 
-	private int count;
+	private final Rcl rcl;
 	private final Csp csp;
+	private int count;
 
-	public CspConverter(Rcl rcl) {
+	public CspConverter(Rcl rcl, Rcl element) {
+
+		// Context.
+		this.rcl = rcl;
 
 		// Entity?
-		if (!(rcl instanceof Entity)) {
+		if (!(element instanceof Entity)) {
 			throw new CoreException("Can't convert RCL to CSP.");
 		}
 
 		// Convert.
-		csp = new Csp(convert((Entity) rcl));
+		csp = new Csp(convert((Entity) element));
 	}
 
 	public Csp csp() {
@@ -56,6 +60,36 @@ public class CspConverter {
 		if (type == null) {
 			throw new CoreException("Entity type not specified: " + entity);
 		}
+
+		// Type reference?
+		if (type == Type.typeReference || type == Type.typeReferenceGroup) {
+			if (entity.referenceId() == null) {
+				throw new CoreException("Reference ID not specified: " + entity);
+			}
+			Entity antecedent = (Entity) rcl.getElement(entity.referenceId());
+			if (antecedent == null) {
+				throw new CoreException("Failed to resolve reference: "
+						+ entity);
+			}
+			if (type == Type.typeReferenceGroup) {
+				type = makeGroup(antecedent.typeAttribute().type());
+			} else {
+				type = antecedent.typeAttribute().type();
+			}
+		}
+
+		// Reference ID.
+		else if (entity.referenceId() != null) {
+			throw new CoreException("Unexpected reference ID: "
+					+ entity.referenceId());
+		}
+
+		// Cube group?
+		if (type == Type.cubeGroup) {
+			type = Type.stack;
+		}
+
+		// Variable.
 		CspVariable v = createVariable();
 		v.add(new TypeConstraint(type));
 
@@ -106,5 +140,13 @@ public class CspConverter {
 
 	private CspVariable createVariable() {
 		return new CspVariable(++count);
+	}
+
+	private static Type makeGroup(Type type) {
+		if (type == Type.cube) {
+			return Type.cubeGroup;
+		}
+		throw new CoreException("Failed to determine group type for '" + type
+				+ "'.");
 	}
 }
