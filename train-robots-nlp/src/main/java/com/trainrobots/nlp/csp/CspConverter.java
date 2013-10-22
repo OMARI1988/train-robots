@@ -22,36 +22,42 @@ import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
 import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
+import com.trainrobots.nlp.csp.constraints.RelationConstraint;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
 public class CspConverter {
 
-	public static Csp convertRcl(Rcl rcl) {
+	private int count;
+	private final Csp csp;
 
-		// Entity.
-		if (rcl instanceof Entity) {
-			return convertEntity((Entity) rcl);
+	public CspConverter(Rcl rcl) {
+
+		// Entity?
+		if (!(rcl instanceof Entity)) {
+			throw new CoreException("Can't convert RCL to CSP.");
 		}
 
-		// No match.
-		throw new CoreException("Can't convert RCL to CSP.");
+		// Convert.
+		csp = new Csp(convert((Entity) rcl));
 	}
 
-	private static Csp convertEntity(Entity entity) {
+	public Csp csp() {
+		return csp;
+	}
 
-		// CSP.
-		Csp csp = new Csp();
+	private CspVariable convert(Entity entity) {
 
 		// Type.
 		Type type = entity.typeAttribute().type();
 		if (type == null) {
 			throw new CoreException("Entity type not specified: " + entity);
 		}
-		CspVariable variable = csp.add();
-		variable.add(new TypeConstraint(type));
+		CspVariable v = createVariable();
+		v.add(new TypeConstraint(type));
 
 		// Ordinal.
 		if (entity.ordinalAttribute() != null) {
@@ -73,19 +79,32 @@ public class CspConverter {
 			for (ColorAttribute attribute : entity.colorAttributes()) {
 				constraint.add(attribute.color());
 			}
-			variable.add(constraint);
+			v.add(constraint);
 		}
 
 		// Indicators.
-		if (entity.indicatorAttributes() != null) {
+		if (entity.indicatorAttributes() != null
+				&& entity.indicatorAttributes().size() >= 1) {
 			for (IndicatorAttribute indicatorAttribute : entity
 					.indicatorAttributes()) {
-				variable.add(new IndicatorConstraint(indicatorAttribute
-						.indicator()));
+				v.add(new IndicatorConstraint(indicatorAttribute.indicator()));
+			}
+		}
+
+		// Relations.
+		if (entity.relations() != null && entity.relations().size() >= 1) {
+			for (SpatialRelation relation : entity.relations()) {
+				CspVariable v2 = convert(relation.entity());
+				v.add(new RelationConstraint(relation.relationAttribute()
+						.relation(), v2));
 			}
 		}
 
 		// Result.
-		return csp;
+		return v;
+	}
+
+	private CspVariable createVariable() {
+		return new CspVariable(++count);
 	}
 }

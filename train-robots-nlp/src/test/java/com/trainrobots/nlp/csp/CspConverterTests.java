@@ -21,25 +21,22 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.constraints.TypeConstraint;
-
-public class CspTests {
+public class CspConverterTests {
 
 	@Test
-	public void shouldFormatCsp() {
+	public void shouldConvertEntity() {
 
-		Csp csp = new Csp();
-		CspVariable x1 = csp.add();
-		x1.add(new TypeConstraint(Type.cube));
-
-		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
+		Csp csp = Csp.fromRcl("(entity: (type: cube))");
+		assertEquals(csp.toString(), "(x1: (type: cube))");
 	}
 
 	@Test
-	public void shouldConvertRcl() {
+	public void shouldConvertEntityWithRelation() {
 
-		Csp csp = Csp.fromRcl("(entity: (type: cube))");
-		assertEquals(csp.toString(), "(csp: (var: x1 (type: cube)))");
+		Csp csp = Csp
+				.fromRcl("(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))");
+
+		assertEquals(csp.toString(),
+				"(x1: (type: cube) (color: blue) (relation: above (x2: (type: board))))");
 	}
 }

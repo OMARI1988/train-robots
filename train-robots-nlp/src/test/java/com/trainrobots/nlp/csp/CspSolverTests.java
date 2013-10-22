@@ -24,9 +24,9 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldEntity;
-import com.trainrobots.nlp.scenes.WorldModel;
 
 public class CspSolverTests {
 
@@ -68,7 +68,6 @@ public class CspSolverTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldSolveBlueCubeAboveBoard() {
 		testSolution(
 				337,
@@ -77,7 +76,6 @@ public class CspSolverTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldSolveYellowPrismAboveRedCube() {
 		testSolution(
 				177,
@@ -86,7 +84,6 @@ public class CspSolverTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldSolveGrayCubeAboveBackLeftCorner() {
 		testSolution(
 				849,
@@ -128,9 +125,8 @@ public class CspSolverTests {
 			int expectedCount) {
 
 		Csp csp = Csp.fromRcl(text);
-		WorldModel world = SceneManager.getScene(sceneNumber).before;
-		CspSolver solver = new CspSolver(world);
-		List<WorldEntity> entities = solver.solve(csp);
+		Model model = new Model(SceneManager.getScene(sceneNumber).before);
+		List<WorldEntity> entities = csp.solve(model);
 
 		assertEquals(expectedCount, entities.size());
 	}

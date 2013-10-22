@@ -22,6 +22,8 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.csp.constraints.CspConstraint;
+import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class CspVariable {
 
@@ -44,8 +46,16 @@ public class CspVariable {
 		return constraints;
 	}
 
+	public List<WorldEntity> solve(Model model) {
+		List<WorldEntity> entities = model.entities();
+		for (CspConstraint constraint : constraints) {
+			entities = constraint.filter(model, entities);
+		}
+		return entities;
+	}
+
 	public Node toNode() {
-		Node node = new Node("var:", "x" + id);
+		Node node = new Node("x" + id + ":");
 		for (CspConstraint constraint : constraints) {
 			node.add(constraint.toNode());
 		}

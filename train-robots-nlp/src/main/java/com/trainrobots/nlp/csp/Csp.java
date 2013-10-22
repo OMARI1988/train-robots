@@ -17,53 +17,43 @@
 
 package com.trainrobots.nlp.csp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class Csp {
 
-	private final List<CspVariable> variables = new ArrayList<CspVariable>();
+	private final CspVariable root;
+
+	public Csp(CspVariable root) {
+		this.root = root;
+	}
+
+	public List<WorldEntity> solve(Model model) {
+		return root.solve(model);
+	}
 
 	public static Csp fromRcl(String text) {
 		return fromRcl(Rcl.fromString(text));
 	}
 
 	public static Csp fromRcl(Rcl rcl) {
-		return CspConverter.convertRcl(rcl);
-	}
-
-	public int variableCount() {
-		return variables.size();
-	}
-
-	public CspVariable getVariable(int id) {
-		return variables.get(id - 1);
-	}
-
-	public CspVariable add() {
-		int id = variables.size() + 1;
-		CspVariable variable = new CspVariable(id);
-		variables.add(variable);
-		return variable;
+		return new CspConverter(rcl).csp();
 	}
 
 	public Node toNode() {
-		Node node = new Node("csp:");
-		for (CspVariable variable : variables) {
-			node.add(variable.toNode());
-		}
-		return node;
+		return root.toNode();
 	}
 
 	@Override
 	public String toString() {
-		return toNode().toString();
+		return root.toString();
 	}
 
 	public String format() {
-		return toNode().format();
+		return root.format();
 	}
 }
