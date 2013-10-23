@@ -17,44 +17,48 @@
 
 package com.trainrobots.nlp.csp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.csp.constraints.EntityConstraint;
 import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class Csp {
+public class EntityNode {
 
-	private final CspVariable root;
+	private final List<EntityConstraint> constraints = new ArrayList<EntityConstraint>();
 
-	public Csp(CspVariable root) {
-		this.root = root;
+	public void add(EntityConstraint constraint) {
+		constraints.add(constraint);
+	}
+
+	public Iterable<EntityConstraint> constraints() {
+		return constraints;
 	}
 
 	public List<WorldEntity> solve(Model model) {
-		return root.solve(model);
-	}
-
-	public static Csp fromRcl(String text) {
-		Rcl rcl = Rcl.fromString(text);
-		return fromRcl(rcl, rcl);
-	}
-
-	public static Csp fromRcl(Rcl rcl, Rcl element) {
-		return new CspConverter(rcl, element).csp();
+		List<WorldEntity> entities = model.entities();
+		for (EntityConstraint constraint : constraints) {
+			entities = constraint.filter(model, entities);
+		}
+		return entities;
 	}
 
 	public Node toNode() {
-		return root.toNode();
+		Node node = new Node("entity:");
+		for (EntityConstraint constraint : constraints) {
+			node.add(constraint.toNode());
+		}
+		return node;
 	}
 
 	@Override
 	public String toString() {
-		return root.toString();
+		return toNode().toString();
 	}
 
 	public String format() {
-		return root.format();
+		return toNode().format();
 	}
 }

@@ -34,29 +34,7 @@ import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
 public class CspConverter {
 
-	private final Rcl rcl;
-	private final Csp csp;
-	private int count;
-
-	public CspConverter(Rcl rcl, Rcl element) {
-
-		// Context.
-		this.rcl = rcl;
-
-		// Entity?
-		if (!(element instanceof Entity)) {
-			throw new CoreException("Can't convert RCL to CSP.");
-		}
-
-		// Convert.
-		csp = new Csp(convert((Entity) element));
-	}
-
-	public Csp csp() {
-		return csp;
-	}
-
-	private CspVariable convert(Entity entity) {
+	public static EntityNode convert(Rcl rcl, Entity entity) {
 
 		// Type.
 		Type type = entity.typeAttribute().type();
@@ -92,9 +70,9 @@ public class CspConverter {
 			type = Type.stack;
 		}
 
-		// Variable.
-		CspVariable v = createVariable();
-		v.add(new TypeConstraint(type));
+		// Entity node.
+		EntityNode n = new EntityNode();
+		n.add(new TypeConstraint(type));
 
 		// Ordinal.
 		if (entity.ordinalAttribute() != null) {
@@ -116,7 +94,7 @@ public class CspConverter {
 			for (ColorAttribute attribute : entity.colorAttributes()) {
 				constraint.add(attribute.color());
 			}
-			v.add(constraint);
+			n.add(constraint);
 		}
 
 		// Indicators.
@@ -136,7 +114,7 @@ public class CspConverter {
 					}
 					postIndicator = indicator;
 				} else {
-					v.add(new IndicatorConstraint(indicator));
+					n.add(new IndicatorConstraint(indicator));
 				}
 			}
 		}
@@ -171,24 +149,20 @@ public class CspConverter {
 
 				// Constraint.
 				if (relation.entity() != null) {
-					CspVariable v2 = convert(relation.entity());
-					v.add(new RelationConstraint(relation.relationAttribute()
-							.relation(), v2));
+					EntityNode n2 = convert(rcl, relation.entity());
+					n.add(new RelationConstraint(relation.relationAttribute()
+							.relation(), n2));
 				}
 			}
 		}
 
 		// Post-indicator.
 		if (postIndicator != null) {
-			v.add(new PostIndicatorConstraint(postIndicator));
+			n.add(new PostIndicatorConstraint(postIndicator));
 		}
 
 		// Result.
-		return v;
-	}
-
-	private CspVariable createVariable() {
-		return new CspVariable(++count);
+		return n;
 	}
 
 	private static Type makeGroup(Type type) {

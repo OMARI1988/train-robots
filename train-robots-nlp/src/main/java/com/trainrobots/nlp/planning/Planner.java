@@ -31,7 +31,7 @@ import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.Csp;
+import com.trainrobots.nlp.csp.CspConverter;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
@@ -52,36 +52,37 @@ public class Planner {
 	}
 
 	public List<WorldEntity> ground(Rcl root, Entity entity) {
-		return Csp.fromRcl(root, entity).solve(model);
+		return CspConverter.convert(root, entity).solve(model);
 	}
 
 	public List<Move> getMoves(Rcl rcl) {
 
 		// Sequence.
-		List<Move> moves = new ArrayList<Move>();
 		if (rcl instanceof Sequence) {
 
 			// Recognized sequence?
 			Sequence sequence = (Sequence) rcl;
+			List<Move> moves = new ArrayList<Move>();
 			Move move = matchRecognizedSequence(rcl, sequence);
 			if (move != null) {
 				moves.add(move);
-				return moves;
 			}
 
 			// Default sequence handling.
-			for (Event event : sequence.events()) {
-				moves.add(getMove(rcl, event));
+			else {
+				for (Event event : sequence.events()) {
+					moves.add(getMove(rcl, event));
+				}
 			}
+			return moves;
 		}
 
 		// Event.
-		else {
-			if (!(rcl instanceof Event)) {
-				throw new CoreException("Expected an RCL event.");
-			}
-			moves.add(getMove(rcl, (Event) rcl));
+		if (!(rcl instanceof Event)) {
+			throw new CoreException("Expected an RCL event.");
 		}
+		List<Move> moves = new ArrayList<Move>();
+		moves.add(getMove(rcl, (Event) rcl));
 		return moves;
 	}
 

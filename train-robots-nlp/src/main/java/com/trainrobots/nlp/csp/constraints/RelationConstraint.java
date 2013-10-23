@@ -25,7 +25,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.CspVariable;
+import com.trainrobots.nlp.csp.EntityNode;
 import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.CenterOfBoard;
@@ -36,22 +36,22 @@ import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class RelationConstraint extends CspConstraint {
+public class RelationConstraint extends EntityConstraint {
 
 	private final Relation relation;
-	private final CspVariable variable;
+	private final EntityNode entityNode;
 
-	public RelationConstraint(Relation relation, CspVariable variable) {
+	public RelationConstraint(Relation relation, EntityNode entityNode) {
 		this.relation = relation;
-		this.variable = variable;
+		this.entityNode = entityNode;
 	}
 
 	public Relation relation() {
 		return relation;
 	}
 
-	public CspVariable variable() {
-		return variable;
+	public EntityNode entityNode() {
+		return entityNode;
 	}
 
 	@Override
@@ -61,9 +61,9 @@ public class RelationConstraint extends CspConstraint {
 		if (relation == Relation.nearest) {
 			return filterNearest(model, entities);
 		}
-		
+
 		// Filter.
-		List<WorldEntity> groundings = variable.solve(model);
+		List<WorldEntity> groundings = entityNode.solve(model);
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
 		for (WorldEntity entity : entities) {
 			if (match(entity, groundings)) {
@@ -76,7 +76,7 @@ public class RelationConstraint extends CspConstraint {
 	@Override
 	public Node toNode() {
 		Node node = new Node("relation:", relation.toString());
-		node.add(variable.toNode());
+		node.add(entityNode.toNode());
 		return node;
 	}
 
@@ -85,7 +85,7 @@ public class RelationConstraint extends CspConstraint {
 
 		Type type = null;
 		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (CspConstraint constraint : variable.constraints()) {
+		for (EntityConstraint constraint : entityNode.constraints()) {
 			if (constraint instanceof TypeConstraint) {
 				type = ((TypeConstraint) constraint).type();
 			} else if (constraint instanceof IndicatorConstraint) {
@@ -98,10 +98,11 @@ public class RelationConstraint extends CspConstraint {
 			landmarks = new ArrayList<WorldEntity>();
 			landmarks.add(getLandmark(indicators));
 		} else {
-			landmarks = variable.solve(model);
+			landmarks = entityNode.solve(model);
 		}
 		if (landmarks.size() == 0) {
-			throw new CoreException("No landmarks for nearest relation: " + variable);
+			throw new CoreException("No landmarks for nearest relation: "
+					+ entityNode);
 		}
 		return Nearest.filterNearest(entities, landmarks);
 	}

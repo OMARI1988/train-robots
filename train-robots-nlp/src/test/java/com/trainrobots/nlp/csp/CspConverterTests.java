@@ -21,22 +21,27 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.trainrobots.core.rcl.Entity;
+
 public class CspConverterTests {
 
 	@Test
 	public void shouldConvertEntity() {
 
-		Csp csp = Csp.fromRcl("(entity: (type: cube))");
-		assertEquals(csp.toString(), "(x1: (type: cube))");
+		Entity entity = Entity.fromString("(entity: (type: cube))");
+		EntityNode entityNode = CspConverter.convert(entity, entity);
+		assertEquals(entityNode.toString(), "(entity: (type: cube))");
 	}
 
 	@Test
 	public void shouldConvertEntityWithRelation() {
 
-		Csp csp = Csp
-				.fromRcl("(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))");
+		Entity entity = Entity
+				.fromString("(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))");
+		EntityNode entityNode = CspConverter.convert(entity, entity);
 
-		assertEquals(csp.toString(),
-				"(x1: (type: cube) (color: blue) (relation: above (x2: (type: board))))");
+		assertEquals(
+				entityNode.toString(),
+				"(entity: (type: cube) (color: blue) (relation: above (entity: (type: board))))");
 	}
 }

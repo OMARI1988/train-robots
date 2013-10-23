@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldEntity;
@@ -122,9 +123,10 @@ public class CspSolverTests {
 	private static void testSolution(int sceneNumber, String text,
 			int expectedCount) {
 
-		Csp csp = Csp.fromRcl(text);
+		Entity entity = Entity.fromString(text);
+		EntityNode entityNode = CspConverter.convert(entity, entity);
 		Model model = new Model(SceneManager.getScene(sceneNumber).before);
-		List<WorldEntity> entities = csp.solve(model);
+		List<WorldEntity> entities = entityNode.solve(model);
 
 		assertEquals(expectedCount, entities.size());
 	}

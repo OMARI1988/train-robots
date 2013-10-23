@@ -29,7 +29,7 @@ import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class IndicatorConstraint extends CspConstraint {
+public class IndicatorConstraint extends EntityConstraint {
 
 	private final Indicator indicator;
 

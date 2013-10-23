@@ -28,7 +28,7 @@ import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class PostIndicatorConstraint extends CspConstraint {
+public class PostIndicatorConstraint extends EntityConstraint {
 
 	private final Indicator indicator;
 

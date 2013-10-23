@@ -29,7 +29,7 @@ import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class ColorConstraint extends CspConstraint {
+public class ColorConstraint extends EntityConstraint {
 
 	private final Set<Color> colors = new LinkedHashSet<Color>();
 
