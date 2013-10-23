@@ -20,82 +20,21 @@ package com.trainrobots.nlp.csp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.core.CoreException;
-import com.trainrobots.core.rcl.Action;
-import com.trainrobots.core.rcl.ActionAttribute;
-import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.Event;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.Sequence;
-import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.scenes.moves.Move;
 
 public class SequenceNode implements ActionNode {
 
-	private final Rcl rcl;
-	private final Sequence sequence;
+	private final List<EventNode> events = new ArrayList<EventNode>();
 
-	public SequenceNode(Rcl rcl, Sequence sequence) {
-		this.rcl = rcl;
-		this.sequence = sequence;
+	public void add(EventNode event) {
+		events.add(event);
 	}
 
 	public List<Move> solve(Model model) {
-
-		// Recognized sequence?
-		List<Move> moves = matchRecognizedSequence(model);
-		if (moves != null) {
-			return moves;
-		}
-
-		// Default sequence handling.
-		moves = new ArrayList<Move>();
-		for (Event event : sequence.events()) {
-			moves.addAll(new EventNode(rcl, event).solve(model));
+		List<Move> moves = new ArrayList<Move>();
+		for (EventNode event : events) {
+			moves.addAll(event.solve(model));
 		}
 		return moves;
-	}
-
-	private List<Move> matchRecognizedSequence(Model model) {
-
-		// Events.
-		List<Event> events = sequence.events();
-		if (events.size() != 2) {
-			return null;
-		}
-
-		// Take.
-		Event event1 = events.get(0);
-		if (!event1.isAction(Action.take) || event1.destinations() == null
-				|| event1.destinations().size() > 0) {
-			return null;
-		}
-		Entity entity1 = event1.entity();
-		Integer id = entity1.id();
-		if (id == null) {
-			return null;
-		}
-
-		// Drop.
-		Event event2 = events.get(1);
-		if (!event2.isAction(Action.drop)) {
-			return null;
-		}
-		Entity entity2 = event2.entity();
-		if (!entity2.isType(Type.reference) || entity2.referenceId() == null
-				|| !entity2.referenceId().equals(id)) {
-			return null;
-		}
-
-		// Validate.
-		if (entity2.relations() != null && entity2.relations().size() >= 1) {
-			throw new CoreException("References must not have relations: "
-					+ entity2);
-		}
-
-		// Translate equivalent move.
-		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
-				event2.destinations());
-		return new EventNode(event3, event3).solve(model);
 	}
 }

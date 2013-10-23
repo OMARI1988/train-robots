@@ -41,11 +41,11 @@ import com.trainrobots.nlp.scenes.moves.TakeMove;
 
 public class EventNode implements ActionNode {
 
-	private final Rcl root;
+	private final Rcl rcl;
 	private final Event event;
 
-	public EventNode(Rcl root, Event event) {
-		this.root = root;
+	public EventNode(Rcl rcl, Event event) {
+		this.rcl = rcl;
 		this.event = event;
 	}
 
@@ -216,7 +216,8 @@ public class EventNode implements ActionNode {
 			Position position, SpatialRelation relation) {
 
 		if (relation.entity() != null) {
-			List<WorldEntity> groundings = ground(model, relation.entity());
+			List<WorldEntity> groundings = Csp.fromEntity(rcl,
+					relation.entity()).solve(model);
 			if (groundings == null || groundings.size() != 1) {
 				throw new CoreException(
 						"Expected single grounding for entity with measure: "
@@ -263,7 +264,7 @@ public class EventNode implements ActionNode {
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<WorldEntity> groundings = ground(model, entity);
+		List<WorldEntity> groundings = Csp.fromEntity(rcl, entity).solve(model);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
@@ -335,9 +336,5 @@ public class EventNode implements ActionNode {
 		}
 
 		throw new CoreException("Failed to get position for " + entity);
-	}
-
-	private List<WorldEntity> ground(Model model, Entity entity) {
-		return Csp.fromEntity(root, entity).solve(model);
 	}
 }

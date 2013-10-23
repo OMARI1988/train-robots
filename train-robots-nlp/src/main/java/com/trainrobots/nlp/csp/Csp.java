@@ -17,7 +17,11 @@
 
 package com.trainrobots.nlp.csp;
 
+import java.util.List;
+
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.rcl.Action;
+import com.trainrobots.core.rcl.ActionAttribute;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Event;
@@ -41,10 +45,10 @@ public class Csp {
 
 	public static ActionNode fromAction(Rcl rcl, Rcl element) {
 		if (element instanceof Event) {
-			return new EventNode(rcl, (Event) element);
+			return fromEvent(rcl, (Event) element);
 		}
 		if (element instanceof Sequence) {
-			return new SequenceNode(rcl, (Sequence) element);
+			return fromSequence(rcl, (Sequence) element);
 		}
 		throw new CoreException("Failed to convert RCL to CSP.");
 	}
@@ -186,5 +190,64 @@ public class Csp {
 		}
 		throw new CoreException("Failed to determine group type for '" + type
 				+ "'.");
+	}
+
+	private static EventNode fromEvent(Rcl rcl, Event event) {
+		return new EventNode(rcl, event);
+	}
+
+	private static ActionNode fromSequence(Rcl rcl, Sequence sequence) {
+		EventNode eventNode = matchRecognizedSequence(sequence);
+		if (eventNode != null) {
+			return eventNode;
+		}
+		SequenceNode sequenceNode = new SequenceNode();
+		for (Event event : sequence.events()) {
+			sequenceNode.add(fromEvent(rcl, event));
+		}
+		return sequenceNode;
+	}
+
+	private static EventNode matchRecognizedSequence(Sequence sequence) {
+
+		// Events.
+		List<Event> events = sequence.events();
+		if (events.size() != 2) {
+			return null;
+		}
+
+		// Take.
+		Event event1 = events.get(0);
+		if (!event1.isAction(Action.take) || event1.destinations() == null
+				|| event1.destinations().size() > 0) {
+			return null;
+		}
+		Entity entity1 = event1.entity();
+		Integer id = entity1.id();
+		if (id == null) {
+			return null;
+		}
+
+		// Drop.
+		Event event2 = events.get(1);
+		if (!event2.isAction(Action.drop)) {
+			return null;
+		}
+		Entity entity2 = event2.entity();
+		if (!entity2.isType(Type.reference) || entity2.referenceId() == null
+				|| !entity2.referenceId().equals(id)) {
+			return null;
+		}
+
+		// Validate.
+		if (entity2.relations() != null && entity2.relations().size() >= 1) {
+			throw new CoreException("References must not have relations: "
+					+ entity2);
+		}
+
+		// Translate equivalent move.
+		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
+				event2.destinations());
+		return new EventNode(event3, event3);
 	}
 }
