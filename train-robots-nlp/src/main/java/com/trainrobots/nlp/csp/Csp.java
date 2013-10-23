@@ -29,11 +29,15 @@ import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Relation;
+import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
+import com.trainrobots.nlp.csp.constraints.DestinationConstraint;
+import com.trainrobots.nlp.csp.constraints.DestinationWithMeasureConstraint;
 import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
+import com.trainrobots.nlp.csp.constraints.PositionConstraint;
 import com.trainrobots.nlp.csp.constraints.PostIndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.RelationConstraint;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
@@ -193,7 +197,56 @@ public class Csp {
 	}
 
 	private static EventNode fromEvent(Rcl rcl, Event event) {
-		return new EventNode(rcl, event);
+
+		// Action.
+		Action action = event.actionAttribute().action();
+
+		// Entity.
+		if (event.entity() == null) {
+			throw new CoreException("Event entity not specified.");
+		}
+		EntityNode entity = fromEntity(rcl, event.entity());
+
+		// Destination.
+		PositionConstraint destination = null;
+		if (event.destinations() != null && event.destinations().size() == 1) {
+			destination = createDestinationConstraint(rcl, event.destinations()
+					.get(0));
+		}
+		return new EventNode(action, entity, destination);
+	}
+
+	private static PositionConstraint createDestinationConstraint(Rcl rcl,
+			SpatialRelation relation) {
+
+		// Relation.
+		RelationAttribute relationAttribute = relation.relationAttribute();
+		if (relationAttribute == null) {
+			throw new CoreException("Relation not specified.");
+		}
+
+		// Measure?
+		Entity measure = relation.measure();
+		if (measure != null) {
+			EntityNode entity = null;
+			if (relation.entity() != null) {
+				entity = Csp.fromEntity(rcl, relation.entity());
+			}
+			if (measure.cardinalAttribute() == null) {
+				throw new CoreException("Cardinal not specified: " + relation);
+			}
+			int cardinal = measure.cardinalAttribute().cardinal();
+			return new DestinationWithMeasureConstraint(measure.typeAttribute()
+					.type(), cardinal, relationAttribute.relation(), entity);
+		}
+
+		// Default.
+		if (relation.entity() == null) {
+			throw new CoreException("Spatial relation entity not specified: "
+					+ relation);
+		}
+		return new DestinationConstraint(relationAttribute.relation(),
+				Csp.fromEntity(rcl, relation.entity()));
 	}
 
 	private static ActionNode fromSequence(Rcl rcl, Sequence sequence) {
@@ -248,6 +301,6 @@ public class Csp {
 		// Translate equivalent move.
 		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
 				event2.destinations());
-		return new EventNode(event3, event3);
+		return fromEvent(event3, event3);
 	}
 }
