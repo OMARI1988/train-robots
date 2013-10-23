@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.csp.constraints.EntityConstraint;
-import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class EntityNode {

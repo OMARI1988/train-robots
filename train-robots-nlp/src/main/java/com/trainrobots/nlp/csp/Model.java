@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.planning;
+package com.trainrobots.nlp.csp;
 
 import java.util.ArrayList;
 import java.util.List;

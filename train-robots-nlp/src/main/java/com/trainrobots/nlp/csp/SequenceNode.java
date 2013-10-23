@@ -15,7 +15,7 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.planning;
+package com.trainrobots.nlp.csp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,56 +28,35 @@ import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.csp.CspConverter;
-import com.trainrobots.nlp.csp.EventNode;
-import com.trainrobots.nlp.scenes.WorldEntity;
-import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
 
-public class Planner {
+public class SequenceNode implements ActionNode {
 
-	private final Model model;
+	private final Rcl rcl;
+	private final Sequence sequence;
 
-	public Planner(WorldModel world) {
-		model = new Model(world);
+	public SequenceNode(Rcl rcl, Sequence sequence) {
+		this.rcl = rcl;
+		this.sequence = sequence;
 	}
 
-	public List<WorldEntity> ground(Rcl root, Entity entity) {
-		return CspConverter.convert(root, entity).solve(model);
-	}
+	public List<Move> solve(Model model) {
 
-	public List<Move> getMoves(Rcl rcl) {
-
-		// Sequence.
-		if (rcl instanceof Sequence) {
-
-			// Recognized sequence?
-			Sequence sequence = (Sequence) rcl;
-			List<Move> moves = new ArrayList<Move>();
-			Move move = matchRecognizedSequence(rcl, sequence);
-			if (move != null) {
-				moves.add(move);
-			}
-
-			// Default sequence handling.
-			else {
-				for (Event event : sequence.events()) {
-					moves.add(EventNode.solve(model, rcl, event));
-				}
-			}
+		// Recognized sequence?
+		List<Move> moves = matchRecognizedSequence(model);
+		if (moves != null) {
 			return moves;
 		}
 
-		// Event.
-		if (!(rcl instanceof Event)) {
-			throw new CoreException("Expected an RCL event.");
+		// Default sequence handling.
+		moves = new ArrayList<Move>();
+		for (Event event : sequence.events()) {
+			moves.addAll(new EventNode(rcl, event).solve(model));
 		}
-		List<Move> moves = new ArrayList<Move>();
-		moves.add(EventNode.solve(model, rcl, (Event) rcl));
 		return moves;
 	}
 
-	private Move matchRecognizedSequence(Rcl root, Sequence sequence) {
+	private List<Move> matchRecognizedSequence(Model model) {
 
 		// Events.
 		List<Event> events = sequence.events();
@@ -117,6 +96,6 @@ public class Planner {
 		// Translate equivalent move.
 		Event event3 = new Event(new ActionAttribute(Action.move), entity1,
 				event2.destinations());
-		return EventNode.solve(model, event3, event3);
+		return new EventNode(event3, event3).solve(model);
 	}
 }

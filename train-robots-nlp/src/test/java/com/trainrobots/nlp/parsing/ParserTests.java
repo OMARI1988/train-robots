@@ -28,9 +28,9 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.nodes.Node;
+import com.trainrobots.nlp.MoveValidator;
 import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.parser.ParserResult;
-import com.trainrobots.nlp.planning.MoveValidator;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 

@@ -24,7 +24,7 @@ import java.util.Set;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Color;
-import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;

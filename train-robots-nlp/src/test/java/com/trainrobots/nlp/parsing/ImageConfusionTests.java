@@ -27,9 +27,10 @@ import com.trainrobots.core.corpus.Command;
 import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.corpus.MarkType;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.MoveValidator;
+import com.trainrobots.nlp.csp.Csp;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.parser.GoldParser;
-import com.trainrobots.nlp.planning.MoveValidator;
-import com.trainrobots.nlp.planning.Planner;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
@@ -59,7 +60,8 @@ public class ImageConfusionTests {
 			}
 			try {
 				Scene scene = SceneManager.getScene(command.sceneNumber);
-				List<Move> moves = new Planner(scene.after).getMoves(rcl);
+				Model model = new Model(scene.after);
+				List<Move> moves = Csp.fromAction(rcl, rcl).solve(model);
 				if (!MoveValidator.match(scene.after,
 						SceneManager.calculateMoves(scene.after, scene.before),
 						moves)) {

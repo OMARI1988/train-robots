@@ -15,27 +15,13 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.csp.constraints;
+package com.trainrobots.nlp.csp;
 
 import java.util.List;
 
-import com.trainrobots.core.nodes.Node;
-import com.trainrobots.nlp.csp.Model;
-import com.trainrobots.nlp.scenes.WorldEntity;
+import com.trainrobots.nlp.scenes.moves.Move;
 
-public abstract class EntityConstraint {
+public interface ActionNode {
 
-	public abstract List<WorldEntity> filter(Model model,
-			List<WorldEntity> entities);
-
-	public abstract Node toNode();
-
-	@Override
-	public String toString() {
-		return toNode().toString();
-	}
-
-	public String format() {
-		return toNode().format();
-	}
+	public List<Move> solve(Model model);
 }

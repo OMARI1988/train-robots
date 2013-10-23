@@ -29,7 +29,7 @@ public class CspConverterTests {
 	public void shouldConvertEntity() {
 
 		Entity entity = Entity.fromString("(entity: (type: cube))");
-		EntityNode entityNode = CspConverter.convert(entity, entity);
+		EntityNode entityNode = Csp.fromEntity(entity, entity);
 		assertEquals(entityNode.toString(), "(entity: (type: cube))");
 	}
 
@@ -38,7 +38,7 @@ public class CspConverterTests {
 
 		Entity entity = Entity
 				.fromString("(entity: (color: blue) (type: cube) (spatial-relation: (relation: above) (entity: (type: board))))");
-		EntityNode entityNode = CspConverter.convert(entity, entity);
+		EntityNode entityNode = Csp.fromEntity(entity, entity);
 
 		assertEquals(
 				entityNode.toString(),

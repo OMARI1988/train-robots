@@ -26,7 +26,7 @@ import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.EntityNode;
-import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Board;
 import com.trainrobots.nlp.scenes.CenterOfBoard;
 import com.trainrobots.nlp.scenes.Corner;

@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Indicator;
-import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;

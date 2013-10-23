@@ -23,7 +23,7 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Indicator;
-import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.WorldEntity;

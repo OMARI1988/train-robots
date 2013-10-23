@@ -33,10 +33,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.trainrobots.core.configuration.Configuration;
+import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.Processor;
+import com.trainrobots.nlp.csp.Csp;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.parser.GoldParser;
 import com.trainrobots.nlp.parser.ParserResult;
-import com.trainrobots.nlp.planning.Planner;
-import com.trainrobots.nlp.planning.Processor;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldModel;
 import com.trainrobots.nlp.scenes.moves.Move;
@@ -139,7 +141,9 @@ public class InteractiveView extends JPanel {
 		}
 		writeLine(result.rcl().format().replace("\r", ""));
 
-		List<Move> moves = new Planner(world).getMoves(result.rcl());
+		Model model = new Model(world);
+		Rcl rcl = result.rcl();
+		List<Move> moves = Csp.fromAction(rcl, rcl).solve(model);
 		if (moves == null || moves.size() == 0) {
 			writeLine("Failed to plan move.");
 			return;

@@ -24,7 +24,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
@@ -124,7 +123,7 @@ public class CspSolverTests {
 			int expectedCount) {
 
 		Entity entity = Entity.fromString(text);
-		EntityNode entityNode = CspConverter.convert(entity, entity);
+		EntityNode entityNode = Csp.fromEntity(entity, entity);
 		Model model = new Model(SceneManager.getScene(sceneNumber).before);
 		List<WorldEntity> entities = entityNode.solve(model);
 

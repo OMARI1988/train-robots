@@ -20,10 +20,12 @@ package com.trainrobots.nlp.csp;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.ColorAttribute;
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
 import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.IndicatorAttribute;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Relation;
+import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
@@ -32,9 +34,22 @@ import com.trainrobots.nlp.csp.constraints.PostIndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.RelationConstraint;
 import com.trainrobots.nlp.csp.constraints.TypeConstraint;
 
-public class CspConverter {
+public class Csp {
 
-	public static EntityNode convert(Rcl rcl, Entity entity) {
+	private Csp() {
+	}
+
+	public static ActionNode fromAction(Rcl rcl, Rcl element) {
+		if (element instanceof Event) {
+			return new EventNode(rcl, (Event) element);
+		}
+		if (element instanceof Sequence) {
+			return new SequenceNode(rcl, (Sequence) element);
+		}
+		throw new CoreException("Failed to convert RCL to CSP.");
+	}
+
+	public static EntityNode fromEntity(Rcl rcl, Entity entity) {
 
 		// Type.
 		Type type = entity.typeAttribute().type();
@@ -149,7 +164,7 @@ public class CspConverter {
 
 				// Constraint.
 				if (relation.entity() != null) {
-					EntityNode n2 = convert(rcl, relation.entity());
+					EntityNode n2 = fromEntity(rcl, relation.entity());
 					n.add(new RelationConstraint(relation.relationAttribute()
 							.relation(), n2));
 				}

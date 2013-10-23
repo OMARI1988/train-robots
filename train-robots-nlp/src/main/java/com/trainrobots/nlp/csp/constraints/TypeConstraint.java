@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.planning.Model;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class TypeConstraint extends EntityConstraint {

@@ -17,6 +17,7 @@
 
 package com.trainrobots.nlp.csp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
@@ -28,7 +29,6 @@ import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
-import com.trainrobots.nlp.planning.Model;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Shape;
@@ -39,23 +39,37 @@ import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
 
-public class EventNode {
+public class EventNode implements ActionNode {
 
-	public static Move solve(Model model, Rcl root, Event event) {
+	private final Rcl root;
+	private final Event event;
+
+	public EventNode(Rcl root, Event event) {
+		this.root = root;
+		this.event = event;
+	}
+
+	public List<Move> solve(Model model) {
+
+		// Moves.
+		ArrayList<Move> moves = new ArrayList<Move>();
 
 		// Drop.
 		if (event.isAction(Action.drop)) {
-			return mapDropCommand(model, root, event);
+			moves.add(mapDropCommand(model));
+			return moves;
 		}
 
 		// Take.
 		if (event.isAction(Action.take)) {
-			return mapTakeCommand(model, root, event);
+			moves.add(mapTakeCommand(model));
+			return moves;
 		}
 
 		// Move.
 		if (event.isAction(Action.move)) {
-			return mapMoveCommand(model, root, event);
+			moves.add(mapMoveCommand(model));
+			return moves;
 		}
 
 		// No match.
@@ -63,7 +77,7 @@ public class EventNode {
 				+ event.actionAttribute().action() + "' not recognized.");
 	}
 
-	private static Move mapDropCommand(Model model, Rcl root, Event event) {
+	private Move mapDropCommand(Model model) {
 
 		Shape shape = model.world().getShapeInGripper();
 		if (shape == null) {
@@ -75,14 +89,13 @@ public class EventNode {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		WorldEntity worldEntity = mapEntity(model, root, entity, null);
+		WorldEntity worldEntity = mapEntity(model, entity, null);
 		if (!worldEntity.equals(shape)) {
 			throw new CoreException("Drop shape mismatch.");
 		}
 
 		if (event.destinations() != null && event.destinations().size() >= 1) {
-			Position position2 = mapDestination(model, root, event,
-					shape.position());
+			Position position2 = mapDestination(model, shape.position());
 			Position arm = model.world().arm();
 			if (position2.x != arm.x || position2.y != arm.y) {
 				throw new CoreException("Invalid drop position.");
@@ -92,7 +105,7 @@ public class EventNode {
 		return new DropMove();
 	}
 
-	private static Move mapTakeCommand(Model model, Rcl root, Event event) {
+	private Move mapTakeCommand(Model model) {
 
 		if (event.destinations() != null && event.destinations().size() != 0) {
 			throw new CoreException(
@@ -104,10 +117,10 @@ public class EventNode {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		return new TakeMove(getPosition(mapEntity(model, root, entity, null)));
+		return new TakeMove(getPosition(mapEntity(model, entity, null)));
 	}
 
-	private static Move mapMoveCommand(Model model, Rcl root, Event event) {
+	private Move mapMoveCommand(Model model) {
 
 		if (model.world().getShapeInGripper() != null) {
 			throw new CoreException("Expected drop not move.");
@@ -118,13 +131,12 @@ public class EventNode {
 			throw new CoreException("Event entity not specified.");
 		}
 
-		Position position = getPosition(mapEntity(model, root, entity, null));
-		Position position2 = mapDestination(model, root, event, position);
+		Position position = getPosition(mapEntity(model, entity, null));
+		Position position2 = mapDestination(model, position);
 		return new DirectMove(position, position2);
 	}
 
-	private static Position mapDestination(Model model, Rcl root, Event event,
-			Position actionPosition) {
+	private Position mapDestination(Model model, Position actionPosition) {
 		if (event.destinations() == null || event.destinations().size() != 1) {
 			throw new CoreException("Single destination not specified.");
 		}
@@ -133,14 +145,14 @@ public class EventNode {
 
 		// Measure?
 		if (destination.measure() != null) {
-			return mapSpatialRelationWithMeasure(model, root, actionPosition,
+			return mapSpatialRelationWithMeasure(model, actionPosition,
 					destination);
 		}
-		return mapSpatialRelation(model, root, actionPosition, destination);
+		return mapSpatialRelation(model, actionPosition, destination);
 	}
 
-	private static Position mapSpatialRelation(Model model, Rcl root,
-			Position actionPosition, SpatialRelation relation) {
+	private Position mapSpatialRelation(Model model, Position actionPosition,
+			SpatialRelation relation) {
 
 		RelationAttribute relationAttribute = relation.relationAttribute();
 		if (relationAttribute == null) {
@@ -151,8 +163,7 @@ public class EventNode {
 			throw new CoreException("Spatial relation entity not specified: "
 					+ relation);
 		}
-		WorldEntity entity = mapEntity(model, root, relation.entity(),
-				actionPosition);
+		WorldEntity entity = mapEntity(model, relation.entity(), actionPosition);
 
 		// Stack?
 		if (entity.type() == Type.stack) {
@@ -201,12 +212,11 @@ public class EventNode {
 		throw new CoreException("Invalid relation: " + relationAttribute);
 	}
 
-	private static Position mapSpatialRelationWithMeasure(Model model,
-			Rcl root, Position position, SpatialRelation relation) {
+	private Position mapSpatialRelationWithMeasure(Model model,
+			Position position, SpatialRelation relation) {
 
 		if (relation.entity() != null) {
-			List<WorldEntity> groundings = ground(model, root,
-					relation.entity());
+			List<WorldEntity> groundings = ground(model, relation.entity());
 			if (groundings == null || groundings.size() != 1) {
 				throw new CoreException(
 						"Expected single grounding for entity with measure: "
@@ -249,11 +259,11 @@ public class EventNode {
 		return model.world().getDropPosition(p.x, p.y);
 	}
 
-	private static WorldEntity mapEntity(Model model, Rcl root, Entity entity,
+	private WorldEntity mapEntity(Model model, Entity entity,
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<WorldEntity> groundings = ground(model, root, entity);
+		List<WorldEntity> groundings = ground(model, entity);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
@@ -327,7 +337,7 @@ public class EventNode {
 		throw new CoreException("Failed to get position for " + entity);
 	}
 
-	private static List<WorldEntity> ground(Model model, Rcl root, Entity entity) {
-		return CspConverter.convert(root, entity).solve(model);
+	private List<WorldEntity> ground(Model model, Entity entity) {
+		return Csp.fromEntity(root, entity).solve(model);
 	}
 }

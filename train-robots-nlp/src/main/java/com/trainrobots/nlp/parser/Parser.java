@@ -26,20 +26,22 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Entity;
 import com.trainrobots.core.rcl.Rcl;
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.csp.Csp;
+import com.trainrobots.nlp.csp.EntityNode;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.parser.grammar.EllipsisRule;
 import com.trainrobots.nlp.parser.grammar.Grammar;
 import com.trainrobots.nlp.parser.grammar.ProductionRule;
 import com.trainrobots.nlp.parser.lexicon.Lexicon;
 import com.trainrobots.nlp.parser.lexicon.Mapping;
 import com.trainrobots.nlp.parser.lexicon.MappingList;
-import com.trainrobots.nlp.planning.Planner;
 import com.trainrobots.nlp.scenes.WorldEntity;
 import com.trainrobots.nlp.scenes.WorldModel;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
-	private final Planner planner;
+	private final Model model;
 	private final Queue queue;
 	private final Grammar grammar;
 	private final Lexicon lexicon;
@@ -55,7 +57,7 @@ public class Parser {
 
 	public Parser(WorldModel world, Grammar grammar, Lexicon lexicon,
 			List<Node> items, List<Node> tokens, boolean verbose) {
-		this.planner = new Planner(world);
+		this.model = new Model(world);
 		this.verbose = verbose;
 		this.grammar = grammar;
 		this.lexicon = lexicon;
@@ -132,7 +134,7 @@ public class Parser {
 
 	private boolean valid(Rcl rcl) {
 		try {
-			planner.getMoves(rcl);
+			Csp.fromAction(rcl, rcl).solve(model);
 			return true;
 		} catch (Exception exception) {
 			return false;
@@ -346,7 +348,8 @@ public class Parser {
 					|| entity.isType(Type.region)) {
 				return true;
 			}
-			List<WorldEntity> groundings = planner.ground(null, entity);
+			EntityNode entityNode = Csp.fromEntity(null, entity);
+			List<WorldEntity> groundings = entityNode.solve(model);
 			if (groundings == null || groundings.size() == 0) {
 				if (verbose) {
 					System.out.println("*** NO GROUNDINGS: " + node);

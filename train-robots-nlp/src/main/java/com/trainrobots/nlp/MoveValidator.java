@@ -15,12 +15,14 @@
  * Train Robots. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.trainrobots.nlp.planning;
+package com.trainrobots.nlp;
 
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.rcl.Rcl;
+import com.trainrobots.nlp.csp.Csp;
+import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.Scene;
 import com.trainrobots.nlp.scenes.SceneManager;
@@ -36,7 +38,8 @@ public class MoveValidator {
 
 	public static void validate(int sceneNumber, Rcl rcl) {
 		Scene scene = SceneManager.getScene(sceneNumber);
-		List<Move> moves = new Planner(scene.before).getMoves(rcl);
+		Model model = new Model(scene.before);
+		List<Move> moves = Csp.fromAction(rcl, rcl).solve(model);
 		if (!match(scene.before, scene.moves, moves)) {
 			throw new CoreException("Incorrect move.");
 		}
