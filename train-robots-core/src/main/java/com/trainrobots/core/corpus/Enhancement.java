@@ -24,9 +24,9 @@ public class Enhancement {
 
 	private static String[] descriptions = { "row/column/line",
 			"lowest/highest/tallest/shortest", "near",
-			"-------------------------", "complex measure", "between", "other",
-			"complex stack description", "implict proximity", "opposite",
-			"edge", "furthest", "exclude surface layer",
+			"-------------------------", "complex measure", "between/middle",
+			"other", "complex stack description", "implict proximity",
+			"opposite", "edge", "furthest", "exclude surface layer",
 			"stack/shape availability", "free/exposed/available",
 			"only/unique", "multiple destinations", "existence (there is...)",
 			"complex block group", "adjectives/compound noun phrase",

@@ -138,7 +138,7 @@ public class CorpusTests {
 	@Ignore
 	public void shouldListEnhancements() {
 		final int id = Arrays.asList(Enhancement.getDescriptions()).indexOf(
-				"supplemantary cardinality") + 1;
+				"between/middle") + 1;
 		for (Command command : Corpus.getCommands()) {
 			if (command.enhancement == id) {
 				System.out.println("C" + command.id + ": " + command.text);
