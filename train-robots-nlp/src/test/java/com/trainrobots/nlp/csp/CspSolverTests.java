@@ -181,6 +181,7 @@ public class CspSolverTests {
 		double p = 100 * valid / (double) count;
 		System.out.println("CSP score: " + valid + " / " + count + " = "
 				+ df.format(p) + " %");
+		assertEquals(count, valid);
 	}
 
 	private static void testSolution(int sceneNumber, String text,

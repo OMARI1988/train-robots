@@ -64,7 +64,136 @@ public class Planner {
 	}
 
 	public List<WorldEntity> ground(Rcl root, Entity entity) {
-		return ground(root, entity, null);
+
+		// Predicates.
+		PredicateList predicates = new PredicateList();
+
+		// Validate.
+		Type type = entity.typeAttribute().type();
+		if (type == null) {
+			throw new CoreException("Entity type not specified: " + entity);
+		}
+
+		// Type reference?
+		if (type == Type.typeReference || type == Type.typeReferenceGroup) {
+			if (entity.referenceId() == null) {
+				throw new CoreException("Reference ID not specified: " + entity);
+			}
+			Entity antecedent = (Entity) root.getElement(entity.referenceId());
+			if (antecedent == null) {
+				throw new CoreException("Failed to resolve reference: "
+						+ entity);
+			}
+			if (type == Type.typeReferenceGroup) {
+				type = makeGroup(antecedent.typeAttribute().type());
+			} else {
+				type = antecedent.typeAttribute().type();
+			}
+		}
+
+		// Reference ID.
+		else if (entity.referenceId() != null) {
+			throw new CoreException("Unexpected reference ID: "
+					+ entity.referenceId());
+		}
+
+		// Cube group?
+		if (type == Type.cubeGroup) {
+			type = Type.stack;
+		}
+
+		// Type.
+		predicates.add(new TypePredicate(type));
+
+		// Ordinal.
+		if (entity.ordinalAttribute() != null) {
+			throw new CoreException("Unexpected ordinal: "
+					+ entity.ordinalAttribute());
+		}
+
+		// Cardinal.
+		if (entity.cardinalAttribute() != null
+				&& entity.cardinalAttribute().cardinal() != 1) {
+			throw new CoreException("Unexpected cardinal: "
+					+ entity.cardinalAttribute());
+		}
+
+		// Colors.
+		if (entity.colorAttributes() != null
+				&& entity.colorAttributes().size() >= 1) {
+			predicates.add(new ColorPredicate(entity.colorAttributes()));
+		}
+
+		// Indicator/relation combinations.
+		List<IndicatorAttribute> indicatorAttributes = new ArrayList<IndicatorAttribute>();
+		if (entity.indicatorAttributes() != null) {
+			indicatorAttributes.addAll(entity.indicatorAttributes());
+		}
+		List<SpatialRelation> relations = new ArrayList<SpatialRelation>();
+		if (entity.relations() != null) {
+			relations.addAll(entity.relations());
+		}
+
+		// Indicators.
+		Indicator postIndicator = null;
+		for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
+			Indicator indicator = indicatorAttribute.indicator();
+			if ((type == Type.cube || type == Type.prism || type == Type.stack)
+					&& (indicator == Indicator.left
+							|| indicator == Indicator.leftmost
+							|| indicator == Indicator.right
+							|| indicator == Indicator.rightmost || indicator == Indicator.nearest)) {
+				if (postIndicator != null) {
+					throw new CoreException("Duplicate post indicator in "
+							+ entity);
+				}
+				postIndicator = indicator;
+			} else {
+				predicates
+						.add(new IndicatorPredicate(model.world(), indicator));
+			}
+		}
+
+		// Apply predicates.
+		List<WorldEntity> groundings = new ArrayList<WorldEntity>();
+		for (WorldEntity worldEntity : model.entities()) {
+			if (predicates.match(worldEntity)) {
+				groundings.add(worldEntity);
+			}
+		}
+
+		// Post-relation (e.g. 25886).
+		boolean postRelation = false;
+		if (relations.size() == 1) {
+			SpatialRelation relation = relations.get(0);
+			if (relation.entity() != null
+					&& relation.entity().isType(Type.region)) {
+				if (relation.entity().indicatorAttributes().size() == 1
+						&& relation.entity().indicatorAttributes().get(0)
+								.indicator() == Indicator.right) {
+					if (postIndicator != null) {
+						throw new CoreException("Duplicate post indicator in "
+								+ entity);
+					}
+					postIndicator = relation.entity().indicatorAttributes()
+							.get(0).indicator();
+					postRelation = true;
+				}
+			}
+		}
+
+		// Relations.
+		if (!postRelation && relations.size() > 0) {
+			filterGroundingsByRelations(root, entity, groundings, relations);
+		}
+
+		// Post-indicator.
+		if (postIndicator != null) {
+			filterGroundingsByPostIndicator(groundings, postIndicator);
+		}
+
+		// Groundings.
+		return groundings;
 	}
 
 	public List<Move> getMoves(Rcl rcl) {
@@ -349,7 +478,7 @@ public class Planner {
 			Position excludePosition) {
 
 		// Multiple groundings?
-		List<WorldEntity> groundings = ground(root, entity, excludePosition);
+		List<WorldEntity> groundings = ground(root, entity);
 		if (groundings.size() > 1) {
 
 			// Match the shape in the gripper.
@@ -422,141 +551,6 @@ public class Planner {
 		throw new CoreException("Failed to get position for " + entity);
 	}
 
-	private List<WorldEntity> ground(Rcl root, Entity entity,
-			Position excludePosition) {
-
-		// Predicates.
-		PredicateList predicates = new PredicateList();
-
-		// Validate.
-		Type type = entity.typeAttribute().type();
-		if (type == null) {
-			throw new CoreException("Entity type not specified: " + entity);
-		}
-
-		// Type reference?
-		if (type == Type.typeReference || type == Type.typeReferenceGroup) {
-			if (entity.referenceId() == null) {
-				throw new CoreException("Reference ID not specified: " + entity);
-			}
-			Entity antecedent = (Entity) root.getElement(entity.referenceId());
-			if (antecedent == null) {
-				throw new CoreException("Failed to resolve reference: "
-						+ entity);
-			}
-			if (type == Type.typeReferenceGroup) {
-				type = makeGroup(antecedent.typeAttribute().type());
-			} else {
-				type = antecedent.typeAttribute().type();
-			}
-		}
-
-		// Reference ID.
-		else if (entity.referenceId() != null) {
-			throw new CoreException("Unexpected reference ID: "
-					+ entity.referenceId());
-		}
-
-		// Cube group?
-		if (type == Type.cubeGroup) {
-			type = Type.stack;
-		}
-
-		// Type.
-		predicates.add(new TypePredicate(type));
-
-		// Ordinal.
-		if (entity.ordinalAttribute() != null) {
-			throw new CoreException("Unexpected ordinal: "
-					+ entity.ordinalAttribute());
-		}
-
-		// Cardinal.
-		if (entity.cardinalAttribute() != null
-				&& entity.cardinalAttribute().cardinal() != 1) {
-			throw new CoreException("Unexpected cardinal: "
-					+ entity.cardinalAttribute());
-		}
-
-		// Colors.
-		if (entity.colorAttributes() != null
-				&& entity.colorAttributes().size() >= 1) {
-			predicates.add(new ColorPredicate(entity.colorAttributes()));
-		}
-
-		// Indicator/relation combinations.
-		List<IndicatorAttribute> indicatorAttributes = new ArrayList<IndicatorAttribute>();
-		if (entity.indicatorAttributes() != null) {
-			indicatorAttributes.addAll(entity.indicatorAttributes());
-		}
-		List<SpatialRelation> relations = new ArrayList<SpatialRelation>();
-		if (entity.relations() != null) {
-			relations.addAll(entity.relations());
-		}
-
-		// Indicators.
-		Indicator postIndicator = null;
-		for (IndicatorAttribute indicatorAttribute : indicatorAttributes) {
-			Indicator indicator = indicatorAttribute.indicator();
-			if ((type == Type.cube || type == Type.prism || type == Type.stack)
-					&& (indicator == Indicator.left
-							|| indicator == Indicator.leftmost
-							|| indicator == Indicator.right
-							|| indicator == Indicator.rightmost || indicator == Indicator.nearest)) {
-				if (postIndicator != null) {
-					throw new CoreException("Duplicate post indicator in "
-							+ entity);
-				}
-				postIndicator = indicator;
-			} else {
-				predicates
-						.add(new IndicatorPredicate(model.world(), indicator));
-			}
-		}
-
-		// Apply predicates.
-		List<WorldEntity> groundings = new ArrayList<WorldEntity>();
-		for (WorldEntity worldEntity : model.entities()) {
-			if (predicates.match(worldEntity)) {
-				groundings.add(worldEntity);
-			}
-		}
-
-		// Post-relation (e.g. 25886).
-		boolean postRelation = false;
-		if (relations.size() == 1) {
-			SpatialRelation relation = relations.get(0);
-			if (relation.entity() != null
-					&& relation.entity().isType(Type.region)) {
-				if (relation.entity().indicatorAttributes().size() == 1
-						&& relation.entity().indicatorAttributes().get(0)
-								.indicator() == Indicator.right) {
-					if (postIndicator != null) {
-						throw new CoreException("Duplicate post indicator in "
-								+ entity);
-					}
-					postIndicator = relation.entity().indicatorAttributes()
-							.get(0).indicator();
-					postRelation = true;
-				}
-			}
-		}
-
-		// Relations.
-		if (!postRelation && relations.size() > 0) {
-			filterGroundingsByRelations(root, entity, groundings, relations);
-		}
-
-		// Post-indicator.
-		if (postIndicator != null) {
-			filterGroundingsByPostIndicator(groundings, postIndicator,
-					excludePosition);
-		}
-
-		// Groundings.
-		return groundings;
-	}
-
 	private static Type makeGroup(Type type) {
 		if (type == Type.cube) {
 			return Type.cubeGroup;
@@ -566,19 +560,7 @@ public class Planner {
 	}
 
 	private void filterGroundingsByPostIndicator(List<WorldEntity> groundings,
-			Indicator postIndicator, Position excludePosition) {
-
-		// Tried to fix 21517, but failed for other reasons.
-		if (groundings.size() > 1 && excludePosition != null) {
-			for (int i = groundings.size() - 1; i >= 0; i--) {
-				WorldEntity e = groundings.get(i);
-				if (e instanceof Shape) {
-					if (((Shape) e).position().equals(excludePosition)) {
-						groundings.remove(i);
-					}
-				}
-			}
-		}
+			Indicator postIndicator) {
 
 		if (postIndicator == Indicator.left
 				|| postIndicator == Indicator.leftmost) {
