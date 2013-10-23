@@ -39,7 +39,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(22380, true));
+		assertTrue(match(9408, true));
 	}
 
 	@Test
@@ -106,11 +106,11 @@ public class ParserTests {
 			}
 			try {
 				MoveValidator.validate(command.sceneNumber, result.rcl());
-				// System.out.println(++count + ") VALID: " + command.id + ": "
-				// + command.text);
+				System.out.println(++count + ") VALID: " + command.id + ": "
+						+ command.text);
 			} catch (Exception e) {
-				System.out.println(++count + ") " + e.getMessage() + ": "
-						+ command.id + ": " + command.text);
+				// System.out.println(++count + ") " + e.getMessage() + ": "
+				// + command.id + ": " + command.text);
 			}
 		}
 	}

@@ -89,7 +89,7 @@ public class ProcessorTests {
 			} catch (Exception e) {
 				System.out.println(++error + ") C" + command.id + ": "
 						+ command.text);
-				System.out.println(e.getMessage());
+				e.printStackTrace(System.out);
 				System.out.println(command.rcl.format());
 			}
 			correct++;
@@ -103,7 +103,7 @@ public class ProcessorTests {
 
 		// Count.
 		int size = correct + unmarked;
-		assertEquals(3403, correct);
+		assertEquals(3409, correct);
 		assertEquals(8388, size);
 
 		// Gold.

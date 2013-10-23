@@ -19,21 +19,13 @@ package com.trainrobots.nlp.csp;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.trainrobots.core.corpus.Command;
-import com.trainrobots.core.corpus.Corpus;
-import com.trainrobots.core.rcl.Entity;
-import com.trainrobots.core.rcl.Rcl;
-import com.trainrobots.core.rcl.RclVisitor;
 import com.trainrobots.nlp.planning.Model;
-import com.trainrobots.nlp.planning.Planner;
 import com.trainrobots.nlp.scenes.SceneManager;
 import com.trainrobots.nlp.scenes.WorldEntity;
-import com.trainrobots.nlp.scenes.WorldModel;
 
 public class CspSolverTests {
 
@@ -125,63 +117,6 @@ public class CspSolverTests {
 				214,
 				"(entity: (indicator: individual) (color: green) (type: cube))",
 				1);
-	}
-
-	private int count = 0;
-	private int valid = 0;
-
-	@Test
-	public void shouldSolveCorpus() {
-		for (final Command command : Corpus.getCommands()) {
-			if (command.rcl == null) {
-				continue;
-			}
-			command.rcl.recurse(new RclVisitor() {
-
-				public void visit(Rcl parent, Entity entity) {
-
-					// World.
-					WorldModel world = SceneManager
-							.getScene(command.sceneNumber).before;
-
-					// Expected.
-					Planner planner = new Planner(world);
-					List<WorldEntity> expected;
-					try {
-						expected = planner.ground(command.rcl, entity);
-					} catch (Exception exception) {
-						return;
-					}
-					count++;
-
-					// Actual.
-					Csp csp = Csp.fromRcl(command.rcl, entity);
-					try {
-						List<WorldEntity> actual = csp.solve(new Model(world));
-						if (actual.size() == expected.size()) {
-							valid++;
-						} else {
-							System.out.println("Scene " + command.sceneNumber);
-							System.out.println(expected.size() + " = " + entity);
-							System.out.println(actual.size() + " = " + csp);
-							System.out.println();
-						}
-					} catch (Exception exception) {
-						System.out.println("Scene " + command.sceneNumber);
-						System.out.println(expected.size() + " = " + entity);
-						System.out.println(exception.getMessage());
-						System.out.println();
-					}
-				}
-			});
-		}
-
-		// Score.
-		DecimalFormat df = new DecimalFormat("#.##");
-		double p = 100 * valid / (double) count;
-		System.out.println("CSP score: " + valid + " / " + count + " = "
-				+ df.format(p) + " %");
-		assertEquals(count, valid);
 	}
 
 	private static void testSolution(int sceneNumber, String text,

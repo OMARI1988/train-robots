@@ -144,7 +144,17 @@ public class CspConverter {
 		// Relations.
 		if (entity.relations() != null) {
 			for (SpatialRelation relation : entity.relations()) {
-				if (relation.entity().isType(Type.region)) {
+
+				// Measure?
+				if (relation.measure() != null && relation.entity() != null) {
+					throw new CoreException(
+							"Failed to create predicate for measure: "
+									+ relation.measure());
+				}
+
+				// Region.
+				if (relation.entity() != null
+						&& relation.entity().isType(Type.region)) {
 					if (relation.entity().indicatorAttributes().size() == 1) {
 						Relation r = relation.relationAttribute().relation();
 						if (r == Relation.above || r == Relation.within) {
@@ -158,9 +168,13 @@ public class CspConverter {
 						}
 					}
 				}
-				CspVariable v2 = convert(relation.entity());
-				v.add(new RelationConstraint(relation.relationAttribute()
-						.relation(), v2));
+
+				// Constraint.
+				if (relation.entity() != null) {
+					CspVariable v2 = convert(relation.entity());
+					v.add(new RelationConstraint(relation.relationAttribute()
+							.relation(), v2));
+				}
 			}
 		}
 
