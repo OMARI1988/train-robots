@@ -52,7 +52,6 @@ public class DestinationConstraint extends PositionConstraint {
 	public Position solve(Model model, Position actionPosition) {
 
 		List<WorldEntity> groundings = entity.solve(model);
-		Available.filterAvailable(model, groundings);
 
 		// Exclude (e.g. 6652).
 		if (actionPosition != null && groundings.size() == 2) {

@@ -33,6 +33,7 @@ import com.trainrobots.core.rcl.RelationAttribute;
 import com.trainrobots.core.rcl.Sequence;
 import com.trainrobots.core.rcl.SpatialRelation;
 import com.trainrobots.core.rcl.Type;
+import com.trainrobots.nlp.csp.constraints.AvailableConstraint;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
 import com.trainrobots.nlp.csp.constraints.DestinationConstraint;
 import com.trainrobots.nlp.csp.constraints.DestinationWithMeasureConstraint;
@@ -79,6 +80,7 @@ public class Csp {
 			throw new CoreException("Event entity not specified.");
 		}
 		EntityNode entity = fromEntity(rcl, event.entity());
+		entity.add(new AvailableConstraint());
 
 		// Destination.
 		PositionConstraint destination = null;
@@ -257,8 +259,9 @@ public class Csp {
 			throw new CoreException("Spatial relation entity not specified: "
 					+ relation);
 		}
-		return new DestinationConstraint(relationAttribute.relation(),
-				Csp.fromEntity(rcl, relation.entity()));
+		EntityNode entity = Csp.fromEntity(rcl, relation.entity());
+		entity.add(new AvailableConstraint());
+		return new DestinationConstraint(relationAttribute.relation(), entity);
 	}
 
 	private static EventNode matchRecognizedSequence(Sequence sequence) {

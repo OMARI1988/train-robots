@@ -23,7 +23,6 @@ import java.util.List;
 import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Action;
-import com.trainrobots.nlp.csp.constraints.Available;
 import com.trainrobots.nlp.csp.constraints.PositionConstraint;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Position;
@@ -93,7 +92,6 @@ public class EventNode extends ActionNode {
 		}
 
 		List<WorldEntity> groundings = entity.solve(model);
-		Available.filterAvailable(model, groundings);
 		if (groundings.size() != 1) {
 			throw new CoreException("Expected one grounding.");
 		}
@@ -122,7 +120,6 @@ public class EventNode extends ActionNode {
 		}
 
 		List<WorldEntity> groundings = entity.solve(model);
-		Available.filterAvailable(model, groundings);
 		if (groundings.size() != 1) {
 			throw new CoreException("Expected one grounding.");
 		}
@@ -137,7 +134,6 @@ public class EventNode extends ActionNode {
 		}
 
 		List<WorldEntity> groundings = entity.solve(model);
-		Available.filterAvailable(model, groundings);
 		if (groundings.size() != 1) {
 			throw new CoreException("Expected one grounding.");
 		}

@@ -43,7 +43,7 @@ public class CspConverterTests {
 
 		assertEquals(
 				eventNode.toString(),
-				"(event: (action: move) (entity: (type: cube)) (destination: (relation: above) (entity: (type: prism))))");
+				"(event: (action: move) (entity: (type: cube) available) (destination: (relation: above) (entity: (type: prism) available)))");
 	}
 
 	@Test
