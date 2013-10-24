@@ -54,34 +54,29 @@ public class AvailableConstraint extends EntityConstraint {
 			}
 		}
 
-		// Copy.
+		// Filter.
 		List<WorldEntity> result = new ArrayList<WorldEntity>();
-		for (WorldEntity grounding : entities) {
-			result.add(grounding);
-		}
+		for (WorldEntity entity : entities) {
 
-		// Remove shapes that support others.
-		for (int i = result.size() - 1; i >= 0; i--) {
-			WorldEntity entity = result.get(i);
+			// Remove shapes that support others.
 			if (entity instanceof Shape) {
 				shape = (Shape) entity;
 				if (model.world().getShape(shape.position().add(0, 0, 1)) != null) {
-					result.remove(i);
+					continue;
 				}
 			}
-		}
 
-		// Exclude headless stacks.
-		for (int i = result.size() - 1; i >= 0; i--) {
-			if (result.get(i) instanceof Stack) {
-				Stack stack = (Stack) result.get(i);
+			// Exclude headless stacks.
+			if (entity instanceof Stack) {
+				Stack stack = (Stack) entity;
 				if (!stack.includesHead()) {
-					result.remove(i);
+					continue;
 				}
 			}
-		}
 
-		// Result.
+			// Include.
+			result.add(entity);
+		}
 		return result;
 	}
 }
