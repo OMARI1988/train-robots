@@ -220,7 +220,13 @@ public class Csp {
 
 		// Post-indicator.
 		if (postIndicator != null) {
-			n.add(new PostIndicatorConstraint(postIndicator));
+			if (postIndicator == Indicator.nearest) {
+				EntityNode e = new EntityNode();
+				e.add(new TypeConstraint(Type.robot));
+				n.add(new RelationConstraint(Relation.nearest, e));
+			} else {
+				n.add(new PostIndicatorConstraint(postIndicator));
+			}
 		}
 
 		// Result.

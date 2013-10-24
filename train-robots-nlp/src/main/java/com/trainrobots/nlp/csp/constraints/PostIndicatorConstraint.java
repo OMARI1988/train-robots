@@ -25,7 +25,6 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Position;
-import com.trainrobots.nlp.scenes.Robot;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
 public class PostIndicatorConstraint extends EntityConstraint {
@@ -53,12 +52,6 @@ public class PostIndicatorConstraint extends EntityConstraint {
 
 		if (indicator == Indicator.right || indicator == Indicator.rightmost) {
 			return filterRightmost(entities);
-		}
-
-		if (indicator == Indicator.nearest) {
-			List<WorldEntity> landmarks = new ArrayList<WorldEntity>();
-			landmarks.add(Robot.TheRobot);
-			return Nearest.filterNearest(entities, landmarks);
 		}
 
 		throw new CoreException("Post-indicator not supported: " + indicator);
