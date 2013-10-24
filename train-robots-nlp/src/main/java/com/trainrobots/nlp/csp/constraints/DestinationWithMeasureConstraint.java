@@ -20,6 +20,7 @@ package com.trainrobots.nlp.csp.constraints;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.EntityNode;
@@ -27,7 +28,7 @@ import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Position;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class DestinationWithMeasureConstraint implements PositionConstraint {
+public class DestinationWithMeasureConstraint extends PositionConstraint {
 
 	private final Type type;
 	private final int cardinal;
@@ -40,6 +41,18 @@ public class DestinationWithMeasureConstraint implements PositionConstraint {
 		this.cardinal = cardinal;
 		this.relation = relation;
 		this.entity = entity;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("destination:");
+		node.add("type:", type.toString());
+		node.add("cardinal:", Integer.toString(cardinal));
+		node.add("relation:", relation.toString());
+		if (entity != null) {
+			node.add(entity.toNode());
+		}
+		return node;
 	}
 
 	public Position solve(Model model, Position actionPosition) {

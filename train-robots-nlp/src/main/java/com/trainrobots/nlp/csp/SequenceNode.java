@@ -20,11 +20,21 @@ package com.trainrobots.nlp.csp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.scenes.moves.Move;
 
-public class SequenceNode implements ActionNode {
+public class SequenceNode extends ActionNode {
 
 	private final List<EventNode> events = new ArrayList<EventNode>();
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("sequence:");
+		for (EventNode event : events) {
+			node.add(event.toNode());
+		}
+		return node;
+	}
 
 	public void add(EventNode event) {
 		events.add(event);

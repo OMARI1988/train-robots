@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Action;
 import com.trainrobots.nlp.csp.constraints.Available;
 import com.trainrobots.nlp.csp.constraints.PositionConstraint;
@@ -33,7 +34,7 @@ import com.trainrobots.nlp.scenes.moves.DropMove;
 import com.trainrobots.nlp.scenes.moves.Move;
 import com.trainrobots.nlp.scenes.moves.TakeMove;
 
-public class EventNode implements ActionNode {
+public class EventNode extends ActionNode {
 
 	private final Action action;
 	private final EntityNode entity;
@@ -44,6 +45,17 @@ public class EventNode implements ActionNode {
 		this.action = action;
 		this.entity = entity;
 		this.destination = destination;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("event:");
+		node.add("action:", action.toString());
+		node.add(entity.toNode());
+		if (destination != null) {
+			node.add(destination.toNode());
+		}
+		return node;
 	}
 
 	public List<Move> solve(Model model) {

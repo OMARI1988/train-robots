@@ -19,23 +19,11 @@ package com.trainrobots.nlp.csp.constraints;
 
 import java.util.List;
 
-import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public abstract class EntityConstraint {
+public abstract class EntityConstraint extends Constraint {
 
 	public abstract List<WorldEntity> filter(Model model,
 			List<WorldEntity> entities);
-
-	public abstract Node toNode();
-
-	@Override
-	public String toString() {
-		return toNode().toString();
-	}
-
-	public String format() {
-		return toNode().format();
-	}
 }

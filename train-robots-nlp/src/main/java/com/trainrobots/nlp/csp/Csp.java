@@ -57,6 +57,38 @@ public class Csp {
 		throw new CoreException("Failed to convert RCL to CSP.");
 	}
 
+	public static ActionNode fromSequence(Rcl rcl, Sequence sequence) {
+		EventNode eventNode = matchRecognizedSequence(sequence);
+		if (eventNode != null) {
+			return eventNode;
+		}
+		SequenceNode sequenceNode = new SequenceNode();
+		for (Event event : sequence.events()) {
+			sequenceNode.add(fromEvent(rcl, event));
+		}
+		return sequenceNode;
+	}
+
+	public static EventNode fromEvent(Rcl rcl, Event event) {
+
+		// Action.
+		Action action = event.actionAttribute().action();
+
+		// Entity.
+		if (event.entity() == null) {
+			throw new CoreException("Event entity not specified.");
+		}
+		EntityNode entity = fromEntity(rcl, event.entity());
+
+		// Destination.
+		PositionConstraint destination = null;
+		if (event.destinations() != null && event.destinations().size() == 1) {
+			destination = createDestinationConstraint(rcl, event.destinations()
+					.get(0));
+		}
+		return new EventNode(action, entity, destination);
+	}
+
 	public static EntityNode fromEntity(Rcl rcl, Entity entity) {
 
 		// Type.
@@ -196,26 +228,6 @@ public class Csp {
 				+ "'.");
 	}
 
-	private static EventNode fromEvent(Rcl rcl, Event event) {
-
-		// Action.
-		Action action = event.actionAttribute().action();
-
-		// Entity.
-		if (event.entity() == null) {
-			throw new CoreException("Event entity not specified.");
-		}
-		EntityNode entity = fromEntity(rcl, event.entity());
-
-		// Destination.
-		PositionConstraint destination = null;
-		if (event.destinations() != null && event.destinations().size() == 1) {
-			destination = createDestinationConstraint(rcl, event.destinations()
-					.get(0));
-		}
-		return new EventNode(action, entity, destination);
-	}
-
 	private static PositionConstraint createDestinationConstraint(Rcl rcl,
 			SpatialRelation relation) {
 
@@ -247,18 +259,6 @@ public class Csp {
 		}
 		return new DestinationConstraint(relationAttribute.relation(),
 				Csp.fromEntity(rcl, relation.entity()));
-	}
-
-	private static ActionNode fromSequence(Rcl rcl, Sequence sequence) {
-		EventNode eventNode = matchRecognizedSequence(sequence);
-		if (eventNode != null) {
-			return eventNode;
-		}
-		SequenceNode sequenceNode = new SequenceNode();
-		for (Event event : sequence.events()) {
-			sequenceNode.add(fromEvent(rcl, event));
-		}
-		return sequenceNode;
 	}
 
 	private static EventNode matchRecognizedSequence(Sequence sequence) {

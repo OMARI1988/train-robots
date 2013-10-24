@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.trainrobots.core.rcl.Entity;
+import com.trainrobots.core.rcl.Event;
 
 public class CspConverterTests {
 
@@ -31,6 +32,18 @@ public class CspConverterTests {
 		Entity entity = Entity.fromString("(entity: (type: cube))");
 		EntityNode entityNode = Csp.fromEntity(entity, entity);
 		assertEquals(entityNode.toString(), "(entity: (type: cube))");
+	}
+
+	@Test
+	public void shouldConvertEvent() {
+
+		Event event = Event
+				.fromString("(event: (action: move) (entity: (type: cube)) (destination: (spatial-relation: (relation: above) (entity: (type: prism)))))");
+		EventNode eventNode = Csp.fromEvent(event, event);
+
+		assertEquals(
+				eventNode.toString(),
+				"(event: (action: move) (entity: (type: cube)) (destination: (relation: above) (entity: (type: prism))))");
 	}
 
 	@Test

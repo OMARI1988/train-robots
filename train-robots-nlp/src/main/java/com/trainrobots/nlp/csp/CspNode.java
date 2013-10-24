@@ -17,11 +17,18 @@
 
 package com.trainrobots.nlp.csp;
 
-import java.util.List;
+import com.trainrobots.core.nodes.Node;
 
-import com.trainrobots.nlp.scenes.moves.Move;
+public abstract class CspNode {
 
-public abstract class ActionNode extends CspNode {
+	public abstract Node toNode();
 
-	public abstract List<Move> solve(Model model);
+	@Override
+	public String toString() {
+		return toNode().toString();
+	}
+
+	public String format() {
+		return toNode().format();
+	}
 }

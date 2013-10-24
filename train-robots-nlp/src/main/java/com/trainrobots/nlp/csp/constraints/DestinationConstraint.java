@@ -20,6 +20,7 @@ package com.trainrobots.nlp.csp.constraints;
 import java.util.List;
 
 import com.trainrobots.core.CoreException;
+import com.trainrobots.core.nodes.Node;
 import com.trainrobots.core.rcl.Relation;
 import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.EntityNode;
@@ -30,7 +31,7 @@ import com.trainrobots.nlp.scenes.Shape;
 import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class DestinationConstraint implements PositionConstraint {
+public class DestinationConstraint extends PositionConstraint {
 
 	private final Relation relation;
 	private final EntityNode entity;
@@ -38,6 +39,14 @@ public class DestinationConstraint implements PositionConstraint {
 	public DestinationConstraint(Relation relation, EntityNode entity) {
 		this.relation = relation;
 		this.entity = entity;
+	}
+
+	@Override
+	public Node toNode() {
+		Node node = new Node("destination:");
+		node.add("relation:", relation.toString());
+		node.add(entity.toNode());
+		return node;
 	}
 
 	public Position solve(Model model, Position actionPosition) {

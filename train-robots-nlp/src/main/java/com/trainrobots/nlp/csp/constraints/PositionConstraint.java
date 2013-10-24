@@ -20,7 +20,7 @@ package com.trainrobots.nlp.csp.constraints;
 import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Position;
 
-public interface PositionConstraint {
+public abstract class PositionConstraint extends Constraint {
 
-	Position solve(Model model, Position actionPosition);
+	public abstract Position solve(Model model, Position actionPosition);
 }

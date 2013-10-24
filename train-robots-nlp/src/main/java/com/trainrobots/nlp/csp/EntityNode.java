@@ -24,7 +24,7 @@ import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.csp.constraints.EntityConstraint;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class EntityNode {
+public class EntityNode extends CspNode {
 
 	private final List<EntityConstraint> constraints = new ArrayList<EntityConstraint>();
 
@@ -44,20 +44,12 @@ public class EntityNode {
 		return entities;
 	}
 
+	@Override
 	public Node toNode() {
 		Node node = new Node("entity:");
 		for (EntityConstraint constraint : constraints) {
 			node.add(constraint.toNode());
 		}
 		return node;
-	}
-
-	@Override
-	public String toString() {
-		return toNode().toString();
-	}
-
-	public String format() {
-		return toNode().format();
 	}
 }
