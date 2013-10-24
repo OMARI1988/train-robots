@@ -20,49 +20,36 @@ package com.trainrobots.nlp.csp.constraints;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
 import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Shape;
-import com.trainrobots.nlp.scenes.Stack;
 import com.trainrobots.nlp.scenes.WorldEntity;
 
-public class AvailableConstraint extends EntityConstraint {
+public class DroppableConstraint extends EntityConstraint {
 
 	@Override
 	public Node toNode() {
-		return new Node("available");
+		return new Node("droppable");
 	}
 
 	public List<WorldEntity> filter(Model model, List<WorldEntity> entities) {
 
-		// No change?
-		if (entities.size() <= 1) {
-			return entities;
-		}
-
-		// Filter.
-		List<WorldEntity> result = new ArrayList<WorldEntity>();
-		for (WorldEntity entity : entities) {
-
-			// Remove shapes that support others.
-			if (entity instanceof Shape) {
-				Shape shape = (Shape) entity;
-				if (model.world().getShape(shape.position().add(0, 0, 1)) != null) {
-					continue;
+		// Match the shape in the gripper.
+		Shape shape = model.world().getShapeInGripper();
+		if (shape != null) {
+			for (WorldEntity grounding : entities) {
+				if (grounding instanceof Shape) {
+					if (grounding.equals(shape)) {
+						List<WorldEntity> result = new ArrayList<WorldEntity>();
+						result.add(shape);
+						return result;
+					}
 				}
 			}
-
-			// Exclude headless stacks.
-			if (entity instanceof Stack) {
-				Stack stack = (Stack) entity;
-				if (!stack.includesHead()) {
-					continue;
-				}
-			}
-
-			// Include.
-			result.add(entity);
 		}
-		return result;
+
+		// No match.
+		throw new CoreException("Failed to match shape in gripper.");
 	}
 }

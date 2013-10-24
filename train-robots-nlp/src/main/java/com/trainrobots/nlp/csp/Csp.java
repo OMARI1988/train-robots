@@ -37,6 +37,7 @@ import com.trainrobots.nlp.csp.constraints.AvailableConstraint;
 import com.trainrobots.nlp.csp.constraints.ColorConstraint;
 import com.trainrobots.nlp.csp.constraints.DestinationConstraint;
 import com.trainrobots.nlp.csp.constraints.DestinationWithMeasureConstraint;
+import com.trainrobots.nlp.csp.constraints.DroppableConstraint;
 import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.PositionConstraint;
 import com.trainrobots.nlp.csp.constraints.PostIndicatorConstraint;
@@ -80,7 +81,11 @@ public class Csp {
 			throw new CoreException("Event entity not specified.");
 		}
 		EntityNode entity = fromEntity(rcl, event.entity());
-		entity.add(new AvailableConstraint());
+		if (action == Action.drop) {
+			entity.add(new DroppableConstraint());
+		} else {
+			entity.add(new AvailableConstraint());
+		}
 
 		// Destination.
 		PositionConstraint destination = null;
