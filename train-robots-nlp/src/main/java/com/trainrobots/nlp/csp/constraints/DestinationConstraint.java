@@ -49,16 +49,16 @@ public class DestinationConstraint extends PositionConstraint {
 		return node;
 	}
 
-	public Position solve(Model model, Position actionPosition) {
+	public Position solve(Model model, Position referencePosition) {
 
 		List<WorldEntity> groundings = entity.solve(model);
 
 		// Exclude (e.g. 6652).
-		if (actionPosition != null && groundings.size() == 2) {
+		if (referencePosition != null && groundings.size() == 2) {
 			for (int i = 0; i < 2; i++) {
 				if (groundings.get(i) instanceof Shape
 						&& ((Shape) groundings.get(i)).position().equals(
-								actionPosition)) {
+								referencePosition)) {
 					WorldEntity g = groundings.get(1 - i);
 					groundings.clear();
 					groundings.add(g);
@@ -90,8 +90,8 @@ public class DestinationConstraint extends PositionConstraint {
 
 		// Board?
 		if (entity.type() == Type.board && relation == Relation.above) {
-			return model.world().getDropPosition(actionPosition.x,
-					actionPosition.y);
+			return model.world().getDropPosition(referencePosition.x,
+					referencePosition.y);
 		}
 
 		// Shape.

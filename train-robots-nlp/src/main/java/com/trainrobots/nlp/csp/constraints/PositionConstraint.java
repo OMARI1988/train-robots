@@ -22,5 +22,5 @@ import com.trainrobots.nlp.scenes.Position;
 
 public abstract class PositionConstraint extends Constraint {
 
-	public abstract Position solve(Model model, Position actionPosition);
+	public abstract Position solve(Model model, Position referencePosition);
 }

@@ -80,51 +80,6 @@ public class RelationConstraint extends EntityConstraint {
 		return node;
 	}
 
-	private List<WorldEntity> filterNearest(Model model,
-			List<WorldEntity> entities) {
-
-		Type type = null;
-		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (EntityConstraint constraint : entityNode.constraints()) {
-			if (constraint instanceof TypeConstraint) {
-				type = ((TypeConstraint) constraint).type();
-			} else if (constraint instanceof IndicatorConstraint) {
-				indicators.add(((IndicatorConstraint) constraint).indicator());
-			}
-		}
-
-		List<WorldEntity> landmarks;
-		if (type == Type.region) {
-			landmarks = new ArrayList<WorldEntity>();
-			landmarks.add(getLandmark(indicators));
-		} else {
-			landmarks = entityNode.solve(model);
-		}
-		if (landmarks.size() == 0) {
-			throw new CoreException("No landmarks for nearest relation: "
-					+ entityNode);
-		}
-		return filterNearest(entities, landmarks);
-	}
-
-	private WorldEntity getLandmark(List<Indicator> indicators) {
-		if (indicators.size() == 1) {
-			switch (indicators.get(0)) {
-			case front:
-				return Edge.Front;
-			case back:
-				return Edge.Back;
-			case left:
-				return Edge.Left;
-			case right:
-				return Edge.Right;
-			case center:
-				return new CenterOfBoard();
-			}
-		}
-		throw new CoreException("Failed to convert region to landmark.");
-	}
-
 	private boolean match(WorldEntity entity, List<WorldEntity> groundings) {
 
 		// Match.
@@ -268,6 +223,51 @@ public class RelationConstraint extends EntityConstraint {
 			}
 		}
 		return false;
+	}
+
+	private List<WorldEntity> filterNearest(Model model,
+			List<WorldEntity> entities) {
+
+		Type type = null;
+		List<Indicator> indicators = new ArrayList<Indicator>();
+		for (EntityConstraint constraint : entityNode.constraints()) {
+			if (constraint instanceof TypeConstraint) {
+				type = ((TypeConstraint) constraint).type();
+			} else if (constraint instanceof IndicatorConstraint) {
+				indicators.add(((IndicatorConstraint) constraint).indicator());
+			}
+		}
+
+		List<WorldEntity> landmarks;
+		if (type == Type.region) {
+			landmarks = new ArrayList<WorldEntity>();
+			landmarks.add(getLandmark(indicators));
+		} else {
+			landmarks = entityNode.solve(model);
+		}
+		if (landmarks.size() == 0) {
+			throw new CoreException("No landmarks for nearest relation: "
+					+ entityNode);
+		}
+		return filterNearest(entities, landmarks);
+	}
+
+	private static WorldEntity getLandmark(List<Indicator> indicators) {
+		if (indicators.size() == 1) {
+			switch (indicators.get(0)) {
+			case front:
+				return Edge.Front;
+			case back:
+				return Edge.Back;
+			case left:
+				return Edge.Left;
+			case right:
+				return Edge.Right;
+			case center:
+				return new CenterOfBoard();
+			}
+		}
+		throw new CoreException("Failed to convert region to landmark.");
 	}
 
 	private static List<WorldEntity> filterNearest(List<WorldEntity> entities,

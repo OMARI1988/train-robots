@@ -55,7 +55,7 @@ public class DestinationWithMeasureConstraint extends PositionConstraint {
 		return node;
 	}
 
-	public Position solve(Model model, Position actionPosition) {
+	public Position solve(Model model, Position referencePosition) {
 
 		if (entity != null) {
 			List<WorldEntity> groundings = entity.solve(model);
@@ -63,7 +63,7 @@ public class DestinationWithMeasureConstraint extends PositionConstraint {
 				throw new CoreException(
 						"Expected single grounding for entity with measure.");
 			}
-			actionPosition = groundings.get(0).basePosition();
+			referencePosition = groundings.get(0).basePosition();
 		}
 
 		if (type != Type.tile) {
@@ -73,16 +73,16 @@ public class DestinationWithMeasureConstraint extends PositionConstraint {
 		Position p;
 		switch (relation) {
 		case left:
-			p = actionPosition.add(0, cardinal, 0);
+			p = referencePosition.add(0, cardinal, 0);
 			break;
 		case right:
-			p = actionPosition.add(0, -cardinal, 0);
+			p = referencePosition.add(0, -cardinal, 0);
 			break;
 		case forward:
-			p = actionPosition.add(cardinal, 0, 0);
+			p = referencePosition.add(cardinal, 0, 0);
 			break;
 		case backward:
-			p = actionPosition.add(-cardinal, 0, 0);
+			p = referencePosition.add(-cardinal, 0, 0);
 			break;
 		default:
 			throw new CoreException("Unsupported relation: " + relation);
