@@ -39,6 +39,7 @@ import com.trainrobots.nlp.csp.constraints.DestinationConstraint;
 import com.trainrobots.nlp.csp.constraints.DestinationWithMeasureConstraint;
 import com.trainrobots.nlp.csp.constraints.DroppableConstraint;
 import com.trainrobots.nlp.csp.constraints.IndicatorConstraint;
+import com.trainrobots.nlp.csp.constraints.NearestConstraint;
 import com.trainrobots.nlp.csp.constraints.PositionConstraint;
 import com.trainrobots.nlp.csp.constraints.PostIndicatorConstraint;
 import com.trainrobots.nlp.csp.constraints.RelationConstraint;
@@ -212,8 +213,12 @@ public class Csp {
 				// Constraint.
 				if (relation.entity() != null) {
 					EntityNode n2 = fromEntity(rcl, relation.entity());
-					n.add(new RelationConstraint(relation.relationAttribute()
-							.relation(), n2));
+					Relation r = relation.relationAttribute().relation();
+					if (r == Relation.nearest) {
+						n.add(new NearestConstraint(n2));
+					} else {
+						n.add(new RelationConstraint(r, n2));
+					}
 				}
 			}
 		}
@@ -223,7 +228,7 @@ public class Csp {
 			if (postIndicator == Indicator.nearest) {
 				EntityNode e = new EntityNode();
 				e.add(new TypeConstraint(Type.robot));
-				n.add(new RelationConstraint(Relation.nearest, e));
+				n.add(new NearestConstraint(e));
 			} else {
 				n.add(new PostIndicatorConstraint(postIndicator));
 			}

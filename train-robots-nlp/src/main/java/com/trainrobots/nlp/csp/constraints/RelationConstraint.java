@@ -20,15 +20,11 @@ package com.trainrobots.nlp.csp.constraints;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainrobots.core.CoreException;
 import com.trainrobots.core.nodes.Node;
-import com.trainrobots.core.rcl.Indicator;
 import com.trainrobots.core.rcl.Relation;
-import com.trainrobots.core.rcl.Type;
 import com.trainrobots.nlp.csp.EntityNode;
 import com.trainrobots.nlp.csp.Model;
 import com.trainrobots.nlp.scenes.Board;
-import com.trainrobots.nlp.scenes.CenterOfBoard;
 import com.trainrobots.nlp.scenes.Corner;
 import com.trainrobots.nlp.scenes.Edge;
 import com.trainrobots.nlp.scenes.Position;
@@ -56,11 +52,6 @@ public class RelationConstraint extends EntityConstraint {
 
 	@Override
 	public List<WorldEntity> filter(Model model, List<WorldEntity> entities) {
-
-		// Groundings.
-		if (relation == Relation.nearest) {
-			return filterNearest(model, entities);
-		}
 
 		// Filter.
 		List<WorldEntity> groundings = entityNode.solve(model);
@@ -223,119 +214,5 @@ public class RelationConstraint extends EntityConstraint {
 			}
 		}
 		return false;
-	}
-
-	private List<WorldEntity> filterNearest(Model model,
-			List<WorldEntity> entities) {
-
-		Type type = null;
-		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (EntityConstraint constraint : entityNode.constraints()) {
-			if (constraint instanceof TypeConstraint) {
-				type = ((TypeConstraint) constraint).type();
-			} else if (constraint instanceof IndicatorConstraint) {
-				indicators.add(((IndicatorConstraint) constraint).indicator());
-			}
-		}
-
-		List<WorldEntity> landmarks;
-		if (type == Type.region) {
-			landmarks = new ArrayList<WorldEntity>();
-			landmarks.add(getLandmark(indicators));
-		} else {
-			landmarks = entityNode.solve(model);
-		}
-		if (landmarks.size() == 0) {
-			throw new CoreException("No landmarks for nearest relation: "
-					+ entityNode);
-		}
-		return filterNearest(entities, landmarks);
-	}
-
-	private static WorldEntity getLandmark(List<Indicator> indicators) {
-		if (indicators.size() == 1) {
-			switch (indicators.get(0)) {
-			case front:
-				return Edge.Front;
-			case back:
-				return Edge.Back;
-			case left:
-				return Edge.Left;
-			case right:
-				return Edge.Right;
-			case center:
-				return new CenterOfBoard();
-			}
-		}
-		throw new CoreException("Failed to convert region to landmark.");
-	}
-
-	private static List<WorldEntity> filterNearest(List<WorldEntity> entities,
-			List<WorldEntity> landmarks) {
-
-		List<Double> distances = new ArrayList<Double>();
-		double best = Double.MAX_VALUE;
-		for (WorldEntity entity : entities) {
-			double min = Double.MAX_VALUE;
-			for (WorldEntity landmark : landmarks) {
-				double distance = getDistance(entity, landmark);
-				if (distance < best) {
-					best = distance;
-				}
-				if (distance < min) {
-					min = distance;
-				}
-			}
-			distances.add(min);
-		}
-
-		List<WorldEntity> result = new ArrayList<WorldEntity>();
-		for (int i = 0; i < entities.size(); i++) {
-			if (distances.get(i) == best) {
-				result.add(entities.get(i));
-			}
-		}
-		return result;
-	}
-
-	private static double getDistance(WorldEntity entity, WorldEntity landmark) {
-
-		// Robot?
-		if (landmark.type() == Type.robot) {
-			return entity.basePosition().x;
-		}
-
-		// Edges?
-		if (landmark.type() == Type.edge) {
-			Edge edge = (Edge) landmark;
-			switch (edge.indicator()) {
-			case left:
-				return 7 - entity.basePosition().y;
-			case right:
-				return entity.basePosition().y;
-			case front:
-				return 7 - entity.basePosition().x;
-			case back:
-				return entity.basePosition().x;
-			default:
-				throw new CoreException("Invalid edge: " + edge);
-			}
-		}
-
-		// Distance.
-		Position p1 = entity.basePosition();
-		double p2x;
-		double p2y;
-		if (landmark instanceof CenterOfBoard) {
-			p2x = 3.5;
-			p2y = 3.5;
-		} else {
-			Position p2 = landmark.basePosition();
-			p2x = p2.x;
-			p2y = p2.y;
-		}
-		double dx = p1.x - p2x;
-		double dy = p1.y - p2y;
-		return Math.sqrt(dx * dx + dy * dy);
 	}
 }

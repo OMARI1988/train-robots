@@ -39,7 +39,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParse1() {
-		assertTrue(match(9408, true));
+		assertTrue(match(28));
 	}
 
 	@Test
