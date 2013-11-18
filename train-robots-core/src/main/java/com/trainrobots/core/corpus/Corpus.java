@@ -17,6 +17,7 @@
 
 package com.trainrobots.core.corpus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,16 +128,21 @@ public class Corpus {
 		reader.close();
 
 		// Enhancements.
-		reader = new FileReader(DataContext.getFile("enhancements.txt"));
-		while ((line = reader.readLine()) != null) {
-			String[] items = line.split("\t");
-			Command command = commandsById.get(Integer.parseInt(items[0]));
-			if (command == null) {
-				throw new CoreException("Failed to find command ID " + items[0]);
+		String path = DataContext.getFile("enhancements.txt");
+		File file = new File(path);
+		if (file.exists()) {
+			reader = new FileReader(path);
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\t");
+				Command command = commandsById.get(Integer.parseInt(items[0]));
+				if (command == null) {
+					throw new CoreException("Failed to find command ID "
+							+ items[0]);
+				}
+				command.enhancement = Integer.parseInt(items[1]);
 			}
-			command.enhancement = Integer.parseInt(items[1]);
+			reader.close();
 		}
-		reader.close();
 	}
 
 	private static void add(Command command) {

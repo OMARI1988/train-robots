@@ -31,7 +31,6 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.core.corpus.Corpus;
 import com.trainrobots.core.io.FileWriter;
 import com.trainrobots.core.nodes.Node;
 
@@ -46,48 +45,31 @@ public class CorpusTests {
 	@Ignore
 	public void shouldExportCorpus() {
 
-		FileWriter writer = new FileWriter("c:/temp/corpus.txt");
-
-		writer.writeLine("// This file is part of Train Robots (www.TrainRobots.com).");
-		writer.writeLine("// Copyright (C) Kais Dukes, 2013. Contact: kais@kaisdukes.com.");
-		writer.writeLine("// Published: 29 Sep 2013.");
-		writer.writeLine("//");
-		writer.writeLine("// This file has five lines per command:");
-		writer.writeLine("//");
-		writer.writeLine("// Line 1: A numeric command ID.");
-		writer.writeLine("// Line 2: A numeric scene ID (from scenes.txt).");
-		writer.writeLine("// Line 3: The natural language text.");
-		writer.writeLine("// Line 4: The annotated robot control language.");
-		writer.writeLine("// Line 5: A blank separating line.");
+		// Corpus.
+		FileWriter file1 = new FileWriter("c:/temp/commands.txt");
+		FileWriter file2 = new FileWriter("c:/temp/annotation.txt");
 		int count = 0;
 		for (Command command : Corpus.getCommands()) {
 			if (command.rcl != null) {
-				writer.writeLine();
-				writer.writeLine(command.id);
-				writer.writeLine(command.sceneNumber);
-				writer.writeLine(command.text);
-				Node node = command.rcl.toNode();
-				clean(node);
-				writer.writeLine(node.toString());
-				count++;
-			}
-		}
-		writer.close();
-		System.out.println("Wrote: " + count + " commands");
-	}
 
-	private void clean(Node node) {
-		if (node.children == null) {
-			return;
-		}
-		for (int i = node.children.size() - 1; i >= 0; i--) {
-			Node child = node.children.get(i);
-			if (child.tag.equals("token:")) {
-				node.children.remove(i);
-			} else {
-				clean(child);
+				file1.write(command.id + "\t");
+				file1.write(command.sceneNumber + "\t");
+				file1.writeLine(command.text);
+
+				Node node = command.rcl.toNode();
+				file2.write(command.id + "\t");
+				file2.write("rcl\t");
+				file2.writeLine(node.toString());
+
+				count++;
+				if (count == 500) {
+					break;
+				}
 			}
 		}
+		file1.close();
+		file2.close();
+		System.out.println("Wrote: " + count + " commands");
 	}
 
 	@Test
