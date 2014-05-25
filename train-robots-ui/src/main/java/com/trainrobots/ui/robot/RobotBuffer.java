@@ -18,6 +18,7 @@
 package com.trainrobots.ui.robot;
 
 import java.awt.image.*;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -25,6 +26,7 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.*;
 
 import com.jogamp.opengl.util.awt.Screenshot;
+import com.trainrobots.core.CoreException;
 
 @SuppressWarnings("deprecation")
 public class RobotBuffer extends RobotRenderer {
@@ -75,6 +77,16 @@ public class RobotBuffer extends RobotRenderer {
 			ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
 			System.out.println(e);
+		}
+	}
+
+	public byte[] renderToArray() {
+		try {
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			ImageIO.write(renderToImage(), "png", stream);
+			return stream.toByteArray();
+		} catch (IOException e) {
+			throw new CoreException(e);
 		}
 	}
 
