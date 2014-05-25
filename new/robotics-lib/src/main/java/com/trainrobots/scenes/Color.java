@@ -12,7 +12,20 @@ import java.util.TreeMap;
 
 public enum Color {
 
-	Blue, Cyan, Red, Yellow, Green, Magenta, Gray, White;
+	Blue(java.awt.Color.BLUE), Cyan(java.awt.Color.CYAN), Red(
+			java.awt.Color.RED), Yellow(java.awt.Color.YELLOW), Green(
+			java.awt.Color.GREEN), Magenta(java.awt.Color.MAGENTA), Gray(
+			java.awt.Color.GRAY), White(java.awt.Color.WHITE);
+
+	private final java.awt.Color color;
+
+	private Color(java.awt.Color color) {
+		this.color = color;
+	}
+
+	public java.awt.Color color() {
+		return color;
+	}
 
 	private static final TreeMap<String, Color> colors = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

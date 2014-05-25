@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>robotics-ui</groupId>
+	<artifactId>robotics-ui</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
+	<name>Train Robots UI</name>
+	<url>http://maven.apache.org</url>
+	<parent>
+		<groupId>robotics</groupId>
+		<artifactId>robotics</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>robotics-lib</groupId>
+			<artifactId>robotics-lib</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jogl</groupId>
+			<artifactId>gluegen-rt</artifactId>
+			<version>2.0</version>
+			<scope>system</scope>
+			<systemPath>c:\program files\jogl\jar\gluegen-rt.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>jogl</groupId>
+			<artifactId>jogl-all</artifactId>
+			<version>2.0</version>
+			<scope>system</scope>
+			<systemPath>c:\program files\jogl\jar\jogl-all.jar</systemPath>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>robotics-ui</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

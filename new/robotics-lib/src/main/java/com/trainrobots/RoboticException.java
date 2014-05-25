@@ -14,6 +14,10 @@ public class RoboticException extends RuntimeException {
 		super(message);
 	}
 
+	public RoboticException(String format, Object... parameters) {
+		super(String.format(format, parameters));
+	}
+
 	public RoboticException(Exception exception) {
 		super(exception.getMessage(), exception);
 	}
