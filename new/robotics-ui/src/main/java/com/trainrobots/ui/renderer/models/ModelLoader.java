@@ -89,11 +89,8 @@ public class ModelLoader {
 			reader.close();
 
 			// retriangulate n-gons into triangles
-			Model res = new Model(true, verts.size(), vtxinds.size() / 3,
-					ambient, diffuse);
-
-			double[] res_verts = res.getVertices();
-			int[] res_inds = res.getFaceInds();
+			double[] res_verts = new double[verts.size() * 3];
+			int[] res_inds = new int[vtxinds.size()];
 
 			for (int i = 0, j = 0; i < verts.size(); ++i, j += 3) {
 				res_verts[j] = verts.get(i).x();
@@ -107,10 +104,7 @@ public class ModelLoader {
 				res_inds[i + 2] = vtxinds.get(i + 2);
 			}
 
-			// we ignore the normals in the file and recompute ourselves
-			res.calcNormals();
-
-			return res;
+			return new Model(true, res_verts, res_inds, ambient, diffuse);
 		} catch (IOException e) {
 			System.out.println(e);
 		}

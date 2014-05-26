@@ -15,9 +15,11 @@ import javax.media.opengl.GL2;
 import com.trainrobots.scenes.Shape;
 import com.trainrobots.scenes.Type;
 import com.trainrobots.ui.renderer.math.Vector;
+import com.trainrobots.ui.renderer.models.Cube;
 import com.trainrobots.ui.renderer.models.Element;
 import com.trainrobots.ui.renderer.models.Model;
 import com.trainrobots.ui.renderer.models.ModelLoader;
+import com.trainrobots.ui.renderer.models.Prism;
 
 public class Board implements Element {
 
@@ -70,21 +72,9 @@ public class Board implements Element {
 		float b = color.getBlue() / 255f;
 		float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
 		float[] diffuse = { r, g, b, 1.0f };
-		m_state[x][y][z] = shape.type() == Type.Cube ? Model.cube(OBJ_DIM,
-				OBJ_DIM, OBJ_DIM, ambient, diffuse) : Model.prism(OBJ_DIM,
+		m_state[x][y][z] = shape.type() == Type.Cube ? new Cube(OBJ_DIM,
+				OBJ_DIM, OBJ_DIM, ambient, diffuse) : new Prism(OBJ_DIM,
 				OBJ_DIM, OBJ_DIM, ambient, diffuse);
-	}
-
-	public void addPrism(int x, int y, int z, Color color) {
-		if (m_state[x][y][z] == null) {
-			float r = color.getRed() / 255f;
-			float g = color.getGreen() / 255f;
-			float b = color.getBlue() / 255f;
-			float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
-			float[] diffuse = { r, g, b, 1.0f };
-			m_state[x][y][z] = Model.prism(OBJ_DIM, OBJ_DIM, OBJ_DIM, ambient,
-					diffuse);
-		}
 	}
 
 	public void moveObj(int sx, int sy, int sz, int dx, int dy, int dz) {
