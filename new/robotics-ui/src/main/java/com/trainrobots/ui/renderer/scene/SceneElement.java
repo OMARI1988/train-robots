@@ -20,6 +20,8 @@ public class SceneElement implements Element {
 	private final Robot robot = new Robot();
 	private Position arm = new Position(3, 3, 4);
 	private boolean gripperOpen;
+	private float m_rotx = 37.0f; // rotation about the x axis
+	private float m_roty = -42.5f; // rotation about the y axis
 
 	public SceneElement() {
 
@@ -84,7 +86,18 @@ public class SceneElement implements Element {
 		}
 	}
 
+	public void incrementRotation(float dx, float dy) {
+		m_rotx += dx;
+		m_roty += dy;
+	}
+
 	public void render(GL2 gl) {
+
+		// Rotate.
+		gl.glRotatef(m_rotx, 1.0f, 0.0f, 0.0f);
+		gl.glRotatef(m_roty, 0.0f, 1.0f, 0.0f);
+
+		// Render.
 		board.render(gl);
 		robot.render(gl);
 	}

@@ -21,13 +21,18 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.ui.renderer.scene.SceneElement;
 
 @SuppressWarnings("deprecation")
-public class Buffer extends Renderer {
+public class Buffer {
 
+	private final Renderer renderer;
 	private GLOffscreenAutoDrawable m_buffer; // pbuffer
 	private GLContext m_context; // opengl context
+	private int m_width;
+	private int m_height;
 
 	public Buffer(SceneElement scene, int w, int h) {
-		super(scene, w, h);
+		renderer = new Renderer(scene);
+		m_width = w;
+		m_height = h;
 
 		// Construct pbuffer.
 		GLProfile glp = GLProfile.getDefault();
@@ -46,8 +51,8 @@ public class Buffer extends Renderer {
 		m_context = m_buffer.getContext();
 
 		// Initiate and set viewport.
-		initiate(makeCurrent());
-		reshape(makeCurrent(), m_width, m_height);
+		renderer.initiate(makeCurrent());
+		renderer.reshape(makeCurrent(), m_width, m_height);
 	}
 
 	public GL2 makeCurrent() {
@@ -55,20 +60,18 @@ public class Buffer extends Renderer {
 		return m_context.getGL().getGL2();
 	}
 
-	// render to a buffered image
 	public BufferedImage renderToImage() {
-		display(makeCurrent());
+		renderer.display(makeCurrent());
 		return Screenshot.readToBufferedImage(m_width, m_height);
 	}
 
-	// renders to a buffered image and saves image to file
 	public void renderToFile(String fn) {
 		try {
 			BufferedImage img = renderToImage();
 			File outputfile = new File(fn);
 			ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
-			System.out.println(e);
+			throw new RoboticException(e);
 		}
 	}
 

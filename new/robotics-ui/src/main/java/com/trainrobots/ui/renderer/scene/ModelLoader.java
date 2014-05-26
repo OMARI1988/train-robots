@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.*;
 
 import com.trainrobots.Log;
+import com.trainrobots.RoboticException;
 import com.trainrobots.ui.Resources;
 import com.trainrobots.ui.renderer.math.Vector;
 
@@ -106,10 +107,8 @@ public class ModelLoader {
 
 			return new Model(true, res_verts, res_inds, ambient, diffuse);
 		} catch (IOException e) {
-			System.out.println(e);
+			throw new RoboticException(e);
 		}
-
-		return null;
 	}
 
 	private static void readMaterial(String fn, float[] ambient, float[] diffuse) {
@@ -156,7 +155,7 @@ public class ModelLoader {
 
 			reader.close();
 		} catch (IOException e) {
-			System.out.println(e);
+			throw new RoboticException(e);
 		}
 	}
 }

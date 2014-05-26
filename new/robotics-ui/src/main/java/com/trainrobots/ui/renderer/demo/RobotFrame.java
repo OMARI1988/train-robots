@@ -17,11 +17,15 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.swing.*;
 
 import com.jogamp.opengl.util.FPSAnimator;
+import com.trainrobots.Log;
 import com.trainrobots.ui.renderer.Renderer;
 import com.trainrobots.ui.renderer.scene.SceneElement;
 
-public class RobotFrame extends Renderer implements GLEventListener,
-		MouseMotionListener, WindowListener {
+public class RobotFrame implements GLEventListener, MouseMotionListener,
+		WindowListener {
+
+	private final Renderer renderer;
+
 	private int m_x, // x coordinate of the mouse
 			m_y; // y coordinate of the mouse
 
@@ -33,12 +37,20 @@ public class RobotFrame extends Renderer implements GLEventListener,
 	private GLCanvas m_canvas; // opengl canvas
 	private FPSAnimator m_redraw; // thread to redraw window
 
+	private SceneElement m_scene;
+	private int m_width;
+	private int m_height;
+
 	public static void main(String[] args) {
 		new RobotFrame(new SceneElement(), 500, 500);
 	}
 
 	public RobotFrame(SceneElement scene, int w, int h) {
-		super(scene, w, h);
+		renderer = new Renderer(scene);
+
+		m_scene = scene;
+		m_width = w;
+		m_height = h;
 
 		m_frame = new JFrame();
 		m_frame.setSize(m_width, m_height);
@@ -69,7 +81,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 
 	// method to redraw the opengl scene
 	public void display(GLAutoDrawable drawable) {
-		display(drawable.getGL().getGL2());
+		renderer.display(drawable.getGL().getGL2());
 	}
 
 	public void dispose(GLAutoDrawable drawable) {
@@ -77,7 +89,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 
 	// init gl state
 	public void init(GLAutoDrawable drawable) {
-		initiate(drawable.getGL().getGL2());
+		renderer.initiate(drawable.getGL().getGL2());
 	}
 
 	// reshape function maintains correct orthographic projection
@@ -85,7 +97,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 			int height) {
 		m_width = width;
 		m_height = height;
-		reshape(drawable.getGL().getGL2(), m_width, m_height);
+		renderer.reshape(drawable.getGL().getGL2(), m_width, m_height);
 	}
 
 	// on mouse drag rotate the view
@@ -93,8 +105,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 		int dx = e.getX() - m_x, dy = e.getY() - m_y;
 		float mx = ((float) dx) / m_width, my = ((float) dy) / m_height;
 
-		m_rotx += my * 180.0f;
-		m_roty += mx * 180.0f;
+		m_scene.incrementRotation(my * 180.f, mx * 180.0f);
 
 		m_x = e.getX();
 		m_y = e.getY();

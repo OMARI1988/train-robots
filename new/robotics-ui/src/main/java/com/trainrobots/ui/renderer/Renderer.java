@@ -15,15 +15,9 @@ import com.trainrobots.ui.renderer.scene.SceneElement;
 public class Renderer {
 
 	private final SceneElement scene;
-	protected float m_rotx = 37.0f; // rotation about the x axis
-	protected float m_roty = -42.5f; // rotation about the y axis
-	protected int m_width;
-	protected int m_height;
 
-	public Renderer(SceneElement scene, int w, int h) {
+	public Renderer(SceneElement scene) {
 		this.scene = scene;
-		m_width = w;
-		m_height = h;
 	}
 
 	public void display(GL2 gl) {
@@ -42,10 +36,6 @@ public class Renderer {
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, pos0, 0);
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, pos1, 0);
 
-		// Rotate.
-		gl.glRotatef(m_rotx, 1.0f, 0.0f, 0.0f);
-		gl.glRotatef(m_roty, 0.0f, 1.0f, 0.0f);
-
 		// Render the scene.
 		scene.render(gl);
 		gl.glPopAttrib();
@@ -59,14 +49,14 @@ public class Renderer {
 		gl.glEnable(GL2.GL_DEPTH_TEST);
 		gl.glEnable(GL2.GL_CULL_FACE);
 
-		// Light.
+		// Lighting.
 		float[] diff0 = { 0.6f, 0.6f, 0.6f, 1.0f };
 		float[] spec0 = { 1.0f, 1.0f, 1.0f, 1.0f };
 		gl.glEnable(GL2.GL_LIGHT0);
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diff0, 0);
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spec0, 0);
 
-		// Light.
+		// Lighting.
 		float[] diff1 = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float[] spec1 = { 1.0f, 1.0f, 1.0f, 1.0f };
 		gl.glEnable(GL2.GL_LIGHT1);
