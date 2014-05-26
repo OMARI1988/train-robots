@@ -66,7 +66,7 @@ public class Renderer {
 
 	public void reshape(GL2 gl, int width, int height) {
 
-		// Set viewport.
+		// Set viewport to maintain a correct orthographic projection.
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		double h = 37.0f;

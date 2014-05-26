@@ -10,10 +10,12 @@ package com.trainrobots.scenes;
 
 public class Gripper {
 
-	private final Position position;
-	private final boolean open;
+	private final Scene scene;
+	private Position position;
+	private boolean open;
 
-	public Gripper(Position position, boolean open) {
+	public Gripper(Scene scene, Position position, boolean open) {
+		this.scene = scene;
 		this.position = position;
 		this.open = open;
 	}
@@ -22,7 +24,21 @@ public class Gripper {
 		return position;
 	}
 
+	public void position(Position position) {
+		this.position = position;
+		if (scene.listener != null) {
+			scene.listener.gripperPositionChanged(position);
+		}
+	}
+
 	public boolean open() {
 		return open;
+	}
+
+	public void open(boolean open) {
+		this.open = open;
+		if (scene.listener != null) {
+			scene.listener.gripperOpenChanged(open);
+		}
 	}
 }

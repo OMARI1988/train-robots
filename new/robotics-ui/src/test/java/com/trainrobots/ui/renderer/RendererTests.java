@@ -27,6 +27,8 @@ public class RendererTests {
 		Buffer buffer = new Buffer(new SceneElement(scene), 325, 350);
 
 		byte[] data = buffer.renderToArray();
+		//buffer.renderToFile("c:/temp/before.png");
+		buffer.renderToFile("c:/temp/after.png");
 		buffer.destroy();
 
 		assertEquals(data.length, 11636);

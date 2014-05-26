@@ -29,7 +29,7 @@ public class Robot implements Element {
 	private final Model hand_wrist = load("hand-wrist");
 	private final Model finger1 = load("finger1");
 	private final Model finger2 = load("finger2");
-	private Vector translate = new Vector(0.0, 0.0, 0.0);
+	private Vector translation = new Vector(0.0, 0.0, 0.0);
 	private double wrist_z_rotation = 90.0;
 	private double forearm_z_rotation = 90.0;
 	private double arm_z_rotation = -90.0;
@@ -38,8 +38,8 @@ public class Robot implements Element {
 	private double hand_x_rotation = 0.0;
 	private double grasp = 0.0;
 
-	public void setTranslate(double tx, double ty, double tz) {
-		translate = new Vector(tx, ty, tz);
+	public void translation(double tx, double ty, double tz) {
+		translation = new Vector(tx, ty, tz);
 	}
 
 	public void setGrasp(double g) {
@@ -47,7 +47,7 @@ public class Robot implements Element {
 	}
 
 	private Vector calcEndEffector() {
-		return translate(translate).translate(0.0, 16.0, 0.0)
+		return translate(translation).translate(0.0, 16.0, 0.0)
 				.rotateY(pivot_y_rotation).translate(12.5, 3.3, 4.5)
 				.rotateZ(arm_z_rotation).translate(25.0, -0.5, -2.0)
 				.rotateZ(forearm_z_rotation).translate(18.5, 0.0, 1.6)
@@ -81,7 +81,7 @@ public class Robot implements Element {
 		DownhillSimplex ds = new DownhillSimplex(0.1, 1000);
 
 		// Return the square of the distance of the arm end from the target.
-		ObjectiveFunction objectiveFunction = p -> translate(translate)
+		ObjectiveFunction objectiveFunction = p -> translate(translation)
 				.translate(0.0, 16.0, 0.0).rotateY(p[3])
 				.translate(12.5, 3.3, 4.5).rotateZ(p[2])
 				.translate(25.0, -0.5, -2.0).rotateZ(p[1])
@@ -97,7 +97,7 @@ public class Robot implements Element {
 		pivot_y_rotation = parameters[3];
 
 		// Compute tarsal so that the hand always points down.
-		Vector wrist = translate(translate).translate(0.0, 16.0, 0.0)
+		Vector wrist = translate(translation).translate(0.0, 16.0, 0.0)
 				.rotateY(pivot_y_rotation).translate(12.5, 3.3, 4.5)
 				.rotateZ(arm_z_rotation).translate(25.0, -0.5, -2.0)
 				.rotateZ(forearm_z_rotation).translate(18.5, 0.0, 1.6)
@@ -124,7 +124,7 @@ public class Robot implements Element {
 		gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 		gl.glPushMatrix();
 
-		gl.glTranslated(translate.x(), translate.y(), translate.z());
+		gl.glTranslated(translation.x(), translation.y(), translation.z());
 
 		base.render(gl);
 

@@ -22,7 +22,8 @@ public class SceneReader {
 	private final ItemsList<Scene> scenes = new ItemsList<Scene>();
 	private final ItemsList<Shape> shapes = new ItemsList<Shape>();
 	private int sceneId;
-	private Gripper gripper;
+	private Position gripperPosition;
+	private boolean gripperOpen;
 
 	public SceneReader(String filename) {
 		try {
@@ -47,7 +48,8 @@ public class SceneReader {
 			switch (name) {
 			case "scene":
 				sceneId = Integer.parseInt(attributes.getValue("id"));
-				gripper = null;
+				gripperPosition = null;
+				gripperOpen = false;
 				shapes.clear();
 				break;
 			case "gripper":
@@ -66,15 +68,15 @@ public class SceneReader {
 		public void endElement(String uri, String localName, String name) {
 			switch (name) {
 			case "scene":
-				scenes.add(new Scene(sceneId, gripper, shapes));
+				scenes.add(new Scene(sceneId, gripperPosition, gripperOpen,
+						shapes));
 				break;
 			}
 		}
 
 		private void readGripper(Attributes attributes) {
-			Position position = Position.parse(attributes.getValue("position"));
-			boolean open = Boolean.parseBoolean(attributes.getValue("open"));
-			gripper = new Gripper(position, open);
+			gripperPosition = Position.parse(attributes.getValue("position"));
+			gripperOpen = Boolean.parseBoolean(attributes.getValue("open"));
 		}
 
 		private void readShape(Type type, Attributes attributes) {
