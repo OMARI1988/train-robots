@@ -10,16 +10,18 @@ package com.trainrobots.ui.renderer;
 
 import javax.media.opengl.GL2;
 
+import com.trainrobots.ui.renderer.scene.SceneElement;
+
 public class Renderer {
 
-	private Controller controller;
+	private final SceneElement scene;
 	protected float m_rotx = 37.0f; // rotation about the x axis
 	protected float m_roty = -42.5f; // rotation about the y axis
 	protected int m_width;
 	protected int m_height;
 
-	public Renderer(Controller controller, int w, int h) {
-		this.controller = controller;
+	public Renderer(SceneElement scene, int w, int h) {
+		this.scene = scene;
 		m_width = w;
 		m_height = h;
 	}
@@ -45,7 +47,7 @@ public class Renderer {
 		gl.glRotatef(m_roty, 0.0f, 1.0f, 0.0f);
 
 		// Render the scene.
-		controller.render(gl);
+		scene.render(gl);
 		gl.glPopAttrib();
 	}
 

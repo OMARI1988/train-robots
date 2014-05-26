@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.trainrobots.Robotics;
 import com.trainrobots.scenes.Scene;
+import com.trainrobots.ui.renderer.scene.SceneElement;
 
 public class RendererTests {
 
@@ -23,15 +24,10 @@ public class RendererTests {
 	public void shouldRenderImage() throws IOException {
 
 		Scene scene = Robotics.system().scenes().get(250);
+		Buffer buffer = new Buffer(new SceneElement(scene), 325, 350);
 
-		Controller rc = new Controller();
-		Buffer rb = new Buffer(rc, 325, 350);
-
-		rc.scene(scene);
-
-		byte[] data = rb.renderToArray();
-		rb.renderToFile("c:/temp/after.png");
-		rb.destroy();
+		byte[] data = buffer.renderToArray();
+		buffer.destroy();
 
 		assertEquals(data.length, 11636);
 		for (int i = 0; i < expected.length; i++) {

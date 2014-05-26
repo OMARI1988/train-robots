@@ -6,7 +6,7 @@
  * Released under Version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.renderer.models;
+package com.trainrobots.ui.renderer.scene;
 
 import java.io.*;
 import java.util.*;

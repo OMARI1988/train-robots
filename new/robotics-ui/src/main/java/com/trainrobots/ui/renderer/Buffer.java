@@ -18,6 +18,7 @@ import javax.media.opengl.*;
 
 import com.jogamp.opengl.util.awt.Screenshot;
 import com.trainrobots.RoboticException;
+import com.trainrobots.ui.renderer.scene.SceneElement;
 
 @SuppressWarnings("deprecation")
 public class Buffer extends Renderer {
@@ -25,8 +26,8 @@ public class Buffer extends Renderer {
 	private GLOffscreenAutoDrawable m_buffer; // pbuffer
 	private GLContext m_context; // opengl context
 
-	public Buffer(Controller ctrl, int w, int h) {
-		super(ctrl, w, h);
+	public Buffer(SceneElement scene, int w, int h) {
+		super(scene, w, h);
 
 		// Construct pbuffer.
 		GLProfile glp = GLProfile.getDefault();

@@ -17,8 +17,8 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.swing.*;
 
 import com.jogamp.opengl.util.FPSAnimator;
-import com.trainrobots.ui.renderer.Controller;
 import com.trainrobots.ui.renderer.Renderer;
+import com.trainrobots.ui.renderer.scene.SceneElement;
 
 public class RobotFrame extends Renderer implements GLEventListener,
 		MouseMotionListener, WindowListener {
@@ -34,12 +34,11 @@ public class RobotFrame extends Renderer implements GLEventListener,
 	private FPSAnimator m_redraw; // thread to redraw window
 
 	public static void main(String[] args) {
-		Controller rc = new Controller();
-		new RobotFrame(rc, 500, 500);
+		new RobotFrame(new SceneElement(), 500, 500);
 	}
 
-	public RobotFrame(Controller rbt, int w, int h) {
-		super(rbt, w, h);
+	public RobotFrame(SceneElement scene, int w, int h) {
+		super(scene, w, h);
 
 		m_frame = new JFrame();
 		m_frame.setSize(m_width, m_height);
@@ -58,7 +57,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 		m_frame.add(m_canvas);
 
 		// construct the control dialog
-		m_control = new RobotControlDialog(m_frame, rbt);
+		m_control = new RobotControlDialog(m_frame, scene);
 
 		// start the redraw thread
 		m_redraw = new FPSAnimator(m_canvas, 60);

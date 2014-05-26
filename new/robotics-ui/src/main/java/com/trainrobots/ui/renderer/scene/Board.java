@@ -6,20 +6,16 @@
  * Released under Version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.renderer;
+package com.trainrobots.ui.renderer.scene;
 
 import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
+import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 import com.trainrobots.scenes.Type;
 import com.trainrobots.ui.renderer.math.Vector;
-import com.trainrobots.ui.renderer.models.Cube;
-import com.trainrobots.ui.renderer.models.Element;
-import com.trainrobots.ui.renderer.models.Model;
-import com.trainrobots.ui.renderer.models.ModelLoader;
-import com.trainrobots.ui.renderer.models.Prism;
 
 public class Board implements Element {
 
@@ -48,9 +44,9 @@ public class Board implements Element {
 		m_translate = new Vector(x, y, z);
 	}
 
-	public void setShadow(int x, int y) {
-		m_x = x;
-		m_y = y;
+	public void setShadow(Position position) {
+		m_x = position.x();
+		m_y = position.y();
 	}
 
 	// gets the coordinate of the centre of a grid cell, used calculating robot

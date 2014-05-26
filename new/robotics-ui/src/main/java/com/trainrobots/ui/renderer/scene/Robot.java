@@ -6,19 +6,17 @@
  * Released under Version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.renderer;
+package com.trainrobots.ui.renderer.scene;
 
 import static com.trainrobots.ui.renderer.math.Matrices.rotateZ;
 import static com.trainrobots.ui.renderer.math.Matrices.translate;
-import static com.trainrobots.ui.renderer.models.ModelLoader.load;
+import static com.trainrobots.ui.renderer.scene.ModelLoader.load;
 
 import javax.media.opengl.GL2;
 
 import com.trainrobots.ui.renderer.math.DownhillSimplex;
 import com.trainrobots.ui.renderer.math.ObjectiveFunction;
 import com.trainrobots.ui.renderer.math.Vector;
-import com.trainrobots.ui.renderer.models.Element;
-import com.trainrobots.ui.renderer.models.Model;
 
 public class Robot implements Element {
 
