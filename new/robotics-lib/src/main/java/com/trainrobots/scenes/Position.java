@@ -32,6 +32,10 @@ public class Position {
 		return (byte) (value >> 16);
 	}
 
+	public Position add(int dx, int dy, int dz) {
+		return new Position(x() + dx, y() + dy, z() + dz);
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof Position && ((Position) object).value == value;
