@@ -17,7 +17,6 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.swing.*;
 
 import com.jogamp.opengl.util.FPSAnimator;
-import com.trainrobots.Log;
 import com.trainrobots.ui.renderer.Renderer;
 import com.trainrobots.ui.renderer.scene.SceneElement;
 
