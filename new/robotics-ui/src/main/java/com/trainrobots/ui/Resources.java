@@ -18,7 +18,6 @@
 package com.trainrobots.ui;
 
 import java.io.InputStream;
-import java.net.URL;
 
 import com.trainrobots.RoboticException;
 
@@ -27,10 +26,6 @@ public class Resources {
 	private static final Class resourceType = new Resources().getClass();
 
 	private Resources() {
-	}
-
-	public static URL getUrl(String resourcePath) {
-		return resourceType.getResource(resourcePath);
 	}
 
 	public static InputStream open(String resourcePath) {

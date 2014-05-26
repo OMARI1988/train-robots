@@ -19,8 +19,8 @@ public class SceneElement implements Element {
 
 	private final Board board = new Board();
 	private final Robot robot = new Robot();
-	private float m_rotx = 37.0f; // rotation about the x axis
-	private float m_roty = -42.5f; // rotation about the y axis
+	private float rotationX = 37;
+	private float rotationY = -42.5f;
 	private Scene scene;
 
 	public SceneElement() {
@@ -28,8 +28,8 @@ public class SceneElement implements Element {
 	}
 
 	public SceneElement(Scene scene) {
-		board.translation(0.0, 0.0, 22.5);
-		robot.translation(-20.0, 0.0, 0.0);
+		board.translation(0, 0, 22.5);
+		robot.translation(-20, 0, 0);
 		scene(scene);
 	}
 
@@ -60,15 +60,15 @@ public class SceneElement implements Element {
 	}
 
 	public void incrementRotation(float dx, float dy) {
-		m_rotx += dx;
-		m_roty += dy;
+		rotationX += dx;
+		rotationY += dy;
 	}
 
 	public void render(GL2 gl) {
 
 		// Rotate.
-		gl.glRotatef(m_rotx, 1.0f, 0.0f, 0.0f);
-		gl.glRotatef(m_roty, 0.0f, 1.0f, 0.0f);
+		gl.glRotatef(rotationX, 1, 0, 0);
+		gl.glRotatef(rotationY, 0, 1, 0);
 
 		// Render.
 		board.render(gl);
@@ -76,7 +76,8 @@ public class SceneElement implements Element {
 	}
 
 	private void bindToGripperPosition() {
-		// Iterative update of robot to avoid awkward angles.
+
+		// Update the arm iteratively to avoid awkward angles.
 		Position p = scene.gripper().position();
 		robot.resetAngles();
 		robot.computeAngles(board.getCellCenter(p.x(), 0, 5));

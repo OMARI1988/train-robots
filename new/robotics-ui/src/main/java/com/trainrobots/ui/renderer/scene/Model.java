@@ -14,25 +14,26 @@ import com.trainrobots.ui.renderer.math.Vector;
 
 public class Model implements Element {
 
-	private final int npolyvtx; // number of vertices per polygon (3 or 4)
-	private final int npolys; // number of polygons.
-	private final double[] vtxs; // vertex data
-	private final double[] facenrms; // face normal data
-	private final int[] faceinds; // face indices
+	private final int polygonVertices;
+	private final int polygons;
+	private final double[] vertices;
+	private final double[] normals;
+	private final int[] indices;
 	private final float[] ambient;
 	private final float[] diffuse;
 
-	public Model(boolean triPoly, double[] vtxs, int[] faceinds,
+	public Model(int polygonVertices, double[] vertices, int[] indices,
 			float[] ambient, float[] diffuse) {
 
-		this.npolyvtx = triPoly ? 3 : 4;
-		this.npolys = faceinds.length / npolyvtx;
-		this.vtxs = vtxs;
-		this.faceinds = faceinds;
-		this.facenrms = new double[npolys * 3];
+		this.polygonVertices = polygonVertices;
+		this.polygons = indices.length / polygonVertices;
+		this.vertices = vertices;
+		this.indices = indices;
+		this.normals = new double[polygons * 3];
 		this.ambient = ambient;
 		this.diffuse = diffuse;
-		calcNormals();
+
+		calculateNormals();
 	}
 
 	public void render(GL2 gl) {
@@ -42,42 +43,45 @@ public class Model implements Element {
 		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, ambient, 0);
 		gl.glMaterialf(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, 0);
 
-		if (npolyvtx == 3) {
+		if (polygonVertices == 3) {
 			gl.glBegin(GL2.GL_TRIANGLES);
 		} else {
 			gl.glBegin(GL2.GL_QUADS);
 		}
 
-		for (int i = 0, j = 0, k, idx; i < npolys; ++i, j += npolyvtx) {
+		for (int i = 0, j = 0, k, idx; i < polygons; ++i, j += polygonVertices) {
 			idx = i * 3;
-			gl.glNormal3d(facenrms[idx], facenrms[idx + 1], facenrms[idx + 2]);
+			gl.glNormal3d(normals[idx], normals[idx + 1], normals[idx + 2]);
 
-			for (k = 0; k < npolyvtx; ++k) {
-				idx = faceinds[j + k] * 3;
-				gl.glVertex3d(vtxs[idx], vtxs[idx + 1], vtxs[idx + 2]);
+			for (k = 0; k < polygonVertices; ++k) {
+				idx = indices[j + k] * 3;
+				gl.glVertex3d(vertices[idx], vertices[idx + 1],
+						vertices[idx + 2]);
 			}
 		}
 
 		gl.glEnd();
 	}
 
-	private void calcNormals() {
-		for (int i = 0, j = 0, k = 0; i < npolys; ++i, j += npolyvtx, k += 3) {
-			int i0 = faceinds[j] * 3;
-			int i1 = faceinds[j + 1] * 3;
-			int i2 = faceinds[j + 2] * 3;
+	private void calculateNormals() {
+		for (int i = 0, j = 0, k = 0; i < polygons; ++i, j += polygonVertices, k += 3) {
+			int i0 = indices[j] * 3;
+			int i1 = indices[j + 1] * 3;
+			int i2 = indices[j + 2] * 3;
 
-			Vector e0 = new Vector(vtxs[i1] - vtxs[i0], vtxs[i1 + 1]
-					- vtxs[i0 + 1], vtxs[i1 + 2] - vtxs[i0 + 2]).normalize();
+			Vector e0 = new Vector(vertices[i1] - vertices[i0],
+					vertices[i1 + 1] - vertices[i0 + 1], vertices[i1 + 2]
+							- vertices[i0 + 2]).normalize();
 
-			Vector e1 = new Vector(vtxs[i2] - vtxs[i0], vtxs[i2 + 1]
-					- vtxs[i0 + 1], vtxs[i2 + 2] - vtxs[i0 + 2]).normalize();
+			Vector e1 = new Vector(vertices[i2] - vertices[i0],
+					vertices[i2 + 1] - vertices[i0 + 1], vertices[i2 + 2]
+							- vertices[i0 + 2]).normalize();
 
 			Vector n = e1.cross(e0).normalize();
 
-			facenrms[k] = n.x();
-			facenrms[k + 1] = n.y();
-			facenrms[k + 2] = n.z();
+			normals[k] = n.x();
+			normals[k + 1] = n.y();
+			normals[k + 2] = n.z();
 		}
 	}
 }

@@ -146,19 +146,16 @@ public class DownhillSimplex {
 		int rows = simplex.length;
 		int cols = simplex[0].length;
 		double[][] result = new double[rows][cols];
-
-		double[] eval_tmp = new double[rows];
+		double[] temp = new double[rows];
 		for (int i = 0; i < rows; ++i) {
-			eval_tmp[i] = evaluation[indices[i]];
+			temp[i] = evaluation[indices[i]];
 		}
-
 		for (int i = 0, j; i < rows; ++i) {
-			evaluation[i] = eval_tmp[i];
+			evaluation[i] = temp[i];
 			for (j = 0; j < cols; ++j) {
 				result[i][j] = simplex[indices[i]][j];
 			}
 		}
-
 		return result;
 	}
 }

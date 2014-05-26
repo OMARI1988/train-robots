@@ -8,33 +8,38 @@
 
 package com.trainrobots.ui.renderer;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.media.opengl.*;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLContext;
+import javax.media.opengl.GLDrawableFactory;
+import javax.media.opengl.GLOffscreenAutoDrawable;
+import javax.media.opengl.GLProfile;
 
-import com.jogamp.opengl.util.awt.Screenshot;
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.renderer.scene.SceneElement;
 
-@SuppressWarnings("deprecation")
-public class Buffer {
+public class Buffer implements AutoCloseable {
 
 	private final Renderer renderer;
-	private GLOffscreenAutoDrawable m_buffer; // pbuffer
-	private GLContext m_context; // opengl context
-	private int m_width;
-	private int m_height;
+	private final GLOffscreenAutoDrawable buffer;
+	private final GLContext context;
+	private final int width;
+	private final int height;
 
-	public Buffer(SceneElement scene, int w, int h) {
-		renderer = new Renderer(scene);
-		m_width = w;
-		m_height = h;
+	public Buffer(SceneElement scene, int width, int height) {
 
-		// Construct pbuffer.
+		// Renderer.
+		this.renderer = new Renderer(scene);
+		this.width = width;
+		this.height = height;
+
+		// Buffer.
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
 		caps.setDoubleBuffered(false);
@@ -43,35 +48,37 @@ public class Buffer {
 		caps.setSampleBuffers(true);
 		GLDrawableFactory factory = GLDrawableFactory.getFactory(caps
 				.getGLProfile());
-		m_buffer = (GLOffscreenAutoDrawable) factory
-				.createOffscreenAutoDrawable(null, caps, null, m_width,
-						m_height, null);
-		m_buffer.display();
+		buffer = (GLOffscreenAutoDrawable) factory.createOffscreenAutoDrawable(
+				null, caps, null, width, height, null);
+		buffer.display();
 
-		m_context = m_buffer.getContext();
+		// Context.
+		context = buffer.getContext();
 
 		// Initiate and set viewport.
 		renderer.initiate(makeCurrent());
-		renderer.reshape(makeCurrent(), m_width, m_height);
+		renderer.reshape(makeCurrent(), width, height);
 	}
 
 	public GL2 makeCurrent() {
-		m_context.makeCurrent();
-		return m_context.getGL().getGL2();
+		context.makeCurrent();
+		return context.getGL().getGL2();
 	}
 
+	@SuppressWarnings("deprecation")
 	public BufferedImage renderToImage() {
 		renderer.display(makeCurrent());
-		return Screenshot.readToBufferedImage(m_width, m_height);
+		return com.jogamp.opengl.util.awt.Screenshot.readToBufferedImage(width,
+				height);
 	}
 
-	public void renderToFile(String fn) {
+	public void renderToFile(String filename) {
 		try {
 			BufferedImage img = renderToImage();
-			File outputfile = new File(fn);
+			File outputfile = new File(filename);
 			ImageIO.write(img, "png", outputfile);
-		} catch (IOException e) {
-			throw new RoboticException(e);
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
 		}
 	}
 
@@ -80,12 +87,13 @@ public class Buffer {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			ImageIO.write(renderToImage(), "png", stream);
 			return stream.toByteArray();
-		} catch (IOException e) {
-			throw new RoboticException(e);
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
 		}
 	}
 
-	public void destroy() {
-		m_buffer.destroy();
+	@Override
+	public void close() {
+		buffer.destroy();
 	}
 }

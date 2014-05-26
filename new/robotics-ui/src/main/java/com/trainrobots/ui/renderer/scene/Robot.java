@@ -15,6 +15,7 @@ import static com.trainrobots.ui.renderer.scene.ModelLoader.load;
 import javax.media.opengl.GL2;
 
 import com.trainrobots.ui.renderer.math.DownhillSimplex;
+import com.trainrobots.ui.renderer.math.Matrix;
 import com.trainrobots.ui.renderer.math.ObjectiveFunction;
 import com.trainrobots.ui.renderer.math.Vector;
 
@@ -26,98 +27,71 @@ public class Robot implements Element {
 	private final Model forearm = load("forearm");;
 	private final Model wrist = load("wrist");
 	private final Model tarsal = load("tarsal");
-	private final Model hand_wrist = load("hand-wrist");
+	private final Model handWrist = load("hand-wrist");
 	private final Model finger1 = load("finger1");
 	private final Model finger2 = load("finger2");
-	private Vector translation = new Vector(0.0, 0.0, 0.0);
-	private double wrist_z_rotation = 90.0;
-	private double forearm_z_rotation = 90.0;
-	private double arm_z_rotation = -90.0;
-	private double pivot_y_rotation = 0.0;
-	private double tarsal_z_rotation = 0.0;
-	private double hand_x_rotation = 0.0;
-	private double grasp = 0.0;
 
-	public void translation(double tx, double ty, double tz) {
-		translation = new Vector(tx, ty, tz);
+	private Vector translation = new Vector(0, 0, 0);
+
+	private double wristRotateZ = 90;
+	private double forearmRotateZ = 90;
+	private double armRotateZ = -90;
+	private double pivotRotateY = 0;
+	private double tarsalRotateZ = 0;
+	private double handRotateX = 0;
+	private double grasp = 0;
+
+	public void translation(double x, double y, double z) {
+		translation = new Vector(x, y, z);
 	}
 
-	public void setGrasp(double g) {
-		grasp = g;
-	}
-
-	private Vector calcEndEffector() {
-		return translate(translation).translate(0.0, 16.0, 0.0)
-				.rotateY(pivot_y_rotation).translate(12.5, 3.3, 4.5)
-				.rotateZ(arm_z_rotation).translate(25.0, -0.5, -2.0)
-				.rotateZ(forearm_z_rotation).translate(18.5, 0.0, 1.6)
-				.rotateZ(wrist_z_rotation).translate(12.1, 0.0, -2.6)
-				.rotateZ(tarsal_z_rotation).translate(3.0, 0.0, 0)
-				.rotateX(hand_x_rotation).translate(12.0, 0.0, 0.0)
-				.multiply(new Vector(0, 0, 0));
-	}
-
-	private static double degrees(double radians) {
-		return radians * 57.2957796;
+	public void setGrasp(double graph) {
+		this.grasp = graph;
 	}
 
 	public void resetAngles() {
-		pivot_y_rotation = 0.0;
-		arm_z_rotation = -90.0;
-		forearm_z_rotation = 90.0;
-		wrist_z_rotation = 90.0;
-		tarsal_z_rotation = 0.0;
-		hand_x_rotation = 0.0;
+		pivotRotateY = 0;
+		armRotateZ = -90;
+		forearmRotateZ = 90;
+		wristRotateZ = 90;
+		tarsalRotateZ = 0;
+		handRotateX = 0;
 	}
 
-	public void computeAngles(Vector target) {
+	public void computeAngles(Vector cellCenter) {
 
-		// offset so that hand doesn't go through board
-		Vector tgt = new Vector(target.x(), Math.max(0.0, target.y() + 15.0),
-				target.z());
+		// Offset the target so that the hand doesn't go through board.
+		Vector target = new Vector(cellCenter.x(), Math.max(0,
+				cellCenter.y() + 15), cellCenter.z());
 
-		double[] parameters = { wrist_z_rotation, forearm_z_rotation,
-				arm_z_rotation, pivot_y_rotation };
-		DownhillSimplex ds = new DownhillSimplex(0.1, 1000);
+		// Square of the distance of the arm end from the target.
+		ObjectiveFunction objectiveFunction = p -> armEnd(p[3], p[2], p[1],
+				p[0]).multiply(new Vector(0, 0, 0)).distanceSquared(target);
 
-		// Return the square of the distance of the arm end from the target.
-		ObjectiveFunction objectiveFunction = p -> translate(translation)
-				.translate(0.0, 16.0, 0.0).rotateY(p[3])
-				.translate(12.5, 3.3, 4.5).rotateZ(p[2])
-				.translate(25.0, -0.5, -2.0).rotateZ(p[1])
-				.translate(18.5, 0.0, 1.6).rotateZ(p[0])
-				.translate(12.1, 0.0, -2.6).multiply(new Vector(0, 0, 0))
-				.distanceSquared(tgt);
+		// Use simplex to compute angles.
+		double[] parameters = { wristRotateZ, forearmRotateZ, armRotateZ,
+				pivotRotateY };
+		DownhillSimplex simplex = new DownhillSimplex(0.1, 1000);
+		simplex.minimize(parameters, objectiveFunction);
+		wristRotateZ = parameters[0];
+		forearmRotateZ = parameters[1];
+		armRotateZ = parameters[2];
+		pivotRotateY = parameters[3];
 
-		// Compute angles.
-		ds.minimize(parameters, objectiveFunction);
-		wrist_z_rotation = parameters[0];
-		forearm_z_rotation = parameters[1];
-		arm_z_rotation = parameters[2];
-		pivot_y_rotation = parameters[3];
-
-		// Compute tarsal so that the hand always points down.
-		Vector wrist = translate(translation).translate(0.0, 16.0, 0.0)
-				.rotateY(pivot_y_rotation).translate(12.5, 3.3, 4.5)
-				.rotateZ(arm_z_rotation).translate(25.0, -0.5, -2.0)
-				.rotateZ(forearm_z_rotation).translate(18.5, 0.0, 1.6)
-				.rotateZ(wrist_z_rotation).translate(12.1, 0.0, -2.6)
-				.multiply(new Vector(0, 0, 0));
-
-		tarsal_z_rotation = 0.0;
+		// Position tarsal so that the hand always points down.
+		Vector wrist = armEnd(pivotRotateY, armRotateZ, forearmRotateZ,
+				wristRotateZ).multiply(new Vector(0, 0, 0));
+		tarsalRotateZ = 0;
 		Vector dir = calcEndEffector().subtract(wrist).normalize();
-		tarsal_z_rotation = degrees(Math.acos(new Vector(0.0, -1.0, 0.0)
-				.dot(dir)));
-
-		Vector rotation1 = rotateZ(tarsal_z_rotation).multiply(dir);
-		Vector rotation2 = rotateZ(-tarsal_z_rotation).multiply(dir);
-
+		tarsalRotateZ = degrees(Math.acos(new Vector(0, -1, 0).dot(dir)));
+		Vector rotation1 = rotateZ(tarsalRotateZ).multiply(dir);
+		Vector rotation2 = rotateZ(-tarsalRotateZ).multiply(dir);
 		if (rotation2.y() < rotation1.y()) {
-			tarsal_z_rotation = -tarsal_z_rotation;
+			tarsalRotateZ = -tarsalRotateZ;
 		}
 
-		// compute hand so that it always faces the same way
-		hand_x_rotation = pivot_y_rotation + 90.0;
+		// Position hand so that it always faces the same way.
+		handRotateX = pivotRotateY + 90;
 	}
 
 	public void render(GL2 gl) {
@@ -128,47 +102,66 @@ public class Robot implements Element {
 
 		base.render(gl);
 
-		gl.glTranslated(0.0, 16.0, 0.0);
-		gl.glRotated(-pivot_y_rotation, 0.0, 1.0, 0.0);
+		gl.glTranslated(0, 16, 0);
+		gl.glRotated(-pivotRotateY, 0, 1, 0);
 
 		pivot.render(gl);
 
 		gl.glTranslated(12.5, 3.3, 4.5);
-		gl.glRotated(-arm_z_rotation, 0.0, 0.0, 1.0);
+		gl.glRotated(-armRotateZ, 0, 0, 1);
 
 		arm.render(gl);
 
-		gl.glTranslated(25.0, -0.5, -2.0);
-		gl.glRotated(-forearm_z_rotation, 0.0, 0.0, 1.0);
+		gl.glTranslated(25, -0.5, -2);
+		gl.glRotated(-forearmRotateZ, 0, 0, 1);
 
 		forearm.render(gl);
 
-		gl.glTranslated(18.5, 0.0, 1.6);
-		gl.glRotated(-wrist_z_rotation, 0.0, 0.0, 1.0);
+		gl.glTranslated(18.5, 0, 1.6);
+		gl.glRotated(-wristRotateZ, 0, 0, 1);
 
 		wrist.render(gl);
 
-		gl.glTranslated(12.1, 0.0, -2.6);
-		gl.glRotated(-tarsal_z_rotation, 0.0, 0.0, 1.0);
+		gl.glTranslated(12.1, 0, -2.6);
+		gl.glRotated(-tarsalRotateZ, 0, 0, 1);
 
 		tarsal.render(gl);
 
-		gl.glTranslated(3.0, 0.0, 0.0);
-		gl.glRotated(-hand_x_rotation, 1.0, 0.0, 0.0);
+		gl.glTranslated(3, 0, 0);
+		gl.glRotated(-handRotateX, 1, 0, 0);
 
-		hand_wrist.render(gl);
+		handWrist.render(gl);
 
 		gl.glPushMatrix();
-		gl.glTranslated(4.5, (1.0 - grasp) * 6.0, 0);
+		gl.glTranslated(4.5, (1 - grasp) * 6, 0);
 		finger1.render(gl);
 		gl.glPopMatrix();
 
 		gl.glPushMatrix();
-		gl.glTranslated(4.5, (1.0 - grasp) * -6.0, 0);
+		gl.glTranslated(4.5, (1 - grasp) * -6, 0);
 		finger2.render(gl);
 		gl.glPopMatrix();
 
 		gl.glPopMatrix();
 		gl.glPopAttrib();
+	}
+
+	private Vector calcEndEffector() {
+		return armEnd(pivotRotateY, armRotateZ, forearmRotateZ, wristRotateZ)
+				.rotateZ(tarsalRotateZ).translate(3, 0, 0).rotateX(handRotateX)
+				.translate(12, 0, 0).multiply(new Vector(0, 0, 0));
+	}
+
+	private Matrix armEnd(double pivotRotateY, double armRotateZ,
+			double forearmRotateZ, double wristRotateZ) {
+		return translate(translation).translate(0, 16, 0).rotateY(pivotRotateY)
+				.translate(12.5, 3.3, 4.5).rotateZ(armRotateZ)
+				.translate(25, -0.5, -2).rotateZ(forearmRotateZ)
+				.translate(18.5, 0, 1.6).rotateZ(wristRotateZ)
+				.translate(12.1, 0, -2.6);
+	}
+
+	private static double degrees(double radians) {
+		return radians * 57.2957796;
 	}
 }

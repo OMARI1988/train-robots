@@ -8,8 +8,12 @@
 
 package com.trainrobots.ui.renderer.scene;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
@@ -21,141 +25,127 @@ public class ModelLoader {
 	private ModelLoader() {
 	}
 
-	public static Model load(String fn) {
-		Log.info("Loading 3D model: %s", fn);
-		try {
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(
-							Resources.open("/com/trainrobots/ui/models/" + fn
-									+ ".obj")));
+	public static Model load(String filename) {
 
-			ArrayList<Vector> verts = new ArrayList<Vector>();
-			ArrayList<Integer> vtxinds = new ArrayList<Integer>();
+		// Diagnostics.
+		Log.info("Loading 3D model: %s", filename);
 
-			float[] ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
-			float[] diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
+		// Initiate.
+		ArrayList<Vector> vertexList = new ArrayList<Vector>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		float[] ambient = new float[4];
+		float[] diffuse = new float[4];
 
+		// Read.
+		try (BufferedReader reader = open(filename + ".obj")) {
 			String line = reader.readLine();
 			while (line != null) {
-				StringTokenizer stok = new StringTokenizer(line);
 
-				if (stok.hasMoreTokens()) {
-					String tok = stok.nextToken();
+				// Read line.
+				StringTokenizer tokenizer = new StringTokenizer(line);
+				if (tokenizer.hasMoreTokens()) {
+					String token = tokenizer.nextToken();
 
-					if (tok.equals("mtllib")) // material
-					{
-						readMaterial(stok.nextToken(), ambient, diffuse);
-					} else if (tok.equals("v")) // vertex
-					{
-						double x = new Double(stok.nextToken());
-						double y = new Double(stok.nextToken());
-						double z = new Double(stok.nextToken());
-						verts.add(new Vector(x, y, z));
-					} else if (tok.equals("f")) // face
-					{
-						int nverts = 0;
-						int[] tmp_verts = new int[10];
+					// Material.
+					if (token.equals("mtllib")) {
+						loadMaterial(tokenizer.nextToken(), ambient, diffuse);
+					}
 
-						while (stok.hasMoreTokens()) {
-							tok = stok.nextToken();
+					// Vertex.
+					else if (token.equals("v")) {
+						double x = Double.parseDouble(tokenizer.nextToken());
+						double y = Double.parseDouble(tokenizer.nextToken());
+						double z = Double.parseDouble(tokenizer.nextToken());
+						vertexList.add(new Vector(x, y, z));
+					}
 
-							// switch according to whether the file contains
-							// normal indices and texture indices
-							if (tok.contains("//")) {
-								StringTokenizer st = new StringTokenizer(tok,
-										"//");
-								tmp_verts[nverts] = new Integer(st.nextToken());
-							} else if (tok.contains("/")) {
-								StringTokenizer st = new StringTokenizer(tok,
-										"/");
-								tmp_verts[nverts] = new Integer(st.nextToken());
-							} else {
-								tmp_verts[nverts] = new Integer(tok);
-							}
-
-							++nverts;
+					// Face.
+					else if (token.equals("f")) {
+						int n = 0;
+						int[] vertices = new int[10];
+						while (tokenizer.hasMoreTokens()) {
+							token = tokenizer.nextToken();
+							StringTokenizer items = new StringTokenizer(token,
+									"/");
+							vertices[n] = Integer.parseInt(items.nextToken());
+							n++;
 						}
-
-						for (int i = 1; i < (nverts - 1); ++i) {
-							vtxinds.add(new Integer(tmp_verts[0] - 1));
-							vtxinds.add(new Integer(tmp_verts[i] - 1));
-							vtxinds.add(new Integer(tmp_verts[i + 1] - 1));
+						for (int i = 1; i < n - 1; i++) {
+							indexList.add(vertices[0] - 1);
+							indexList.add(vertices[i] - 1);
+							indexList.add(vertices[i + 1] - 1);
 						}
 					}
 				}
-
 				line = reader.readLine();
 			}
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
+		}
 
-			reader.close();
+		// Convert polygons to triangles.
+		int size = vertexList.size();
+		double[] vertices = new double[size * 3];
+		for (int i = 0, j = 0; i < size; ++i, j += 3) {
+			Vector v = vertexList.get(i);
+			vertices[j] = v.x();
+			vertices[j + 1] = v.y();
+			vertices[j + 2] = v.z();
+		}
+		size = indexList.size();
+		int[] indices = new int[size];
+		for (int i = 0; i < size; i++) {
+			indices[i] = indexList.get(i);
+		}
+		return new Model(3, vertices, indices, ambient, diffuse);
+	}
 
-			// retriangulate n-gons into triangles
-			double[] res_verts = new double[verts.size() * 3];
-			int[] res_inds = new int[vtxinds.size()];
+	private static void loadMaterial(String filename, float[] ambient,
+			float[] diffuse) {
 
-			for (int i = 0, j = 0; i < verts.size(); ++i, j += 3) {
-				res_verts[j] = verts.get(i).x();
-				res_verts[j + 1] = verts.get(i).y();
-				res_verts[j + 2] = verts.get(i).z();
+		// Read.
+		try (BufferedReader reader = open(filename)) {
+			String line = reader.readLine();
+
+			// Read line.
+			while (line != null) {
+				StringTokenizer tokenizer = new StringTokenizer(line);
+				if (tokenizer.hasMoreTokens()) {
+					String token = tokenizer.nextToken();
+
+					// Ambient color.
+					if (token.equals("Ka")) {
+						ambient[0] = Float.parseFloat(tokenizer.nextToken());
+						ambient[1] = Float.parseFloat(tokenizer.nextToken());
+						ambient[2] = Float.parseFloat(tokenizer.nextToken());
+						ambient[3] = 1.0f;
+					}
+
+					// Diffuse color.
+					else if (token.equals("Kd")) {
+						diffuse[0] = Float.parseFloat(tokenizer.nextToken());
+						diffuse[1] = Float.parseFloat(tokenizer.nextToken());
+						diffuse[2] = Float.parseFloat(tokenizer.nextToken());
+						diffuse[3] = 1.0f;
+					}
+
+					// Specular color.
+					else if (token.equals("Ks")) {
+						tokenizer.nextToken();
+						tokenizer.nextToken();
+						tokenizer.nextToken();
+					}
+				}
+				line = reader.readLine();
 			}
-
-			for (int i = 0; i < vtxinds.size(); i += 3) {
-				res_inds[i] = vtxinds.get(i);
-				res_inds[i + 1] = vtxinds.get(i + 1);
-				res_inds[i + 2] = vtxinds.get(i + 2);
-			}
-
-			return new Model(true, res_verts, res_inds, ambient, diffuse);
-		} catch (IOException e) {
-			throw new RoboticException(e);
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
 		}
 	}
 
-	private static void readMaterial(String fn, float[] ambient, float[] diffuse) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					Resources.open("/com/trainrobots/ui/models/" + fn)));
-
-			String line = reader.readLine();
-
-			while (line != null) {
-				StringTokenizer stok = new StringTokenizer(line);
-
-				if (stok.hasMoreTokens()) {
-					String tok = stok.nextToken();
-
-					if (tok.equals("Ka")) // ambient color
-					{
-						float red = new Float(stok.nextToken()), green = new Float(
-								stok.nextToken()), blue = new Float(
-								stok.nextToken());
-						ambient[0] = red;
-						ambient[1] = green;
-						ambient[2] = blue;
-						ambient[3] = 1.0f;
-					} else if (tok.equals("Kd")) // diffuse color
-					{
-						float red = new Float(stok.nextToken()), green = new Float(
-								stok.nextToken()), blue = new Float(
-								stok.nextToken());
-						diffuse[0] = red;
-						diffuse[1] = green;
-						diffuse[2] = blue;
-						diffuse[3] = 1.0f;
-					} else if (tok.equals("Ks")) // specular color
-					{
-						stok.nextToken();
-						stok.nextToken();
-						stok.nextToken();
-					}
-				}
-
-				line = reader.readLine();
-			}
-
-			reader.close();
-		} catch (IOException e) {
-			throw new RoboticException(e);
-		}
+	private static BufferedReader open(String filename) {
+		String path = "/com/trainrobots/ui/models/" + filename;
+		InputStream stream = Resources.open(path);
+		return new BufferedReader(new InputStreamReader(stream));
 	}
 }

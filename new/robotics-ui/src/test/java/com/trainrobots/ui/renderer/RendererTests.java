@@ -25,11 +25,8 @@ public class RendererTests {
 
 		Scene scene = Robotics.system().scenes().get(250);
 		Buffer buffer = new Buffer(new SceneElement(scene), 325, 350);
-
 		byte[] data = buffer.renderToArray();
-		//buffer.renderToFile("c:/temp/before.png");
-		buffer.renderToFile("c:/temp/after.png");
-		buffer.destroy();
+		buffer.close();
 
 		assertEquals(data.length, 11636);
 		for (int i = 0; i < expected.length; i++) {
