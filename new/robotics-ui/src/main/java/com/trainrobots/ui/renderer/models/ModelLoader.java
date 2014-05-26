@@ -15,7 +15,7 @@ import com.trainrobots.Log;
 import com.trainrobots.ui.Resources;
 import com.trainrobots.ui.renderer.math.Vector;
 
-class ModelLoader {
+public class ModelLoader {
 
 	private ModelLoader() {
 	}
@@ -31,7 +31,8 @@ class ModelLoader {
 			ArrayList<Vector> verts = new ArrayList<Vector>();
 			ArrayList<Integer> vtxinds = new ArrayList<Integer>();
 
-			Material mtl = new Material();
+			float[] ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+			float[] diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 			String line = reader.readLine();
 			while (line != null) {
@@ -42,7 +43,7 @@ class ModelLoader {
 
 					if (tok.equals("mtllib")) // material
 					{
-						mtl = readMaterial(stok.nextToken());
+						readMaterial(stok.nextToken(), ambient, diffuse);
 					} else if (tok.equals("v")) // vertex
 					{
 						double x = new Double(stok.nextToken());
@@ -88,8 +89,8 @@ class ModelLoader {
 			reader.close();
 
 			// retriangulate n-gons into triangles
-			Model res = new Model(true, verts.size(), vtxinds.size() / 3);
-			res.setMaterial(mtl);
+			Model res = new Model(true, verts.size(), vtxinds.size() / 3,
+					ambient, diffuse);
 
 			double[] res_verts = res.getVertices();
 			int[] res_inds = res.getFaceInds();
@@ -117,14 +118,12 @@ class ModelLoader {
 		return null;
 	}
 
-	private static Material readMaterial(String fn) {
+	private static void readMaterial(String fn, float[] ambient, float[] diffuse) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					Resources.open("/com/trainrobots/ui/models/" + fn)));
 
 			String line = reader.readLine();
-
-			Material m = new Material();
 
 			while (line != null) {
 				StringTokenizer stok = new StringTokenizer(line);
@@ -137,19 +136,24 @@ class ModelLoader {
 						float red = new Float(stok.nextToken()), green = new Float(
 								stok.nextToken()), blue = new Float(
 								stok.nextToken());
-						m.ambient(red, green, blue, 1.0f);
+						ambient[0] = red;
+						ambient[1] = green;
+						ambient[2] = blue;
+						ambient[3] = 1.0f;
 					} else if (tok.equals("Kd")) // diffuse color
 					{
 						float red = new Float(stok.nextToken()), green = new Float(
 								stok.nextToken()), blue = new Float(
 								stok.nextToken());
-						m.diffuse(red, green, blue, 1.0f);
+						diffuse[0] = red;
+						diffuse[1] = green;
+						diffuse[2] = blue;
+						diffuse[3] = 1.0f;
 					} else if (tok.equals("Ks")) // specular color
 					{
-						float red = new Float(stok.nextToken()), green = new Float(
-								stok.nextToken()), blue = new Float(
-								stok.nextToken());
-						m.specular(red, green, blue, 1.0f);
+						stok.nextToken();
+						stok.nextToken();
+						stok.nextToken();
 					}
 				}
 
@@ -157,12 +161,8 @@ class ModelLoader {
 			}
 
 			reader.close();
-
-			return m;
 		} catch (IOException e) {
 			System.out.println(e);
 		}
-
-		return null;
 	}
 }

@@ -28,7 +28,7 @@ public class Buffer extends Renderer {
 	public Buffer(Controller ctrl, int w, int h) {
 		super(ctrl, w, h);
 
-		// construct pbuffer
+		// Construct pbuffer.
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
 		caps.setDoubleBuffered(false);
@@ -44,8 +44,8 @@ public class Buffer extends Renderer {
 
 		m_context = m_buffer.getContext();
 
-		// init and set viewport
-		init(makeCurrent());
+		// Initiate and set viewport.
+		initiate(makeCurrent());
 		reshape(makeCurrent(), m_width, m_height);
 	}
 

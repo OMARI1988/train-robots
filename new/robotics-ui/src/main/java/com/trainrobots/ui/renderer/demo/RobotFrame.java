@@ -58,7 +58,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 		m_frame.add(m_canvas);
 
 		// construct the control dialog
-		m_control = new RobotControlDialog(m_frame, m_rbtctrl);
+		m_control = new RobotControlDialog(m_frame, rbt);
 
 		// start the redraw thread
 		m_redraw = new FPSAnimator(m_canvas, 60);
@@ -78,7 +78,7 @@ public class RobotFrame extends Renderer implements GLEventListener,
 
 	// init gl state
 	public void init(GLAutoDrawable drawable) {
-		init(drawable.getGL().getGL2());
+		initiate(drawable.getGL().getGL2());
 	}
 
 	// reshape function maintains correct orthographic projection

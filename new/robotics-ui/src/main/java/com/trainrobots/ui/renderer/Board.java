@@ -10,13 +10,16 @@ package com.trainrobots.ui.renderer;
 
 import java.awt.Color;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL2;
 
+import com.trainrobots.scenes.Shape;
+import com.trainrobots.scenes.Type;
 import com.trainrobots.ui.renderer.math.Vector;
-import com.trainrobots.ui.renderer.models.Material;
+import com.trainrobots.ui.renderer.models.Element;
 import com.trainrobots.ui.renderer.models.Model;
+import com.trainrobots.ui.renderer.models.ModelLoader;
 
-public class Board {
+public class Board implements Element {
 
 	public static double BOARD_DIM = 43.0; // width and depth of the board
 	public static double OBJ_DIM = 4.0; // size of an individual object
@@ -30,7 +33,7 @@ public class Board {
 	private Model[][][] m_state = new Model[8][8][8];
 
 	// board model
-	private Model m_board = Model.load("board");
+	private Model m_board = ModelLoader.load("board");
 
 	// location of arm
 	private int m_x = 0, m_y = 0;
@@ -57,31 +60,30 @@ public class Board {
 						+ m_translate.z() - 0.5 * OBJ_DIM);
 	}
 
-	public void addCube(int x, int y, int z, Color color) {
-		if (m_state[x][y][z] == null) {
-			m_state[x][y][z] = Model.cube(OBJ_DIM, OBJ_DIM, OBJ_DIM);
-			Material m = m_state[x][y][z].getMaterial();
-
-			float r = color.getRed() / 255f;
-			float g = color.getGreen() / 255f;
-			float b = color.getBlue() / 255f;
-
-			m.diffuse(r, g, b, 1.0f);
-			m.ambient(0.0f, 0.0f, 0.0f, 1.0f);
-		}
+	public void add(Shape shape) {
+		int x = shape.position().x();
+		int y = shape.position().y();
+		int z = shape.position().z();
+		Color color = shape.color().color();
+		float r = color.getRed() / 255f;
+		float g = color.getGreen() / 255f;
+		float b = color.getBlue() / 255f;
+		float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
+		float[] diffuse = { r, g, b, 1.0f };
+		m_state[x][y][z] = shape.type() == Type.Cube ? Model.cube(OBJ_DIM,
+				OBJ_DIM, OBJ_DIM, ambient, diffuse) : Model.prism(OBJ_DIM,
+				OBJ_DIM, OBJ_DIM, ambient, diffuse);
 	}
 
 	public void addPrism(int x, int y, int z, Color color) {
 		if (m_state[x][y][z] == null) {
-			m_state[x][y][z] = Model.pyramid(OBJ_DIM, OBJ_DIM, OBJ_DIM);
-			Material m = m_state[x][y][z].getMaterial();
-
 			float r = color.getRed() / 255f;
 			float g = color.getGreen() / 255f;
 			float b = color.getBlue() / 255f;
-
-			m.diffuse(r, g, b, 1.0f);
-			m.ambient(0.0f, 0.0f, 0.0f, 1.0f);
+			float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
+			float[] diffuse = { r, g, b, 1.0f };
+			m_state[x][y][z] = Model.prism(OBJ_DIM, OBJ_DIM, OBJ_DIM, ambient,
+					diffuse);
 		}
 	}
 
@@ -116,7 +118,7 @@ public class Board {
 
 		gl.glPushMatrix();
 		gl.glTranslatef(0.0f, -2.0f, 0.0f);
-		m_board.render(gl, Model.FACE_NORMALS);
+		m_board.render(gl);
 		gl.glPopMatrix();
 
 		gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
@@ -165,7 +167,7 @@ public class Board {
 						gl.glTranslatef((float) (i * GRID_OFF + CELL_OFF),
 								(float) (k * OBJ_DIM),
 								(float) (-j * GRID_OFF - CELL_OFF));
-						m_state[i][j][k].render(gl, Model.FACE_NORMALS);
+						m_state[i][j][k].render(gl);
 						gl.glPopMatrix();
 					}
 				}

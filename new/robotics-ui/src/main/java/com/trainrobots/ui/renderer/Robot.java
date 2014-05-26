@@ -10,16 +10,17 @@ package com.trainrobots.ui.renderer;
 
 import static com.trainrobots.ui.renderer.math.Matrices.rotateZ;
 import static com.trainrobots.ui.renderer.math.Matrices.translate;
-import static com.trainrobots.ui.renderer.models.Model.load;
+import static com.trainrobots.ui.renderer.models.ModelLoader.load;
 
 import javax.media.opengl.GL2;
 
 import com.trainrobots.ui.renderer.math.DownhillSimplex;
 import com.trainrobots.ui.renderer.math.ObjectiveFunction;
 import com.trainrobots.ui.renderer.math.Vector;
+import com.trainrobots.ui.renderer.models.Element;
 import com.trainrobots.ui.renderer.models.Model;
 
-public class Robot {
+public class Robot implements Element {
 
 	private final Model base = load("base");
 	private final Model pivot = load("pivot");
@@ -121,52 +122,52 @@ public class Robot {
 		hand_x_rotation = pivot_y_rotation + 90.0;
 	}
 
-	public void render(GL2 gl, int nrm) {
+	public void render(GL2 gl) {
 		gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 		gl.glPushMatrix();
 
 		gl.glTranslated(translate.x(), translate.y(), translate.z());
 
-		base.render(gl, nrm);
+		base.render(gl);
 
 		gl.glTranslated(0.0, 16.0, 0.0);
 		gl.glRotated(-pivot_y_rotation, 0.0, 1.0, 0.0);
 
-		pivot.render(gl, nrm);
+		pivot.render(gl);
 
 		gl.glTranslated(12.5, 3.3, 4.5);
 		gl.glRotated(-arm_z_rotation, 0.0, 0.0, 1.0);
 
-		arm.render(gl, nrm);
+		arm.render(gl);
 
 		gl.glTranslated(25.0, -0.5, -2.0);
 		gl.glRotated(-forearm_z_rotation, 0.0, 0.0, 1.0);
 
-		forearm.render(gl, nrm);
+		forearm.render(gl);
 
 		gl.glTranslated(18.5, 0.0, 1.6);
 		gl.glRotated(-wrist_z_rotation, 0.0, 0.0, 1.0);
 
-		wrist.render(gl, nrm);
+		wrist.render(gl);
 
 		gl.glTranslated(12.1, 0.0, -2.6);
 		gl.glRotated(-tarsal_z_rotation, 0.0, 0.0, 1.0);
 
-		tarsal.render(gl, nrm);
+		tarsal.render(gl);
 
 		gl.glTranslated(3.0, 0.0, 0.0);
 		gl.glRotated(-hand_x_rotation, 1.0, 0.0, 0.0);
 
-		hand_wrist.render(gl, nrm);
+		hand_wrist.render(gl);
 
 		gl.glPushMatrix();
 		gl.glTranslated(4.5, (1.0 - grasp) * 6.0, 0);
-		finger1.render(gl, nrm);
+		finger1.render(gl);
 		gl.glPopMatrix();
 
 		gl.glPushMatrix();
 		gl.glTranslated(4.5, (1.0 - grasp) * -6.0, 0);
-		finger2.render(gl, nrm);
+		finger2.render(gl);
 		gl.glPopMatrix();
 
 		gl.glPopMatrix();

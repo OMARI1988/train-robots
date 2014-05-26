@@ -12,16 +12,11 @@ import javax.media.opengl.GL2;
 
 import com.trainrobots.ui.renderer.math.Vector;
 
-public class Model {
+public class Model implements Element {
 
-	public static final int FACE_NORMALS = 0;
-
-	public static Model load(String name) {
-		return ModelLoader.load(name);
-	}
-
-	public static Model pyramid(double w, double h, double d) {
-		Model model = new Model(true, 5, 6);
+	public static Model prism(double w, double h, double d, float[] ambient,
+			float[] diffuse) {
+		Model model = new Model(true, 5, 6, ambient, diffuse);
 
 		double[] vtxs = model.getVertices();
 
@@ -66,8 +61,9 @@ public class Model {
 		return model;
 	}
 
-	public static Model cube(double w, double h, double d) {
-		Model model = new Model(false, 8, 6);
+	public static Model cube(double w, double h, double d, float[] ambient,
+			float[] diffuse) {
+		Model model = new Model(false, 8, 6, ambient, diffuse);
 
 		double[] vtxs = model.getVertices();
 
@@ -134,9 +130,11 @@ public class Model {
 	private double[] m_vtxs; // vertex data, size 3*m_nvtx
 	private double[] m_facenrms; // face normal data, size 3*m_npolys
 	private int[] m_faceinds; // face indices
-	private Material m_material; // material
+	private final float[] ambient;
+	private final float[] diffuse;
 
-	public Model(boolean triPoly, int nv, int np) {
+	public Model(boolean triPoly, int nv, int np, float[] ambient,
+			float[] diffuse) {
 
 		m_npolyvtx = triPoly ? 3 : 4;
 		m_nvtx = nv;
@@ -146,35 +144,16 @@ public class Model {
 		m_facenrms = new double[m_npolys * 3];
 		m_faceinds = new int[m_npolys * m_npolyvtx];
 
-		m_material = new Material();
-	}
-
-	public int getNumVtx() {
-		return m_nvtx;
-	}
-
-	public int getNumPolys() {
-		return m_npolys;
+		this.ambient = ambient;
+		this.diffuse = diffuse;
 	}
 
 	public double[] getVertices() {
 		return m_vtxs;
 	}
 
-	public double[] getFaceNormals() {
-		return m_facenrms;
-	}
-
 	public int[] getFaceInds() {
 		return m_faceinds;
-	}
-
-	public Material getMaterial() {
-		return m_material;
-	}
-
-	public void setMaterial(Material m) {
-		m_material = m;
 	}
 
 	public void calcNormals() {
@@ -199,8 +178,12 @@ public class Model {
 		}
 	}
 
-	public void render(GL2 gl, int nrm) {
-		m_material.render(gl);
+	public void render(GL2 gl) {
+
+		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, ambient, 0);
+		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, diffuse, 0);
+		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, ambient, 0);
+		gl.glMaterialf(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, 0);
 
 		if (m_npolyvtx == 3) {
 			gl.glBegin(GL2.GL_TRIANGLES);

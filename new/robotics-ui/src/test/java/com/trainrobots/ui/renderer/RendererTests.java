@@ -27,9 +27,10 @@ public class RendererTests {
 		Controller rc = new Controller();
 		Buffer rb = new Buffer(rc, 325, 350);
 
-		rc.loadScene(scene);
+		rc.scene(scene);
 
 		byte[] data = rb.renderToArray();
+		rb.renderToFile("c:/temp/after.png");
 		rb.destroy();
 
 		assertEquals(data.length, 11636);
