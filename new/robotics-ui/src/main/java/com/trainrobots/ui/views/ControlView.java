@@ -8,16 +8,20 @@
 
 package com.trainrobots.ui.views;
 
-import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
-import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Scene;
+import com.trainrobots.ui.commands.Command;
+import com.trainrobots.ui.commands.CommandAction;
 
 public class ControlView extends JPanel {
 
@@ -29,8 +33,14 @@ public class ControlView extends JPanel {
 		this.scene = scene;
 
 		// Label.
-		add(new JLabel(
-				"Use the arrow keys, q and a to move, and space to toggle the gripper."));
+		setLayout(new BorderLayout());
+		JLabel label = new JLabel("Keys: arrow keys, q, a and space.",
+				SwingConstants.CENTER);
+		label.setBorder(new EmptyBorder(5, 0, 3, 0));
+		label.setOpaque(true);
+		label.setBackground(Color.BLACK);
+		label.setForeground(Color.green.brighter());
+		add(label);
 
 		// Keys.
 		bindKey("SPACE", () -> {
@@ -45,14 +55,10 @@ public class ControlView extends JPanel {
 		bindKey("A", () -> moveGripper(0, 0, -1));
 	}
 
-	private void bindKey(String key, KeyAction keyAction) {
+	private void bindKey(String key, Command command) {
 		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key),
 				key);
-		getActionMap().put(key, new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				keyAction.execute();
-			}
-		});
+		getActionMap().put(key, new CommandAction(command));
 	}
 
 	private void moveGripper(int dx, int dy, int dz) {
@@ -62,10 +68,5 @@ public class ControlView extends JPanel {
 				&& p.z() < 8) {
 			gripper.position(p);
 		}
-	}
-
-	@FunctionalInterface
-	private interface KeyAction {
-		void execute();
 	}
 }
