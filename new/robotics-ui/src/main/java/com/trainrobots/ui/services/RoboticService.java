@@ -17,7 +17,7 @@ public class RoboticService {
 	private Scene selectedScene;
 
 	public RoboticService() {
-		selectedScene = system.scenes().of(879);
+		selectedScene = system.scenes().scene(879);
 	}
 
 	public Scene selectedScene() {

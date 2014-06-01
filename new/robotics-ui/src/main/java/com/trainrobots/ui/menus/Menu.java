@@ -12,8 +12,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import com.trainrobots.ui.commands.Command;
-import com.trainrobots.ui.commands.CommandAction;
+import com.trainrobots.ui.commands.Executable;
+import com.trainrobots.ui.commands.ExecutableAction;
 
 public abstract class Menu extends JMenu {
 
@@ -22,7 +22,8 @@ public abstract class Menu extends JMenu {
 		setMnemonic(mnemonic);
 	}
 
-	protected JMenuItem addItem(String name, String shortCutKey, Command command) {
+	protected JMenuItem addItem(String name, String shortCutKey,
+			Executable executable) {
 
 		// Create item.
 		JMenuItem item = new JMenuItem(name);
@@ -37,8 +38,8 @@ public abstract class Menu extends JMenu {
 		}
 
 		// Action.
-		if (command != null) {
-			item.addActionListener(new CommandAction(command));
+		if (executable != null) {
+			item.addActionListener(new ExecutableAction(executable));
 		}
 
 		// Add item.

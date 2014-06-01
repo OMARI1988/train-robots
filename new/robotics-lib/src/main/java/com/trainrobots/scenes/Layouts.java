@@ -37,7 +37,7 @@ public class Layouts implements Items<Layout> {
 		return layouts[index];
 	}
 
-	public Layout of(int id) {
+	public Layout layout(int id) {
 		Layout layout = map.get(id);
 		if (layout == null) {
 			throw new IllegalArgumentException(String.format(

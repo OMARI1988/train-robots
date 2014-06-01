@@ -19,8 +19,8 @@ import javax.swing.border.EmptyBorder;
 import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.ui.commands.Command;
-import com.trainrobots.ui.commands.CommandAction;
+import com.trainrobots.ui.commands.Executable;
+import com.trainrobots.ui.commands.ExecutableAction;
 
 public class RobotView extends PaneView {
 
@@ -58,9 +58,9 @@ public class RobotView extends PaneView {
 		bindKey("A", () -> moveGripper(0, 0, -1));
 	}
 
-	private void bindKey(String key, Command command) {
+	private void bindKey(String key, Executable executable) {
 		getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(key), key);
-		getActionMap().put(key, new CommandAction(command));
+		getActionMap().put(key, new ExecutableAction(executable));
 	}
 
 	private void moveGripper(int dx, int dy, int dz) {

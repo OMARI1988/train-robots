@@ -14,12 +14,15 @@ import com.trainrobots.scenes.LayoutReader;
 import com.trainrobots.scenes.Layouts;
 import com.trainrobots.scenes.SceneReader;
 import com.trainrobots.scenes.Scenes;
+import com.trainrobots.treebank.CommandReader;
+import com.trainrobots.treebank.Commands;
 
 public class RoboticSystem {
 
 	private final String dataPath;
 	private Layouts layouts;
 	private Scenes scenes;
+	private Commands commands;
 
 	public RoboticSystem(String dataPath) {
 		this.dataPath = dataPath;
@@ -45,6 +48,17 @@ public class RoboticSystem {
 			Log.info("Loaded: %s scenes.", scenes.count());
 		}
 		return scenes;
+	}
+
+	public Commands commands() {
+		if (commands == null) {
+			Log.info("Loading commands...");
+			CommandReader reader = new CommandReader(file("commands.xml"),
+					scenes());
+			commands = reader.commands();
+			Log.info("Loaded: %s commands.", commands.count());
+		}
+		return commands;
 	}
 
 	private String file(String filename) {

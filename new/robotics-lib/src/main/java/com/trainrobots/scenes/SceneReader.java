@@ -65,8 +65,8 @@ public class SceneReader {
 		public void endElement(String uri, String localName, String name) {
 			switch (name) {
 			case "scene":
-				scenes.add(new Scene(sceneId, layouts.of(beforeId), layouts
-						.of(afterId)));
+				scenes.add(new Scene(sceneId, layouts.layout(beforeId), layouts
+						.layout(afterId)));
 				break;
 			}
 		}

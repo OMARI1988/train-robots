@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots;
+package com.trainrobots.scenes;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import com.trainrobots.Robotics;
 import com.trainrobots.scenes.Layout;
 
 public class LayoutTests {

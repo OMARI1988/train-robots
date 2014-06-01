@@ -12,16 +12,16 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-public class CommandAction extends AbstractAction {
+public class ExecutableAction extends AbstractAction {
 
-	private final Command command;
+	private final Executable executable;
 
-	public CommandAction(Command command) {
-		this.command = command;
+	public ExecutableAction(Executable executable) {
+		this.executable = executable;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		command.execute();
+		executable.execute();
 	}
 }

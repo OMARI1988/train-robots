@@ -37,7 +37,7 @@ public class Scenes implements Items<Scene> {
 		return scenes[index];
 	}
 
-	public Scene of(int id) {
+	public Scene scene(int id) {
 		Scene scene = map.get(id);
 		if (scene == null) {
 			throw new IllegalArgumentException(String.format(

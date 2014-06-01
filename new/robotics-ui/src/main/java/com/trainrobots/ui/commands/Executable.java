@@ -9,7 +9,7 @@
 package com.trainrobots.ui.commands;
 
 @FunctionalInterface
-public interface Command {
+public interface Executable {
 
 	void execute();
 }
