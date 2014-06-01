@@ -13,9 +13,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -37,7 +40,7 @@ public class CommandsView extends PaneView {
 		Items<Command> commands = roboticSystem.commands().forScene(scene);
 
 		// Initiate.
-		setSize(300, 300);
+		setSize(400, 550);
 		setLayout(new BorderLayout());
 
 		// Model.
@@ -57,6 +60,7 @@ public class CommandsView extends PaneView {
 		table.setDefaultRenderer(Object.class, new LineWrapCellRenderer());
 		table.setTableHeader(null);
 		table.setFillsViewportHeight(true);
+		table.setRowSelectionInterval(0, 0);
 
 		// Scroll pane.
 		JScrollPane scrollPane = new JScrollPane(table,
@@ -65,16 +69,33 @@ public class CommandsView extends PaneView {
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
-	private static class LineWrapCellRenderer extends JTextArea implements
+	private static class LineWrapCellRenderer extends JPanel implements
 			TableCellRenderer {
 
-		private static final Color SELECTED_COLOR = new Color(220, 220, 255);
+		private static final Color SELECTED_COLOR = new Color(57, 105, 138);
+		private static final Color ALTERNATE_COLOR = new Color(242, 242, 242);
+
+		private final JLabel label = new JLabel();
+		private final JTextArea textArea = new JTextArea();
 		private int rowHeight;
 
 		public LineWrapCellRenderer() {
-			setWrapStyleWord(true);
-			setLineWrap(true);
-			setBorder(new EmptyBorder(3, 5, 3, 5));
+
+			// Label.
+			setLayout(new BorderLayout());
+			add(label, BorderLayout.WEST);
+			label.setPreferredSize(new Dimension(50, 0));
+			label.setVerticalAlignment(SwingConstants.TOP);
+
+			// Text area.
+			textArea.setBackground(new Color(0, 0, 0, 0));
+			textArea.setWrapStyleWord(true);
+			textArea.setLineWrap(true);
+			textArea.setBorder(new EmptyBorder(0, 0, 0, 0));
+			add(textArea, BorderLayout.CENTER);
+
+			// Component.
+			setBorder(new EmptyBorder(3, 5, 5, 5));
 		}
 
 		@Override
@@ -84,13 +105,18 @@ public class CommandsView extends PaneView {
 
 			// Text.
 			Command command = (Command) value;
-			setText("(" + command.id() + ") " + command.text());
+			label.setText(Integer.toString(command.id()));
+			textArea.setText(command.text());
 
 			// Selected?
 			if (isSelected) {
+				label.setForeground(Color.WHITE);
+				textArea.setForeground(Color.WHITE);
 				setBackground(SELECTED_COLOR);
 			} else {
-				setBackground(Color.WHITE);
+				label.setForeground(Color.BLUE);
+				textArea.setForeground(Color.BLACK);
+				setBackground(row % 2 == 0 ? Color.WHITE : ALTERNATE_COLOR);
 			}
 
 			// Set the text area width to the table column width.
