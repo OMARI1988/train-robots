@@ -9,8 +9,16 @@
 package com.trainrobots.ui.views;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 
-import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.trainrobots.RoboticSystem;
 import com.trainrobots.collections.Items;
@@ -32,13 +40,72 @@ public class CommandsView extends PaneView {
 		setSize(300, 300);
 		setLayout(new BorderLayout());
 
-		// List.
-		int size = commands.count();
-		String[] items = new String[size];
-		for (int i = 0; i < size; i++) {
-			items[i] = commands.get(i).text();
+		// Model.
+		DefaultTableModel model = new DefaultTableModel() {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		model.addColumn("Command");
+		for (Command command : commands) {
+			model.addRow(new Object[] { command });
 		}
-		JList list = new JList(items);
-		add(list, BorderLayout.CENTER);
+
+		// Table.
+		JTable table = new JTable();
+		table.setModel(model);
+		table.setDefaultRenderer(Object.class, new LineWrapCellRenderer());
+		table.setTableHeader(null);
+		table.setFillsViewportHeight(true);
+
+		// Scroll pane.
+		JScrollPane scrollPane = new JScrollPane(table,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	private static class LineWrapCellRenderer extends JTextArea implements
+			TableCellRenderer {
+
+		private static final Color SELECTED_COLOR = new Color(220, 220, 255);
+		private int rowHeight;
+
+		public LineWrapCellRenderer() {
+			setWrapStyleWord(true);
+			setLineWrap(true);
+			setBorder(new EmptyBorder(3, 5, 3, 5));
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+
+			// Text.
+			Command command = (Command) value;
+			setText("(" + command.id() + ") " + command.text());
+
+			// Selected?
+			if (isSelected) {
+				setBackground(SELECTED_COLOR);
+			} else {
+				setBackground(Color.WHITE);
+			}
+
+			// Set the text area width to the table column width.
+			int width = table.getColumnModel().getColumn(column).getWidth();
+			setSize(new Dimension(width, 1));
+
+			// Get the text area preferred height and add the row margin.
+			int height = getPreferredSize().height + table.getRowMargin();
+
+			// Ensure the row height fits the cell with most lines.
+			if (column == 0 || height > rowHeight) {
+				table.setRowHeight(row, height);
+				rowHeight = height;
+			}
+			return this;
+		}
 	}
 }
