@@ -11,13 +11,17 @@ package com.trainrobots.ui.services;
 import com.trainrobots.RoboticSystem;
 import com.trainrobots.scenes.Scene;
 
-public class RoboticService {
+public class DataService {
 
 	private final RoboticSystem system = new RoboticSystem("../.data");
 	private Scene selectedScene;
 
-	public RoboticService() {
+	public DataService() {
 		selectedScene = system.scenes().scene(879);
+	}
+
+	public RoboticSystem system() {
+		return system;
 	}
 
 	public Scene selectedScene() {

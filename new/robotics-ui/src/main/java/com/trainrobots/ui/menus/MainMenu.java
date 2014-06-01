@@ -10,7 +10,7 @@ package com.trainrobots.ui.menus;
 
 import javax.swing.JMenuBar;
 
-import com.trainrobots.ui.services.RoboticService;
+import com.trainrobots.ui.services.DataService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.RobotView;
@@ -18,7 +18,7 @@ import com.trainrobots.ui.views.SceneView;
 
 public class MainMenu extends JMenuBar {
 
-	public MainMenu(WindowService windowService, RoboticService roboticService) {
+	public MainMenu(WindowService windowService, DataService dataService) {
 
 		add(new Menu("File", 'F') {
 			{
@@ -29,10 +29,10 @@ public class MainMenu extends JMenuBar {
 		add(new Menu("Window", 'W') {
 			{
 				addItem("Commands", "c",
-						() -> windowService.show(new CommandsView()));
+						() -> windowService.show(new CommandsView(dataService)));
 				addItem("Robot", "r", () -> windowService.show(new RobotView()));
 				addItem("Scene", "s",
-						() -> windowService.show(new SceneView(roboticService)));
+						() -> windowService.show(new SceneView(dataService)));
 			}
 		});
 	}

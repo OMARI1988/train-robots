@@ -11,18 +11,19 @@ package com.trainrobots.ui.services;
 import java.beans.PropertyVetoException;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.views.SceneView;
 
 public class WindowService {
 
-	private final RoboticService roboticService;
+	private final DataService dataService;
 	private MainWindow mainWindow;
 	private int windowCount;
 
-	public WindowService(RoboticService roboticService) {
-		this.roboticService = roboticService;
+	public WindowService(DataService dataService) {
+		this.dataService = dataService;
 	}
 
 	public void setMainWindow(MainWindow mainWindow) {
@@ -30,7 +31,8 @@ public class WindowService {
 	}
 
 	public void showMainWindow() {
-		show(new SceneView(roboticService));
+		show(new CommandsView(dataService));
+		show(new SceneView(dataService));
 		mainWindow.setVisible(true);
 	}
 

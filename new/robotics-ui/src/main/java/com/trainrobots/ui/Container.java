@@ -14,7 +14,7 @@ import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
 
 import com.trainrobots.ui.menus.MainMenu;
-import com.trainrobots.ui.services.RoboticService;
+import com.trainrobots.ui.services.DataService;
 import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.MainWindow;
 
@@ -26,7 +26,7 @@ public class Container {
 
 		// Services.
 		registerSingleInstance(WindowService.class);
-		registerSingleInstance(RoboticService.class);
+		registerSingleInstance(DataService.class);
 
 		// UI components.
 		registerSingleInstance(MainWindow.class);

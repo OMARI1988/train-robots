@@ -50,7 +50,7 @@ public class Commands implements Items<Command> {
 		return command;
 	}
 
-	public Items<Command> commands(Scene scene) {
+	public Items<Command> forScene(Scene scene) {
 		return commandsBySceneId.get(scene.id());
 	}
 

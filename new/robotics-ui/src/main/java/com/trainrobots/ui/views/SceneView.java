@@ -18,12 +18,12 @@ import javax.swing.SpringLayout;
 
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.ui.FractionSpring;
-import com.trainrobots.ui.services.RoboticService;
+import com.trainrobots.ui.services.DataService;
 
 public class SceneView extends PaneView {
 
-	public SceneView(RoboticService roboticService) {
-		this(roboticService.selectedScene());
+	public SceneView(DataService dataService) {
+		this(dataService.selectedScene());
 	}
 
 	public SceneView(Scene scene) {

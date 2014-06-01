@@ -35,6 +35,6 @@ public class CommandTests {
 
 		// Scene 879.
 		Scene scene = Robotics.system().scenes().scene(879);
-		assertThat(commands.commands(scene).count(), is(16));
+		assertThat(commands.forScene(scene).count(), is(16));
 	}
 }
