@@ -10,6 +10,7 @@ package com.trainrobots.ui.services;
 
 import java.beans.PropertyVetoException;
 
+import javax.swing.JInternalFrame;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
@@ -29,7 +30,7 @@ public class WindowService {
 		// Configure logging.
 		Log.configureConsole();
 
-		// Set look and feel.
+		// Look and feel.
 		try {
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 		} catch (Exception exception) {
@@ -39,17 +40,16 @@ public class WindowService {
 		// Initiate.
 		MainMenu menu = new MainMenu(this);
 		mainWindow = new MainWindow(menu);
-		showRobotWindow();
+		show(new RobotWindow());
 	}
 
 	public void showMainWindow() {
 		mainWindow.setVisible(true);
 	}
 
-	public void showRobotWindow() {
+	public void show(JInternalFrame window) {
 
 		// Position window.
-		RobotWindow window = new RobotWindow();
 		windowCount++;
 		window.setLocation(windowCount * 30, windowCount * 30);
 
