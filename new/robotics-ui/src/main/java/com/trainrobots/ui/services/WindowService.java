@@ -10,7 +10,6 @@ package com.trainrobots.ui.services;
 
 import java.beans.PropertyVetoException;
 
-import javax.swing.JInternalFrame;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
@@ -18,7 +17,8 @@ import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.views.MainWindow;
-import com.trainrobots.ui.views.RobotWindow;
+import com.trainrobots.ui.views.PaneView;
+import com.trainrobots.ui.views.RobotView;
 
 public class WindowService {
 
@@ -40,26 +40,26 @@ public class WindowService {
 		// Initiate.
 		MainMenu menu = new MainMenu(this);
 		mainWindow = new MainWindow(menu);
-		show(new RobotWindow());
+		show(new RobotView());
 	}
 
 	public void showMainWindow() {
 		mainWindow.setVisible(true);
 	}
 
-	public void show(JInternalFrame window) {
+	public void show(PaneView pane) {
 
 		// Position window.
 		windowCount++;
-		window.setLocation(windowCount * 30, windowCount * 30);
+		pane.setLocation(windowCount * 30, windowCount * 30);
 
 		// Add.
-		window.setVisible(true);
-		mainWindow.addToDesktop(window);
+		pane.setVisible(true);
+		mainWindow.addToDesktop(pane);
 
 		// Focus.
 		try {
-			window.setSelected(true);
+			pane.setSelected(true);
 		} catch (PropertyVetoException exception) {
 			throw new RoboticException(exception);
 		}

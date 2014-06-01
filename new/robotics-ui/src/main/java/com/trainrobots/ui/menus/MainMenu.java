@@ -11,7 +11,7 @@ package com.trainrobots.ui.menus;
 import javax.swing.JMenuBar;
 
 import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.RobotWindow;
+import com.trainrobots.ui.views.RobotView;
 
 public class MainMenu extends JMenuBar {
 
@@ -26,7 +26,7 @@ public class MainMenu extends JMenuBar {
 		add(new Menu("Window", 'W') {
 			{
 				addItem("Robot", "r",
-						() -> windowService.show(new RobotWindow()));
+						() -> windowService.show(new RobotView()));
 			}
 		});
 	}

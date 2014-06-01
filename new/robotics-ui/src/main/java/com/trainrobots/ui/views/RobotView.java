@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -23,24 +22,28 @@ import com.trainrobots.scenes.Position;
 import com.trainrobots.ui.commands.Command;
 import com.trainrobots.ui.commands.CommandAction;
 
-public class ControlView extends JPanel {
+public class RobotView extends PaneView {
 
-	private final Layout layout;
+	private final Layout layout = new Layout();
 
-	public ControlView(Layout layout) {
+	public RobotView() {
+		super("Robot");
 
-		// Layout.
-		this.layout = layout;
+		// Initiate.
+		setSize(300, 300);
+		setLayout(new BorderLayout());
+
+		// Scene.
+		add(new LayoutView(layout), BorderLayout.CENTER);
 
 		// Label.
-		setLayout(new BorderLayout());
 		JLabel label = new JLabel("Keys: arrow keys, q, a and space.",
 				SwingConstants.CENTER);
 		label.setBorder(new EmptyBorder(5, 0, 3, 0));
 		label.setOpaque(true);
 		label.setBackground(Color.BLACK);
 		label.setForeground(Color.green.brighter());
-		add(label);
+		add(label, BorderLayout.SOUTH);
 
 		// Keys.
 		bindKey("SPACE", () -> {
@@ -56,8 +59,7 @@ public class ControlView extends JPanel {
 	}
 
 	private void bindKey(String key, Command command) {
-		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key),
-				key);
+		getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(key), key);
 		getActionMap().put(key, new CommandAction(command));
 	}
 

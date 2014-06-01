@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 
 import com.trainrobots.ui.Resources;
 import com.trainrobots.ui.menus.MainMenu;
@@ -51,7 +50,7 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	public void addToDesktop(JInternalFrame window) {
-		desktop.add(window);
+	public void addToDesktop(PaneView pane) {
+		desktop.add(pane);
 	}
 }
