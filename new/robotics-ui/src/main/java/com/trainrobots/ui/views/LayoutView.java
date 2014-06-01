@@ -25,6 +25,7 @@ import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class LayoutView extends JPanel {
 
+	private final GLJPanel glPanel;
 	private int mouseX;
 	private int mouseY;
 	private int width;
@@ -42,7 +43,7 @@ public class LayoutView extends JPanel {
 		caps.setNumSamples(8);
 
 		// Canvas.
-		GLJPanel glPanel = new GLJPanel(caps);
+		glPanel = new GLJPanel(caps);
 		glPanel.addGLEventListener(new GLEventListener() {
 
 			public void display(GLAutoDrawable drawable) {

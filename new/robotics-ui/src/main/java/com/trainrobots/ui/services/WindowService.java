@@ -10,40 +10,27 @@ package com.trainrobots.ui.services;
 
 import java.beans.PropertyVetoException;
 
-import javax.swing.UIManager;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
-import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
-import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
-import com.trainrobots.ui.views.RobotView;
+import com.trainrobots.ui.views.SceneView;
 
 public class WindowService {
 
-	private final MainWindow mainWindow;
+	private final RoboticService roboticService;
+	private MainWindow mainWindow;
 	private int windowCount;
 
-	public WindowService() {
+	public WindowService(RoboticService roboticService) {
+		this.roboticService = roboticService;
+	}
 
-		// Configure logging.
-		Log.configureConsole();
-
-		// Look and feel.
-		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (Exception exception) {
-			throw new RoboticException(exception);
-		}
-
-		// Initiate.
-		MainMenu menu = new MainMenu(this);
-		mainWindow = new MainWindow(menu);
-		show(new RobotView());
+	public void setMainWindow(MainWindow mainWindow) {
+		this.mainWindow = mainWindow;
 	}
 
 	public void showMainWindow() {
+		show(new SceneView(roboticService));
 		mainWindow.setVisible(true);
 	}
 
