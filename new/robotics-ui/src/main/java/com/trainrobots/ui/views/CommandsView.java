@@ -29,7 +29,7 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.Styles;
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.data.DataService;
 
 public class CommandsView extends PaneView {
 
@@ -77,6 +77,11 @@ public class CommandsView extends PaneView {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	@Override
+	public String paneType() {
+		return "commands";
 	}
 
 	private static class CommandRenderer extends JPanel implements

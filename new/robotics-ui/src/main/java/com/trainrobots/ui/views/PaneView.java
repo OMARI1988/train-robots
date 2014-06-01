@@ -15,4 +15,6 @@ public abstract class PaneView extends JInternalFrame {
 	protected PaneView(String title) {
 		super(title, true, true, true, true);
 	}
+
+	public abstract String paneType();
 }

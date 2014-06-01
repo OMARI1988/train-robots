@@ -10,32 +10,29 @@ package com.trainrobots.ui.menus;
 
 import javax.swing.JMenuBar;
 
-import com.trainrobots.ui.services.DataService;
-import com.trainrobots.ui.services.WindowService;
-import com.trainrobots.ui.views.CommandsView;
-import com.trainrobots.ui.views.RobotView;
-import com.trainrobots.ui.views.SceneView;
-import com.trainrobots.ui.views.ScenesView;
+import com.trainrobots.ui.services.window.WindowService;
 
 public class MainMenu extends JMenuBar {
 
-	public MainMenu(WindowService windowService, DataService dataService) {
+	public MainMenu(WindowService windowService) {
 
 		add(new Menu("File", 'F') {
 			{
-				addItem("Exit", "x", () -> System.exit(0));
+				addItem("Exit", "x", windowService::exit);
 			}
 		});
 
 		add(new Menu("Window", 'W') {
 			{
-				addItem("Commands", "c",
-						() -> windowService.show(new CommandsView(dataService)));
-				addItem("Robot", "r", () -> windowService.show(new RobotView()));
-				addItem("Scene", "s",
-						() -> windowService.show(new SceneView(dataService)));
-				addItem("Scenes", "n",
-						() -> windowService.show(new ScenesView(dataService)));
+				addView("Commands", "c", "commands");
+				addView("Robot", "r", "robot");
+				addView("Scene", "s", "scene");
+				addView("Scenes", "n", "scenes");
+			}
+
+			private void addView(String name, String shortCutKey,
+					String paneType) {
+				addItem(name, shortCutKey, () -> windowService.show(paneType));
 			}
 		});
 	}

@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.services;
+package com.trainrobots.ui.services.data;
 
 import com.trainrobots.RoboticSystem;
 import com.trainrobots.scenes.Scene;

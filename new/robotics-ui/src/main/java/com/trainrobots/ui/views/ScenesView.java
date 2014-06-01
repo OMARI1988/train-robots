@@ -27,7 +27,7 @@ import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.Scenes;
 import com.trainrobots.treebank.Commands;
 import com.trainrobots.ui.Styles;
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.data.DataService;
 
 public class ScenesView extends PaneView {
 
@@ -63,6 +63,11 @@ public class ScenesView extends PaneView {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	@Override
+	public String paneType() {
+		return "scenes";
 	}
 
 	private static class SceneRenderer extends JPanel implements

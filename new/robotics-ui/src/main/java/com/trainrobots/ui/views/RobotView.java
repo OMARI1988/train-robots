@@ -58,6 +58,11 @@ public class RobotView extends PaneView {
 		bindKey("A", () -> moveGripper(0, 0, -1));
 	}
 
+	@Override
+	public String paneType() {
+		return "robot";
+	}
+
 	private void bindKey(String key, Executable executable) {
 		getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(key), key);
 		getActionMap().put(key, new ExecutableAction(executable));

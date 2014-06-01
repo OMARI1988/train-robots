@@ -18,7 +18,7 @@ import javax.swing.SpringLayout;
 
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.ui.FractionSpring;
-import com.trainrobots.ui.services.DataService;
+import com.trainrobots.ui.services.data.DataService;
 
 public class SceneView extends PaneView {
 
@@ -49,5 +49,10 @@ public class SceneView extends PaneView {
 		LayoutView after = new LayoutView(scene.after());
 		add(after, new SpringLayout.Constraints(half, Spring.constant(0), half,
 				layout.getConstraint(SOUTH, content)));
+	}
+
+	@Override
+	public String paneType() {
+		return "scene";
 	}
 }

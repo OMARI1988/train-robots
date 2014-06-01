@@ -13,10 +13,15 @@ import static org.picocontainer.Characteristics.CACHE;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
-import com.trainrobots.ui.services.DataService;
-import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.window.WindowService;
+import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
+import com.trainrobots.ui.views.RobotView;
+import com.trainrobots.ui.views.SceneView;
+import com.trainrobots.ui.views.ScenesView;
 
 public class Container {
 
@@ -25,22 +30,35 @@ public class Container {
 	public Container() {
 
 		// Services.
-		registerSingleInstance(WindowService.class);
-		registerSingleInstance(DataService.class);
+		registerSingle(this);
+		registerSingle(WindowService.class);
+		registerSingle(DataService.class);
 
 		// UI components.
-		registerSingleInstance(MainWindow.class);
-		registerSingleInstance(MainMenu.class);
+		registerSingle(MainWindow.class);
+		registerSingle(MainMenu.class);
+		register(RobotView.class);
+		register(SceneView.class);
+		register(ScenesView.class);
+		register(CommandsView.class);
 
 		// Register main window.
 		get(WindowService.class).setMainWindow(get(MainWindow.class));
 	}
 
 	public <T> T get(Class<T> type) {
-		return pico.getComponent(type);
+		T instance = pico.getComponent(type);
+		if (instance == null) {
+			throw new RoboticException("Failed to create instance of %s.", type);
+		}
+		return instance;
 	}
 
-	private <T> void registerSingleInstance(Class<T> type) {
-		pico.as(CACHE).addComponent(type);
+	private void registerSingle(Object object) {
+		pico.as(CACHE).addComponent(object);
+	}
+
+	private void register(Object object) {
+		pico.addComponent(object);
 	}
 }

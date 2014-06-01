@@ -11,6 +11,8 @@ package com.trainrobots.ui.views;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,17 @@ import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.UIDefaults;
 
+import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.ui.Resources;
 import com.trainrobots.ui.menus.MainMenu;
+import com.trainrobots.ui.services.window.WindowService;
 
 public class MainWindow extends JFrame {
 
 	private final JDesktopPane desktop;
 
-	public MainWindow(MainMenu menu) {
+	public MainWindow(WindowService windowService, MainMenu menu) {
 		super("Train Robots");
 
 		// Menu.
@@ -65,11 +70,38 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 		setExtendedState(MAXIMIZED_BOTH);
 
-		// Handle close.
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Window listener.
+		addWindowListener(new WindowListener() {
+
+			public void windowOpened(WindowEvent event) {
+			}
+
+			public void windowClosing(WindowEvent event) {
+				windowService.exit();
+			}
+
+			public void windowClosed(WindowEvent event) {
+			}
+
+			public void windowIconified(WindowEvent event) {
+			}
+
+			public void windowDeiconified(WindowEvent event) {
+			}
+
+			public void windowActivated(WindowEvent event) {
+			}
+
+			public void windowDeactivated(WindowEvent event) {
+			}
+		});
 	}
 
 	public void addToDesktop(PaneView pane) {
 		desktop.add(pane);
+	}
+
+	public Items<PaneView> panes() {
+		return new ItemsArray(desktop.getAllFrames());
 	}
 }

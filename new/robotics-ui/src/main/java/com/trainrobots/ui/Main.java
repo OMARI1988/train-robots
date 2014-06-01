@@ -15,7 +15,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
-import com.trainrobots.ui.services.WindowService;
+import com.trainrobots.ui.services.window.WindowService;
 
 public class Main {
 
