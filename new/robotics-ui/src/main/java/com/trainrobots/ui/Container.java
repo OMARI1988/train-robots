@@ -17,6 +17,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.services.window.WindowService;
+import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.RobotView;
@@ -40,6 +41,7 @@ public class Container {
 		register(RobotView.class);
 		register(SceneView.class);
 		register(ScenesView.class);
+		register(CommandView.class);
 		register(CommandsView.class);
 
 		// Register main window.

@@ -16,6 +16,7 @@ import java.util.Map;
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.Container;
+import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
@@ -40,6 +41,7 @@ public class WindowService {
 		registerPane("robot", RobotView.class);
 		registerPane("scene", SceneView.class);
 		registerPane("scenes", ScenesView.class);
+		registerPane("command", CommandView.class);
 		registerPane("commands", CommandsView.class);
 	}
 
