@@ -10,9 +10,6 @@ package com.trainrobots.ui;
 
 import static javax.swing.SwingUtilities.invokeLater;
 
-import javax.swing.UIManager;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
 import com.trainrobots.Log;
 import com.trainrobots.ui.services.WindowService;
 
@@ -24,26 +21,13 @@ public class Main {
 	public static void main(String[] args) {
 		invokeLater(new Runnable() {
 			public void run() {
-				start();
+				try {
+					WindowService windowService = new WindowService();
+					windowService.showMainWindow();
+				} catch (Exception exception) {
+					Log.error("Failed start UI.", exception);
+				}
 			}
 		});
-	}
-
-	private static void start() {
-		try {
-
-			// Configure logging.
-			Log.configureConsole();
-
-			// Set look and feel.
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-
-			// Display the main window.
-			WindowService windowService = new WindowService();
-			windowService.mainWindow().setVisible(true);
-
-		} catch (Exception exception) {
-			Log.error("Failed start UI.", exception);
-		}
 	}
 }
