@@ -15,44 +15,44 @@ import java.util.Map;
 import com.trainrobots.collections.ArrayIterator;
 import com.trainrobots.collections.Items;
 
-public class Scenes implements Items<Scene> {
+public class Layouts implements Items<Layout> {
 
-	private final Scene[] scenes;
-	private final Map<Integer, Scene> map = new HashMap<>();
+	private final Layout[] layouts;
+	private final Map<Integer, Layout> map = new HashMap<>();
 
-	public Scenes(Items<Scene> scenes) {
-		this.scenes = scenes.toArray();
-		for (Scene scene : scenes) {
-			map.put(scene.id(), scene);
+	public Layouts(Items<Layout> layouts) {
+		this.layouts = layouts.toArray();
+		for (Layout layout : layouts) {
+			map.put(layout.id(), layout);
 		}
 	}
 
 	@Override
 	public int count() {
-		return scenes.length;
+		return layouts.length;
 	}
 
 	@Override
-	public Scene get(int index) {
-		return scenes[index];
+	public Layout get(int index) {
+		return layouts[index];
 	}
 
-	public Scene fromId(int id) {
-		Scene scene = map.get(id);
-		if (scene == null) {
+	public Layout fromId(int id) {
+		Layout layout = map.get(id);
+		if (layout == null) {
 			throw new IllegalArgumentException(String.format(
 					"The scene ID '%d' is not recognized.", id));
 		}
-		return scene;
+		return layout;
 	}
 
 	@Override
-	public Scene[] toArray() {
-		return scenes.clone();
+	public Layout[] toArray() {
+		return layouts.clone();
 	}
 
 	@Override
-	public Iterator<Scene> iterator() {
-		return new ArrayIterator(scenes);
+	public Iterator<Layout> iterator() {
+		return new ArrayIterator(layouts);
 	}
 }

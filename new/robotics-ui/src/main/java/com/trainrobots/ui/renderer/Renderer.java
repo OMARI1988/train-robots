@@ -10,14 +10,14 @@ package com.trainrobots.ui.renderer;
 
 import javax.media.opengl.GL2;
 
-import com.trainrobots.ui.renderer.scene.SceneElement;
+import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class Renderer {
 
-	private final SceneElement scene;
+	private final LayoutElement layout;
 
-	public Renderer(SceneElement scene) {
-		this.scene = scene;
+	public Renderer(LayoutElement layout) {
+		this.layout = layout;
 	}
 
 	public void display(GL2 gl) {
@@ -36,8 +36,8 @@ public class Renderer {
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, pos0, 0);
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, pos1, 0);
 
-		// Render the scene.
-		scene.render(gl);
+		// Render.
+		layout.render(gl);
 		gl.glPopAttrib();
 	}
 

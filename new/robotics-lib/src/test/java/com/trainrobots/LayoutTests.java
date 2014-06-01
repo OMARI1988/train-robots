@@ -15,18 +15,16 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.scenes.Scene;
-import com.trainrobots.scenes.Scenes;
+import com.trainrobots.scenes.Layout;
 
-public class SceneTests {
+public class LayoutTests {
 
 	@Test
 	public void shouldReadScenes() {
-		Scenes scenes = Robotics.system().scenes();
 		int i = 0;
-		for (Scene scene : scenes) {
-			assertThat(scene.id(), is(++i));
-			assertThat(scene.gripper(), is(not(nullValue())));
+		for (Layout layout : Robotics.system().layouts()) {
+			assertThat(layout.id(), is(++i));
+			assertThat(layout.gripper(), is(not(nullValue())));
 		}
 	}
 }

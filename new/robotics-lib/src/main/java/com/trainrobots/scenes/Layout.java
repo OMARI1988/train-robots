@@ -12,20 +12,20 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 
-public class Scene {
+public class Layout {
 
 	private final int id;
 	private final Gripper gripper;
 	private final Items<Shape> shapes;
-	SceneListener listener;
+	LayoutListener listener;
 
-	public Scene() {
+	public Layout() {
 		this.id = 0;
 		this.gripper = new Gripper(this, new Position(3, 3, 4), true);
 		this.shapes = new ItemsList();
 	}
 
-	public Scene(int id, Position gripperPosition, boolean gripperOpen,
+	public Layout(int id, Position gripperPosition, boolean gripperOpen,
 			Items<Shape> shapes) {
 		this.id = id;
 		this.gripper = new Gripper(this, gripperPosition, gripperOpen);
@@ -44,7 +44,7 @@ public class Scene {
 		return shapes;
 	}
 
-	public void listener(SceneListener listener) {
+	public void listener(LayoutListener listener) {
 		this.listener = listener;
 	}
 }

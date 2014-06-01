@@ -10,12 +10,12 @@ package com.trainrobots.scenes;
 
 public class Gripper {
 
-	private final Scene scene;
+	private final Layout layout;
 	private Position position;
 	private boolean open;
 
-	public Gripper(Scene scene, Position position, boolean open) {
-		this.scene = scene;
+	public Gripper(Layout layout, Position position, boolean open) {
+		this.layout = layout;
 		this.position = position;
 		this.open = open;
 	}
@@ -26,8 +26,8 @@ public class Gripper {
 
 	public void position(Position position) {
 		this.position = position;
-		if (scene.listener != null) {
-			scene.listener.gripperPositionChanged(position);
+		if (layout.listener != null) {
+			layout.listener.gripperPositionChanged(position);
 		}
 	}
 
@@ -37,8 +37,8 @@ public class Gripper {
 
 	public void open(boolean open) {
 		this.open = open;
-		if (scene.listener != null) {
-			scene.listener.gripperOpenChanged(open);
+		if (layout.listener != null) {
+			layout.listener.gripperOpenChanged(open);
 		}
 	}
 }

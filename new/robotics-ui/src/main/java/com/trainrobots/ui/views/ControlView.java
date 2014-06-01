@@ -18,19 +18,19 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.trainrobots.scenes.Gripper;
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Scene;
 import com.trainrobots.ui.commands.Command;
 import com.trainrobots.ui.commands.CommandAction;
 
 public class ControlView extends JPanel {
 
-	private final Scene scene;
+	private final Layout layout;
 
-	public ControlView(Scene scene) {
+	public ControlView(Layout layout) {
 
-		// Scene.
-		this.scene = scene;
+		// Layout.
+		this.layout = layout;
 
 		// Label.
 		setLayout(new BorderLayout());
@@ -44,7 +44,7 @@ public class ControlView extends JPanel {
 
 		// Keys.
 		bindKey("SPACE", () -> {
-			Gripper gripper = scene.gripper();
+			Gripper gripper = layout.gripper();
 			gripper.open(!gripper.open());
 		});
 		bindKey("UP", () -> moveGripper(-1, 0, 0));
@@ -62,7 +62,7 @@ public class ControlView extends JPanel {
 	}
 
 	private void moveGripper(int dx, int dy, int dz) {
-		Gripper gripper = scene.gripper();
+		Gripper gripper = layout.gripper();
 		Position p = gripper.position().add(dx, dy, dz);
 		if (p.x() >= 0 && p.x() < 8 && p.y() >= 0 && p.y() < 8 && p.z() >= 0
 				&& p.z() < 8) {

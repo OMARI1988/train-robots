@@ -10,34 +10,34 @@ package com.trainrobots.ui.renderer.scene;
 
 import javax.media.opengl.GL2;
 
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Scene;
-import com.trainrobots.scenes.SceneListener;
+import com.trainrobots.scenes.LayoutListener;
 import com.trainrobots.scenes.Shape;
 
-public class SceneElement implements Element {
+public class LayoutElement implements Element {
 
 	private final Board board = new Board();
 	private final Robot robot = new Robot();
 	private float rotationX = 37;
 	private float rotationY = -42.5f;
-	private Scene scene;
+	private Layout layout;
 
-	public SceneElement() {
-		this(new Scene());
+	public LayoutElement() {
+		this(new Layout());
 	}
 
-	public SceneElement(Scene scene) {
+	public LayoutElement(Layout layout) {
 		board.translation(0, 0, 22.5);
 		robot.translation(-20, 0, 0);
-		scene(scene);
+		layout(layout);
 	}
 
-	public void scene(Scene scene) {
+	public void layout(Layout layout) {
 
 		// Subscribe to events.
-		this.scene = scene;
-		scene.listener(new SceneListener() {
+		this.layout = layout;
+		layout.listener(new LayoutListener() {
 
 			public void gripperPositionChanged(Position position) {
 				bindToGripperPosition();
@@ -54,7 +54,7 @@ public class SceneElement implements Element {
 
 		// Bind shapes.
 		board.clear();
-		for (Shape shape : scene.shapes()) {
+		for (Shape shape : layout.shapes()) {
 			board.add(shape);
 		}
 	}
@@ -78,7 +78,7 @@ public class SceneElement implements Element {
 	private void bindToGripperPosition() {
 
 		// Update the arm iteratively to avoid awkward angles.
-		Position p = scene.gripper().position();
+		Position p = layout.gripper().position();
 		robot.resetAngles();
 		robot.computeAngles(board.getCellCenter(p.x(), 0, 5));
 		robot.computeAngles(board.getCellCenter(p.x(), p.y(), 5));
@@ -87,6 +87,6 @@ public class SceneElement implements Element {
 	}
 
 	private void bindToGripperOpen() {
-		robot.setGrasp(scene.gripper().open() ? 0.6 : 0.8);
+		robot.setGrasp(layout.gripper().open() ? 0.6 : 0.8);
 	}
 }

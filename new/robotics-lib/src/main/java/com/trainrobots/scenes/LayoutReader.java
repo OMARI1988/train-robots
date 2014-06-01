@@ -17,15 +17,15 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.ItemsList;
 
-public class SceneReader {
+public class LayoutReader {
 
-	private final ItemsList<Scene> scenes = new ItemsList<Scene>();
+	private final ItemsList<Layout> layouts = new ItemsList<Layout>();
 	private final ItemsList<Shape> shapes = new ItemsList<Shape>();
 	private int sceneId;
 	private Position gripperPosition;
 	private boolean gripperOpen;
 
-	public SceneReader(String filename) {
+	public LayoutReader(String filename) {
 		try {
 			XmlHandler handler = new XmlHandler();
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
@@ -35,8 +35,8 @@ public class SceneReader {
 		}
 	}
 
-	public Scenes scenes() {
-		return new Scenes(scenes);
+	public Layouts layouts() {
+		return new Layouts(layouts);
 	}
 
 	private class XmlHandler extends DefaultHandler {
@@ -46,7 +46,7 @@ public class SceneReader {
 				Attributes attributes) {
 
 			switch (name) {
-			case "scene":
+			case "layout":
 				sceneId = Integer.parseInt(attributes.getValue("id"));
 				gripperPosition = null;
 				gripperOpen = false;
@@ -67,8 +67,8 @@ public class SceneReader {
 		@Override
 		public void endElement(String uri, String localName, String name) {
 			switch (name) {
-			case "scene":
-				scenes.add(new Scene(sceneId, gripperPosition, gripperOpen,
+			case "layout":
+				layouts.add(new Layout(sceneId, gripperPosition, gripperOpen,
 						shapes));
 				break;
 			}

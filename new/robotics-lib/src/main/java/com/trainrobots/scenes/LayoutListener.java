@@ -8,7 +8,7 @@
 
 package com.trainrobots.scenes;
 
-public interface SceneListener {
+public interface LayoutListener {
 
 	void gripperPositionChanged(Position position);
 

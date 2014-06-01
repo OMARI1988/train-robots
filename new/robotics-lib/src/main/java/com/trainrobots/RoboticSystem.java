@@ -10,13 +10,13 @@ package com.trainrobots;
 
 import java.nio.file.Paths;
 
-import com.trainrobots.scenes.SceneReader;
-import com.trainrobots.scenes.Scenes;
+import com.trainrobots.scenes.LayoutReader;
+import com.trainrobots.scenes.Layouts;
 
 public class RoboticSystem {
 
 	private final String dataPath;
-	private Scenes scenes;
+	private Layouts layouts;
 
 	public RoboticSystem(String dataPath) {
 		this.dataPath = dataPath;
@@ -24,14 +24,14 @@ public class RoboticSystem {
 		Log.info("Starting robotic system...");
 	}
 
-	public Scenes scenes() {
-		if (scenes == null) {
-			Log.info("Loading scenes...");
-			SceneReader reader = new SceneReader(file("scenes.xml"));
-			scenes = reader.scenes();
-			Log.info("Loaded %s scenes.", scenes.count());
+	public Layouts layouts() {
+		if (layouts == null) {
+			Log.info("Loading layouts...");
+			LayoutReader reader = new LayoutReader(file("layouts.xml"));
+			layouts = reader.layouts();
+			Log.info("Loaded %s layouts.", layouts.count());
 		}
-		return scenes;
+		return layouts;
 	}
 
 	private String file(String filename) {

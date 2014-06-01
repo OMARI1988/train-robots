@@ -19,22 +19,22 @@ import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JPanel;
 
 import com.jogamp.opengl.util.FPSAnimator;
-import com.trainrobots.scenes.Scene;
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.ui.renderer.Renderer;
-import com.trainrobots.ui.renderer.scene.SceneElement;
+import com.trainrobots.ui.renderer.scene.LayoutElement;
 
-public class SceneView extends JPanel {
+public class LayoutView extends JPanel {
 
 	private int mouseX;
 	private int mouseY;
 	private int width;
 	private int height;
 
-	public SceneView(Scene scene) {
+	public LayoutView(Layout layout) {
 
-		// Scene.
-		SceneElement sceneElement = new SceneElement(scene);
-		Renderer renderer = new Renderer(sceneElement);
+		// Layout.
+		LayoutElement layoutElement = new LayoutElement(layout);
+		Renderer renderer = new Renderer(layoutElement);
 
 		// Select a multisample capability with 8 samples per pixel.
 		GLCapabilities caps = new GLCapabilities(null);
@@ -70,7 +70,7 @@ public class SceneView extends JPanel {
 				// Rotate the view.
 				float dx = 180 * (e.getY() - mouseY) / (float) height;
 				float dy = 180 * (e.getX() - mouseX) / (float) width;
-				sceneElement.incrementRotation(dx, dy);
+				layoutElement.incrementRotation(dx, dy);
 				mouseX = e.getX();
 				mouseY = e.getY();
 			}

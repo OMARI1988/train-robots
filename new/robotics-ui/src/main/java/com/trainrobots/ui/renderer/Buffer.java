@@ -22,7 +22,7 @@ import javax.media.opengl.GLOffscreenAutoDrawable;
 import javax.media.opengl.GLProfile;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.ui.renderer.scene.SceneElement;
+import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class Buffer implements AutoCloseable {
 
@@ -32,10 +32,10 @@ public class Buffer implements AutoCloseable {
 	private final int width;
 	private final int height;
 
-	public Buffer(SceneElement scene, int width, int height) {
+	public Buffer(LayoutElement layout, int width, int height) {
 
 		// Renderer.
-		this.renderer = new Renderer(scene);
+		this.renderer = new Renderer(layout);
 		this.width = width;
 		this.height = height;
 

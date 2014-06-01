@@ -12,7 +12,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JInternalFrame;
 
-import com.trainrobots.scenes.Scene;
+import com.trainrobots.scenes.Layout;
 
 public class RobotWindow extends JInternalFrame {
 
@@ -22,11 +22,11 @@ public class RobotWindow extends JInternalFrame {
 		// Size.
 		setSize(300, 300);
 
-		// Scene.
-		Scene scene = new Scene();
-		add(new SceneView(scene), BorderLayout.CENTER);
+		// Layout.
+		Layout layout = new Layout();
+		add(new LayoutView(layout), BorderLayout.CENTER);
 
 		// Controls.
-		add(new ControlView(scene), BorderLayout.SOUTH);
+		add(new ControlView(layout), BorderLayout.SOUTH);
 	}
 }

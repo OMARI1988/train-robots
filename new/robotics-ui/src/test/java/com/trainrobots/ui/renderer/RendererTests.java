@@ -15,16 +15,16 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.trainrobots.Robotics;
-import com.trainrobots.scenes.Scene;
-import com.trainrobots.ui.renderer.scene.SceneElement;
+import com.trainrobots.scenes.Layout;
+import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class RendererTests {
 
 	@Test
 	public void shouldRenderImage() throws IOException {
 
-		Scene scene = Robotics.system().scenes().get(250);
-		Buffer buffer = new Buffer(new SceneElement(scene), 325, 350);
+		Layout layout = Robotics.system().layouts().get(250);
+		Buffer buffer = new Buffer(new LayoutElement(layout), 325, 350);
 		byte[] data = buffer.renderToArray();
 		buffer.close();
 
