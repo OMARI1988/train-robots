@@ -3,7 +3,7 @@
  * Copyright (C) Kais Dukes, 2014.
  * Email: kais@kaisdukes.com
  *
- * Released under Version 3 of the GNU General Public License (GPL).
+ * Released under version 3 of the GNU General Public License (GPL).
  */
 
 package com.trainrobots.collections;

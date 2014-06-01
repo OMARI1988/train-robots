@@ -9,23 +9,20 @@
 package com.trainrobots;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.scenes.Layout;
+import com.trainrobots.scenes.Scene;
 
-public class LayoutTests {
+public class SceneTests {
 
 	@Test
-	public void shouldReadLayouts() {
+	public void shouldReadScenes() {
 		int i = 0;
-		for (Layout layout : Robotics.system().layouts()) {
-			assertThat(layout.id(), is(++i));
-			assertThat(layout.gripper(), is(not(nullValue())));
+		for (Scene scene : Robotics.system().scenes()) {
+			assertThat(scene.id(), is(++i));
 		}
-		assertThat(i, is(625));
+		assertThat(i, is(1000));
 	}
 }

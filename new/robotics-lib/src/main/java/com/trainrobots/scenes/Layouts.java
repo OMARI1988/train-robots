@@ -3,7 +3,7 @@
  * Copyright (C) Kais Dukes, 2014.
  * Email: kais@kaisdukes.com
  *
- * Released under Version 3 of the GNU General Public License (GPL).
+ * Released under version 3 of the GNU General Public License (GPL).
  */
 
 package com.trainrobots.scenes;
@@ -37,11 +37,11 @@ public class Layouts implements Items<Layout> {
 		return layouts[index];
 	}
 
-	public Layout fromId(int id) {
+	public Layout of(int id) {
 		Layout layout = map.get(id);
 		if (layout == null) {
 			throw new IllegalArgumentException(String.format(
-					"The scene ID '%d' is not recognized.", id));
+					"The layout ID '%d' is not recognized.", id));
 		}
 		return layout;
 	}

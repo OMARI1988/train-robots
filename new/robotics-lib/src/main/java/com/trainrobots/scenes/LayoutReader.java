@@ -3,7 +3,7 @@
  * Copyright (C) Kais Dukes, 2014.
  * Email: kais@kaisdukes.com
  *
- * Released under Version 3 of the GNU General Public License (GPL).
+ * Released under version 3 of the GNU General Public License (GPL).
  */
 
 package com.trainrobots.scenes;
@@ -21,7 +21,7 @@ public class LayoutReader {
 
 	private final ItemsList<Layout> layouts = new ItemsList<Layout>();
 	private final ItemsList<Shape> shapes = new ItemsList<Shape>();
-	private int sceneId;
+	private int layoutId;
 	private Position gripperPosition;
 	private boolean gripperOpen;
 
@@ -47,7 +47,7 @@ public class LayoutReader {
 
 			switch (name) {
 			case "layout":
-				sceneId = Integer.parseInt(attributes.getValue("id"));
+				layoutId = Integer.parseInt(attributes.getValue("id"));
 				gripperPosition = null;
 				gripperOpen = false;
 				shapes.clear();
@@ -68,7 +68,7 @@ public class LayoutReader {
 		public void endElement(String uri, String localName, String name) {
 			switch (name) {
 			case "layout":
-				layouts.add(new Layout(sceneId, gripperPosition, gripperOpen,
+				layouts.add(new Layout(layoutId, gripperPosition, gripperOpen,
 						shapes));
 				break;
 			}
@@ -84,5 +84,5 @@ public class LayoutReader {
 			Position position = Position.parse(attributes.getValue("position"));
 			shapes.add(new Shape(type, color, position));
 		}
-	};
+	}
 }
