@@ -15,6 +15,7 @@ import com.trainrobots.ui.services.WindowService;
 import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.RobotView;
 import com.trainrobots.ui.views.SceneView;
+import com.trainrobots.ui.views.ScenesView;
 
 public class MainMenu extends JMenuBar {
 
@@ -33,6 +34,8 @@ public class MainMenu extends JMenuBar {
 				addItem("Robot", "r", () -> windowService.show(new RobotView()));
 				addItem("Scene", "s",
 						() -> windowService.show(new SceneView(dataService)));
+				addItem("Scenes", "n",
+						() -> windowService.show(new ScenesView(dataService)));
 			}
 		});
 	}

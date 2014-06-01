@@ -28,6 +28,7 @@ import com.trainrobots.RoboticSystem;
 import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.Styles;
 import com.trainrobots.ui.services.DataService;
 
 public class CommandsView extends PaneView {
@@ -35,14 +36,14 @@ public class CommandsView extends PaneView {
 	public CommandsView(DataService dataService) {
 		super("Commands");
 
-		// Scene.
-		Scene scene = dataService.selectedScene();
-		RoboticSystem roboticSystem = dataService.system();
-		Items<Command> commands = roboticSystem.commands().forScene(scene);
-
 		// Initiate.
 		setSize(400, 550);
 		setLayout(new BorderLayout());
+
+		// Commands.
+		Scene scene = dataService.selectedScene();
+		RoboticSystem roboticSystem = dataService.system();
+		Items<Command> commands = roboticSystem.commands().forScene(scene);
 
 		// Model.
 		TableModel model = new AbstractTableModel() {
@@ -65,8 +66,7 @@ public class CommandsView extends PaneView {
 		};
 
 		// Table.
-		JTable table = new JTable();
-		table.setModel(model);
+		JTable table = new JTable(model);
 		table.setDefaultRenderer(Command.class, new CommandRenderer());
 		table.setTableHeader(null);
 		table.setFillsViewportHeight(true);
@@ -81,9 +81,6 @@ public class CommandsView extends PaneView {
 
 	private static class CommandRenderer extends JPanel implements
 			TableCellRenderer {
-
-		private static final Color SELECTED_COLOR = new Color(57, 105, 138);
-		private static final Color ALTERNATE_COLOR = new Color(242, 242, 242);
 
 		private final JLabel label = new JLabel();
 		private final JTextArea textArea = new JTextArea();
@@ -122,11 +119,12 @@ public class CommandsView extends PaneView {
 			if (isSelected) {
 				label.setForeground(Color.WHITE);
 				textArea.setForeground(Color.WHITE);
-				setBackground(SELECTED_COLOR);
+				setBackground(Styles.SELECTED_COLOR);
 			} else {
 				label.setForeground(Color.BLUE);
 				textArea.setForeground(Color.BLACK);
-				setBackground(row % 2 == 0 ? Color.WHITE : ALTERNATE_COLOR);
+				setBackground(row % 2 == 0 ? Color.WHITE
+						: Styles.ALTERNATE_COLOR);
 			}
 
 			// Set the text area width to the table column width.

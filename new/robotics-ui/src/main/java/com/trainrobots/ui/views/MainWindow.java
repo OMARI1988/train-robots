@@ -8,12 +8,17 @@
 
 package com.trainrobots.ui.views;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.Painter;
+import javax.swing.UIDefaults;
 
 import com.trainrobots.ui.Resources;
 import com.trainrobots.ui.menus.MainMenu;
@@ -29,7 +34,21 @@ public class MainWindow extends JFrame {
 		setJMenuBar(menu);
 
 		// Desktop.
-		desktop = new JDesktopPane();
+		desktop = new JDesktopPane() {
+
+			public void updateUI() {
+				UIDefaults map = new UIDefaults();
+				Painter<JComponent> painter = new Painter<JComponent>() {
+					public void paint(Graphics2D g, JComponent c, int w, int h) {
+						g.setColor(new Color(80, 80, 80));
+						g.fillRect(0, 0, w, h);
+					}
+				};
+				map.put("DesktopPane[Enabled].backgroundPainter", painter);
+				putClientProperty("Nimbus.Overrides", map);
+				super.updateUI();
+			}
+		};
 		setContentPane(desktop);
 
 		// Icons.
