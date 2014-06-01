@@ -20,8 +20,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 import com.trainrobots.RoboticSystem;
 import com.trainrobots.collections.Items;
@@ -44,20 +45,29 @@ public class CommandsView extends PaneView {
 		setLayout(new BorderLayout());
 
 		// Model.
-		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int row, int column) {
-				return false;
+		TableModel model = new AbstractTableModel() {
+
+			public int getRowCount() {
+				return commands.count();
+			}
+
+			public int getColumnCount() {
+				return 1;
+			}
+
+			public Class<?> getColumnClass(int columnIndex) {
+				return Command.class;
+			}
+
+			public Object getValueAt(int rowIndex, int columnIndex) {
+				return commands.get(rowIndex);
 			}
 		};
-		model.addColumn("Command");
-		for (Command command : commands) {
-			model.addRow(new Object[] { command });
-		}
 
 		// Table.
 		JTable table = new JTable();
 		table.setModel(model);
-		table.setDefaultRenderer(Object.class, new LineWrapCellRenderer());
+		table.setDefaultRenderer(Command.class, new LineWrapCellRenderer());
 		table.setTableHeader(null);
 		table.setFillsViewportHeight(true);
 		table.setRowSelectionInterval(0, 0);
