@@ -67,7 +67,7 @@ public class CommandsView extends PaneView {
 		// Table.
 		JTable table = new JTable();
 		table.setModel(model);
-		table.setDefaultRenderer(Command.class, new LineWrapCellRenderer());
+		table.setDefaultRenderer(Command.class, new CommandRenderer());
 		table.setTableHeader(null);
 		table.setFillsViewportHeight(true);
 		table.setRowSelectionInterval(0, 0);
@@ -79,7 +79,7 @@ public class CommandsView extends PaneView {
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
-	private static class LineWrapCellRenderer extends JPanel implements
+	private static class CommandRenderer extends JPanel implements
 			TableCellRenderer {
 
 		private static final Color SELECTED_COLOR = new Color(57, 105, 138);
@@ -89,7 +89,7 @@ public class CommandsView extends PaneView {
 		private final JTextArea textArea = new JTextArea();
 		private int rowHeight;
 
-		public LineWrapCellRenderer() {
+		public CommandRenderer() {
 
 			// Label.
 			setLayout(new BorderLayout());
