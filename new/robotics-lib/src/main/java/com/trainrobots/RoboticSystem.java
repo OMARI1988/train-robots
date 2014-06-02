@@ -33,7 +33,8 @@ public class RoboticSystem {
 	public Layouts layouts() {
 		if (layouts == null) {
 			Log.info("Loading layouts...");
-			LayoutReader reader = new LayoutReader(file("layouts.xml"));
+			LayoutReader reader = new LayoutReader();
+			reader.read(file("layouts.xml"));
 			layouts = reader.layouts();
 			Log.info("Loaded: %s layouts.", layouts.count());
 		}
@@ -43,7 +44,8 @@ public class RoboticSystem {
 	public Scenes scenes() {
 		if (scenes == null) {
 			Log.info("Loading scenes...");
-			SceneReader reader = new SceneReader(file("scenes.xml"), layouts());
+			SceneReader reader = new SceneReader(layouts());
+			reader.read(file("scenes.xml"));
 			scenes = reader.scenes();
 			Log.info("Loaded: %s scenes.", scenes.count());
 		}
@@ -53,8 +55,8 @@ public class RoboticSystem {
 	public Commands commands() {
 		if (commands == null) {
 			Log.info("Loading commands...");
-			CommandReader reader = new CommandReader(file("commands.xml"),
-					scenes());
+			CommandReader reader = new CommandReader(scenes());
+			reader.read(file("commands.xml"));
 			commands = reader.commands();
 			Log.info("Loaded: %s commands.", commands.count());
 		}
