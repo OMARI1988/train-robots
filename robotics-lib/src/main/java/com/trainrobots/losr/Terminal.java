@@ -12,6 +12,16 @@ import com.trainrobots.NotImplementedException;
 
 public abstract class Terminal extends Losr {
 
+	protected final TokenContext context;
+
+	protected Terminal(TokenContext context) {
+		this.context = context;
+	}
+
+	public TokenContext context() {
+		return context;
+	}
+
 	@Override
 	public int count() {
 		return 0;

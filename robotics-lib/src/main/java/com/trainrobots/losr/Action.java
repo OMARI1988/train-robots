@@ -13,6 +13,12 @@ public class Action extends Terminal {
 	private final Actions action;
 
 	public Action(Actions action) {
+		super(null);
+		this.action = action;
+	}
+
+	public Action(TokenContext context, Actions action) {
+		super(context);
 		this.action = action;
 	}
 
@@ -26,9 +32,13 @@ public class Action extends Terminal {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
+	protected void write(StringBuilder text) {
 		text.append("(action: ");
 		text.append(action.toString().toLowerCase());
+		if (context != null) {
+			text.append(' ');
+			text.append(context);
+		}
 		text.append(')');
 	}
 }

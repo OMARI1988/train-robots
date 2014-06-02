@@ -30,22 +30,6 @@ public abstract class Losr implements Items<Losr> {
 		return text.toString();
 	}
 
-	public void write(StringBuilder text) {
-
-		// Name.
-		text.append('(');
-		writeName(text);
-		text.append(':');
-
-		// Children.
-		int size = count();
-		for (int i = 0; i < size; i++) {
-			text.append(' ');
-			get(i).write(text);
-		}
-		text.append(')');
-	}
-
 	@Override
 	public abstract int count();
 
@@ -67,4 +51,21 @@ public abstract class Losr implements Items<Losr> {
 	}
 
 	protected abstract void writeName(StringBuilder text);
+
+	protected void write(StringBuilder text) {
+
+		// Name.
+		text.append('(');
+		writeName(text);
+		text.append(':');
+
+		// Children.
+		int size = count();
+		for (int i = 0; i < size; i++) {
+			text.append(' ');
+			get(i).write(text);
+		}
+		text.append(')');
+	}
+
 }

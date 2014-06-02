@@ -17,7 +17,12 @@ public class Cardinal extends Token {
 	}
 
 	public Cardinal(String text, int value) {
-		super(text);
+		super(null, text);
+		this.value = value;
+	}
+
+	public Cardinal(TokenContext context, String text, int value) {
+		super(context, text);
 		this.value = value;
 	}
 
@@ -34,10 +39,9 @@ public class Cardinal extends Token {
 		return false;
 	}
 
+
 	@Override
-	public void write(StringBuilder text) {
-		text.append("(cardinal: ");
-		text.append(this.text);
-		text.append(')');
+	protected void writeName(StringBuilder text) {
+		text.append("cardinal");
 	}
 }

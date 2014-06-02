@@ -13,6 +13,12 @@ public class Color extends Terminal {
 	private final Colors color;
 
 	public Color(Colors color) {
+		super(null);
+		this.color = color;
+	}
+
+	public Color(TokenContext context, Colors color) {
+		super(context);
 		this.color = color;
 	}
 
@@ -26,9 +32,13 @@ public class Color extends Terminal {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
+	protected void write(StringBuilder text) {
 		text.append("(color: ");
 		text.append(color.toString().toLowerCase());
+		if (context != null) {
+			text.append(' ');
+			text.append(context);
+		}
 		text.append(')');
 	}
 }

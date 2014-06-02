@@ -13,6 +13,12 @@ public class Type extends Terminal {
 	private final Types type;
 
 	public Type(Types type) {
+		super(null);
+		this.type = type;
+	}
+
+	public Type(TokenContext context, Types type) {
+		super(context);
 		this.type = type;
 	}
 
@@ -26,9 +32,13 @@ public class Type extends Terminal {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
+	protected void write(StringBuilder text) {
 		text.append("(type: ");
 		text.append(type.toString().toLowerCase());
+		if (context != null) {
+			text.append(' ');
+			text.append(context);
+		}
 		text.append(')');
 	}
 }

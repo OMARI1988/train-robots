@@ -17,7 +17,12 @@ public class Ordinal extends Token {
 	}
 
 	public Ordinal(String text, int value) {
-		super(text);
+		super(null, text);
+		this.value = value;
+	}
+
+	public Ordinal(TokenContext context, String text, int value) {
+		super(context, text);
 		this.value = value;
 	}
 
@@ -35,9 +40,7 @@ public class Ordinal extends Token {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
-		text.append("(ordinal: ");
-		text.append(this.text);
-		text.append(')');
+	protected void writeName(StringBuilder text) {
+		text.append("ordinal");
 	}
 }

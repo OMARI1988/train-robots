@@ -11,7 +11,11 @@ package com.trainrobots.losr;
 public class Symbol extends Token {
 
 	public Symbol(String text) {
-		super(text);
+		super(null, text);
+	}
+
+	public Symbol(TokenContext context, String text) {
+		super(context, text);
 	}
 
 	@Override
@@ -20,9 +24,7 @@ public class Symbol extends Token {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
-		text.append("(symbol: ");
-		text.append(this.text);
-		text.append(')');
+	protected void writeName(StringBuilder text) {
+		text.append("symbol");
 	}
 }

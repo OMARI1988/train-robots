@@ -11,7 +11,11 @@ package com.trainrobots.losr;
 public class Text extends Token {
 
 	public Text(String text) {
-		super(text);
+		super(null, text);
+	}
+
+	public Text(TokenContext context, String text) {
+		super(context, text);
 	}
 
 	@Override
@@ -20,9 +24,7 @@ public class Text extends Token {
 	}
 
 	@Override
-	public void write(StringBuilder text) {
-		text.append("(text: ");
-		text.append(this.text);
-		text.append(')');
+	protected void writeName(StringBuilder text) {
+		text.append("text");
 	}
 }

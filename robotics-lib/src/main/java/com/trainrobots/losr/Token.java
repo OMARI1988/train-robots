@@ -12,11 +12,25 @@ public abstract class Token extends Terminal {
 
 	protected final String text;
 
-	public Token(String text) {
+	protected Token(TokenContext context, String text) {
+		super(context);
 		this.text = text;
 	}
 
 	public String text() {
 		return text;
+	}
+
+	@Override
+	protected void write(StringBuilder text) {
+		text.append('(');
+		writeName(text);
+		text.append(": ");
+		text.append(this.text);
+		if (context != null) {
+			text.append(' ');
+			text.append(context);
+		}
+		text.append(')');
 	}
 }
