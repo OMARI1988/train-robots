@@ -10,7 +10,6 @@ package com.trainrobots.losr;
 
 import java.util.Iterator;
 
-import com.trainrobots.NotImplementedException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.reader.LosrReader;
 
@@ -38,12 +37,17 @@ public abstract class Losr implements Items<Losr> {
 
 	@Override
 	public Losr[] toArray() {
-		throw new NotImplementedException();
+		int size = count();
+		Losr[] items = new Losr[size];
+		for (int i = 0; i < size; i++) {
+			items[i] = get(i);
+		}
+		return items;
 	}
 
 	@Override
 	public Iterator<Losr> iterator() {
-		throw new NotImplementedException();
+		return new LosrIterator(this);
 	}
 
 	public static Losr read(String text) {
@@ -67,5 +71,4 @@ public abstract class Losr implements Items<Losr> {
 		}
 		text.append(')');
 	}
-
 }
