@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import com.trainrobots.NotImplementedException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.losr.reader.LosrReader;
 
 public abstract class Losr implements Items<Losr> {
 
@@ -61,8 +62,8 @@ public abstract class Losr implements Items<Losr> {
 		throw new NotImplementedException();
 	}
 
-	public static Losr parse(String text) {
-		throw new NotImplementedException();
+	public static Losr read(String text) {
+		return new LosrReader(text).read();
 	}
 
 	protected abstract void writeName(StringBuilder text);

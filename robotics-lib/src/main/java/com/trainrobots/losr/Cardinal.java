@@ -12,6 +12,10 @@ public class Cardinal extends Token {
 
 	private final int value;
 
+	public Cardinal(String text) {
+		this(text, Integer.parseInt(text));
+	}
+
 	public Cardinal(String text, int value) {
 		super(text);
 		this.value = value;

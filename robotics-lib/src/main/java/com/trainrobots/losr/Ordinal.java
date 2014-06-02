@@ -12,6 +12,10 @@ public class Ordinal extends Token {
 
 	private final int value;
 
+	public Ordinal(String text) {
+		this(text, Integer.parseInt(text.substring(0, text.length() - 2)));
+	}
+
 	public Ordinal(String text, int value) {
 		super(text);
 		this.value = value;

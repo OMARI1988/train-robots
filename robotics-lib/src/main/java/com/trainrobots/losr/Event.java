@@ -8,6 +8,9 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.RoboticException;
+import com.trainrobots.collections.Items;
+
 public class Event extends Losr {
 
 	private final Action action;
@@ -20,6 +23,14 @@ public class Event extends Losr {
 	public Event(Action action, Entity entity) {
 		this.action = action;
 		this.entity = entity;
+	}
+
+	public Event(Items<Losr> items) {
+		if (items.count() != 2) {
+			throw new RoboticException("Invalid event children.");
+		}
+		this.action = (Action) items.get(0);
+		this.entity = (Entity) items.get(1);
 	}
 
 	public Action actionAttribute() {

@@ -8,6 +8,9 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.RoboticException;
+import com.trainrobots.collections.Items;
+
 public class Entity extends Losr {
 
 	private final Type type;
@@ -18,6 +21,13 @@ public class Entity extends Losr {
 
 	public Entity(Type type) {
 		this.type = type;
+	}
+
+	public Entity(Items<Losr> items) {
+		if (items.count() != 1) {
+			throw new RoboticException("Invalid entity children.");
+		}
+		this.type = (Type) items.get(0);
 	}
 
 	public Type typeAttribute() {
