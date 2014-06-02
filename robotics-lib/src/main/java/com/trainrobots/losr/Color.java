@@ -32,13 +32,12 @@ public class Color extends Terminal {
 	}
 
 	@Override
-	protected void write(StringBuilder text) {
-		text.append("(color: ");
+	protected void writeName(StringBuilder text) {
+		text.append("color");
+	}
+
+	@Override
+	protected void writeContent(StringBuilder text) {
 		text.append(color.toString().toLowerCase());
-		if (context != null) {
-			text.append(' ');
-			text.append(context);
-		}
-		text.append(')');
 	}
 }

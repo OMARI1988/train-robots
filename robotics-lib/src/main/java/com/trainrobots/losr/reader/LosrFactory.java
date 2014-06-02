@@ -37,9 +37,10 @@ public class LosrFactory {
 
 		// Terminals.
 		terminals.put("text", Text::new);
-		terminals.put("symbol", Symbol::new);
-		terminals.put("cardinal", Cardinal::new);
-		terminals.put("ordinal", Ordinal::new);
+		terminals.put("symbol", (t, c) -> new Symbol(t, c.charAt(0)));
+		terminals.put("cardinal",
+				(t, c) -> new Cardinal(t, Integer.parseInt(c)));
+		terminals.put("ordinal", (t, c) -> new Ordinal(t, Integer.parseInt(c)));
 		terminals.put("type", (t, c) -> new Type(t, Types.parse(c)));
 		terminals.put("color", (t, c) -> new Color(t, Colors.parse(c)));
 		terminals.put("action", (t, c) -> new Action(t, Actions.parse(c)));

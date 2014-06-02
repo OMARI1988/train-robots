@@ -13,12 +13,13 @@ import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Symbol;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.Text;
-import com.trainrobots.losr.Token;
+import com.trainrobots.losr.TokenContext;
 
 public class Tokenizer {
 
-	private final ItemsList<Token> tokens = new ItemsList<Token>();
+	private final ItemsList<Terminal> tokens = new ItemsList<Terminal>();
 	private final String text;
 	private int position;
 
@@ -26,9 +27,9 @@ public class Tokenizer {
 		this.text = text;
 	}
 
-	public Items<Token> tokens() {
+	public Items<Terminal> tokens() {
 		while (!end()) {
-			Token token = readToken();
+			Terminal token = readToken();
 			if (token != null) {
 				tokens.add(token);
 			}
@@ -36,7 +37,7 @@ public class Tokenizer {
 		return tokens;
 	}
 
-	private Token readToken() {
+	private Terminal readToken() {
 
 		// Whitespace.
 		char ch = peek();
@@ -63,28 +64,26 @@ public class Tokenizer {
 		while (!end() && !whitespace(peek()) && !symbol(peek())) {
 			position++;
 		}
-		return new Text(text.substring(index, position));
+		return new Text(context(), text.substring(index, position));
 	}
 
-	private Token readNumber() {
+	private Terminal readNumber() {
 
 		// Number.
 		int index = position;
 		while (!end() && digit(peek())) {
 			position++;
 		}
-		String text = this.text.substring(index, position);
-		int value = Integer.parseInt(text);
+		int value = Integer.parseInt(text.substring(index, position));
 
 		// Suffix?
 		if (hasOrdinalSuffix(value)) {
 			position += 2;
-			text = this.text.substring(index, position);
-			return new Ordinal(text, value);
+			return new Ordinal(context(), value);
 		}
 
 		// Cardinal.
-		return new Cardinal(text, value);
+		return new Cardinal(context(), value);
 	}
 
 	private boolean hasOrdinalSuffix(int value) {
@@ -105,17 +104,21 @@ public class Tokenizer {
 		}
 	}
 
-	private Token readWhitespace() {
+	private Terminal readWhitespace() {
 		while (!end() && whitespace(peek())) {
 			position++;
 		}
 		return null;
 	}
 
-	private Symbol readSymbol() {
+	private Terminal readSymbol() {
 		char ch = peek();
 		position++;
-		return new Symbol(Character.toString(ch));
+		return new Symbol(context(), ch);
+	}
+
+	private TokenContext context() {
+		return new TokenContext(tokens.size() + 1);
 	}
 
 	private static boolean symbol(char ch) {

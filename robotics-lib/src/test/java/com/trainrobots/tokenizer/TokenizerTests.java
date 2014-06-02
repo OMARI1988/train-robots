@@ -18,8 +18,9 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Symbol;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.Text;
-import com.trainrobots.losr.Token;
+import com.trainrobots.losr.TokenContext;
 import com.trainrobots.treebank.Command;
 
 public class TokenizerTests {
@@ -28,10 +29,11 @@ public class TokenizerTests {
 	public void shouldTokenizeText() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("pick up the red block").tokens();
+		Items<Terminal> tokens = new Tokenizer("pick up the red block")
+				.tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(5));
+		verifyContext(tokens, 5);
 		assertThat(tokens.get(0), is(new Text("pick")));
 		assertThat(tokens.get(1), is(new Text("up")));
 		assertThat(tokens.get(2), is(new Text("the")));
@@ -43,61 +45,61 @@ public class TokenizerTests {
 	public void shouldTokenizeSymbols() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("you've, row.").tokens();
+		Items<Terminal> tokens = new Tokenizer("you've, row.").tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(4));
+		verifyContext(tokens, 4);
 		assertThat(tokens.get(0), is(new Text("you've")));
-		assertThat(tokens.get(1), is(new Symbol(",")));
+		assertThat(tokens.get(1), is(new Symbol(',')));
 		assertThat(tokens.get(2), is(new Text("row")));
-		assertThat(tokens.get(3), is(new Symbol(".")));
+		assertThat(tokens.get(3), is(new Symbol('.')));
 	}
 
 	@Test
 	public void shouldTokenizeIsolatedFullStop() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("you've, row .").tokens();
+		Items<Terminal> tokens = new Tokenizer("you've, row .").tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(4));
+		verifyContext(tokens, 4);
 		assertThat(tokens.get(0), is(new Text("you've")));
-		assertThat(tokens.get(1), is(new Symbol(",")));
+		assertThat(tokens.get(1), is(new Symbol(',')));
 		assertThat(tokens.get(2), is(new Text("row")));
-		assertThat(tokens.get(3), is(new Symbol(".")));
+		assertThat(tokens.get(3), is(new Symbol('.')));
 	}
 
 	@Test
 	public void shouldTokenizeTwoSentences() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("A B. C D!").tokens();
+		Items<Terminal> tokens = new Tokenizer("A B. C D!").tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(6));
+		verifyContext(tokens, 6);
 		assertThat(tokens.get(0), is(new Text("A")));
 		assertThat(tokens.get(1), is(new Text("B")));
-		assertThat(tokens.get(2), is(new Symbol(".")));
+		assertThat(tokens.get(2), is(new Symbol('.')));
 		assertThat(tokens.get(3), is(new Text("C")));
 		assertThat(tokens.get(4), is(new Text("D")));
-		assertThat(tokens.get(5), is(new Symbol("!")));
+		assertThat(tokens.get(5), is(new Symbol('!')));
 	}
 
 	@Test
 	public void shouldTokenizeDashes() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("top of red-blue-red tower")
+		Items<Terminal> tokens = new Tokenizer("top of red-blue-red tower")
 				.tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(8));
+		verifyContext(tokens, 8);
 		assertThat(tokens.get(0), is(new Text("top")));
 		assertThat(tokens.get(1), is(new Text("of")));
 		assertThat(tokens.get(2), is(new Text("red")));
-		assertThat(tokens.get(3), is(new Symbol("-")));
+		assertThat(tokens.get(3), is(new Symbol('-')));
 		assertThat(tokens.get(4), is(new Text("blue")));
-		assertThat(tokens.get(5), is(new Symbol("-")));
+		assertThat(tokens.get(5), is(new Symbol('-')));
 		assertThat(tokens.get(6), is(new Text("red")));
 		assertThat(tokens.get(7), is(new Text("tower")));
 	}
@@ -106,12 +108,12 @@ public class TokenizerTests {
 	public void shouldTokenizeForwardSlash() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("red/white column").tokens();
+		Items<Terminal> tokens = new Tokenizer("red/white column").tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(4));
+		verifyContext(tokens, 4);
 		assertThat(tokens.get(0), is(new Text("red")));
-		assertThat(tokens.get(1), is(new Symbol("/")));
+		assertThat(tokens.get(1), is(new Symbol('/')));
 		assertThat(tokens.get(2), is(new Text("white")));
 		assertThat(tokens.get(3), is(new Text("column")));
 	}
@@ -120,37 +122,38 @@ public class TokenizerTests {
 	public void shouldTokenizeCardinals() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("4 plus 26").tokens();
+		Items<Terminal> tokens = new Tokenizer("4 plus 26").tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(3));
-		assertThat(tokens.get(0), is(new Cardinal("4", 4)));
+		verifyContext(tokens, 3);
+		assertThat(tokens.get(0), is(new Cardinal(4)));
 		assertThat(tokens.get(1), is(new Text("plus")));
-		assertThat(tokens.get(2), is(new Cardinal("26", 26)));
+		assertThat(tokens.get(2), is(new Cardinal(26)));
 	}
 
 	@Test
 	public void shouldTokenizeOrdinals() {
 
 		// Tokenize.
-		Items<Token> tokens = new Tokenizer("1st 2nd 3rd 4th 5th 6th").tokens();
+		Items<Terminal> tokens = new Tokenizer("1st 2nd 3rd 4th 5th 6th")
+				.tokens();
 
 		// Validate.
-		assertThat(tokens.count(), is(6));
-		assertThat(tokens.get(0), is(new Ordinal("1st", 1)));
-		assertThat(tokens.get(1), is(new Ordinal("2nd", 2)));
-		assertThat(tokens.get(2), is(new Ordinal("3rd", 3)));
-		assertThat(tokens.get(3), is(new Ordinal("4th", 4)));
-		assertThat(tokens.get(4), is(new Ordinal("5th", 5)));
-		assertThat(tokens.get(5), is(new Ordinal("6th", 6)));
+		verifyContext(tokens, 6);
+		assertThat(tokens.get(0), is(new Ordinal(1)));
+		assertThat(tokens.get(1), is(new Ordinal(2)));
+		assertThat(tokens.get(2), is(new Ordinal(3)));
+		assertThat(tokens.get(3), is(new Ordinal(4)));
+		assertThat(tokens.get(4), is(new Ordinal(5)));
+		assertThat(tokens.get(5), is(new Ordinal(6)));
 	}
 
 	@Test
 	public void shouldTokenizeTreebank() {
 		int wordCount = 0;
 		for (Command command : Robotics.system().commands()) {
-			Items<Token> tokens = new Tokenizer(command.text()).tokens();
-			for (Token token : tokens) {
+			Items<Terminal> tokens = new Tokenizer(command.text()).tokens();
+			for (Terminal token : tokens) {
 				if (token instanceof Text || token instanceof Cardinal
 						|| token instanceof Ordinal) {
 					wordCount++;
@@ -158,5 +161,14 @@ public class TokenizerTests {
 			}
 		}
 		assertThat(wordCount, is(125465));
+	}
+
+	private void verifyContext(Items<Terminal> tokens, int size) {
+		assertThat(tokens.count(), is(size));
+		for (int i = 0; i < size; i++) {
+			TokenContext context = tokens.get(i).context();
+			assertThat(context.start(), is(i + 1));
+			assertThat(context.end(), is(i + 1));
+		}
 	}
 }

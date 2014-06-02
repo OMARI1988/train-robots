@@ -8,24 +8,16 @@
 
 package com.trainrobots.losr;
 
-public class Cardinal extends Token {
+public class Cardinal extends Terminal {
 
 	private final int value;
 
-	public Cardinal(String text) {
-		this(null, text);
+	public Cardinal(int value) {
+		this(null, value);
 	}
 
-	public Cardinal(String text, int value) {
-		this(null, text, value);
-	}
-
-	public Cardinal(TokenContext context, String text) {
-		this(context, text, Integer.parseInt(text));
-	}
-
-	public Cardinal(TokenContext context, String text, int value) {
-		super(context, text);
+	public Cardinal(TokenContext context, int value) {
+		super(context);
 		this.value = value;
 	}
 
@@ -35,15 +27,16 @@ public class Cardinal extends Token {
 
 	@Override
 	public boolean equals(Losr losr) {
-		if (losr instanceof Cardinal) {
-			Cardinal cardinal = (Cardinal) losr;
-			return cardinal.text.equals(text) && cardinal.value == value;
-		}
-		return false;
+		return losr instanceof Cardinal && ((Cardinal) losr).value == value;
 	}
 
 	@Override
 	protected void writeName(StringBuilder text) {
 		text.append("cardinal");
+	}
+
+	@Override
+	protected void writeContent(StringBuilder text) {
+		text.append(value);
 	}
 }

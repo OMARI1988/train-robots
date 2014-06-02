@@ -32,13 +32,12 @@ public class Type extends Terminal {
 	}
 
 	@Override
-	protected void write(StringBuilder text) {
-		text.append("(type: ");
+	protected void writeName(StringBuilder text) {
+		text.append("type");
+	}
+
+	@Override
+	protected void writeContent(StringBuilder text) {
 		text.append(type.toString().toLowerCase());
-		if (context != null) {
-			text.append(' ');
-			text.append(context);
-		}
-		text.append(')');
 	}
 }

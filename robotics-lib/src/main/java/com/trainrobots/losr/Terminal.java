@@ -8,8 +8,6 @@
 
 package com.trainrobots.losr;
 
-import com.trainrobots.NotImplementedException;
-
 public abstract class Terminal extends Losr {
 
 	protected final TokenContext context;
@@ -32,8 +30,18 @@ public abstract class Terminal extends Losr {
 		throw new IndexOutOfBoundsException();
 	}
 
-	protected void writeName(StringBuilder text) {
-		throw new NotImplementedException(
-				"Terminal nodes do not supported this operation.");
+	@Override
+	protected void write(StringBuilder text) {
+		text.append('(');
+		writeName(text);
+		text.append(": ");
+		writeContent(text);
+		if (context != null) {
+			text.append(' ');
+			text.append(context);
+		}
+		text.append(')');
 	}
+
+	protected abstract void writeContent(StringBuilder text);
 }

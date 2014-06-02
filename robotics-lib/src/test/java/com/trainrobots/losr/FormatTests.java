@@ -28,34 +28,34 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatSymbol() {
-		assertThat(new Symbol(".").toString(), is("(symbol: .)"));
+		assertThat(new Symbol('.').toString(), is("(symbol: .)"));
 	}
 
 	@Test
 	public void shouldFormatSymbolWithContext() {
-		assertThat(new Symbol(new TokenContext(18), ".").toString(),
+		assertThat(new Symbol(new TokenContext(18), '.').toString(),
 				is("(symbol: . (token: 18))"));
 	}
 
 	@Test
 	public void shouldFormatOrdinal() {
-		assertThat(new Ordinal("22nd", 22).toString(), is("(ordinal: 22nd)"));
+		assertThat(new Ordinal(22).toString(), is("(ordinal: 22)"));
 	}
 
 	@Test
 	public void shouldFormatOrdinalWithContext() {
-		assertThat(new Ordinal(new TokenContext(5, 6), "22nd", 22).toString(),
-				is("(ordinal: 22nd (token: 5 6))"));
+		assertThat(new Ordinal(new TokenContext(5, 6), 22).toString(),
+				is("(ordinal: 22 (token: 5 6))"));
 	}
 
 	@Test
 	public void shouldFormatCardinal() {
-		assertThat(new Cardinal("45", 45).toString(), is("(cardinal: 45)"));
+		assertThat(new Cardinal(45).toString(), is("(cardinal: 45)"));
 	}
 
 	@Test
 	public void shouldCardinalWithContext() {
-		assertThat(new Cardinal(new TokenContext(12), "45", 45).toString(),
+		assertThat(new Cardinal(new TokenContext(12), 45).toString(),
 				is("(cardinal: 45 (token: 12))"));
 	}
 

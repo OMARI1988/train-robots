@@ -32,13 +32,12 @@ public class Action extends Terminal {
 	}
 
 	@Override
-	protected void write(StringBuilder text) {
-		text.append("(action: ");
+	protected void writeName(StringBuilder text) {
+		text.append("action");
+	}
+
+	@Override
+	protected void writeContent(StringBuilder text) {
 		text.append(action.toString().toLowerCase());
-		if (context != null) {
-			text.append(' ');
-			text.append(context);
-		}
-		text.append(')');
 	}
 }

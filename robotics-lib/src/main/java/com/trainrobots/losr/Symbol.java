@@ -8,23 +8,35 @@
 
 package com.trainrobots.losr;
 
-public class Symbol extends Token {
+public class Symbol extends Terminal {
 
-	public Symbol(String text) {
-		super(null, text);
+	private final char value;
+
+	public Symbol(char value) {
+		this(null, value);
 	}
 
-	public Symbol(TokenContext context, String text) {
-		super(context, text);
+	public Symbol(TokenContext context, char value) {
+		super(context);
+		this.value = value;
+	}
+
+	public char value() {
+		return value;
 	}
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Symbol && ((Symbol) losr).text.equals(text);
+		return losr instanceof Symbol && ((Symbol) losr).value == value;
 	}
 
 	@Override
 	protected void writeName(StringBuilder text) {
 		text.append("symbol");
+	}
+
+	@Override
+	protected void writeContent(StringBuilder text) {
+		text.append(value);
 	}
 }

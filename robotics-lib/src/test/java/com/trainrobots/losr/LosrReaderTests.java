@@ -28,35 +28,35 @@ public class LosrReaderTests {
 
 	@Test
 	public void shouldReadSymbol() {
-		assertThat(Losr.read("(symbol: .)"), is(new Symbol(".")));
+		assertThat(Losr.read("(symbol: .)"), is(new Symbol('.')));
 	}
 
 	@Test
 	public void shouldReadSymbolWithContext() {
 		assertThat(Losr.read("(symbol: . (token: 18))"), is(new Symbol(
-				new TokenContext(18), ".")));
+				new TokenContext(18), '.')));
 	}
 
 	@Test
 	public void shouldReadOrdinal() {
-		assertThat(Losr.read("(ordinal: 22nd)"), is(new Ordinal("22nd")));
+		assertThat(Losr.read("(ordinal: 22)"), is(new Ordinal(22)));
 	}
 
 	@Test
 	public void shouldReadOrdinalWithContext() {
-		assertThat(Losr.read("(ordinal: 22nd (token: 5 6))"), is(new Ordinal(
-				new TokenContext(5, 6), "22nd", 22)));
+		assertThat(Losr.read("(ordinal: 22 (token: 5 6))"), is(new Ordinal(
+				new TokenContext(5, 6), 22)));
 	}
 
 	@Test
 	public void shouldReadCardinal() {
-		assertThat(Losr.read("(cardinal: 45)"), is(new Cardinal("45")));
+		assertThat(Losr.read("(cardinal: 45)"), is(new Cardinal(45)));
 	}
 
 	@Test
 	public void shouldReadCardinalWithContext() {
 		assertThat(Losr.read("(cardinal: 45 (token: 12))"), is(new Cardinal(
-				new TokenContext(12), "45")));
+				new TokenContext(12), 45)));
 	}
 
 	@Test
