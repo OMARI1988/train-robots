@@ -16,7 +16,6 @@ import com.trainrobots.scenes.SceneReader;
 import com.trainrobots.scenes.Scenes;
 import com.trainrobots.treebank.CommandReader;
 import com.trainrobots.treebank.Commands;
-import com.trainrobots.treebank.LosrReader;
 
 public class RoboticSystem {
 
@@ -53,17 +52,11 @@ public class RoboticSystem {
 
 	public Commands commands() {
 		if (commands == null) {
-
-			// Commands.
-			CommandReader commandReader = new CommandReader(scenes());
-			commandReader.read(file("commands.xml"));
-			commands = commandReader.commands();
+			CommandReader reader = new CommandReader(scenes());
+			reader.readCommands(file("commands.xml"));
+			reader.readLosr(file("losr.xml"));
+			commands = reader.commands();
 			Log.info("Loaded: %s commands.", commands.count());
-
-			// LOSR.
-			LosrReader losrReader = new LosrReader(commands);
-			losrReader.read(file("losr.xml"));
-			Log.info("Loaded: %s statements.", losrReader.count());
 		}
 		return commands;
 	}

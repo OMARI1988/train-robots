@@ -14,27 +14,44 @@ import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.scenes.Scenes;
 
-public class CommandReader extends XmlReader {
+public class CommandReader {
 
 	private final Scenes scenes;
-	private final ItemsList<Command> commands = new ItemsList<Command>();
+	private final ItemsList<Command> commandList = new ItemsList<Command>();
+	private Commands commands;
 
 	public CommandReader(Scenes scenes) {
 		this.scenes = scenes;
 	}
 
 	public Commands commands() {
-		return new Commands(commands);
+		return commands;
 	}
 
-	@Override
-	protected void handleElementStart(String name, Attributes attributes) {
+	public void readCommands(String filename) {
+		new XmlReader() {
+			protected void handleElementStart(String name, Attributes attributes) {
+				if (name.equals("command")) {
+					int id = Integer.parseInt(attributes.getValue("id"));
+					int sceneId = Integer.parseInt(attributes
+							.getValue("sceneId"));
+					String text = attributes.getValue("text");
+					commandList
+							.add(new Command(id, scenes.scene(sceneId), text));
+				}
+			}
+		}.read(filename);
+		commands = new Commands(commandList);
+	}
 
-		if (name.equals("command")) {
-			int id = Integer.parseInt(attributes.getValue("id"));
-			int sceneId = Integer.parseInt(attributes.getValue("sceneId"));
-			String text = attributes.getValue("text");
-			commands.add(new Command(id, scenes.scene(sceneId), text));
-		}
+	public void readLosr(String filename) {
+		new XmlReader() {
+			protected void handleElementStart(String name, Attributes attributes) {
+				if (name.equals("command")) {
+					int id = Integer.parseInt(attributes.getValue("id"));
+					commands.command(id).setLosr(attributes.getValue("losr"));
+				}
+			}
+		}.read(filename);
 	}
 }
