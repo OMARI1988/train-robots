@@ -21,7 +21,7 @@ public class PaneReader extends XmlReader {
 	}
 
 	@Override
-	protected void handleStartElement(String name, Attributes attributes) {
+	protected void handleElementStart(String name, Attributes attributes) {
 
 		if (!name.equals("panes")) {
 			int x = Integer.parseInt(attributes.getValue("x"));

@@ -24,11 +24,11 @@ public abstract class XmlReader {
 
 				public void startElement(String uri, String localName,
 						String name, Attributes attributes) {
-					handleStartElement(name, attributes);
+					handleElementStart(name, attributes);
 				}
 
 				public void endElement(String uri, String localName, String name) {
-					handleEndElement(name);
+					handleElementEnd(name);
 				}
 			});
 
@@ -37,9 +37,9 @@ public abstract class XmlReader {
 		}
 	}
 
-	protected abstract void handleStartElement(String name,
+	protected abstract void handleElementStart(String name,
 			Attributes attributes);
 
-	protected void handleEndElement(String name) {
+	protected void handleElementEnd(String name) {
 	}
 }

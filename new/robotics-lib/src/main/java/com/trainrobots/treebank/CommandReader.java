@@ -28,7 +28,7 @@ public class CommandReader extends XmlReader {
 	}
 
 	@Override
-	protected void handleStartElement(String name, Attributes attributes) {
+	protected void handleElementStart(String name, Attributes attributes) {
 
 		if (name.equals("command")) {
 			int id = Integer.parseInt(attributes.getValue("id"));

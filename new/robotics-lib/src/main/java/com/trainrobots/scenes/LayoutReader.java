@@ -26,7 +26,7 @@ public class LayoutReader extends XmlReader {
 	}
 
 	@Override
-	protected void handleStartElement(String name, Attributes attributes) {
+	protected void handleElementStart(String name, Attributes attributes) {
 
 		switch (name) {
 		case "layout":
@@ -48,7 +48,7 @@ public class LayoutReader extends XmlReader {
 	}
 
 	@Override
-	protected void handleEndElement(String name) {
+	protected void handleElementEnd(String name) {
 		switch (name) {
 		case "layout":
 			layouts.add(new Layout(layoutId, gripperPosition, gripperOpen,

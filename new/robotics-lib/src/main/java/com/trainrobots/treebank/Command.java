@@ -15,6 +15,7 @@ public class Command {
 	private final int id;
 	private final Scene scene;
 	private final String text;
+	private String losr;
 
 	public Command(int id, Scene scene, String text) {
 		this.id = id;
@@ -32,5 +33,13 @@ public class Command {
 
 	public String text() {
 		return text;
+	}
+
+	public String losr() {
+		return losr;
+	}
+
+	public void setLosr(String losr) {
+		this.losr = losr;
 	}
 }
