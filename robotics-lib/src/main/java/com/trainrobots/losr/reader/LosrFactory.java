@@ -22,6 +22,8 @@ import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Ordinal;
+import com.trainrobots.losr.Relation;
+import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Text;
 import com.trainrobots.losr.TokenContext;
@@ -44,6 +46,8 @@ public class LosrFactory {
 		terminals.put("type", (t, c) -> new Type(t, Types.parse(c)));
 		terminals.put("color", (t, c) -> new Color(t, Colors.parse(c)));
 		terminals.put("action", (t, c) -> new Action(t, Actions.parse(c)));
+		terminals
+				.put("relation", (t, c) -> new Relation(t, Relations.parse(c)));
 
 		// Non-terminals.
 		nonTerminals.put("entity", Entity::new);

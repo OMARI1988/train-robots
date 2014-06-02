@@ -94,6 +94,19 @@ public class FormatTests {
 	}
 
 	@Test
+	public void shouldFormatRelation() {
+		assertThat(new Relation(Relations.Above).toString(),
+				is("(relation: above)"));
+	}
+
+	@Test
+	public void shouldFormatRelationWithContext() {
+		assertThat(
+				new Relation(new TokenContext(4), Relations.Above).toString(),
+				is("(relation: above (token: 4))"));
+	}
+
+	@Test
 	public void shouldFormatEntity() {
 		assertThat(new Entity(Types.Prism).toString(),
 				is("(entity: (type: prism))"));

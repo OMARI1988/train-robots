@@ -13,6 +13,7 @@ import com.trainrobots.collections.Items;
 
 public class Entity extends Losr {
 
+	private final Color color;
 	private final Type type;
 
 	public Entity(Types type) {
@@ -20,14 +21,48 @@ public class Entity extends Losr {
 	}
 
 	public Entity(Type type) {
+		this(null, type);
+	}
+
+	public Entity(Color color, Type type) {
+		this.color = color;
 		this.type = type;
 	}
 
 	public Entity(Items<Losr> items) {
-		if (items.count() != 1) {
-			throw new RoboticException("Invalid entity children.");
+
+		// Items.
+		Color color = null;
+		Type type = null;
+		for (Losr item : items) {
+
+			// Color.
+			if (item instanceof Color && color == null) {
+				color = (Color) item;
+				continue;
+			}
+
+			// Type.
+			if (item instanceof Type && type == null) {
+				type = (Type) item;
+				continue;
+			}
+
+			// Invalid.
+			throw new RoboticException("Invalid entity item: %s.", item);
 		}
-		this.type = (Type) items.get(0);
+
+		// Entity.
+		this.color = color;
+		this.type = type;
+	}
+
+	public Color colorAttribute() {
+		return color;
+	}
+
+	public Colors color() {
+		return color != null ? color.color() : null;
 	}
 
 	public Type typeAttribute() {

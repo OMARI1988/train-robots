@@ -11,7 +11,11 @@ package com.trainrobots.losr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
+import com.trainrobots.Robotics;
+import com.trainrobots.treebank.Command;
 
 public class LosrReaderTests {
 
@@ -93,6 +97,18 @@ public class LosrReaderTests {
 	}
 
 	@Test
+	public void shouldReadRelation() {
+		assertThat(Losr.read("(relation: above)"), is(new Relation(
+				Relations.Above)));
+	}
+
+	@Test
+	public void shouldReadRelationWithContext() {
+		assertThat(Losr.read("(relation: above (token: 4))"), is(new Relation(
+				new TokenContext(4), Relations.Above)));
+	}
+
+	@Test
 	public void shouldReadEntity() {
 		assertThat(Losr.read("(entity: (type: prism))"), is(new Entity(
 				Types.Prism)));
@@ -117,5 +133,21 @@ public class LosrReaderTests {
 				is(new Event(
 						new Action(new TokenContext(1, 2), Actions.Take),
 						new Entity(new Type(new TokenContext(3, 4), Types.Cube)))));
+	}
+
+	@Test
+	@Ignore
+	public void shouldReadTreebank() {
+		for (Command command : Robotics.system().commands()) {
+			String losr = command.losr();
+			if (losr != null) {
+				try {
+					Losr.read(losr);
+				} catch (Exception exception) {
+					System.out.println("Failed to read: " + losr);
+					throw exception;
+				}
+			}
+		}
 	}
 }
