@@ -12,34 +12,34 @@ import java.util.TreeMap;
 
 public enum Colors {
 
-	Blue(0, 0, 255),
-	Cyan(0, 255, 255),
-	Red(255, 0, 0),
-	Yellow(255, 255, 0),
-	Green(0, 255, 0),
-	Magenta(255, 0, 255),
-	Gray(128, 128, 128),
-	White(255, 255, 255);
+	Blue	(0, 0, 1),
+	Cyan	(0, 1, 1),
+	Red		(1, 0, 0),
+	Yellow	(1, 1, 0),
+	Green	(0, 1, 0),
+	Magenta	(1, 0, 1),
+	White	(1, 1, 1),
+	Gray	(0.5f, 0.5f, 0.5f);
 
-	private final int red;
-	private final int green;
-	private final int blue;
+	private final float red;
+	private final float green;
+	private final float blue;
 
-	private Colors(int red, int green, int blue) {
+	private Colors(float red, float green, float blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
 
-	public int red() {
+	public float red() {
 		return red;
 	}
 
-	public int green() {
+	public float green() {
 		return green;
 	}
 
-	public int blue() {
+	public float blue() {
 		return blue;
 	}
 

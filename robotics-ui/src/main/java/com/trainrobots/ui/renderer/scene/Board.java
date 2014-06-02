@@ -53,11 +53,8 @@ public class Board implements Element {
 		int y = shape.position().y();
 		int z = shape.position().z();
 		Colors color = shape.color();
-		float r = color.red() / 255f;
-		float g = color.green() / 255f;
-		float b = color.blue() / 255f;
-		float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
-		float[] diffuse = { r, g, b, 1.0f };
+		float[] ambient = { 0, 0, 0, 1 };
+		float[] diffuse = { color.red(), color.green(), color.blue(), 1 };
 		shapes[x][y][z] = shape.type() == Types.Cube ? new Cube(shapeSize,
 				shapeSize, shapeSize, ambient, diffuse) : new Prism(shapeSize,
 				shapeSize, shapeSize, ambient, diffuse);
