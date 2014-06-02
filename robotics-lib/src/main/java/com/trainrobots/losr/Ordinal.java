@@ -13,12 +13,16 @@ public class Ordinal extends Token {
 	private final int value;
 
 	public Ordinal(String text) {
-		this(text, Integer.parseInt(text.substring(0, text.length() - 2)));
+		this(null, text);
 	}
 
 	public Ordinal(String text, int value) {
-		super(null, text);
-		this.value = value;
+		this(null, text, value);
+	}
+
+	public Ordinal(TokenContext context, String text) {
+		this(context, text, Integer.parseInt(text.substring(0,
+				text.length() - 2)));
 	}
 
 	public Ordinal(TokenContext context, String text, int value) {

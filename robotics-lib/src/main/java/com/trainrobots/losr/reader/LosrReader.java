@@ -11,6 +11,7 @@ package com.trainrobots.losr.reader;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.TokenContext;
 
 public class LosrReader {
 
@@ -20,7 +21,7 @@ public class LosrReader {
 
 	public LosrReader(String text) {
 		this.text = text;
-		readWhitespace();
+		skipWhitespace();
 	}
 
 	public Losr read() {
@@ -33,12 +34,19 @@ public class LosrReader {
 
 		// Name.
 		String name = readName();
+		return readLosr(name);
+	}
+
+	private Losr readLosr(String name) {
+
+		// ':'
 		if (peek() != ':') {
 			throw new RoboticException("Expected semi-colon.");
 		}
-		position++;
+		next();
 
-		// Content.
+		// Children.
+		TokenContext context = null;
 		String content = null;
 		ItemsList<Losr> children = null;
 		while (peek() != ')') {
@@ -47,28 +55,40 @@ public class LosrReader {
 			if (!whitespace(peek())) {
 				throw new RoboticException("Expected space.");
 			}
-			readWhitespace();
+			skipWhitespace();
 
-			// Child.
-			if (peek() == '(') {
-				if (children == null) {
-					children = new ItemsList<Losr>();
-				}
-				children.add(read());
-			} else {
+			// Content?
+			if (peek() != '(') {
 				content = readContent();
+			}
+
+			// Token?
+			else {
+				next();
+				String childName = readName();
+				if (childName.equals("token")) {
+					context = readContext();
+				}
+
+				// Child.
+				else {
+					if (children == null) {
+						children = new ItemsList<Losr>();
+					}
+					children.add(readLosr(childName));
+				}
 			}
 		}
 
 		// ')'
-		ch = next();
+		char ch = next();
 		if (ch != ')') {
 			throw new RoboticException("Expected closing bracket.");
 		}
 
 		// Build node.
 		if (content != null) {
-			return factory.build(name, content);
+			return factory.build(context, name, content);
 		}
 		return factory.build(name, children);
 	}
@@ -89,6 +109,48 @@ public class LosrReader {
 		return text.substring(index, position);
 	}
 
+	private TokenContext readContext() {
+
+		// ':'
+		if (peek() != ':') {
+			throw new RoboticException("Expected semi-colon.");
+		}
+		next();
+
+		// Whitespace.
+		if (!whitespace(peek())) {
+			throw new RoboticException("Expected space.");
+		}
+		skipWhitespace();
+
+		// Start.
+		int index = position;
+		while (!whitespace(peek()) && peek() != ')') {
+			next();
+		}
+		int start = Integer.parseInt(text.substring(index, position));
+		int end = start;
+
+		// End.
+		if (whitespace(peek())) {
+			skipWhitespace();
+			index = position;
+			while (peek() != ')') {
+				next();
+			}
+			end = Integer.parseInt(text.substring(index, position));
+		}
+
+		// ')'
+		char ch = next();
+		if (ch != ')') {
+			throw new RoboticException("Expected closing bracket.");
+		}
+
+		// Context.
+		return new TokenContext(start, end);
+	}
+
 	private char peek() {
 		return text.charAt(position);
 	}
@@ -97,7 +159,7 @@ public class LosrReader {
 		return text.charAt(position++);
 	}
 
-	private void readWhitespace() {
+	private void skipWhitespace() {
 		while (whitespace(peek())) {
 			next();
 		}

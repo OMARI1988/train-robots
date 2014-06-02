@@ -9,9 +9,10 @@
 package com.trainrobots.losr.reader;
 
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.losr.TokenContext;
 
 @FunctionalInterface
 public interface TerminalBuilder {
 
-	public Terminal build(String content);
+	public Terminal build(TokenContext context, String content);
 }

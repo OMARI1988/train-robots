@@ -24,6 +24,7 @@ import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Text;
+import com.trainrobots.losr.TokenContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 
@@ -39,16 +40,16 @@ public class LosrFactory {
 		terminals.put("symbol", Symbol::new);
 		terminals.put("cardinal", Cardinal::new);
 		terminals.put("ordinal", Ordinal::new);
-		terminals.put("type", x -> new Type(Types.parse(x)));
-		terminals.put("color", x -> new Color(Colors.parse(x)));
-		terminals.put("action", x -> new Action(Actions.parse(x)));
+		terminals.put("type", (t, c) -> new Type(t, Types.parse(c)));
+		terminals.put("color", (t, c) -> new Color(t, Colors.parse(c)));
+		terminals.put("action", (t, c) -> new Action(t, Actions.parse(c)));
 
 		// Non-terminals.
 		nonTerminals.put("entity", Entity::new);
 		nonTerminals.put("event", Event::new);
 	}
 
-	public Losr build(String name, String content) {
+	public Losr build(TokenContext context, String name, String content) {
 
 		// Builder.
 		TerminalBuilder builder = terminals.get(name);
@@ -58,7 +59,7 @@ public class LosrFactory {
 		}
 
 		// Build.
-		return builder.build(content);
+		return builder.build(context, content);
 	}
 
 	public Losr build(String name, Items<Losr> children) {
