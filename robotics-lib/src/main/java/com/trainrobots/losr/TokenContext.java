@@ -10,6 +10,7 @@ package com.trainrobots.losr;
 
 public class TokenContext {
 
+	private final String text;
 	private final int start;
 	private final int end;
 
@@ -17,9 +18,20 @@ public class TokenContext {
 		this(token, token);
 	}
 
+	public TokenContext(String text, int token) {
+		this.text = text;
+		this.start = token;
+		this.end = token;
+	}
+
 	public TokenContext(int start, int end) {
+		this.text = null;
 		this.start = start;
 		this.end = end;
+	}
+
+	public String text() {
+		return text;
 	}
 
 	public int start() {

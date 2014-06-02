@@ -34,11 +34,11 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 5);
-		assertThat(tokens.get(0), is(new Text("pick")));
-		assertThat(tokens.get(1), is(new Text("up")));
-		assertThat(tokens.get(2), is(new Text("the")));
-		assertThat(tokens.get(3), is(new Text("red")));
-		assertThat(tokens.get(4), is(new Text("block")));
+		verifyText(tokens.get(0), "pick");
+		verifyText(tokens.get(1), "up");
+		verifyText(tokens.get(2), "the");
+		verifyText(tokens.get(3), "red");
+		verifyText(tokens.get(4), "block");
 	}
 
 	@Test
@@ -49,10 +49,10 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 4);
-		assertThat(tokens.get(0), is(new Text("you've")));
-		assertThat(tokens.get(1), is(new Symbol(',')));
-		assertThat(tokens.get(2), is(new Text("row")));
-		assertThat(tokens.get(3), is(new Symbol('.')));
+		verifyText(tokens.get(0), "you've");
+		verifySymbol(tokens.get(1), ',');
+		verifyText(tokens.get(2), "row");
+		verifySymbol(tokens.get(3), '.');
 	}
 
 	@Test
@@ -63,10 +63,10 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 4);
-		assertThat(tokens.get(0), is(new Text("you've")));
-		assertThat(tokens.get(1), is(new Symbol(',')));
-		assertThat(tokens.get(2), is(new Text("row")));
-		assertThat(tokens.get(3), is(new Symbol('.')));
+		verifyText(tokens.get(0), "you've");
+		verifySymbol(tokens.get(1), ',');
+		verifyText(tokens.get(2), "row");
+		verifySymbol(tokens.get(3), '.');
 	}
 
 	@Test
@@ -77,12 +77,12 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 6);
-		assertThat(tokens.get(0), is(new Text("A")));
-		assertThat(tokens.get(1), is(new Text("B")));
-		assertThat(tokens.get(2), is(new Symbol('.')));
-		assertThat(tokens.get(3), is(new Text("C")));
-		assertThat(tokens.get(4), is(new Text("D")));
-		assertThat(tokens.get(5), is(new Symbol('!')));
+		verifyText(tokens.get(0), "A");
+		verifyText(tokens.get(1), "B");
+		verifySymbol(tokens.get(2), '.');
+		verifyText(tokens.get(3), "C");
+		verifyText(tokens.get(4), "D");
+		verifySymbol(tokens.get(5), '!');
 	}
 
 	@Test
@@ -94,14 +94,14 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 8);
-		assertThat(tokens.get(0), is(new Text("top")));
-		assertThat(tokens.get(1), is(new Text("of")));
-		assertThat(tokens.get(2), is(new Text("red")));
-		assertThat(tokens.get(3), is(new Symbol('-')));
-		assertThat(tokens.get(4), is(new Text("blue")));
-		assertThat(tokens.get(5), is(new Symbol('-')));
-		assertThat(tokens.get(6), is(new Text("red")));
-		assertThat(tokens.get(7), is(new Text("tower")));
+		verifyText(tokens.get(0), "top");
+		verifyText(tokens.get(1), "of");
+		verifyText(tokens.get(2), "red");
+		verifySymbol(tokens.get(3), '-');
+		verifyText(tokens.get(4), "blue");
+		verifySymbol(tokens.get(5), '-');
+		verifyText(tokens.get(6), "red");
+		verifyText(tokens.get(7), "tower");
 	}
 
 	@Test
@@ -112,10 +112,10 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 4);
-		assertThat(tokens.get(0), is(new Text("red")));
-		assertThat(tokens.get(1), is(new Symbol('/')));
-		assertThat(tokens.get(2), is(new Text("white")));
-		assertThat(tokens.get(3), is(new Text("column")));
+		verifyText(tokens.get(0), "red");
+		verifySymbol(tokens.get(1), '/');
+		verifyText(tokens.get(2), "white");
+		verifyText(tokens.get(3), "column");
 	}
 
 	@Test
@@ -126,9 +126,9 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 3);
-		assertThat(tokens.get(0), is(new Cardinal(4)));
-		assertThat(tokens.get(1), is(new Text("plus")));
-		assertThat(tokens.get(2), is(new Cardinal(26)));
+		verifyCardinal(tokens.get(0), 4);
+		verifyText(tokens.get(1), "plus");
+		verifyCardinal(tokens.get(2), 26);
 	}
 
 	@Test
@@ -140,12 +140,12 @@ public class TokenizerTests {
 
 		// Validate.
 		verifyContext(tokens, 6);
-		assertThat(tokens.get(0), is(new Ordinal(1)));
-		assertThat(tokens.get(1), is(new Ordinal(2)));
-		assertThat(tokens.get(2), is(new Ordinal(3)));
-		assertThat(tokens.get(3), is(new Ordinal(4)));
-		assertThat(tokens.get(4), is(new Ordinal(5)));
-		assertThat(tokens.get(5), is(new Ordinal(6)));
+		verifyOrdinal(tokens.get(0), "1st", 1);
+		verifyOrdinal(tokens.get(1), "2nd", 2);
+		verifyOrdinal(tokens.get(2), "3rd", 3);
+		verifyOrdinal(tokens.get(3), "4th", 4);
+		verifyOrdinal(tokens.get(4), "5th", 5);
+		verifyOrdinal(tokens.get(5), "6th", 6);
 	}
 
 	@Test
@@ -163,12 +163,32 @@ public class TokenizerTests {
 		assertThat(wordCount, is(125465));
 	}
 
-	private void verifyContext(Items<Terminal> tokens, int size) {
+	private static void verifyContext(Items<Terminal> tokens, int size) {
 		assertThat(tokens.count(), is(size));
 		for (int i = 0; i < size; i++) {
 			TokenContext context = tokens.get(i).context();
 			assertThat(context.start(), is(i + 1));
 			assertThat(context.end(), is(i + 1));
 		}
+	}
+
+	private static void verifyText(Terminal token, String text) {
+		assertThat(token, is(new Text(text)));
+		assertThat(token.context().text(), is(text));
+	}
+
+	private static void verifySymbol(Terminal token, char ch) {
+		assertThat(token, is(new Symbol(ch)));
+		assertThat(token.context().text(), is(Character.toString(ch)));
+	}
+
+	private static void verifyCardinal(Terminal token, int value) {
+		assertThat(token, is(new Cardinal(value)));
+		assertThat(token.context().text(), is(Integer.toString(value)));
+	}
+
+	private static void verifyOrdinal(Terminal token, String text, int value) {
+		assertThat(token, is(new Ordinal(value)));
+		assertThat(token.context().text(), is(text));
 	}
 }

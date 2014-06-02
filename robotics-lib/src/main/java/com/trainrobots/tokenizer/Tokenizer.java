@@ -64,7 +64,8 @@ public class Tokenizer {
 		while (!end() && !whitespace(peek()) && !symbol(peek())) {
 			position++;
 		}
-		return new Text(context(), text.substring(index, position));
+		String text = this.text.substring(index, position);
+		return new Text(new TokenContext(text, tokens.size() + 1), text);
 	}
 
 	private Terminal readNumber() {
@@ -74,16 +75,18 @@ public class Tokenizer {
 		while (!end() && digit(peek())) {
 			position++;
 		}
-		int value = Integer.parseInt(text.substring(index, position));
+		String text = this.text.substring(index, position);
+		int value = Integer.parseInt(text);
 
 		// Suffix?
 		if (hasOrdinalSuffix(value)) {
 			position += 2;
-			return new Ordinal(context(), value);
+			text = this.text.substring(index, position);
+			return new Ordinal(new TokenContext(text, tokens.size() + 1), value);
 		}
 
 		// Cardinal.
-		return new Cardinal(context(), value);
+		return new Cardinal(new TokenContext(text, tokens.size() + 1), value);
 	}
 
 	private boolean hasOrdinalSuffix(int value) {
@@ -114,11 +117,8 @@ public class Tokenizer {
 	private Terminal readSymbol() {
 		char ch = peek();
 		position++;
-		return new Symbol(context(), ch);
-	}
-
-	private TokenContext context() {
-		return new TokenContext(tokens.size() + 1);
+		String text = Character.toString(ch);
+		return new Symbol(new TokenContext(text, tokens.size() + 1), ch);
 	}
 
 	private static boolean symbol(char ch) {
