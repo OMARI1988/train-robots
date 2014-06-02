@@ -34,4 +34,31 @@ public class FormatTests {
 	public void shouldFormatCardinal() {
 		assertThat(new Cardinal("45", 45).toString(), is("(cardinal: 45)"));
 	}
+
+	@Test
+	public void shouldFormatColor() {
+		assertThat(new Color(Colors.Red).toString(), is("(color: red)"));
+	}
+
+	@Test
+	public void shouldFormatType() {
+		assertThat(new Type(Types.Cube).toString(), is("(type: cube)"));
+	}
+
+	@Test
+	public void shouldFormatAction() {
+		assertThat(new Action(Actions.Move).toString(), is("(action: move)"));
+	}
+
+	@Test
+	public void shouldFormatEntity() {
+		assertThat(new Entity(Types.Prism).toString(),
+				is("(entity: (type: prism))"));
+	}
+
+	@Test
+	public void shouldFormatEvent() {
+		assertThat(new Event(Actions.Take, Types.Cube).toString(),
+				is("(event: (action: take) (entity: (type: cube)))"));
+	}
 }

@@ -6,9 +6,9 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.scenes;
+package com.trainrobots.losr;
 
-public enum Type {
+public enum Types {
 
 	Cube, Prism;
 }

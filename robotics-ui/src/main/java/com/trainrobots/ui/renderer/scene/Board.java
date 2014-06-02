@@ -8,13 +8,12 @@
 
 package com.trainrobots.ui.renderer.scene;
 
-import java.awt.Color;
-
 import javax.media.opengl.GL2;
 
+import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Types;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
-import com.trainrobots.scenes.Type;
 import com.trainrobots.ui.renderer.math.Vector;
 
 public class Board implements Element {
@@ -53,13 +52,13 @@ public class Board implements Element {
 		int x = shape.position().x();
 		int y = shape.position().y();
 		int z = shape.position().z();
-		Color color = shape.color().color();
-		float r = color.getRed() / 255f;
-		float g = color.getGreen() / 255f;
-		float b = color.getBlue() / 255f;
+		Colors color = shape.color();
+		float r = color.red() / 255f;
+		float g = color.green() / 255f;
+		float b = color.blue() / 255f;
 		float[] ambient = { 0.0f, 0.0f, 0.0f, 1.0f };
 		float[] diffuse = { r, g, b, 1.0f };
-		shapes[x][y][z] = shape.type() == Type.Cube ? new Cube(shapeSize,
+		shapes[x][y][z] = shape.type() == Types.Cube ? new Cube(shapeSize,
 				shapeSize, shapeSize, ambient, diffuse) : new Prism(shapeSize,
 				shapeSize, shapeSize, ambient, diffuse);
 	}

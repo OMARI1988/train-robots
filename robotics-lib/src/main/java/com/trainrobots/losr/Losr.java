@@ -45,8 +45,6 @@ public abstract class Losr implements Items<Losr> {
 		text.append(')');
 	}
 
-	protected abstract void writeName(StringBuilder text);
-
 	@Override
 	public abstract int count();
 
@@ -66,4 +64,6 @@ public abstract class Losr implements Items<Losr> {
 	public static Losr parse(String text) {
 		throw new NotImplementedException();
 	}
+
+	protected abstract void writeName(StringBuilder text);
 }

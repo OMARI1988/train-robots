@@ -12,6 +12,8 @@ import org.xml.sax.Attributes;
 
 import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsList;
+import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Types;
 
 public class LayoutReader extends XmlReader {
 
@@ -39,10 +41,10 @@ public class LayoutReader extends XmlReader {
 			readGripper(attributes);
 			break;
 		case "cube":
-			readShape(Type.Cube, attributes);
+			readShape(Types.Cube, attributes);
 			break;
 		case "prism":
-			readShape(Type.Prism, attributes);
+			readShape(Types.Prism, attributes);
 			break;
 		}
 	}
@@ -62,8 +64,8 @@ public class LayoutReader extends XmlReader {
 		gripperOpen = Boolean.parseBoolean(attributes.getValue("open"));
 	}
 
-	private void readShape(Type type, Attributes attributes) {
-		Color color = Color.parse(attributes.getValue("color"));
+	private void readShape(Types type, Attributes attributes) {
+		Colors color = Colors.parse(attributes.getValue("color"));
 		Position position = Position.parse(attributes.getValue("position"));
 		shapes.add(new Shape(type, color, position));
 	}

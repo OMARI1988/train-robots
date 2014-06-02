@@ -8,23 +8,26 @@
 
 package com.trainrobots.scenes;
 
+import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Types;
+
 public class Shape {
 
-	private final Type type;
-	private final Color color;
+	private final Types type;
+	private final Colors color;
 	private final Position position;
 
-	public Shape(Type type, Color color, Position position) {
+	public Shape(Types type, Colors color, Position position) {
 		this.type = type;
 		this.color = color;
 		this.position = position;
 	}
 
-	public Type type() {
+	public Types type() {
 		return type;
 	}
 
-	public Color color() {
+	public Colors color() {
 		return color;
 	}
 
