@@ -17,7 +17,6 @@ import com.trainrobots.scenes.Scenes;
 public class CommandReader {
 
 	private final Scenes scenes;
-	private final ItemsList<Command> commandList = new ItemsList<Command>();
 	private Commands commands;
 
 	public CommandReader(Scenes scenes) {
@@ -29,6 +28,7 @@ public class CommandReader {
 	}
 
 	public void readCommands(String filename) {
+		ItemsList<Command> commandList = new ItemsList<Command>();
 		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
