@@ -21,7 +21,7 @@ import java.io.File;
 
 public class DataContext {
 
-	private static String dataPath = "../data";
+	private static String dataPath = "../.data";
 
 	private DataContext() {
 	}
