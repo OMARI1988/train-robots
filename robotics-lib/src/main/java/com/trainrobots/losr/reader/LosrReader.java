@@ -32,12 +32,11 @@ public class LosrReader {
 			throw new RoboticException("Expected opening bracket.");
 		}
 
-		// Name.
-		String name = readName();
-		return readLosr(name);
+		// Node.
+		return readNode(readName());
 	}
 
-	private Losr readLosr(String name) {
+	private Losr readNode(String name) {
 
 		// ':'
 		readSemiColon();
@@ -83,7 +82,7 @@ public class LosrReader {
 			if (children == null) {
 				children = new ItemsList<Losr>();
 			}
-			children.add(readLosr(childName));
+			children.add(readNode(childName));
 		}
 
 		// ')'
