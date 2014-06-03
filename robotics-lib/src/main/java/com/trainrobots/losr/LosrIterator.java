@@ -33,7 +33,6 @@ public class LosrIterator implements Iterator<Losr> {
 
 	@Override
 	public void remove() {
-		throw new NotImplementedException(
-				"A LOSR iterator can not remove elements.");
+		throw new NotImplementedException();
 	}
 }
