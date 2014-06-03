@@ -34,4 +34,14 @@ public class Shape {
 	public Position position() {
 		return position;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Shape) {
+			Shape shape = (Shape) object;
+			return shape.type == type && shape.color == color
+					&& shape.position.equals(position);
+		}
+		return false;
+	}
 }

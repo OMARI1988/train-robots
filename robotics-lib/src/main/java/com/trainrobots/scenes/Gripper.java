@@ -41,4 +41,9 @@ public class Gripper {
 			layout.listener.gripperOpenChanged(open);
 		}
 	}
+
+	// TODO: USED??
+	// public Shape shape() {
+	// return layout.shape(position);
+	// }
 }

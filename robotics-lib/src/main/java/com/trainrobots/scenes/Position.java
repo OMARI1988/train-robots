@@ -42,6 +42,11 @@ public class Position {
 	}
 
 	@Override
+	public int hashCode() {
+		return value;
+	}
+
+	@Override
 	public String toString() {
 
 		// Use a capacity of 5, as most positions will be of the form 'X Y Z',

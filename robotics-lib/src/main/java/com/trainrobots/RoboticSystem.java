@@ -10,10 +10,13 @@ package com.trainrobots;
 
 import java.nio.file.Paths;
 
+import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.LayoutReader;
 import com.trainrobots.scenes.Layouts;
+import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.SceneReader;
 import com.trainrobots.scenes.Scenes;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.CommandReader;
 import com.trainrobots.treebank.Commands;
 
@@ -59,6 +62,10 @@ public class RoboticSystem {
 			Log.info("Loaded: %s commands.", commands.count());
 		}
 		return commands;
+	}
+
+	public Items<Command> commands(Scene scene) {
+		return commands().forScene(scene);
 	}
 
 	private String file(String filename) {

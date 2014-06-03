@@ -8,8 +8,10 @@
 
 package com.trainrobots.scenes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 
 public class Layout {
@@ -17,6 +19,7 @@ public class Layout {
 	private final int id;
 	private final Gripper gripper;
 	private final Items<Shape> shapes;
+	private final Map<Position, Shape> shapesByPosition = new HashMap<>();
 	LayoutListener listener;
 
 	public Layout() {
@@ -29,7 +32,10 @@ public class Layout {
 			Items<Shape> shapes) {
 		this.id = id;
 		this.gripper = new Gripper(this, gripperPosition, gripperOpen);
-		this.shapes = new ItemsArray(shapes.toArray());
+		this.shapes = shapes;
+		for (Shape shape : shapes) {
+			shapesByPosition.put(shape.position(), shape);
+		}
 	}
 
 	public int id() {
@@ -38,6 +44,10 @@ public class Layout {
 
 	public Gripper gripper() {
 		return gripper;
+	}
+
+	public Shape shape(Position position) {
+		return shapesByPosition.get(position);
 	}
 
 	public Items<Shape> shapes() {
