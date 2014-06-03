@@ -28,7 +28,12 @@ public class Color extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Color && ((Color) losr).color == color;
+		if (losr instanceof Color) {
+			Color color = (Color) losr;
+			return color.id == id && color.referenceId == referenceId
+					&& color.color == this.color;
+		}
+		return false;
 	}
 
 	@Override

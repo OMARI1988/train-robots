@@ -57,6 +57,11 @@ public class TraversalTests {
 	}
 
 	@Test
+	public void shouldTraverseIndicator() {
+		test(1, new Indicator(Indicators.Nearest));
+	}
+
+	@Test
 	public void shouldTraverseEntity1() {
 		test(2, new Entity(Types.Prism));
 	}
@@ -67,8 +72,37 @@ public class TraversalTests {
 	}
 
 	@Test
-	public void shouldTraverseEvent() {
+	public void shouldTraverseEntity3() {
+		test(6, new Entity(Types.Prism, new SpatialRelation(Relations.Above,
+				Types.Cube)));
+	}
+
+	@Test
+	public void shouldTraverseEvent1() {
 		test(4, new Event(Actions.Take, Types.Cube));
+	}
+
+	@Test
+	public void shouldTraverseEvent2() {
+		test(9, new Event(Actions.Take, Types.Cube, new Destination(
+				new SpatialRelation(Relations.Above, Types.Prism))));
+	}
+
+	@Test
+	public void shouldTraverseSpatialRelation() {
+		test(4, new SpatialRelation(Relations.Above, Types.Cube));
+	}
+
+	@Test
+	public void shouldTraverseDestination() {
+		test(5, new Destination(
+				new SpatialRelation(Relations.Above, Types.Cube)));
+	}
+
+	@Test
+	public void shouldTraverseSequence() {
+		test(9, new Sequence(new Event(Actions.Take, Types.Cube), new Event(
+				Actions.Take, Types.Prism)));
 	}
 
 	private static void test(int expectedCount, Losr losr) {

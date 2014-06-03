@@ -28,7 +28,12 @@ public class Relation extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Relation && ((Relation) losr).relation == relation;
+		if (losr instanceof Relation) {
+			Relation relation = (Relation) losr;
+			return relation.id == id && relation.referenceId == referenceId
+					&& relation.relation == this.relation;
+		}
+		return false;
 	}
 
 	@Override

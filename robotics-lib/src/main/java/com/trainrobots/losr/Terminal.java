@@ -32,10 +32,16 @@ public abstract class Terminal extends Losr {
 
 	@Override
 	protected void write(StringBuilder text) {
+
+		// Name.
 		text.append('(');
 		writeName(text);
 		text.append(": ");
+
+		// Content.
 		writeContent(text);
+
+		// Context.
 		if (context != null) {
 			text.append(' ');
 			text.append(context);

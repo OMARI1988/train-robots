@@ -8,6 +8,7 @@
 
 package com.trainrobots.treebank;
 
+import com.trainrobots.losr.Losr;
 import com.trainrobots.scenes.Scene;
 
 public class Command {
@@ -15,7 +16,7 @@ public class Command {
 	private final int id;
 	private final Scene scene;
 	private final String text;
-	private String losr;
+	private Losr losr;
 
 	public Command(int id, Scene scene, String text) {
 		this.id = id;
@@ -35,11 +36,11 @@ public class Command {
 		return text;
 	}
 
-	public String losr() {
+	public Losr losr() {
 		return losr;
 	}
 
-	public void setLosr(String losr) {
+	public void setLosr(Losr losr) {
 		this.losr = losr;
 	}
 }

@@ -27,7 +27,12 @@ public class Symbol extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Symbol && ((Symbol) losr).value == value;
+		if (losr instanceof Symbol) {
+			Symbol symbol = (Symbol) losr;
+			return symbol.id == id && symbol.referenceId == referenceId
+					&& symbol.value == value;
+		}
+		return false;
 	}
 
 	@Override

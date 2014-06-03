@@ -27,7 +27,12 @@ public class Ordinal extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Ordinal && ((Ordinal) losr).value == value;
+		if (losr instanceof Ordinal) {
+			Ordinal ordinal = (Ordinal) losr;
+			return ordinal.id == id && ordinal.referenceId == referenceId
+					&& ordinal.value == value;
+		}
+		return false;
 	}
 
 	@Override

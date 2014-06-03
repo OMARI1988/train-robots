@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 public enum Types {
 
-	Cube, Prism;
+	Reference, TypeReference, TypeReferenceGroup, Cube, CubeGroup, Prism, Stack, Tile, Edge, Corner, Region, Board, Robot;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
@@ -27,8 +27,15 @@ public enum Types {
 	}
 
 	static {
+
+		// Defaults.
 		for (Types type : values()) {
 			types.put(type.toString(), type);
 		}
+
+		// Alternative forms.
+		types.put("Type-Reference", TypeReference);
+		types.put("Type-Reference-Group", TypeReferenceGroup);
+		types.put("Cube-Group", CubeGroup);
 	}
 }

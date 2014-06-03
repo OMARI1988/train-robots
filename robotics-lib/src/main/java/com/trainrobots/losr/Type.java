@@ -13,8 +13,7 @@ public class Type extends Terminal {
 	private final Types type;
 
 	public Type(Types type) {
-		super(null);
-		this.type = type;
+		this(null, type);
 	}
 
 	public Type(TokenContext context, Types type) {
@@ -28,7 +27,12 @@ public class Type extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Type && ((Type) losr).type == type;
+		if (losr instanceof Type) {
+			Type type = (Type) losr;
+			return type.id == id && type.referenceId == referenceId
+					&& type.type == this.type;
+		}
+		return false;
 	}
 
 	@Override
@@ -38,6 +42,18 @@ public class Type extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(type.toString().toLowerCase());
+		switch (type) {
+		case TypeReference:
+			text.append("type-reference");
+			break;
+		case TypeReferenceGroup:
+			text.append("type-reference-group");
+			break;
+		case CubeGroup:
+			text.append("cube-group");
+			break;
+		default:
+			text.append(type.toString().toLowerCase());
+		}
 	}
 }

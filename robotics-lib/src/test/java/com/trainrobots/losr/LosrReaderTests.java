@@ -11,11 +11,7 @@ package com.trainrobots.losr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.trainrobots.Robotics;
-import com.trainrobots.treebank.Command;
 
 public class LosrReaderTests {
 
@@ -109,9 +105,29 @@ public class LosrReaderTests {
 	}
 
 	@Test
-	public void shouldReadEntity() {
+	public void shouldReadIndicator() {
+		assertThat(Losr.read("(indicator: nearest)"), is(new Indicator(
+				Indicators.Nearest)));
+	}
+
+	@Test
+	public void shouldReadIndicatorWithContext() {
+		assertThat(Losr.read("(indicator: nearest (token: 5))"),
+				is(new Indicator(new TokenContext(5), Indicators.Nearest)));
+	}
+
+	@Test
+	public void shouldReadEntity1() {
 		assertThat(Losr.read("(entity: (type: prism))"), is(new Entity(
 				Types.Prism)));
+	}
+
+	@Test
+	public void shouldReadEntity2() {
+		assertThat(
+				Losr.read("(entity: (type: prism) (spatial-relation: (relation: above) (entity: (type: cube))))"),
+				is(new Entity(Types.Prism, new SpatialRelation(Relations.Above,
+						Types.Cube))));
 	}
 
 	@Test
@@ -121,9 +137,23 @@ public class LosrReaderTests {
 	}
 
 	@Test
-	public void shouldReadEvent() {
+	public void shouldReadEntityWithId() {
+		assertThat(Losr.read("(entity: (id: 1) (type: prism))"), is(new Entity(
+				1, Types.Prism)));
+	}
+
+	@Test
+	public void shouldReadEvent1() {
 		assertThat(Losr.read("(event: (action: take) (entity: (type: cube)))"),
 				is(new Event(Actions.Take, Types.Cube)));
+	}
+
+	@Test
+	public void shouldReadEvent2() {
+		assertThat(
+				Losr.read("(event: (action: move) (entity: (type: cube)) (destination: (spatial-relation: (relation: above) (entity: (type: prism)))))"),
+				is(new Event(Actions.Move, Types.Cube, new Destination(
+						new SpatialRelation(Relations.Above, Types.Prism)))));
 	}
 
 	@Test
@@ -136,18 +166,25 @@ public class LosrReaderTests {
 	}
 
 	@Test
-	@Ignore
-	public void shouldReadTreebank() {
-		for (Command command : Robotics.system().commands()) {
-			String losr = command.losr();
-			if (losr != null) {
-				try {
-					Losr.read(losr);
-				} catch (Exception exception) {
-					System.out.println("Failed to read: " + losr);
-					throw exception;
-				}
-			}
-		}
+	public void shouldReadSpatialRelation() {
+		assertThat(
+				Losr.read("(spatial-relation: (relation: above) (entity: (type: cube)))"),
+				is(new SpatialRelation(Relations.Above, Types.Cube)));
+	}
+
+	@Test
+	public void shouldReadDestination() {
+		assertThat(
+				Losr.read("(destination: (spatial-relation: (relation: above) (entity: (type: cube))))"),
+				is(new Destination(new SpatialRelation(Relations.Above,
+						Types.Cube))));
+	}
+
+	@Test
+	public void shouldReadSequence() {
+		assertThat(
+				Losr.read("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: take) (entity: (type: prism))))"),
+				is(new Sequence(new Event(Actions.Take, Types.Cube), new Event(
+						Actions.Take, Types.Prism))));
 	}
 }

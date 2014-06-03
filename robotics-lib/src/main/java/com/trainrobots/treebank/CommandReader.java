@@ -12,6 +12,7 @@ import org.xml.sax.Attributes;
 
 import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsList;
+import com.trainrobots.losr.Losr;
 import com.trainrobots.scenes.Scenes;
 
 public class CommandReader {
@@ -49,7 +50,8 @@ public class CommandReader {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
 					int id = Integer.parseInt(attributes.getValue("id"));
-					commands.command(id).setLosr(attributes.getValue("losr"));
+					Losr losr = Losr.read(attributes.getValue("losr"));
+					commands.command(id).setLosr(losr);
 				}
 			}
 		}.read(filename);

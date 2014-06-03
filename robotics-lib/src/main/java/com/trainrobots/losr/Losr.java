@@ -15,6 +15,26 @@ import com.trainrobots.losr.reader.LosrReader;
 
 public abstract class Losr implements Items<Losr> {
 
+	protected final int id;
+	protected final int referenceId;
+
+	protected Losr() {
+		this(0, 0);
+	}
+
+	protected Losr(int id, int referenceId) {
+		this.id = id;
+		this.referenceId = referenceId;
+	}
+
+	public int id() {
+		return id;
+	}
+
+	public int referenceId() {
+		return referenceId;
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof Losr && equals((Losr) object);
@@ -63,11 +83,26 @@ public abstract class Losr implements Items<Losr> {
 		writeName(text);
 		text.append(':');
 
+		// ID.
+		if (id != 0) {
+			text.append(" (id: ");
+			text.append(id);
+			text.append(')');
+		}
+
 		// Children.
 		int size = count();
 		for (int i = 0; i < size; i++) {
 			text.append(' ');
-			get(i).write(text);
+			Losr child = get(i);
+			child.write(text);
+
+			// Reference ID.
+			if (child instanceof Type && referenceId != 0) {
+				text.append(" (reference-id: ");
+				text.append(referenceId);
+				text.append(')');
+			}
 		}
 		text.append(')');
 	}

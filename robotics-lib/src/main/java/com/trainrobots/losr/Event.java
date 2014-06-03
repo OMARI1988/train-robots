@@ -15,22 +15,68 @@ public class Event extends Losr {
 
 	private final Action action;
 	private final Entity entity;
+	private final Destination destination;
 
 	public Event(Actions action, Types type) {
-		this(new Action(action), new Entity(type));
+		this(new Action(action), new Entity(type), null);
+	}
+
+	public Event(int id, Actions action, Types type) {
+		this(new Action(action), new Entity(type), null);
+	}
+
+	public Event(Actions action, Types type, Destination destination) {
+		this(new Action(action), new Entity(type), destination);
 	}
 
 	public Event(Action action, Entity entity) {
-		this.action = action;
-		this.entity = entity;
+		this(action, entity, null);
 	}
 
-	public Event(Items<Losr> items) {
-		if (items.count() != 2) {
-			throw new RoboticException("Invalid event children.");
+	public Event(Action action, Entity entity, Destination destination) {
+		this.action = action;
+		this.entity = entity;
+		this.destination = destination;
+	}
+
+	public Event(int id, int referenceId, Items<Losr> items) {
+		super(id, referenceId);
+
+		// Items.
+		Action action = null;
+		Entity entity = null;
+		Destination destination = null;
+		for (Losr item : items) {
+
+			// Action.
+			if (item instanceof Action && action == null) {
+				action = (Action) item;
+				continue;
+			}
+
+			// Entity.
+			if (item instanceof Entity && entity == null) {
+				entity = (Entity) item;
+				continue;
+			}
+
+			// Destination.
+			if (item instanceof Destination && destination == null) {
+				destination = (Destination) item;
+				continue;
+			}
+
+			// Invalid.
+			throw new RoboticException("Invalid event item: %s.", item);
 		}
-		this.action = (Action) items.get(0);
-		this.entity = (Entity) items.get(1);
+
+		// Event.
+		if (action == null) {
+			throw new RoboticException("Event action not specified.");
+		}
+		this.action = action;
+		this.entity = entity;
+		this.destination = destination;
 	}
 
 	public Action actionAttribute() {
@@ -45,18 +91,28 @@ public class Event extends Losr {
 		return entity;
 	}
 
+	public Destination destinationAttribute() {
+		return destination;
+	}
+
+	public SpatialRelation destination() {
+		return destination.spatialRelation();
+	}
+
 	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Event) {
 			Event event = (Event) losr;
-			return event.action.equals(action) && event.entity.equals(entity);
+			return event.id == id && event.referenceId == referenceId
+					&& event.action.equals(action)
+					&& event.entity.equals(entity);
 		}
 		return false;
 	}
 
 	@Override
 	public int count() {
-		return 2;
+		return destination != null ? 3 : 2;
 	}
 
 	@Override
@@ -66,6 +122,11 @@ public class Event extends Losr {
 			return action;
 		case 1:
 			return entity;
+		case 2:
+			if (destination != null) {
+				return destination;
+			}
+			break;
 		}
 		throw new IndexOutOfBoundsException();
 	}

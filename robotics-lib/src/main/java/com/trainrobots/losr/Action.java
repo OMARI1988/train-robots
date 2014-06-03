@@ -28,7 +28,12 @@ public class Action extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Action && ((Action) losr).action == action;
+		if (losr instanceof Action) {
+			Action action = (Action) losr;
+			return action.id == id && action.referenceId == referenceId
+					&& action.action == this.action;
+		}
+		return false;
 	}
 
 	@Override

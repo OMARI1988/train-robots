@@ -14,5 +14,5 @@ import com.trainrobots.losr.Losr;
 @FunctionalInterface
 public interface NonTerminalBuilder {
 
-	public Losr build(Items<Losr> children);
+	public Losr build(int id, int referenceId, Items<Losr> children);
 }

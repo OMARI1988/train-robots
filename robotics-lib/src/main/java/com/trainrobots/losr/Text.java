@@ -27,7 +27,12 @@ public class Text extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Text && ((Text) losr).text.equals(text);
+		if (losr instanceof Text) {
+			Text text = (Text) losr;
+			return text.id == id && text.referenceId == referenceId
+					&& text.text.equals(this.text);
+		}
+		return false;
 	}
 
 	@Override

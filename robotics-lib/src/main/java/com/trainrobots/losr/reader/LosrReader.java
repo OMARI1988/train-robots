@@ -40,57 +40,60 @@ public class LosrReader {
 	private Losr readLosr(String name) {
 
 		// ':'
-		if (peek() != ':') {
-			throw new RoboticException("Expected semi-colon.");
-		}
-		next();
+		readSemiColon();
 
 		// Children.
+		int id = 0;
+		int referenceId = 0;
 		TokenContext context = null;
 		String content = null;
 		ItemsList<Losr> children = null;
 		while (peek() != ')') {
 
 			// Whitespace.
-			if (!whitespace(peek())) {
-				throw new RoboticException("Expected space.");
-			}
-			skipWhitespace();
+			readWhitespace();
 
-			// Content?
+			// Content.
 			if (peek() != '(') {
 				content = readContent();
+				continue;
 			}
 
-			// Token?
-			else {
-				next();
-				String childName = readName();
-				if (childName.equals("token")) {
-					context = readContext();
-				}
-
-				// Child.
-				else {
-					if (children == null) {
-						children = new ItemsList<Losr>();
-					}
-					children.add(readLosr(childName));
-				}
+			// ID.
+			next();
+			String childName = readName();
+			if (childName.equals("id")) {
+				id = readId();
+				continue;
 			}
+
+			// Reference ID.
+			if (childName.equals("reference-id")) {
+				referenceId = readId();
+				continue;
+			}
+
+			// Token.
+			if (childName.equals("token")) {
+				context = readContext();
+				continue;
+			}
+
+			// Child.
+			if (children == null) {
+				children = new ItemsList<Losr>();
+			}
+			children.add(readLosr(childName));
 		}
 
 		// ')'
-		char ch = next();
-		if (ch != ')') {
-			throw new RoboticException("Expected closing bracket.");
-		}
+		readClosingBracket();
 
 		// Build node.
 		if (content != null) {
 			return factory.build(context, name, content);
 		}
-		return factory.build(name, children);
+		return factory.build(id, referenceId, name, children);
 	}
 
 	private String readName() {
@@ -109,19 +112,35 @@ public class LosrReader {
 		return text.substring(index, position);
 	}
 
+	private int readId() {
+
+		// ':'
+		readSemiColon();
+
+		// Whitespace.
+		readWhitespace();
+
+		// Start.
+		int index = position;
+		while (peek() != ')') {
+			next();
+		}
+		int id = Integer.parseInt(text.substring(index, position));
+
+		// ')'
+		readClosingBracket();
+
+		// ID.
+		return id;
+	}
+
 	private TokenContext readContext() {
 
 		// ':'
-		if (peek() != ':') {
-			throw new RoboticException("Expected semi-colon.");
-		}
-		next();
+		readSemiColon();
 
 		// Whitespace.
-		if (!whitespace(peek())) {
-			throw new RoboticException("Expected space.");
-		}
-		skipWhitespace();
+		readWhitespace();
 
 		// Start.
 		int index = position;
@@ -142,13 +161,37 @@ public class LosrReader {
 		}
 
 		// ')'
+		readClosingBracket();
+
+		// Context.
+		return new TokenContext(start, end);
+	}
+
+	private void readClosingBracket() {
 		char ch = next();
 		if (ch != ')') {
 			throw new RoboticException("Expected closing bracket.");
 		}
+	}
 
-		// Context.
-		return new TokenContext(start, end);
+	private void readSemiColon() {
+		if (peek() != ':') {
+			throw new RoboticException("Expected semi-colon.");
+		}
+		next();
+	}
+
+	private void readWhitespace() {
+		if (!whitespace(peek())) {
+			throw new RoboticException("Expected whitespace.");
+		}
+		skipWhitespace();
+	}
+
+	private void skipWhitespace() {
+		while (whitespace(peek())) {
+			next();
+		}
 	}
 
 	private char peek() {
@@ -157,12 +200,6 @@ public class LosrReader {
 
 	private char next() {
 		return text.charAt(position++);
-	}
-
-	private void skipWhitespace() {
-		while (whitespace(peek())) {
-			next();
-		}
 	}
 
 	private static boolean whitespace(char ch) {

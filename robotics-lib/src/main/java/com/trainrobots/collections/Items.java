@@ -15,4 +15,23 @@ public interface Items<T> extends Iterable<T> {
 	T get(int index);
 
 	T[] toArray();
+
+	public static <T> boolean equals(Items<T> left, Items<T> right) {
+		if (left == null) {
+			return right == null;
+		}
+		if (right == null) {
+			return left == null;
+		}
+		int size = left.count();
+		if (right.count() != size) {
+			return false;
+		}
+		for (int i = 0; i < size; i++) {
+			if (!left.get(i).equals(right.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

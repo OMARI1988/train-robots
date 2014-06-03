@@ -27,7 +27,12 @@ public class Cardinal extends Terminal {
 
 	@Override
 	public boolean equals(Losr losr) {
-		return losr instanceof Cardinal && ((Cardinal) losr).value == value;
+		if (losr instanceof Cardinal) {
+			Cardinal cardinal = (Cardinal) losr;
+			return cardinal.id == id && cardinal.referenceId == referenceId
+					&& cardinal.value == value;
+		}
+		return false;
 	}
 
 	@Override

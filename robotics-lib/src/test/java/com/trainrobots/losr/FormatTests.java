@@ -107,9 +107,31 @@ public class FormatTests {
 	}
 
 	@Test
-	public void shouldFormatEntity() {
+	public void shouldFormatIndicator() {
+		assertThat(new Indicator(Indicators.Nearest).toString(),
+				is("(indicator: nearest)"));
+	}
+
+	@Test
+	public void shouldFormatIndicatorWithContext() {
+		assertThat(
+				new Indicator(new TokenContext(5), Indicators.Nearest)
+						.toString(),
+				is("(indicator: nearest (token: 5))"));
+	}
+
+	@Test
+	public void shouldFormatEntity1() {
 		assertThat(new Entity(Types.Prism).toString(),
 				is("(entity: (type: prism))"));
+	}
+
+	@Test
+	public void shouldFormatEntity2() {
+		assertThat(
+				new Entity(Types.Prism, new SpatialRelation(Relations.Above,
+						Types.Cube)).toString(),
+				is("(entity: (type: prism) (spatial-relation: (relation: above) (entity: (type: cube))))"));
 	}
 
 	@Test
@@ -121,9 +143,23 @@ public class FormatTests {
 	}
 
 	@Test
-	public void shouldFormatEvent() {
+	public void shouldFormatEntityWithId() {
+		assertThat(new Entity(1, Types.Prism).toString(),
+				is("(entity: (id: 1) (type: prism))"));
+	}
+
+	@Test
+	public void shouldFormatEvent1() {
 		assertThat(new Event(Actions.Take, Types.Cube).toString(),
 				is("(event: (action: take) (entity: (type: cube)))"));
+	}
+
+	@Test
+	public void shouldFormatEvent2() {
+		assertThat(
+				new Event(Actions.Move, Types.Cube, new Destination(
+						new SpatialRelation(Relations.Above, Types.Prism))).toString(),
+				is("(event: (action: move) (entity: (type: cube)) (destination: (spatial-relation: (relation: above) (entity: (type: prism)))))"));
 	}
 
 	@Test
@@ -134,5 +170,28 @@ public class FormatTests {
 						new Entity(new Type(new TokenContext(3, 4), Types.Cube)))
 						.toString(),
 				is("(event: (action: take (token: 1 2)) (entity: (type: cube (token: 3 4))))"));
+	}
+
+	@Test
+	public void shouldFormatSpatialRelation() {
+		assertThat(
+				new SpatialRelation(Relations.Above, Types.Cube).toString(),
+				is("(spatial-relation: (relation: above) (entity: (type: cube)))"));
+	}
+
+	@Test
+	public void shouldFormatDestination() {
+		assertThat(
+				new Destination(
+						new SpatialRelation(Relations.Above, Types.Cube)).toString(),
+				is("(destination: (spatial-relation: (relation: above) (entity: (type: cube))))"));
+	}
+
+	@Test
+	public void shouldFormatSequence() {
+		assertThat(
+				new Sequence(new Event(Actions.Take, Types.Cube), new Event(
+						Actions.Take, Types.Prism)).toString(),
+				is("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: take) (entity: (type: prism))))"));
 	}
 }
