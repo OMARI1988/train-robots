@@ -27,7 +27,7 @@ public class TreebankTests {
 
 		// Read.
 		Commands commands = Robotics.system().commands();
-		XmlReader reader = new XmlReader() {
+		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
 
@@ -48,8 +48,7 @@ public class TreebankTests {
 					count++;
 				}
 			}
-		};
-		reader.read("../.data/losr.xml");
+		}.read("../.data/losr.xml");
 
 		// Verify count.
 		int expectedCount = 0;
