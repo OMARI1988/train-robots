@@ -33,17 +33,17 @@ public class TreebankTests {
 
 					// Expected.
 					int commandId = Integer.parseInt(attributes.getValue("id"));
-					String format = attributes.getValue("losr");
+					String expected = attributes.getValue("losr");
 
 					// Actual.
 					Losr losr = commands.command(commandId).losr();
 					String actual = losr.toString();
 
 					// Verify.
-					if (!actual.equals(format)) {
-						System.out.println("Expected: " + format);
+					if (!actual.equals(expected)) {
+						System.out.println("Expected: " + expected);
 						System.out.println("Actual:   " + actual);
-						assertThat(losr.toString(), is(format));
+						assertThat(losr.toString(), is(expected));
 					}
 					count++;
 				}
