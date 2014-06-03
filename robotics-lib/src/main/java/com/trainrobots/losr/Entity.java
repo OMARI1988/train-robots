@@ -24,6 +24,10 @@ public class Entity extends Losr {
 		this(null, type);
 	}
 
+	public Entity(Colors color, Types type) {
+		this(new Color(color), new Type(type));
+	}
+
 	public Entity(Color color, Type type) {
 		this.color = color;
 		this.type = type;
@@ -84,15 +88,19 @@ public class Entity extends Losr {
 
 	@Override
 	public int count() {
-		return 1;
+		return color != null ? 2 : 1;
 	}
 
 	@Override
 	public Losr get(int index) {
-		if (index != 0) {
-			throw new IndexOutOfBoundsException();
+		int count = 0;
+		if (color != null && index == count++) {
+			return color;
 		}
-		return type;
+		if (index == count++) {
+			return type;
+		}
+		throw new IndexOutOfBoundsException();
 	}
 
 	@Override
