@@ -10,8 +10,9 @@ package com.trainrobots.scenes;
 
 import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Types;
+import com.trainrobots.observables.Observable;
 
-public class Shape {
+public class Shape implements Observable {
 
 	private final Types type;
 	private final Colors color;

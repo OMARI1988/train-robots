@@ -8,62 +8,81 @@
 
 package com.trainrobots.planner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.trainrobots.RoboticException;
-import com.trainrobots.instructions.DropInstruction;
+import com.trainrobots.collections.Items;
 import com.trainrobots.instructions.Instruction;
-import com.trainrobots.instructions.MoveInstruction;
 import com.trainrobots.instructions.TakeInstruction;
+import com.trainrobots.losr.Actions;
+import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Entity;
+import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Types;
+import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.distributions.AttributeDistribution;
+import com.trainrobots.observables.distributions.ObservableDistribution;
+import com.trainrobots.observables.distributions.PickableDistribution;
 import com.trainrobots.scenes.Layout;
-import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
 public class Planner {
 
-	public Instruction translate(Layout layout, Losr losr) {
-		return new DropInstruction(); // TODO: FIX!!
+	private final Layout layout;
+
+	public Planner(Layout layout) {
+		this.layout = layout;
 	}
 
-	public Instruction instruction(Layout before, Layout after) {
+	public Instruction translate(Losr losr) {
 
-		// Removed.
-		List<Shape> removed = new ArrayList<Shape>();
-		for (Shape shape : before.shapes()) {
-			if (after.shape(shape.position()) == null) {
-				removed.add(shape);
-			}
+		// (event: (action: take) (entity: X))
+		if (!(losr instanceof Event)) {
+			throw new RoboticException("Expected an event.");
 		}
-
-		// Added.
-		List<Shape> added = new ArrayList<Shape>();
-		for (Shape shape : after.shapes()) {
-			if (before.shape(shape.position()) == null) {
-				added.add(shape);
-			}
+		Event event = (Event) losr;
+		if (event.action() != Actions.Take) {
+			throw new RoboticException("Expected a take action.");
 		}
-
-		// Single shape.
-		if (removed.size() != 1 || added.size() != 1) {
+		if (event.destination() != null) {
 			throw new RoboticException(
-					"Failed to infer instruction beacuse a single shape was not moved.");
-		}
-		Position p1 = removed.get(0).position();
-		Position p2 = added.get(0).position();
-
-		// Drop.
-		if (p1.equals(before.gripper().position())) {
-			return new DropInstruction();
+					"A destination should not be specified for a take action.");
 		}
 
-		// Take.
-		if (p2.equals(after.gripper().position())) {
-			return new TakeInstruction();
+		// (entity: (color: X) (type: Y))
+		Entity entity = event.entity();
+		if (entity.cardinal() != null) {
+			throw new RoboticException("Cardinality is not supported.");
+		}
+		if (entity.indicators() != null) {
+			throw new RoboticException("Indiciators are not supported.");
+		}
+		if (entity.spatialRelation() != null) {
+			throw new RoboticException("Spatial relations are not supported.");
+		}
+		Types type = entity.type();
+		Items<Color> colors = entity.colors();
+		if (colors == null || colors.count() != 1) {
+			throw new RoboticException("Expected a single color.");
 		}
 
-		// Move.
-		return new MoveInstruction(p1, p2);
+		// Match type and color.
+		ObservableDistribution distribution = new AttributeDistribution(layout,
+				type, colors.get(0).color());
+
+		// Pickable.
+		distribution = new PickableDistribution(distribution);
+
+		// Single observable.
+		if (distribution.count() != 1) {
+			throw new RoboticException("Expected a single observable.");
+		}
+		Observable observable = distribution.get(0);
+
+		// Shape.
+		if (!(observable instanceof Shape)) {
+			throw new RoboticException("Observable was not a shape.");
+		}
+		Shape shape = (Shape) observable;
+		return new TakeInstruction(shape.position());
 	}
 }

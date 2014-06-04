@@ -96,7 +96,7 @@ public class Event extends Losr {
 	}
 
 	public SpatialRelation destination() {
-		return destination.spatialRelation();
+		return destination != null ? destination.spatialRelation() : null;
 	}
 
 	@Override

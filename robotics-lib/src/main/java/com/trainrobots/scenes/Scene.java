@@ -8,16 +8,20 @@
 
 package com.trainrobots.scenes;
 
+import com.trainrobots.instructions.Instruction;
+
 public class Scene {
 
 	private final int id;
 	private final Layout before;
 	private final Layout after;
+	private final Instruction instruction;
 
-	public Scene(int id, Layout before, Layout after) {
+	public Scene(int id, Layout before, Layout after, Instruction instruction) {
 		this.id = id;
 		this.before = before;
 		this.after = after;
+		this.instruction = instruction;
 	}
 
 	public int id() {
@@ -30,5 +34,9 @@ public class Scene {
 
 	public Layout after() {
 		return after;
+	}
+
+	public Instruction instruction() {
+		return instruction;
 	}
 }

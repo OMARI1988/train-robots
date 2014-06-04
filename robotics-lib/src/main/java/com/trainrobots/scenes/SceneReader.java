@@ -10,8 +10,10 @@ package com.trainrobots.scenes;
 
 import org.xml.sax.Attributes;
 
+import com.trainrobots.Log;
 import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsList;
+import com.trainrobots.instructions.Instruction;
 
 public class SceneReader extends XmlReader {
 
@@ -49,11 +51,16 @@ public class SceneReader extends XmlReader {
 
 	@Override
 	protected void handleElementEnd(String name) {
-		switch (name) {
-		case "scene":
-			scenes.add(new Scene(sceneId, layouts.layout(beforeId), layouts
-					.layout(afterId)));
-			break;
+		if (name.equals("scene")) {
+			Layout before = layouts.layout(beforeId);
+			Layout after = layouts.layout(afterId);
+			Instruction instruction = null;
+			try {
+				instruction = Instruction.instruction(before, after);
+			} catch (Exception exception) { // TODO: FIX!!
+				Log.warn("Scene " + sceneId + ": " + exception.getMessage());
+			}
+			scenes.add(new Scene(sceneId, before, after, instruction));
 		}
 	}
 }

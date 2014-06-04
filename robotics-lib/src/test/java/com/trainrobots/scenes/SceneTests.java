@@ -14,7 +14,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import com.trainrobots.Robotics;
-import com.trainrobots.scenes.Scene;
 
 public class SceneTests {
 
