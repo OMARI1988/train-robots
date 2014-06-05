@@ -10,10 +10,14 @@ package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsList;
 import com.trainrobots.collections.SingleItem;
 import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
+import com.trainrobots.observables.Corner;
+import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
@@ -36,20 +40,54 @@ public class MeasureDistribution extends SpatialDistribution {
 	@Override
 	public Items<DestinationHypothesis> destinations(PlannerContext context) {
 
-		// Landmark?
-		if (landmarkDistribution != null) {
-			throw new RoboticException(
-					"Landmarks with measures are not supported.");
+		// No landmarks?
+		if (landmarkDistribution == null) {
+			return new SingleItem(destination(context, null));
 		}
 
-		// Source shape.
-		Shape sourceShape = context.sourceShape();
-		if (context.sourceShape() == null) {
-			throw new RoboticException("Source shape not specified.");
+		// Landmarks.
+		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
+		for (Observable landmark : landmarkDistribution) {
+			destinations.add(destination(context, landmark));
+		}
+		return destinations;
+	}
+
+	private DestinationHypothesis destination(PlannerContext context,
+			Observable landmark) {
+
+		// No landmark?
+		Position position;
+		if (landmark == null) {
+			Shape sourceShape = context.sourceShape();
+			if (context.sourceShape() == null) {
+				throw new RoboticException("Source shape not specified.");
+			}
+			position = sourceShape.position();
+		}
+
+		// Shape.
+		else if (landmark instanceof Shape) {
+			position = ((Shape) landmark).position();
+		}
+
+		// Stack.
+		else if (landmark instanceof Stack) {
+			position = ((Stack) landmark).base().position();
+		}
+
+		// Corner.
+		else if (landmark instanceof Corner) {
+			position = ((Corner) landmark).position();
+		}
+
+		// Not supported.
+		else {
+			throw new RoboticException(
+					"Measures with landmark %s are not supported.", landmark);
 		}
 
 		// Offset.
-		Position position = sourceShape.position();
 		switch (relation) {
 		case Left:
 			position = position.add(0, tileCount, 0);
@@ -68,6 +106,6 @@ public class MeasureDistribution extends SpatialDistribution {
 					"The measure relation '%s' is not supported.");
 		}
 		position = context.simulator().dropPosition(position);
-		return new SingleItem(new DestinationHypothesis(position, null));
+		return new DestinationHypothesis(position, null);
 	}
 }
