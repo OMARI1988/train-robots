@@ -44,8 +44,9 @@ public class Entity extends Losr {
 				new Type(type), null);
 	}
 
-	public Entity(Color color, Type type) {
-		this(0, 0, null, null, new SingleItem(color), type, null);
+	public Entity(Indicators indicator, Types type) {
+		this(0, 0, null, new SingleItem(new Indicator(indicator)), null,
+				new Type(type), null);
 	}
 
 	public Entity(int id, int referenceId, Cardinal cardinal,

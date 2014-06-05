@@ -14,7 +14,7 @@ public class ItemsArray<T> implements Items<T> {
 
 	private final T[] items;
 
-	public ItemsArray(T[] items) {
+	public ItemsArray(T... items) {
 		this.items = items;
 	}
 

@@ -10,18 +10,25 @@ package com.trainrobots.planner;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.distributions.ColorDistribution;
+import com.trainrobots.distributions.IndicatorDistribution;
+import com.trainrobots.distributions.TypeDistribution;
+import com.trainrobots.distributions.ObservableDistribution;
+import com.trainrobots.distributions.PickableDistribution;
+import com.trainrobots.distributions.RelationDistribution;
+import com.trainrobots.distributions.RelativeDistribution;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.instructions.TakeInstruction;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
+import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Relations;
+import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.distributions.AttributeDistribution;
-import com.trainrobots.observables.distributions.ObservableDistribution;
-import com.trainrobots.observables.distributions.PickableDistribution;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Shape;
 
@@ -48,28 +55,8 @@ public class Planner {
 					"A destination should not be specified for a take action.");
 		}
 
-		// (entity: (color: X) (type: Y))
-		Entity entity = event.entity();
-		if (entity.cardinal() != null) {
-			throw new RoboticException("Cardinality is not supported.");
-		}
-		if (entity.indicators() != null) {
-			throw new RoboticException("Indiciators are not supported.");
-		}
-		if (entity.spatialRelation() != null) {
-			throw new RoboticException("Spatial relations are not supported.");
-		}
-		Types type = entity.type();
-		Items<Color> colors = entity.colors();
-		if (colors == null || colors.count() != 1) {
-			throw new RoboticException("Expected a single color.");
-		}
-
-		// Match type and color.
-		ObservableDistribution distribution = new AttributeDistribution(layout,
-				type, colors.get(0).color());
-
 		// Pickable.
+		ObservableDistribution distribution = distribution(event.entity());
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -84,5 +71,60 @@ public class Planner {
 		}
 		Shape shape = (Shape) observable;
 		return new TakeInstruction(shape.position());
+	}
+
+	private ObservableDistribution distribution(Entity entity) {
+
+		// Cardinality.
+		if (entity.cardinal() != null) {
+			throw new RoboticException("Cardinality is not supported.");
+		}
+
+		// Type.
+		Types type = entity.type();
+		ObservableDistribution distribution = new TypeDistribution(layout, type);
+
+		// Color.
+		Items<Color> colors = entity.colors();
+		if (colors != null) {
+			if (colors.count() != 1) {
+				throw new RoboticException("Expected at most a single color.");
+			}
+			distribution = new ColorDistribution(distribution, colors.get(0)
+					.color());
+		}
+
+		// Indicator.
+		Items<Indicator> indicators = entity.indicators();
+		if (indicators != null) {
+			distribution = new IndicatorDistribution(distribution, indicators);
+		}
+
+		// Spatial relation.
+		if (entity.spatialRelation() != null) {
+			RelationDistribution relationDistribution = distribution(entity
+					.spatialRelation());
+			distribution = new RelativeDistribution(distribution,
+					relationDistribution);
+		}
+		return distribution;
+	}
+
+	private RelationDistribution distribution(SpatialRelation spatialRelation) {
+
+		// (spatial-relation: (relation: X) (entity: Y))
+		if (spatialRelation.measure() != null) {
+			throw new RoboticException("Measures are not supported.");
+		}
+		if (spatialRelation.entity() == null) {
+			throw new RoboticException(
+					"Spatial relations without entities are not supported.");
+		}
+		Relations relation = spatialRelation.relation();
+		Entity entity = spatialRelation.entity();
+
+		// Entity.
+		ObservableDistribution landmarkDistribution = distribution(entity);
+		return new RelationDistribution(relation, landmarkDistribution);
 	}
 }

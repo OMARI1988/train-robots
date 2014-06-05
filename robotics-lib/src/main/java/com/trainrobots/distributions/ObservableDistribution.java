@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.observables.distributions;
+package com.trainrobots.distributions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,17 +16,13 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Layout;
 
-public abstract class ObservableDistribution implements Items<Observable> {
+public abstract class ObservableDistribution extends Distribution implements
+		Items<Observable> {
 
-	protected final List<Observable> observables = new ArrayList<Observable>();
-	protected final Layout layout;
+	private final List<Observable> observables = new ArrayList<Observable>();
 
 	protected ObservableDistribution(Layout layout) {
-		this.layout = layout;
-	}
-
-	public Layout layout() {
-		return layout;
+		super(layout);
 	}
 
 	@Override
@@ -49,5 +45,9 @@ public abstract class ObservableDistribution implements Items<Observable> {
 		Observable[] array = new Observable[observables.size()];
 		observables.toArray(array);
 		return array;
+	}
+
+	protected void add(Observable observable) {
+		observables.add(observable);
 	}
 }

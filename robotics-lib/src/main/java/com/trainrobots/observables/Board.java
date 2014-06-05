@@ -8,14 +8,22 @@
 
 package com.trainrobots.observables;
 
+import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Types;
 
-public abstract class Observable {
+public class Board extends Observable {
 
-	public abstract Losr toLosr();
+	public static final Board board() {
+		return new Board();
+	}
+
+	private Board() {
+
+	}
 
 	@Override
-	public String toString() {
-		return toLosr().toString();
+	public Losr toLosr() {
+		return new Entity(Types.Board);
 	}
 }

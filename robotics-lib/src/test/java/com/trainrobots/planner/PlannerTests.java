@@ -8,6 +8,9 @@
 
 package com.trainrobots.planner;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
 import com.trainrobots.Robotics;
@@ -47,5 +50,7 @@ public class PlannerTests {
 
 		// Diagnostics.
 		System.out.println(String.format("Translated: %d / %d", valid, total));
+		assertThat(valid, is(282));
+		assertThat(total, is(516));
 	}
 }

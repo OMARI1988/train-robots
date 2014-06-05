@@ -9,10 +9,12 @@
 package com.trainrobots.scenes;
 
 import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Entity;
+import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observable;
 
-public class Shape implements Observable {
+public class Shape extends Observable {
 
 	private final Types type;
 	private final Colors color;
@@ -44,5 +46,10 @@ public class Shape implements Observable {
 					&& shape.position.equals(position);
 		}
 		return false;
+	}
+
+	@Override
+	public Losr toLosr() {
+		return new Entity(color, type);
 	}
 }

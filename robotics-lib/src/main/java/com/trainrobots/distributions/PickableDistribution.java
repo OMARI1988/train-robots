@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.observables.distributions;
+package com.trainrobots.distributions;
 
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Shape;
@@ -17,7 +17,7 @@ public class PickableDistribution extends ObservableDistribution {
 		super(distribution.layout());
 		for (Observable observable : distribution) {
 			if (pickable(observable)) {
-				observables.add(observable);
+				add(observable);
 			}
 		}
 	}

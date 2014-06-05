@@ -9,6 +9,7 @@
 package com.trainrobots.losr;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.reader.LosrReader;
@@ -72,6 +73,14 @@ public abstract class Losr implements Items<Losr> {
 
 	public static Losr read(String text) {
 		return new LosrReader(text).read();
+	}
+
+	public void visit(Consumer<Losr> visitor) {
+		visitor.accept(this);
+		int size = count();
+		for (int i = 0; i < size; i++) {
+			get(i).visit(visitor);
+		}
 	}
 
 	protected abstract void writeName(StringBuilder text);
