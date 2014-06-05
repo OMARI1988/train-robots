@@ -17,7 +17,6 @@ public class Measure extends Losr {
 
 	public Measure(Entity entity) {
 		this.entity = entity;
-
 	}
 
 	public Measure(int id, int referenceId, Items<Losr> items) {

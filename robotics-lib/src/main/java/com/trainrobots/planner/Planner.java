@@ -20,17 +20,20 @@ import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
 import com.trainrobots.distributions.spatial.DropDestinationDistribution;
+import com.trainrobots.distributions.spatial.MeasureDistribution;
 import com.trainrobots.distributions.spatial.SpatialDistribution;
 import com.trainrobots.instructions.DropInstruction;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.instructions.MoveInstruction;
 import com.trainrobots.instructions.TakeInstruction;
 import com.trainrobots.losr.Actions;
+import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Measure;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Sequence;
 import com.trainrobots.losr.SpatialRelation;
@@ -289,21 +292,68 @@ public class Planner {
 	private SpatialDistribution distribution(PlannerContext context,
 			SpatialRelation spatialRelation) {
 
-		// (spatial-relation: (relation: X) (entity: Y))
-		if (spatialRelation.measure() != null) {
-			throw new RoboticException("Measures are not supported.");
-		}
-		if (spatialRelation.entity() == null) {
-			throw new RoboticException(
-					"Spatial relations without entities are not supported.");
-		}
+		// Relation.
 		Relations relation = spatialRelation.relation();
-		Entity entity = spatialRelation.entity();
 
 		// Entity.
-		ObservableDistribution landmarkDistribution = distribution(context,
-				entity);
+		Entity entity = spatialRelation.entity();
+		ObservableDistribution landmarkDistribution = entity != null ? distribution(
+				context, entity) : null;
+
+		// Measure.
+		Measure measure = spatialRelation.measure();
+		if (measure != null) {
+			return distribution(measure, relation, landmarkDistribution);
+		}
+
+		// Distribution.
+		if (landmarkDistribution == null) {
+			throw new RoboticException(
+					"Expected a landmark entity to be specified in spatial relation.");
+		}
 		return SpatialDistribution.of(relation, landmarkDistribution);
+	}
+
+	private SpatialDistribution distribution(Measure measure,
+			Relations relation, ObservableDistribution landmarkDistribution) {
+
+		// Colors.
+		Entity entity = measure.entity();
+		if (entity.colors() != null) {
+			throw new RoboticException(
+					"Measure entity colors are not supported.");
+		}
+
+		// Indiciators.
+		if (entity.indicators() != null) {
+			throw new RoboticException(
+					"Measure entity indicators are not supported.");
+		}
+
+		// Relation.
+		if (entity.spatialRelation() != null) {
+			throw new RoboticException(
+					"Measure entity relations are not supported.");
+		}
+
+		// Type.
+		if (entity.type() != Types.Tile) {
+			throw new RoboticException(
+					"The measure entity type '%s' is not supported.",
+					entity.type());
+		}
+
+		// Cardinality.
+		Cardinal cardinal = entity.cardinal();
+		if (cardinal == null) {
+			throw new RoboticException(
+					"Measure entity cardinality was not specified.");
+		}
+		int tileCount = cardinal.value();
+
+		// Distribution.
+		return new MeasureDistribution(layout, tileCount, relation,
+				landmarkDistribution);
 	}
 
 	private PlannerContext context(Losr root) {
