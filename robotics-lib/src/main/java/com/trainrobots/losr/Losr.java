@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.reader.LosrReader;
+import com.trainrobots.losr.reader.LosrParser;
 
 public abstract class Losr implements Items<Losr> {
 
@@ -71,8 +71,8 @@ public abstract class Losr implements Items<Losr> {
 		return new LosrIterator(this);
 	}
 
-	public static Losr read(String text) {
-		return new LosrReader(text).read();
+	public static Losr parse(String text) {
+		return new LosrParser(text).parse();
 	}
 
 	public void visit(Consumer<Losr> visitor) {
@@ -81,6 +81,24 @@ public abstract class Losr implements Items<Losr> {
 		for (int i = 0; i < size; i++) {
 			get(i).visit(visitor);
 		}
+	}
+
+	public Losr find(int id) {
+
+		// Match.
+		if (id == this.id) {
+			return this;
+		}
+
+		// Recurse.
+		int size = count();
+		for (int i = 0; i < size; i++) {
+			Losr result = get(i).find(id);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 
 	protected abstract void writeName(StringBuilder text);

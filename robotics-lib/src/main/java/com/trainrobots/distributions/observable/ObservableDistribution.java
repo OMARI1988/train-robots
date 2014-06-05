@@ -6,13 +6,14 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions;
+package com.trainrobots.distributions.observable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.trainrobots.collections.Items;
+import com.trainrobots.distributions.Distribution;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Layout;
 
@@ -45,6 +46,13 @@ public abstract class ObservableDistribution extends Distribution implements
 		Observable[] array = new Observable[observables.size()];
 		observables.toArray(array);
 		return array;
+	}
+
+	@Override
+	public String toString() {
+		int count = count();
+		return getClass().getSimpleName() + " (" + count + " "
+				+ (count == 1 ? "observable" : "observables") + ")";
 	}
 
 	protected void add(Observable observable) {

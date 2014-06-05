@@ -13,18 +13,18 @@ import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.TokenContext;
 
-public class LosrReader {
+public class LosrParser {
 
 	private static final LosrFactory factory = new LosrFactory();
 	private final String text;
 	private int position;
 
-	public LosrReader(String text) {
+	public LosrParser(String text) {
 		this.text = text;
 		skipWhitespace();
 	}
 
-	public Losr read() {
+	public Losr parse() {
 
 		// (
 		char ch = next();

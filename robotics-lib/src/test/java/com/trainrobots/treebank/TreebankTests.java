@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
-import com.trainrobots.Robotics;
+import com.trainrobots.TestContext;
 import com.trainrobots.XmlReader;
 import com.trainrobots.losr.Losr;
 
@@ -26,7 +26,7 @@ public class TreebankTests {
 	public void shouldWriteTreebank() {
 
 		// Read.
-		Commands commands = Robotics.system().commands();
+		Commands commands = TestContext.treebank().commands();
 		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {

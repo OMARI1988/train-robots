@@ -8,15 +8,32 @@
 
 package com.trainrobots.instructions;
 
+import com.trainrobots.scenes.Position;
+
 public class DropInstruction implements Instruction {
+
+	private final Position to;
+
+	public DropInstruction(Position to) {
+		this.to = to;
+	}
+
+	public Position to() {
+		return to;
+	}
 
 	@Override
 	public boolean equals(Object object) {
-		return object instanceof DropInstruction;
+		return object instanceof DropInstruction
+				&& ((DropInstruction) object).to.equals(to);
 	}
 
 	@Override
 	public String toString() {
-		return "Drop";
+		StringBuilder text = new StringBuilder();
+		text.append("Drop: (");
+		text.append(to);
+		text.append(')');
+		return text.toString();
 	}
 }

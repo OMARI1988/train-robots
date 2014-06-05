@@ -12,11 +12,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
 public interface Instruction {
+
+	public static Instruction merge(Items<Instruction> instructions) {
+
+		// Instructions.
+		if (instructions.count() != 2) {
+			throw new RoboticException("Expected to merge two instructions.");
+		}
+		Instruction first = instructions.get(0);
+		Instruction second = instructions.get(1);
+
+		// Take.
+		if (!(first instanceof TakeInstruction)) {
+			throw new RoboticException(
+					"Expected first instruction to merge to be a take instruction.");
+		}
+		TakeInstruction take = (TakeInstruction) first;
+
+		// Drop.
+		if (!(second instanceof DropInstruction)) {
+			throw new RoboticException(
+					"Expected second instruction to merge to be a drop instruction.");
+		}
+		DropInstruction drop = (DropInstruction) second;
+
+		// Merge.
+		return new MoveInstruction(take.from(), drop.to());
+	}
 
 	public static Instruction instruction(Layout before, Layout after) {
 
@@ -46,7 +74,7 @@ public interface Instruction {
 
 		// Drop.
 		if (p1.equals(before.gripper().position())) {
-			return new DropInstruction();
+			return new DropInstruction(p2);
 		}
 
 		// Take.

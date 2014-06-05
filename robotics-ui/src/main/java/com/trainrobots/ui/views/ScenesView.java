@@ -22,10 +22,10 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.border.EmptyBorder;
 
-import com.trainrobots.RoboticSystem;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.Scenes;
 import com.trainrobots.treebank.Commands;
+import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.Styles;
 import com.trainrobots.ui.services.data.DataService;
 
@@ -39,8 +39,8 @@ public class ScenesView extends PaneView {
 		setLayout(new BorderLayout());
 
 		// Scenes.
-		RoboticSystem system = dataService.system();
-		Scenes scenes = system.scenes();
+		Treebank treebank = dataService.treebank();
+		Scenes scenes = treebank.scenes();
 
 		// Model.
 		ListModel<Scene> model = new AbstractListModel<Scene>() {
@@ -56,7 +56,7 @@ public class ScenesView extends PaneView {
 
 		// List.
 		JList<Scene> list = new JList<Scene>(model);
-		list.setCellRenderer(new SceneRenderer(system.commands()));
+		list.setCellRenderer(new SceneRenderer(treebank.commands()));
 
 		// Scroll pane.
 		JScrollPane scrollPane = new JScrollPane(list,

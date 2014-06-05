@@ -6,29 +6,29 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions;
+package com.trainrobots.distributions.observable;
 
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Shape;
 
-public class PickableDistribution extends ObservableDistribution {
+public class DroppableDistribution extends ObservableDistribution {
 
-	public PickableDistribution(ObservableDistribution distribution) {
+	public DroppableDistribution(ObservableDistribution distribution) {
 		super(distribution.layout());
 		for (Observable observable : distribution) {
-			if (pickable(observable)) {
+			if (droppable(observable)) {
 				add(observable);
 			}
 		}
 	}
 
-	private boolean pickable(Observable observable) {
+	private boolean droppable(Observable observable) {
 
-		// Only shapes that do not support other shapes are pickable.
+		// Only the shape in the gripper is droppable.
 		if (!(observable instanceof Shape)) {
 			return false;
 		}
 		Shape shape = (Shape) observable;
-		return layout.shape(shape.position().add(0, 0, 1)) == null;
+		return shape.equals(layout.gripper().shape());
 	}
 }

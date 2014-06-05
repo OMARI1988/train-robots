@@ -24,7 +24,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import com.trainrobots.RoboticSystem;
 import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
@@ -42,8 +41,7 @@ public class CommandsView extends PaneView {
 
 		// Commands.
 		Scene scene = dataService.selectedScene();
-		RoboticSystem roboticSystem = dataService.system();
-		Items<Command> commands = roboticSystem.commands().forScene(scene);
+		Items<Command> commands = dataService.treebank().commands(scene);
 
 		// Model.
 		TableModel model = new AbstractTableModel() {

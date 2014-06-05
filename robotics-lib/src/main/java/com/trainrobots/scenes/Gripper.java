@@ -42,8 +42,7 @@ public class Gripper {
 		}
 	}
 
-	// TODO: USED??
-	// public Shape shape() {
-	// return layout.shape(position);
-	// }
+	public Shape shape() {
+		return layout.shape(position);
+	}
 }

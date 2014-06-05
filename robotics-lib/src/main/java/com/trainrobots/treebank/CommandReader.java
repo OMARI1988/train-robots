@@ -50,7 +50,7 @@ public class CommandReader {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
 					int id = Integer.parseInt(attributes.getValue("id"));
-					Losr losr = Losr.read(attributes.getValue("losr"));
+					Losr losr = Losr.parse(attributes.getValue("losr"));
 					commands.command(id).setLosr(losr);
 				}
 			}

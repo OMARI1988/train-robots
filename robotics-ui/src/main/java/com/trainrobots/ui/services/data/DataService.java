@@ -8,20 +8,20 @@
 
 package com.trainrobots.ui.services.data;
 
-import com.trainrobots.RoboticSystem;
 import com.trainrobots.scenes.Scene;
+import com.trainrobots.treebank.Treebank;
 
 public class DataService {
 
-	private final RoboticSystem system = new RoboticSystem("../.data");
+	private final Treebank treebank = new Treebank("../.data");
 	private Scene selectedScene;
 
 	public DataService() {
-		selectedScene = system.scenes().scene(879);
+		selectedScene = treebank.scene(879);
 	}
 
-	public RoboticSystem system() {
-		return system;
+	public Treebank treebank() {
+		return treebank;
 	}
 
 	public Scene selectedScene() {

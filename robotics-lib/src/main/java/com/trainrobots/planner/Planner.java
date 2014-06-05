@@ -10,14 +10,20 @@ package com.trainrobots.planner;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.distributions.ColorDistribution;
-import com.trainrobots.distributions.IndicatorDistribution;
-import com.trainrobots.distributions.TypeDistribution;
-import com.trainrobots.distributions.ObservableDistribution;
-import com.trainrobots.distributions.PickableDistribution;
-import com.trainrobots.distributions.RelationDistribution;
-import com.trainrobots.distributions.RelativeDistribution;
+import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
+import com.trainrobots.distributions.observable.ColorDistribution;
+import com.trainrobots.distributions.observable.DroppableDistribution;
+import com.trainrobots.distributions.observable.IndicatorDistribution;
+import com.trainrobots.distributions.observable.ObservableDistribution;
+import com.trainrobots.distributions.observable.PickableDistribution;
+import com.trainrobots.distributions.observable.RelativeDistribution;
+import com.trainrobots.distributions.observable.TypeDistribution;
+import com.trainrobots.distributions.spatial.DropDestinationDistribution;
+import com.trainrobots.distributions.spatial.SpatialDistribution;
+import com.trainrobots.instructions.DropInstruction;
 import com.trainrobots.instructions.Instruction;
+import com.trainrobots.instructions.MoveInstruction;
 import com.trainrobots.instructions.TakeInstruction;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Color;
@@ -26,37 +32,140 @@ import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Relations;
+import com.trainrobots.losr.Sequence;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.Observables;
+import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Layout;
+import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
+import com.trainrobots.simulator.Simulator;
 
 public class Planner {
 
 	private final Layout layout;
+	private final Observables observables;
+	private final Simulator simulator;
 
 	public Planner(Layout layout) {
-		this.layout = layout;
+		this(new Simulator(layout));
 	}
 
-	public Instruction translate(Losr losr) {
+	public Planner(Simulator simulator) {
+		this.layout = simulator.layout();
+		this.observables = new Observables(layout);
+		this.simulator = simulator;
+	}
 
-		// (event: (action: take) (entity: X))
-		if (!(losr instanceof Event)) {
-			throw new RoboticException("Expected an event.");
+	public Instruction instruction(Losr losr) {
+		return translate(context(losr), losr);
+	}
+
+	public ObservableDistribution distribution(Entity entity) {
+		return distribution(context(entity), entity);
+	}
+
+	private Instruction translate(PlannerContext context, Losr losr) {
+
+		// Event.
+		if (losr instanceof Event) {
+			return translateEvent(context, (Event) losr);
 		}
-		Event event = (Event) losr;
-		if (event.action() != Actions.Take) {
-			throw new RoboticException("Expected a take action.");
+
+		// Sequence.
+		if (losr instanceof Sequence) {
+			return translateSequence(context, (Sequence) losr);
 		}
+
+		// Not supported.
+		throw new RoboticException("Expected an event or sequence.", losr);
+	}
+
+	private Instruction translateSequence(PlannerContext context,
+			Sequence sequence) {
+
+		// Translate.
+		int size = sequence.count();
+		Instruction[] instructions = new Instruction[size];
+		for (int i = 0; i < size; i++) {
+			Losr item = sequence.get(i);
+			instructions[i] = translate(context, item);
+			context.previousEvent(item instanceof Event ? (Event) item : null);
+		}
+
+		// Merge.
+		return Instruction.merge(new ItemsArray(instructions));
+	}
+
+	private Instruction translateEvent(PlannerContext context, Event event) {
+
+		// Action.
+		Actions action = event.action();
+		switch (action) {
+		case Move:
+			return translateMove(context, event);
+		case Take:
+			return translateTake(context, event);
+		case Drop:
+			return translateDrop(context, event);
+		}
+
+		// Not supported.
+		throw new RoboticException("The action '%s' is not supported.", action);
+	}
+
+	private MoveInstruction translateMove(PlannerContext context, Event event) {
+
+		// Pickable.
+		ObservableDistribution distribution = distribution(context,
+				event.entity());
+		distribution = new PickableDistribution(distribution);
+
+		// Single observable.
+		if (distribution.count() != 1) {
+			throw new RoboticException(
+					"Expected a single observable for a move action.");
+		}
+		Observable observable = distribution.get(0);
+
+		// Shape.
+		if (!(observable instanceof Shape)) {
+			throw new RoboticException(
+					"Observable was not a shape for a move action.");
+		}
+		Shape shape = (Shape) observable;
+		context.sourceShape(shape);
+
+		// Destination.
+		if (event.destination() == null) {
+			throw new RoboticException(
+					"Destination not specified for move action.");
+		}
+		SpatialDistribution spatialDistribution = new DropDestinationDistribution(
+				distribution(context, event.destination()));
+		Items<DestinationHypothesis> destinations = spatialDistribution
+				.destinations(context);
+		if (destinations.count() != 1) {
+			throw new RoboticException(
+					"Expected a single destination for a move action.");
+		}
+		return new MoveInstruction(shape.position(), destinations.get(0)
+				.position());
+	}
+
+	private TakeInstruction translateTake(PlannerContext context, Event event) {
+
+		// Destination.
 		if (event.destination() != null) {
 			throw new RoboticException(
 					"A destination should not be specified for a take action.");
 		}
 
 		// Pickable.
-		ObservableDistribution distribution = distribution(event.entity());
+		ObservableDistribution distribution = distribution(context,
+				event.entity());
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -72,10 +181,75 @@ public class Planner {
 					"Observable was not a shape for a take action.");
 		}
 		Shape shape = (Shape) observable;
+		context.sourceShape(shape);
 		return new TakeInstruction(shape.position());
 	}
 
-	private ObservableDistribution distribution(Entity entity) {
+	private DropInstruction translateDrop(PlannerContext context, Event event) {
+
+		// Entity reference?
+		Entity entity = event.entity();
+		Types type = entity.type();
+		boolean dropEntityReference = false;
+		if (type == Types.Reference) {
+			if (context.previousEvent() != null) {
+				Event previousEvent = (Event) context.previousEvent();
+				if (previousEvent.action() == Actions.Take
+						&& previousEvent.entity().id() == entity.referenceId()) {
+					dropEntityReference = true;
+				}
+			}
+			if (!dropEntityReference) {
+				throw new RoboticException(
+						"Failed to resolve drop entity reference to previous take action.");
+			}
+		}
+
+		// Source.
+		Gripper gripper = layout.gripper();
+		if (!dropEntityReference) {
+
+			// Droppable.
+			ObservableDistribution distribution = distribution(context, entity);
+			distribution = new DroppableDistribution(distribution);
+
+			// Single observable.
+			if (distribution.count() != 1) {
+				throw new RoboticException(
+						"Expected a single observable for a drop action.");
+			}
+			Observable observable = distribution.get(0);
+
+			// Shape.
+			if (!(observable instanceof Shape)) {
+				throw new RoboticException(
+						"Observable was not a shape for a drop action.");
+			}
+			Shape shape = (Shape) observable;
+			if (!shape.equals(gripper.shape())) {
+				throw new RoboticException(
+						"Specified shape does not match gripper shape for a drop action.");
+			}
+		}
+
+		// Destination.
+		Position position = simulator.dropPosition(gripper.position());
+		if (event.destination() != null) {
+			SpatialDistribution spatialDistribution = new DropDestinationDistribution(
+					distribution(context, event.destination()));
+			Items<DestinationHypothesis> destinations = spatialDistribution
+					.destinations(context);
+			if (destinations.count() != 1) {
+				throw new RoboticException(
+						"Expected a single destination for a drop action.");
+			}
+			position = destinations.get(0).position();
+		}
+		return new DropInstruction(position);
+	}
+
+	private ObservableDistribution distribution(PlannerContext context,
+			Entity entity) {
 
 		// Cardinality.
 		if (entity.cardinal() != null) {
@@ -84,16 +258,16 @@ public class Planner {
 
 		// Type.
 		Types type = entity.type();
-		ObservableDistribution distribution = new TypeDistribution(layout, type);
+		if (type == Types.TypeReference) {
+			type = context.referenceType(entity.referenceId());
+		}
+		ObservableDistribution distribution = new TypeDistribution(context,
+				layout, type);
 
-		// Color.
+		// Colors.
 		Items<Color> colors = entity.colors();
 		if (colors != null) {
-			if (colors.count() != 1) {
-				throw new RoboticException("Expected at most a single color.");
-			}
-			distribution = new ColorDistribution(distribution, colors.get(0)
-					.color());
+			distribution = new ColorDistribution(distribution, colors);
 		}
 
 		// Indicator.
@@ -104,15 +278,16 @@ public class Planner {
 
 		// Spatial relation.
 		if (entity.spatialRelation() != null) {
-			RelationDistribution relationDistribution = distribution(entity
-					.spatialRelation());
+			SpatialDistribution spatialDistribution = distribution(context,
+					entity.spatialRelation());
 			distribution = new RelativeDistribution(distribution,
-					relationDistribution);
+					spatialDistribution);
 		}
 		return distribution;
 	}
 
-	private RelationDistribution distribution(SpatialRelation spatialRelation) {
+	private SpatialDistribution distribution(PlannerContext context,
+			SpatialRelation spatialRelation) {
 
 		// (spatial-relation: (relation: X) (entity: Y))
 		if (spatialRelation.measure() != null) {
@@ -126,7 +301,15 @@ public class Planner {
 		Entity entity = spatialRelation.entity();
 
 		// Entity.
-		ObservableDistribution landmarkDistribution = distribution(entity);
-		return new RelationDistribution(relation, landmarkDistribution);
+		ObservableDistribution landmarkDistribution = distribution(context,
+				entity);
+		return SpatialDistribution.of(relation, landmarkDistribution);
+	}
+
+	private PlannerContext context(Losr root) {
+		PlannerContext context = new PlannerContext(observables, simulator,
+				root);
+		context.sourceShape(layout.gripper().shape());
+		return context;
 	}
 }

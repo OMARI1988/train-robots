@@ -13,30 +13,44 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Robotics;
+import com.trainrobots.TestContext;
 import com.trainrobots.instructions.Instruction;
-import com.trainrobots.instructions.TakeInstruction;
+import com.trainrobots.instructions.MoveInstruction;
+import com.trainrobots.losr.Event;
+import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 
 public class PlannerTests {
 
 	@Test
-	public void shouldTranslateLosr() {
+	public void shouldGetInstruction() {
+
+		// Event.
+		Command command = TestContext.treebank().command(4436);
+		Event event = (Event) command.losr();
+
+		// Planner.
+		Planner planner = new Planner(command.scene().before());
+
+		// Instruction.
+		assertThat(planner.instruction(event), is(new MoveInstruction(
+				new Position(1, 6, 1), new Position(7, 0, 0))));
+	}
+
+	@Test
+	public void shouldGetInstructions() {
 
 		// Translate.
 		int valid = 0;
 		int total = 0;
-		for (Command command : Robotics.system().commands()) {
+		for (Command command : TestContext.treebank().commands()) {
 			if (command.losr() != null) {
 				Scene scene = command.scene();
 				Instruction expected = scene.instruction();
-				if (!(expected instanceof TakeInstruction)) {
-					continue;
-				}
 				try {
 					Planner planner = new Planner(scene.before());
-					Instruction actual = planner.translate(command.losr());
+					Instruction actual = planner.instruction(command.losr());
 					if (actual.equals(expected)) {
 						valid++;
 					}
@@ -49,8 +63,9 @@ public class PlannerTests {
 		}
 
 		// Diagnostics.
-		System.out.println(String.format("Translated: %d / %d", valid, total));
-		assertThat(valid, is(464));
-		assertThat(total, is(516));
+		System.out.println(String.format("Instructions: %d / %d = %.2f %%",
+				valid, total, 100.0 * valid / total));
+		assertThat(valid, is(2821));
+		assertThat(total, is(3409));
 	}
 }

@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions;
+package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -16,6 +16,8 @@ import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
+import com.trainrobots.scenes.Position;
+import com.trainrobots.scenes.Shape;
 
 public class IndicatorDistribution extends ObservableDistribution {
 
@@ -64,6 +66,17 @@ public class IndicatorDistribution extends ObservableDistribution {
 				}
 				if (match) {
 					add(corner);
+				}
+				continue;
+			}
+
+			// Shape.
+			if (observable instanceof Shape && size == 1
+					&& indicators.get(0).indicator() == Indicators.Individual) {
+				Shape shape = (Shape) observable;
+				Position p = shape.position();
+				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
+					add(shape);
 				}
 				continue;
 			}

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Robotics;
+import com.trainrobots.TestContext;
 import com.trainrobots.scenes.Scene;
 
 public class CommandTests {
@@ -22,7 +22,7 @@ public class CommandTests {
 	public void shouldReadCommands() {
 
 		// Commands.
-		Commands commands = Robotics.system().commands();
+		Commands commands = TestContext.treebank().commands();
 		assertThat(commands.count(), is(8970));
 
 		// LOSR statements.
@@ -43,7 +43,8 @@ public class CommandTests {
 				is("Lift up the red cube and place on top of the \"3 green cube\" stacked tower."));
 
 		// Scene 879.
-		Scene scene = Robotics.system().scenes().scene(879);
-		assertThat(commands.forScene(scene).count(), is(16));
+		Treebank treebank = TestContext.treebank();
+		Scene scene = treebank.scene(879);
+		assertThat(treebank.commands(scene).count(), is(16));
 	}
 }

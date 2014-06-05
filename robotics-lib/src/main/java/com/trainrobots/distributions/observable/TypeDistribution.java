@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions;
+package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Types;
@@ -15,12 +15,14 @@ import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Robot;
+import com.trainrobots.observables.Stack;
+import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Shape;
 
 public class TypeDistribution extends ObservableDistribution {
 
-	public TypeDistribution(Layout layout, Types type) {
+	public TypeDistribution(PlannerContext context, Layout layout, Types type) {
 		super(layout);
 
 		// Shape.
@@ -70,6 +72,14 @@ public class TypeDistribution extends ObservableDistribution {
 		// Robot.
 		if (type == Types.Robot) {
 			add(Robot.robot());
+			return;
+		}
+
+		// Stack.
+		if (type == Types.Stack) {
+			for (Stack stack : context.observables().stacks()) {
+				add(stack);
+			}
 			return;
 		}
 

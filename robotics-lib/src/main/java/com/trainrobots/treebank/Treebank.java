@@ -6,31 +6,34 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots;
+package com.trainrobots.treebank;
 
 import java.nio.file.Paths;
 
+import com.trainrobots.Log;
 import com.trainrobots.collections.Items;
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.LayoutReader;
 import com.trainrobots.scenes.Layouts;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.SceneReader;
 import com.trainrobots.scenes.Scenes;
-import com.trainrobots.treebank.Command;
-import com.trainrobots.treebank.CommandReader;
-import com.trainrobots.treebank.Commands;
 
-public class RoboticSystem {
+public class Treebank {
 
 	private final String dataPath;
 	private Layouts layouts;
 	private Scenes scenes;
 	private Commands commands;
 
-	public RoboticSystem(String dataPath) {
+	public Treebank(String dataPath) {
 		this.dataPath = dataPath;
 		Log.configureConsole();
-		Log.info("Starting robotic system...");
+		Log.info("Loading treebank...");
+	}
+
+	public Layout layout(int id) {
+		return layouts().layout(id);
 	}
 
 	public Layouts layouts() {
@@ -43,6 +46,10 @@ public class RoboticSystem {
 		return layouts;
 	}
 
+	public Scene scene(int id) {
+		return scenes().scene(id);
+	}
+
 	public Scenes scenes() {
 		if (scenes == null) {
 			SceneReader reader = new SceneReader(layouts());
@@ -51,6 +58,10 @@ public class RoboticSystem {
 			Log.info("Loaded: %s scenes.", scenes.count());
 		}
 		return scenes;
+	}
+
+	public Command command(int id) {
+		return commands().command(id);
 	}
 
 	public Commands commands() {

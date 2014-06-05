@@ -6,16 +6,16 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions;
+package com.trainrobots.distributions.hypotheses;
 
 import com.trainrobots.observables.Observable;
 
-public class Hypothesis {
+public class ObservableHypothesis {
 
 	private final Observable observable;
 	private final double weight;
 
-	public Hypothesis(Observable observable, double weight) {
+	public ObservableHypothesis(Observable observable, double weight) {
 		this.observable = observable;
 		this.weight = weight;
 	}

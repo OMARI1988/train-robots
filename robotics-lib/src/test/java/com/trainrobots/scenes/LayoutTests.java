@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Robotics;
+import com.trainrobots.TestContext;
 import com.trainrobots.scenes.Layout;
 
 public class LayoutTests {
@@ -23,7 +23,7 @@ public class LayoutTests {
 	@Test
 	public void shouldReadLayouts() {
 		int i = 0;
-		for (Layout layout : Robotics.system().layouts()) {
+		for (Layout layout : TestContext.treebank().layouts()) {
 			assertThat(layout.id(), is(++i));
 			assertThat(layout.gripper(), is(not(nullValue())));
 		}
