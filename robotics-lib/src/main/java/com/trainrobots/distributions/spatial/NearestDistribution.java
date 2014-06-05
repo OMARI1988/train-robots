@@ -36,8 +36,8 @@ public class NearestDistribution extends SpatialDistribution {
 		for (Observable landmark : landmarkDistribution) {
 			Double distance = distance(observable, landmark);
 			if (distance == null) {
-				throw new RoboticException(
-						"Nearest is not supported with landmark %s.", landmark);
+				throw new RoboticException("%s nearest %s is not supported.",
+						observable, landmark);
 			}
 			double weight = 1 / distance;
 			if (weight > best) {
@@ -63,6 +63,12 @@ public class NearestDistribution extends SpatialDistribution {
 		// Shape.
 		if (landmark instanceof Shape) {
 			Position p2 = ((Shape) landmark).position();
+			return distance(p1.x(), p1.y(), p2.x(), p2.y());
+		}
+
+		// Stack.
+		if (landmark instanceof Stack) {
+			Position p2 = ((Stack) landmark).base().position();
 			return distance(p1.x(), p1.y(), p2.x(), p2.y());
 		}
 

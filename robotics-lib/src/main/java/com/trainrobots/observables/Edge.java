@@ -8,10 +8,12 @@
 
 package com.trainrobots.observables;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Types;
+import com.trainrobots.scenes.Position;
 
 public class Edge extends Observable {
 
@@ -34,5 +36,19 @@ public class Edge extends Observable {
 	@Override
 	public Losr toLosr() {
 		return new Entity(indicator, Types.Edge);
+	}
+
+	public boolean supports(Position position) {
+		switch (indicator) {
+		case Left:
+			return position.y() == 7;
+		case Right:
+			return position.y() == 0;
+		case Front:
+			return position.x() == 7;
+		case Back:
+			return position.x() == 0;
+		}
+		throw new RoboticException("Invalid edge.");
 	}
 }

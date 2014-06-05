@@ -86,28 +86,8 @@ public class AboveDistribution extends SpatialDistribution {
 					position = ((Stack) observable).base().position();
 				}
 				if (position != null) {
-					Edge edge = (Edge) landmark;
-					switch (edge.indicator()) {
-					case Left:
-						if (position.y() == 7) {
-							return 1;
-						}
-						break;
-					case Right:
-						if (position.y() == 0) {
-							return 1;
-						}
-						break;
-					case Front:
-						if (position.x() == 7) {
-							return 1;
-						}
-						break;
-					case Back:
-						if (position.x() == 0) {
-							return 1;
-						}
-						break;
+					if (((Edge) landmark).supports(position)) {
+						return 1;
 					}
 					continue;
 				}
