@@ -256,7 +256,11 @@ public class Planner {
 
 		// Cardinality.
 		if (entity.cardinal() != null) {
-			throw new RoboticException("Cardinality is not supported.");
+			if (entity.cardinal().value() != 1) {
+				throw new RoboticException(
+						"Non-singular cardinality is not supported: %s.",
+						entity.cardinal());
+			}
 		}
 
 		// Type.

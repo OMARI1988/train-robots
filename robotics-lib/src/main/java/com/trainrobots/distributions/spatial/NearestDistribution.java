@@ -55,6 +55,8 @@ public class NearestDistribution extends SpatialDistribution {
 			p1 = ((Shape) observable).position();
 		} else if (observable instanceof Stack) {
 			p1 = ((Stack) observable).base().position();
+		} else if (observable instanceof Corner) {
+			p1 = ((Corner) observable).position();
 		}
 		if (p1 == null) {
 			return null;
