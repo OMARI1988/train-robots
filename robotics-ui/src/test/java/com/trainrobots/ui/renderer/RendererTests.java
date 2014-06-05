@@ -23,7 +23,7 @@ public class RendererTests {
 	@Test
 	public void shouldRenderImage() throws IOException {
 
-		Layout layout = TestContext.treebank().layouts().get(250);
+		Layout layout = TestContext.treebank().layout(251);
 		Buffer buffer = new Buffer(new LayoutElement(layout), 325, 350);
 		byte[] data = buffer.renderToArray();
 		buffer.close();

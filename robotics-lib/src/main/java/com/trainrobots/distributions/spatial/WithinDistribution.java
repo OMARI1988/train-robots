@@ -17,6 +17,7 @@ import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
+import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
@@ -32,27 +33,37 @@ public class WithinDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
+		for (Observable landmark : landmarkDistribution) {
 
-		// Shape.
-		if (observable instanceof Shape) {
-			Shape shape = (Shape) observable;
-			Position p1 = shape.position();
-			for (Observable landmark : landmarkDistribution) {
-
-				// Corner.
-				if (landmark instanceof Corner) {
-					Corner corner = (Corner) landmark;
+			// Corner.
+			if (landmark instanceof Corner) {
+				Corner corner = (Corner) landmark;
+				Position p1 = null;
+				if (observable instanceof Shape) {
+					p1 = ((Shape) observable).position();
+				} else if (observable instanceof Stack) {
+					p1 = ((Stack) observable).base().position();
+				}
+				if (p1 != null) {
 					Position p2 = corner.position();
 					if (p1.x() == p2.x() && p1.y() == p2.y()) {
 						return 1;
 					}
 					continue;
 				}
+			}
 
-				// Region.
-				if (landmark instanceof Region) {
-					Region region = (Region) landmark;
-					if (region.indicator() == Indicators.Center) {
+			// Region.
+			if (landmark instanceof Region) {
+				Region region = (Region) landmark;
+				if (region.indicator() == Indicators.Center) {
+					Position p1 = null;
+					if (observable instanceof Shape) {
+						p1 = ((Shape) observable).position();
+					} else if (observable instanceof Stack) {
+						p1 = ((Stack) observable).base().position();
+					}
+					if (p1 != null) {
 						if ((p1.x() == 3 || p1.x() == 4)
 								&& (p1.y() == 3 || p1.y() == 4)) {
 							return 1;
@@ -60,17 +71,13 @@ public class WithinDistribution extends SpatialDistribution {
 						continue;
 					}
 				}
-
-				// Not supported.
-				throw new RoboticException(
-						"Within is not supported with landmark %s.", landmark);
 			}
-			return 0;
-		}
 
-		// Not supported.
-		throw new RoboticException("Within is not supported with %s.",
-				observable);
+			// Not supported.
+			throw new RoboticException("%s within %s is not supported.",
+					observable, landmark);
+		}
+		return 0;
 	}
 
 	@Override

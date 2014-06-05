@@ -33,87 +33,104 @@ public class AboveDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
+		for (Observable landmark : landmarkDistribution) {
 
-		// Shape.
-		if (observable instanceof Shape) {
-			Shape shape = (Shape) observable;
-			for (Observable landmark : landmarkDistribution) {
-
-				// Shape.
-				if (landmark instanceof Shape) {
-					Shape landmarkShape = (Shape) landmark;
+			// Shape.
+			if (landmark instanceof Shape) {
+				Shape landmarkShape = (Shape) landmark;
+				if (observable instanceof Shape) {
+					Shape shape = (Shape) observable;
 					if (landmarkShape.position().add(0, 0, 1)
 							.equals(shape.position())) {
 						return 1;
 					}
+					continue;
 				}
+			}
 
-				// Corner.
-				else if (landmark instanceof Corner) {
-					Corner corner = (Corner) landmark;
-					Position p1 = shape.position();
+			// Corner.
+			if (landmark instanceof Corner) {
+				Corner corner = (Corner) landmark;
+				Position p1 = null;
+				if (observable instanceof Shape) {
+					p1 = ((Shape) observable).position();
+				} else if (observable instanceof Stack) {
+					p1 = ((Stack) observable).base().position();
+				}
+				if (p1 != null) {
 					Position p2 = corner.position();
 					if (p1.x() == p2.x() && p1.y() == p2.y()) {
 						return 1;
 					}
+					continue;
 				}
+			}
 
-				// Board.
-				else if (landmark instanceof Board) {
+			// Board.
+			if (landmark instanceof Board) {
+				if (observable instanceof Shape) {
+					Shape shape = (Shape) observable;
 					if (shape.position().z() == 0) {
 						return 1;
 					}
+					continue;
 				}
+			}
 
-				// Edge.
-				else if (landmark instanceof Edge) {
+			// Edge.
+			if (landmark instanceof Edge) {
+				Position position = null;
+				if (observable instanceof Shape) {
+					position = ((Shape) observable).position();
+				} else if (observable instanceof Stack) {
+					position = ((Stack) observable).base().position();
+				}
+				if (position != null) {
 					Edge edge = (Edge) landmark;
 					switch (edge.indicator()) {
 					case Left:
-						if (shape.position().y() == 7) {
+						if (position.y() == 7) {
 							return 1;
 						}
 						break;
 					case Right:
-						if (shape.position().y() == 0) {
+						if (position.y() == 0) {
 							return 1;
 						}
 						break;
 					case Front:
-						if (shape.position().x() == 7) {
+						if (position.x() == 7) {
 							return 1;
 						}
 						break;
 					case Back:
-						if (shape.position().x() == 0) {
+						if (position.x() == 0) {
 							return 1;
 						}
 						break;
 					}
+					continue;
 				}
+			}
 
-				// Stack.
-				else if (landmark instanceof Stack) {
+			// Stack.
+			if (landmark instanceof Stack) {
+				if (observable instanceof Shape) {
+					Shape shape = (Shape) observable;
 					Stack stack = (Stack) landmark;
 					if (stack.top().position().add(0, 0, 1)
 							.equals(shape.position())) {
 						return 1;
 					}
-				}
-
-				// Not supported.
-				else {
-					throw new RoboticException(
-							"Above is not supported with landmark %s.",
-							landmark);
+					continue;
 				}
 			}
-			return 0;
-		}
 
-		// Not supported.
-		throw new RoboticException("Above is not supported with %s.",
-				observable);
+			// Not supported.
+			throw new RoboticException("%s above %s is not supported.",
+					observable, landmark);
+		}
+		return 0;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Robot;
+import com.trainrobots.observables.Stack;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
@@ -49,11 +50,15 @@ public class NearestDistribution extends SpatialDistribution {
 	private static Double distance(Observable observable, Observable landmark) {
 
 		// Left-hand-side.
-		if (!(observable instanceof Shape)) {
+		Position p1 = null;
+		if (observable instanceof Shape) {
+			p1 = ((Shape) observable).position();
+		} else if (observable instanceof Stack) {
+			p1 = ((Stack) observable).base().position();
+		}
+		if (p1 == null) {
 			return null;
 		}
-		Shape shape = (Shape) observable;
-		Position p1 = shape.position();
 
 		// Shape.
 		if (landmark instanceof Shape) {

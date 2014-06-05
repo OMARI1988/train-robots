@@ -39,12 +39,10 @@ public class Stack extends Observable {
 		colors.add(shape.color());
 	}
 
-	// TODO: USED??
 	public Shape top() {
 		return shapes.get(shapes.size() - 1);
 	}
 
-	// TODO: USED??
 	public Shape base() {
 		return shapes.get(0);
 	}

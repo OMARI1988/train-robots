@@ -76,7 +76,7 @@ public class TypeDistribution extends ObservableDistribution {
 		}
 
 		// Stack.
-		if (type == Types.Stack) {
+		if (type == Types.Stack || type == Types.CubeGroup) {
 			for (Stack stack : context.observables().stacks()) {
 				add(stack);
 			}
