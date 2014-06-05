@@ -265,7 +265,7 @@ public class Planner {
 
 		// Type.
 		Types type = entity.type();
-		if (type == Types.TypeReference) {
+		if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
 			type = context.referenceType(entity.referenceId());
 		}
 		ObservableDistribution distribution = new TypeDistribution(context,
