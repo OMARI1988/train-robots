@@ -15,28 +15,31 @@ import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
+import com.trainrobots.scenes.Position;
 
 public class Corner extends Observable {
 
 	public static final Corner FrontLeft = new Corner(Indicators.Front,
-			Indicators.Left);
+			Indicators.Left, new Position(7, 7, 0));
 
 	public static final Corner FrontRight = new Corner(Indicators.Front,
-			Indicators.Right);
+			Indicators.Right, new Position(7, 0, 0));
 
 	public static final Corner BackLeft = new Corner(Indicators.Back,
-			Indicators.Left);
+			Indicators.Left, new Position(0, 7, 0));
 
 	public static final Corner BackRight = new Corner(Indicators.Back,
-			Indicators.Right);
+			Indicators.Right, new Position(0, 0, 0));
 
 	private final Indicators frontOrBack;
 	private final Indicators leftOrRight;
+	private final Position position;
 
-	private Corner(Indicators frontOrBack, Indicators leftOrRight) {
+	private Corner(Indicators frontOrBack, Indicators leftOrRight,
+			Position position) {
 		this.frontOrBack = frontOrBack;
 		this.leftOrRight = leftOrRight;
-
+		this.position = position;
 	}
 
 	public Indicators frontOrBack() {
@@ -45,6 +48,10 @@ public class Corner extends Observable {
 
 	public Indicators leftOrRight() {
 		return leftOrRight;
+	}
+
+	public Position position() {
+		return position;
 	}
 
 	@Override

@@ -61,13 +61,15 @@ public class Planner {
 
 		// Single observable.
 		if (distribution.count() != 1) {
-			throw new RoboticException("Expected a single observable.");
+			throw new RoboticException(
+					"Expected a single observable for a take action.");
 		}
 		Observable observable = distribution.get(0);
 
 		// Shape.
 		if (!(observable instanceof Shape)) {
-			throw new RoboticException("Observable was not a shape.");
+			throw new RoboticException(
+					"Observable was not a shape for a take action.");
 		}
 		Shape shape = (Shape) observable;
 		return new TakeInstruction(shape.position());

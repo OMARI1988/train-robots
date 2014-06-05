@@ -50,7 +50,7 @@ public class PlannerTests {
 
 		// Diagnostics.
 		System.out.println(String.format("Translated: %d / %d", valid, total));
-		assertThat(valid, is(282));
+		assertThat(valid, is(464));
 		assertThat(total, is(516));
 	}
 }

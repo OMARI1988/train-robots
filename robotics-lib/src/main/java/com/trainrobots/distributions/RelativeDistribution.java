@@ -8,6 +8,9 @@
 
 package com.trainrobots.distributions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.trainrobots.observables.Observable;
 
 public class RelativeDistribution extends ObservableDistribution {
@@ -15,9 +18,25 @@ public class RelativeDistribution extends ObservableDistribution {
 	public RelativeDistribution(ObservableDistribution landmarkDistribution,
 			RelationDistribution relationDistribution) {
 		super(landmarkDistribution.layout());
+
+		// Weights.
+		double best = 0;
+		List<Hypothesis> hypotheses = new ArrayList<Hypothesis>();
 		for (Observable observable : landmarkDistribution) {
-			if (relationDistribution.matches(observable)) {
-				add(observable);
+			double weight = relationDistribution.weight(observable);
+			if (weight == 0) {
+				continue;
+			}
+			hypotheses.add(new Hypothesis(observable, weight));
+			if (weight > best) {
+				best = weight;
+			}
+		}
+
+		// Select best hypotheses.
+		for (Hypothesis hypothesis : hypotheses) {
+			if (hypothesis.weight() == best) {
+				add(hypothesis.observable());
 			}
 		}
 	}
