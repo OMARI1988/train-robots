@@ -13,10 +13,12 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
+import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Position;
@@ -106,6 +108,26 @@ public class AboveDistribution extends SpatialDistribution {
 				}
 			}
 
+			// Region.
+			if (landmark instanceof Region) {
+				Region region = (Region) landmark;
+				if (region.indicator() == Indicators.Center) {
+					Position p1 = null;
+					if (observable instanceof Shape) {
+						p1 = ((Shape) observable).position();
+					} else if (observable instanceof Stack) {
+						p1 = ((Stack) observable).base().position();
+					}
+					if (p1 != null) {
+						if ((p1.x() == 3 || p1.x() == 4)
+								&& (p1.y() == 3 || p1.y() == 4)) {
+							return 1;
+						}
+						continue;
+					}
+				}
+			}
+
 			// Not supported.
 			throw new RoboticException("%s above %s is not supported.",
 					observable, landmark);
@@ -137,6 +159,13 @@ public class AboveDistribution extends SpatialDistribution {
 				Stack stack = (Stack) landmark;
 				destinations.add(new DestinationHypothesis(stack.top()
 						.position().add(0, 0, 1), stack));
+			}
+
+			// Board.
+			else if (landmark instanceof Board && context.sourceShape() != null) {
+				Shape shape = context.sourceShape();
+				destinations.add(new DestinationHypothesis(context.simulator()
+						.dropPosition(shape.position()), null));
 			}
 
 			// Not supported.
