@@ -28,7 +28,8 @@ public class NearestDistribution extends SpatialDistribution {
 		double best = 0;
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
-			Double weightOfDistance = Distance.weight(observable, landmark);
+			Double weightOfDistance = Distance.weightOfDistance(observable,
+					landmark);
 			if (weightOfDistance == null) {
 				throw new RoboticException("%s nearest %s is not supported.",
 						observable, landmark);

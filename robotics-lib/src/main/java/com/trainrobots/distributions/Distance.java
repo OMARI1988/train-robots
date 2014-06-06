@@ -22,8 +22,9 @@ public class Distance {
 	private Distance() {
 	}
 
-	public static Double weight(Observable observable, Observable landmark) {
-		Double distance = distance(observable, landmark);
+	public static Double weightOfDistance(Observable observable1,
+			Observable observable2) {
+		Double distance = distance(observable1, observable2);
 		if (distance == null) {
 			return null;
 		}
@@ -31,42 +32,38 @@ public class Distance {
 		return distance != null ? 1 / (value + 1) : null;
 	}
 
-	private static Double distance(Observable observable, Observable landmark) {
+	private static Double distance(Observable observable1,
+			Observable observable2) {
 
-		// Left-hand-side.
+		// Left.
 		Position p1 = null;
-		if (observable instanceof Shape) {
-			p1 = ((Shape) observable).position();
-		} else if (observable instanceof Stack) {
-			p1 = ((Stack) observable).base().position();
-		} else if (observable instanceof Corner) {
-			p1 = ((Corner) observable).position();
+		if (observable1 instanceof Shape) {
+			p1 = ((Shape) observable1).position();
+		} else if (observable1 instanceof Stack) {
+			p1 = ((Stack) observable1).base().position();
+		} else if (observable1 instanceof Corner) {
+			p1 = ((Corner) observable1).position();
 		}
 		if (p1 == null) {
 			return null;
 		}
 
-		// Shape.
-		if (landmark instanceof Shape) {
-			Position p2 = ((Shape) landmark).position();
-			return distance(p1.x(), p1.y(), p2.x(), p2.y());
+		// Right.
+		Position p2 = null;
+		if (observable2 instanceof Shape) {
+			p2 = ((Shape) observable2).position();
+		} else if (observable2 instanceof Stack) {
+			p2 = ((Stack) observable2).base().position();
+		} else if (observable2 instanceof Corner) {
+			p2 = ((Corner) observable2).position();
 		}
-
-		// Stack.
-		if (landmark instanceof Stack) {
-			Position p2 = ((Stack) landmark).base().position();
-			return distance(p1.x(), p1.y(), p2.x(), p2.y());
-		}
-
-		// Corner.
-		if (landmark instanceof Corner) {
-			Position p2 = ((Corner) landmark).position();
+		if (p2 != null) {
 			return distance(p1.x(), p1.y(), p2.x(), p2.y());
 		}
 
 		// Edge.
-		if (landmark instanceof Edge) {
-			Edge edge = (Edge) landmark;
+		if (observable2 instanceof Edge) {
+			Edge edge = (Edge) observable2;
 			switch (edge.indicator()) {
 			case Left:
 				return new Double(7 - p1.y());
@@ -80,8 +77,8 @@ public class Distance {
 		}
 
 		// Region.
-		if (landmark instanceof Region) {
-			Region region = (Region) landmark;
+		if (observable2 instanceof Region) {
+			Region region = (Region) observable2;
 			switch (region.indicator()) {
 			case Left:
 				return new Double(7 - p1.y());
@@ -97,7 +94,7 @@ public class Distance {
 		}
 
 		// Robot.
-		if (landmark instanceof Robot) {
+		if (observable2 instanceof Robot) {
 			return new Double(p1.x());
 		}
 
