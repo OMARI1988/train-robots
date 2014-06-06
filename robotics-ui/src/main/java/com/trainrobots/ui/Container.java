@@ -15,14 +15,14 @@ import org.picocontainer.MutablePicoContainer;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
+import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.CommandView;
-import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.RobotView;
 import com.trainrobots.ui.views.SceneView;
-import com.trainrobots.ui.views.ScenesView;
+import com.trainrobots.ui.views.navigation.NavigationView;
 
 public class Container {
 
@@ -34,15 +34,15 @@ public class Container {
 		registerSingle(this);
 		registerSingle(WindowService.class);
 		registerSingle(DataService.class);
+		registerSingle(CommandService.class);
 
 		// UI components.
 		registerSingle(MainWindow.class);
 		registerSingle(MainMenu.class);
 		register(RobotView.class);
 		register(SceneView.class);
-		register(ScenesView.class);
+		register(NavigationView.class);
 		register(CommandView.class);
-		register(CommandsView.class);
 
 		// Register main window.
 		get(WindowService.class).setMainWindow(get(MainWindow.class));

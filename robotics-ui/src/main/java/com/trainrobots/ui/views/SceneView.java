@@ -17,17 +17,22 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import com.trainrobots.scenes.Scene;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.FractionSpring;
+import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.data.DataService;
 
-public class SceneView extends PaneView {
+public class SceneView extends PaneView implements CommandAware {
+
+	private final LayoutView before;
+	private final LayoutView after;
 
 	public SceneView(DataService dataService) {
-		this(dataService.selectedScene());
+		this(dataService.selectedCommand().scene());
 	}
 
 	public SceneView(Scene scene) {
-		super("Scene " + scene.id());
+		super(title(scene));
 
 		// Initiate.
 		setSize(600, 330);
@@ -39,14 +44,14 @@ public class SceneView extends PaneView {
 		Spring half = FractionSpring.half(layout.getConstraint(EAST, content));
 
 		// Before.
-		LayoutView before = new LayoutView(scene.before());
+		before = new LayoutView(scene.before());
 		add(before,
 				new SpringLayout.Constraints(Spring.constant(0), Spring
 						.constant(0), half, layout
 						.getConstraint(SOUTH, content)));
 
 		// After.
-		LayoutView after = new LayoutView(scene.after());
+		after = new LayoutView(scene.after());
 		add(after, new SpringLayout.Constraints(half, Spring.constant(0), half,
 				layout.getConstraint(SOUTH, content)));
 	}
@@ -54,5 +59,17 @@ public class SceneView extends PaneView {
 	@Override
 	public String paneType() {
 		return "scene";
+	}
+
+	@Override
+	public void bindTo(Command command) {
+		Scene scene = command.scene();
+		setTitle(title(scene));
+		before.layout(scene.before());
+		after.layout(scene.after());
+	}
+
+	private static String title(Scene scene) {
+		return "Scene " + scene.id();
 	}
 }

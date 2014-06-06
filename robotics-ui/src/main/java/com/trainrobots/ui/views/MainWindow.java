@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.UIDefaults;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.ui.Resources;
@@ -60,7 +62,7 @@ public class MainWindow extends JFrame {
 		List<Image> images = new ArrayList<Image>();
 		for (int size : new int[] { 16, 24, 32, 48, 64 }) {
 			images.add(getToolkit().getImage(
-					Resources.getUrl("/com/trainrobots/ui/icons/go" + size
+					Resources.url("/com/trainrobots/ui/icons/go" + size
 							+ ".png")));
 		}
 		setIconImages(images);
@@ -98,7 +100,21 @@ public class MainWindow extends JFrame {
 	}
 
 	public void addToDesktop(PaneView pane) {
+
+		// Always behind?
+		if (pane.alwaysBehind()) {
+			desktop.setLayer(pane, -1);
+		}
+
+		// Add.
 		desktop.add(pane);
+
+		// Focus.
+		try {
+			pane.setSelected(true);
+		} catch (PropertyVetoException exception) {
+			throw new RoboticException(exception);
+		}
 	}
 
 	public Items<PaneView> panes() {

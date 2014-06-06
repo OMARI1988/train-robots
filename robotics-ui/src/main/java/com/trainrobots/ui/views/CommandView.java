@@ -14,10 +14,18 @@ import java.awt.Font;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class CommandView extends PaneView {
+import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.services.command.CommandAware;
+import com.trainrobots.ui.services.data.DataService;
 
-	public CommandView() {
-		super("Command 5414");
+public class CommandView extends PaneView implements CommandAware {
+
+	public CommandView(DataService dataService) {
+		this(dataService.selectedCommand());
+	}
+
+	public CommandView(Command command) {
+		super(title(command));
 
 		// Initiate.
 		setSize(400, 550);
@@ -35,5 +43,19 @@ public class CommandView extends PaneView {
 	@Override
 	public String paneType() {
 		return "command";
+	}
+
+	@Override
+	public boolean alwaysBehind() {
+		return true;
+	}
+
+	@Override
+	public void bindTo(Command command) {
+		setTitle(title(command));
+	}
+
+	private static String title(Command command) {
+		return "Command " + command.id();
 	}
 }

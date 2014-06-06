@@ -25,6 +25,7 @@ import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class LayoutView extends JPanel {
 
+	private final LayoutElement layoutElement;
 	private int mouseX;
 	private int mouseY;
 	private int width;
@@ -33,7 +34,7 @@ public class LayoutView extends JPanel {
 	public LayoutView(Layout layout) {
 
 		// Layout.
-		LayoutElement layoutElement = new LayoutElement(layout);
+		layoutElement = new LayoutElement(layout);
 		Renderer renderer = new Renderer(layoutElement);
 
 		// Select a multisample capability with 8 samples per pixel.
@@ -65,19 +66,19 @@ public class LayoutView extends JPanel {
 		});
 		glPanel.addMouseMotionListener(new MouseMotionListener() {
 
-			public void mouseDragged(MouseEvent e) {
+			public void mouseDragged(MouseEvent event) {
 
 				// Rotate the view.
-				float dx = 180 * (e.getY() - mouseY) / (float) height;
-				float dy = 180 * (e.getX() - mouseX) / (float) width;
+				float dx = 180 * (event.getY() - mouseY) / (float) height;
+				float dy = 180 * (event.getX() - mouseX) / (float) width;
 				layoutElement.incrementRotation(dx, dy);
-				mouseX = e.getX();
-				mouseY = e.getY();
+				mouseX = event.getX();
+				mouseY = event.getY();
 			}
 
-			public void mouseMoved(MouseEvent e) {
-				mouseX = e.getX();
-				mouseY = e.getY();
+			public void mouseMoved(MouseEvent event) {
+				mouseX = event.getX();
+				mouseY = event.getY();
 			}
 		});
 		setLayout(new BorderLayout());
@@ -86,5 +87,9 @@ public class LayoutView extends JPanel {
 		// Start redraw thread.
 		FPSAnimator redrawThread = new FPSAnimator(glPanel, 60);
 		redrawThread.start();
+	}
+
+	public void layout(Layout layout) {
+		layoutElement.layout(layout);
 	}
 }

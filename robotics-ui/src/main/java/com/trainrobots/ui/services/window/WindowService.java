@@ -9,20 +9,19 @@
 package com.trainrobots.ui.services.window;
 
 import java.awt.Dimension;
-import java.beans.PropertyVetoException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
+import com.trainrobots.collections.Items;
 import com.trainrobots.ui.Container;
 import com.trainrobots.ui.views.CommandView;
-import com.trainrobots.ui.views.CommandsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.views.RobotView;
 import com.trainrobots.ui.views.SceneView;
-import com.trainrobots.ui.views.ScenesView;
+import com.trainrobots.ui.views.navigation.NavigationView;
 
 public class WindowService {
 
@@ -40,9 +39,8 @@ public class WindowService {
 		// Panes.
 		registerPane("robot", RobotView.class);
 		registerPane("scene", SceneView.class);
-		registerPane("scenes", ScenesView.class);
+		registerPane("navigation", NavigationView.class);
 		registerPane("command", CommandView.class);
-		registerPane("commands", CommandsView.class);
 	}
 
 	public void setMainWindow(MainWindow mainWindow) {
@@ -78,6 +76,10 @@ public class WindowService {
 		show(paneType, windowCount * 30, windowCount * 30, null);
 	}
 
+	public Items<PaneView> panes() {
+		return mainWindow.panes();
+	}
+
 	private void show(String paneType, int x, int y, Dimension size) {
 
 		// Create pane.
@@ -95,13 +97,6 @@ public class WindowService {
 		// Add.
 		pane.setVisible(true);
 		mainWindow.addToDesktop(pane);
-
-		// Focus.
-		try {
-			pane.setSelected(true);
-		} catch (PropertyVetoException exception) {
-			throw new RoboticException(exception);
-		}
 	}
 
 	public void exit() {

@@ -20,7 +20,7 @@ public class Resources {
 	private Resources() {
 	}
 
-	public static URL getUrl(String resourcePath) {
+	public static URL url(String resourcePath) {
 		URL url = resourceType.getResource(resourcePath);
 		if (url == null) {
 			throw new RoboticException("The resource '%s' was not found.",

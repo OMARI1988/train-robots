@@ -13,8 +13,12 @@ import javax.swing.JInternalFrame;
 public abstract class PaneView extends JInternalFrame {
 
 	protected PaneView(String title) {
-		super(title, true, true, true, true);
+		super(title, true, true, true, false);
 	}
 
 	public abstract String paneType();
+
+	public boolean alwaysBehind() {
+		return false;
+	}
 }

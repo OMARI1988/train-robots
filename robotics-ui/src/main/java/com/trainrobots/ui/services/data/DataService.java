@@ -8,23 +8,27 @@
 
 package com.trainrobots.ui.services.data;
 
-import com.trainrobots.scenes.Scene;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
 public class DataService {
 
 	private final Treebank treebank = new Treebank("../.data");
-	private Scene selectedScene;
+	private Command selectedCommand;
 
 	public DataService() {
-		selectedScene = treebank.scene(879);
+		selectedCommand = treebank.commands(treebank.scene(1)).get(0);
 	}
 
 	public Treebank treebank() {
 		return treebank;
 	}
 
-	public Scene selectedScene() {
-		return selectedScene;
+	public Command selectedCommand() {
+		return selectedCommand;
+	}
+
+	public void selectedCommand(Command selectedCommand) {
+		this.selectedCommand = selectedCommand;
 	}
 }
