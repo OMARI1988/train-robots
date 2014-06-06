@@ -19,9 +19,7 @@ public class RelativeDistribution extends ObservableDistribution {
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable observable = hypothesis.observable();
 			double weight = spatialDistribution.weight(observable);
-			if (weight != 0) {
-				add(observable, weight * hypothesis.weight());
-			}
+			add(observable, weight * hypothesis.weight());
 		}
 		normalize();
 	}

@@ -58,7 +58,9 @@ public class DestinationDistribution extends Distribution implements
 	}
 
 	public void add(DestinationHypothesis hypothesis) {
-		hypotheses.add(hypothesis);
+		if (hypothesis.weight() != 0) {
+			hypotheses.add(hypothesis);
+		}
 	}
 
 	public Items<Position> best() {
