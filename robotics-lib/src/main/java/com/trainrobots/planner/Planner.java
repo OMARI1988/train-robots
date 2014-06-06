@@ -11,7 +11,6 @@ package com.trainrobots.planner;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
-import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
 import com.trainrobots.distributions.observable.IndicatorDistribution;
@@ -127,11 +126,12 @@ public class Planner {
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
-		if (distribution.count() != 1) {
+		Items<Observable> best = distribution.best();
+		if (best.count() != 1) {
 			throw new RoboticException(
 					"Expected a single observable for a move action.");
 		}
-		Observable observable = distribution.get(0).observable();
+		Observable observable = best.get(0);
 
 		// Shape.
 		if (!(observable instanceof Shape)) {
@@ -148,14 +148,12 @@ public class Planner {
 		}
 		SpatialDistribution spatialDistribution = new DropDestinationDistribution(
 				distribution(context, event.destination()));
-		Items<DestinationHypothesis> destinations = spatialDistribution
-				.destinations(context);
+		Items<Position> destinations = spatialDistribution.best(context);
 		if (destinations.count() != 1) {
 			throw new RoboticException(
 					"Expected a single destination for a move action.");
 		}
-		return new MoveInstruction(shape.position(), destinations.get(0)
-				.position());
+		return new MoveInstruction(shape.position(), destinations.get(0));
 	}
 
 	private TakeInstruction translateTake(PlannerContext context, Event event) {
@@ -172,11 +170,12 @@ public class Planner {
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
-		if (distribution.count() != 1) {
+		Items<Observable> best = distribution.best();
+		if (best.count() != 1) {
 			throw new RoboticException(
 					"Expected a single observable for a take action.");
 		}
-		Observable observable = distribution.get(0).observable();
+		Observable observable = best.get(0);
 
 		// Shape.
 		if (!(observable instanceof Shape)) {
@@ -217,11 +216,12 @@ public class Planner {
 			distribution = new DroppableDistribution(distribution);
 
 			// Single observable.
-			if (distribution.count() != 1) {
+			Items<Observable> best = distribution.best();
+			if (best.count() != 1) {
 				throw new RoboticException(
 						"Expected a single observable for a drop action.");
 			}
-			Observable observable = distribution.get(0).observable();
+			Observable observable = best.get(0);
 
 			// Shape.
 			if (!(observable instanceof Shape)) {
@@ -240,13 +240,12 @@ public class Planner {
 		if (event.destination() != null) {
 			SpatialDistribution spatialDistribution = new DropDestinationDistribution(
 					distribution(context, event.destination()));
-			Items<DestinationHypothesis> destinations = spatialDistribution
-					.destinations(context);
+			Items<Position> destinations = spatialDistribution.best(context);
 			if (destinations.count() != 1) {
 				throw new RoboticException(
 						"Expected a single destination for a drop action.");
 			}
-			position = destinations.get(0).position();
+			position = destinations.get(0);
 		}
 		return new DropInstruction(position);
 	}

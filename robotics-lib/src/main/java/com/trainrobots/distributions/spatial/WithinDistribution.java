@@ -36,6 +36,7 @@ public class WithinDistribution extends SpatialDistribution {
 	public double weight(Observable observable) {
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Corner.
 			if (landmark instanceof Corner) {
@@ -49,7 +50,7 @@ public class WithinDistribution extends SpatialDistribution {
 				if (p1 != null) {
 					Position p2 = corner.position();
 					if (p1.x() == p2.x() && p1.y() == p2.y()) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -68,7 +69,7 @@ public class WithinDistribution extends SpatialDistribution {
 					if (p1 != null) {
 						if ((p1.x() == 3 || p1.x() == 4)
 								&& (p1.y() == 3 || p1.y() == 4)) {
-							return 1;
+							return weight;
 						}
 						continue;
 					}
@@ -87,12 +88,13 @@ public class WithinDistribution extends SpatialDistribution {
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Corner.
 			if (landmark instanceof Corner) {
 				Corner corner = (Corner) landmark;
 				destinations.add(new DestinationHypothesis(context.simulator()
-						.dropPosition(corner.position()), corner));
+						.dropPosition(corner.position()), corner, weight));
 			}
 
 			// Not supported.

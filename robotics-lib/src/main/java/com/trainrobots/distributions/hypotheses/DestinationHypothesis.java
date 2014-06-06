@@ -15,10 +15,13 @@ public class DestinationHypothesis {
 
 	private final Position position;
 	private final Observable landmark;
+	private final double weight;
 
-	public DestinationHypothesis(Position position, Observable landmark) {
+	public DestinationHypothesis(Position position, Observable landmark,
+			double weight) {
 		this.position = position;
 		this.landmark = landmark;
+		this.weight = weight;
 	}
 
 	public Position position() {
@@ -27,5 +30,14 @@ public class DestinationHypothesis {
 
 	public Observable landmark() {
 		return landmark;
+	}
+
+	public double weight() {
+		return weight;
+	}
+
+	@Override
+	public String toString() {
+		return weight + ": (" + position + ")";
 	}
 }

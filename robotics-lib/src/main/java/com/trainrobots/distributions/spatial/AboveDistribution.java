@@ -38,6 +38,7 @@ public class AboveDistribution extends SpatialDistribution {
 	public double weight(Observable observable) {
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Shape.
 			if (landmark instanceof Shape) {
@@ -46,7 +47,7 @@ public class AboveDistribution extends SpatialDistribution {
 					Shape shape = (Shape) observable;
 					if (landmarkShape.position().add(0, 0, 1)
 							.equals(shape.position())) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -64,7 +65,7 @@ public class AboveDistribution extends SpatialDistribution {
 				if (p1 != null) {
 					Position p2 = corner.position();
 					if (p1.x() == p2.x() && p1.y() == p2.y()) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -75,7 +76,7 @@ public class AboveDistribution extends SpatialDistribution {
 				if (observable instanceof Shape) {
 					Shape shape = (Shape) observable;
 					if (shape.position().z() == 0) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -91,7 +92,7 @@ public class AboveDistribution extends SpatialDistribution {
 				}
 				if (position != null) {
 					if (((Edge) landmark).supports(position)) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -104,7 +105,7 @@ public class AboveDistribution extends SpatialDistribution {
 					Stack stack = (Stack) landmark;
 					if (stack.top().position().add(0, 0, 1)
 							.equals(shape.position())) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -123,7 +124,7 @@ public class AboveDistribution extends SpatialDistribution {
 					if (p1 != null) {
 						if ((p1.x() == 3 || p1.x() == 4)
 								&& (p1.y() == 3 || p1.y() == 4)) {
-							return 1;
+							return weight;
 						}
 						continue;
 					}
@@ -142,33 +143,34 @@ public class AboveDistribution extends SpatialDistribution {
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Shape.
 			if (landmark instanceof Shape) {
 				Shape landmarkShape = (Shape) landmark;
 				destinations.add(new DestinationHypothesis(landmarkShape
-						.position().add(0, 0, 1), landmarkShape));
+						.position().add(0, 0, 1), landmarkShape, weight));
 			}
 
 			// Corner.
 			else if (landmark instanceof Corner) {
 				Corner corner = (Corner) landmark;
 				destinations.add(new DestinationHypothesis(context.simulator()
-						.dropPosition(corner.position()), corner));
+						.dropPosition(corner.position()), corner, weight));
 			}
 
 			// Stack.
 			else if (landmark instanceof Stack) {
 				Stack stack = (Stack) landmark;
 				destinations.add(new DestinationHypothesis(stack.top()
-						.position().add(0, 0, 1), stack));
+						.position().add(0, 0, 1), stack, weight));
 			}
 
 			// Board.
 			else if (landmark instanceof Board && context.sourceShape() != null) {
 				Shape shape = context.sourceShape();
 				destinations.add(new DestinationHypothesis(context.simulator()
-						.dropPosition(shape.position()), null));
+						.dropPosition(shape.position()), null, weight));
 			}
 
 			// Not supported.

@@ -41,6 +41,7 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 	public double weight(Observable observable) {
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Shape/stack.
 			Position p1 = null;
@@ -62,7 +63,7 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 					int dx = p1.x() - p2.x();
 					int dy = p1.y() - p2.y();
 					if (dx == this.dx && dy == this.dy) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -79,6 +80,7 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Shape/stack.
 			Position p = null;
@@ -93,7 +95,7 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 						relation, landmark);
 			}
 			destinations.add(new DestinationHypothesis(context.simulator()
-					.dropPosition(p.add(dx, dy, 0)), landmark));
+					.dropPosition(p.add(dx, dy, 0)), landmark, weight));
 		}
 		return destinations;
 	}

@@ -27,4 +27,9 @@ public class ObservableHypothesis {
 	public double weight() {
 		return weight;
 	}
+
+	@Override
+	public String toString() {
+		return weight + ": " + observable;
+	}
 }

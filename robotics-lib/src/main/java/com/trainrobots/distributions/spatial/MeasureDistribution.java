@@ -43,20 +43,21 @@ public class MeasureDistribution extends SpatialDistribution {
 
 		// No landmarks?
 		if (landmarkDistribution == null) {
-			return new SingleItem(destination(context, null));
+			return new SingleItem(destination(context, null, 1));
 		}
 
 		// Landmarks.
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
-			destinations.add(destination(context, landmark));
+			double weight = hypothesis.weight();
+			destinations.add(destination(context, landmark, weight));
 		}
 		return destinations;
 	}
 
 	private DestinationHypothesis destination(PlannerContext context,
-			Observable landmark) {
+			Observable landmark, double weight) {
 
 		// No landmark?
 		Position position;
@@ -108,6 +109,6 @@ public class MeasureDistribution extends SpatialDistribution {
 					"The measure relation '%s' is not supported.");
 		}
 		position = context.simulator().dropPosition(position);
-		return new DestinationHypothesis(position, null);
+		return new DestinationHypothesis(position, null, weight);
 	}
 }

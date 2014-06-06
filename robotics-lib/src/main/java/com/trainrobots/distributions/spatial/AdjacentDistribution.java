@@ -30,6 +30,7 @@ public class AdjacentDistribution extends SpatialDistribution {
 	public double weight(Observable observable) {
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
+			double weight = hypothesis.weight();
 
 			// Shape/stack.
 			Position p1 = null;
@@ -51,10 +52,10 @@ public class AdjacentDistribution extends SpatialDistribution {
 					int dx = p2.x() - p1.x();
 					int dy = p2.y() - p1.y();
 					if (dx == 0 && (dy == 1 || dy == -1)) {
-						return 1;
+						return weight;
 					}
 					if (dy == 0 && (dx == 1 || dx == -1)) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}
@@ -62,7 +63,7 @@ public class AdjacentDistribution extends SpatialDistribution {
 				// Edge.
 				if (landmark instanceof Edge) {
 					if (((Edge) landmark).supports(p1)) {
-						return 1;
+						return weight;
 					}
 					continue;
 				}

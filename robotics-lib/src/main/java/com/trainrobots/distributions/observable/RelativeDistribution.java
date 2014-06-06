@@ -8,11 +8,9 @@
 
 package com.trainrobots.distributions.observable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.spatial.SpatialDistribution;
+import com.trainrobots.observables.Observable;
 
 public class RelativeDistribution extends ObservableDistribution {
 
@@ -20,25 +18,12 @@ public class RelativeDistribution extends ObservableDistribution {
 			SpatialDistribution spatialDistribution) {
 		super(landmarkDistribution.layout());
 
-		// Weights.
-		double best = 0;
-		List<ObservableHypothesis> result = new ArrayList<ObservableHypothesis>();
+		// Combine weights.
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
-			double weight = spatialDistribution.weight(hypothesis.observable());
-			if (weight == 0) {
-				continue;
-			}
-			// TODO: Multiply weights?
-			result.add(new ObservableHypothesis(hypothesis.observable(), weight));
-			if (weight > best) {
-				best = weight;
-			}
-		}
-
-		// Select best hypotheses.
-		for (ObservableHypothesis hypothesis : result) {
-			if (hypothesis.weight() == best) {
-				add(hypothesis);
+			Observable observable = hypothesis.observable();
+			double weight = spatialDistribution.weight(observable);
+			if (weight != 0) {
+				add(observable, weight * hypothesis.weight());
 			}
 		}
 	}

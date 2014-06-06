@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.Distribution;
 import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.observables.Observable;
@@ -55,6 +56,27 @@ public abstract class ObservableDistribution extends Distribution implements
 		int count = count();
 		return getClass().getSimpleName() + " (" + count + " "
 				+ (count == 1 ? "observable" : "observables") + ")";
+	}
+
+	public Items<Observable> best() {
+
+		// Best weight.
+		double best = 0;
+		for (ObservableHypothesis hypothesis : observables) {
+			double weight = hypothesis.weight();
+			if (weight > best) {
+				best = weight;
+			}
+		}
+
+		// Select best hypotheses.
+		ItemsList<Observable> result = new ItemsList<>();
+		for (ObservableHypothesis hypothesis : observables) {
+			if (hypothesis.weight() == best) {
+				result.add(hypothesis.observable());
+			}
+		}
+		return result;
 	}
 
 	protected void add(Observable observable, double weight) {
