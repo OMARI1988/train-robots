@@ -14,7 +14,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.UIDefaults;
 
-import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.ui.Resources;
@@ -125,13 +123,6 @@ public class MainWindow extends JFrame {
 
 		// Add.
 		desktopPane.add(pane);
-
-		// Focus.
-		try {
-			pane.setSelected(true);
-		} catch (PropertyVetoException exception) {
-			throw new RoboticException(exception);
-		}
 	}
 
 	public Items<PaneView> panes() {

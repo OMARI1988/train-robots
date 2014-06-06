@@ -24,9 +24,9 @@ public class MainMenu extends JMenuBar {
 
 		add(new Menu("Window", 'W') {
 			{
+				addView("Treebank", "t", "navigation");
 				addView("Command", "c", "command");
 				addView("Scene", "s", "scene");
-				addView("Treebank", "n", "navigation");
 				addSeparator();
 				addView("Robot", "r", "robot");
 			}

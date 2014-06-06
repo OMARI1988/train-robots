@@ -34,9 +34,6 @@ public class SceneView extends PaneView implements CommandAware {
 	public SceneView(Scene scene) {
 		super(title(scene));
 
-		// Initiate.
-		setSize(600, 330);
-
 		// Layout
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);

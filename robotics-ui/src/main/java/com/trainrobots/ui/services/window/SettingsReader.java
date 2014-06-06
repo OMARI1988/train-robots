@@ -8,6 +8,8 @@
 
 package com.trainrobots.ui.services.window;
 
+import java.awt.Dimension;
+
 import org.xml.sax.Attributes;
 
 import com.trainrobots.XmlReader;
@@ -41,7 +43,8 @@ public class SettingsReader extends XmlReader {
 			int y = Integer.parseInt(attributes.getValue("y"));
 			int width = Integer.parseInt(attributes.getValue("width"));
 			int height = Integer.parseInt(attributes.getValue("height"));
-			builder.build(name, x, y, width, height);
+			Dimension size = new Dimension(width, height);
+			builder.build(name, new PaneLayout(x, y, size));
 			return;
 		}
 

@@ -26,7 +26,6 @@ public class NavigationView extends PaneView implements CommandAware {
 		super("Treebank");
 
 		// Initiate.
-		setSize(400, 550);
 		setLayout(new BorderLayout());
 
 		// Tree.

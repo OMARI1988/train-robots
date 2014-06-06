@@ -11,5 +11,5 @@ package com.trainrobots.ui.services.window;
 @FunctionalInterface
 public interface PaneBuilder {
 
-	void build(String paneType, int x, int y, int width, int height);
+	void build(String paneType, PaneLayout layout);
 }

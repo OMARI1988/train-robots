@@ -8,7 +8,11 @@
 
 package com.trainrobots.ui.views;
 
+import java.beans.PropertyVetoException;
+
 import javax.swing.JInternalFrame;
+
+import com.trainrobots.RoboticException;
 
 public abstract class PaneView extends JInternalFrame {
 
@@ -20,5 +24,13 @@ public abstract class PaneView extends JInternalFrame {
 
 	public boolean alwaysBehind() {
 		return false;
+	}
+
+	public void focus() {
+		try {
+			setSelected(true);
+		} catch (PropertyVetoException exception) {
+			throw new RoboticException(exception);
+		}
 	}
 }

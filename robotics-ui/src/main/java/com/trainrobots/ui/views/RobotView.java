@@ -30,7 +30,6 @@ public class RobotView extends PaneView {
 		super("Robot");
 
 		// Initiate.
-		setSize(300, 300);
 		setLayout(new BorderLayout());
 
 		// Scene.

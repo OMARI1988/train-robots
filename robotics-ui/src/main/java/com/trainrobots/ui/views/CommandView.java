@@ -28,7 +28,6 @@ public class CommandView extends PaneView implements CommandAware {
 		super(title(command));
 
 		// Initiate.
-		setSize(400, 550);
 		setLayout(new BorderLayout());
 
 		// Editor.

@@ -12,6 +12,9 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -29,9 +32,9 @@ public class WindowService {
 
 	private static final String UI_XML_FILE = "../.data/ui.xml";
 	private final Map<String, Class> paneTypes = new HashMap<>();
+	private final Map<String, PaneLayout> paneLayouts = new HashMap<>();
 	private final Container container;
 	private MainWindow mainWindow;
-	private int windowCount;
 
 	public WindowService(Container container) {
 
@@ -39,10 +42,10 @@ public class WindowService {
 		this.container = container;
 
 		// Panes.
-		registerPane("robot", RobotView.class);
-		registerPane("scene", SceneView.class);
-		registerPane("navigation", NavigationView.class);
-		registerPane("command", CommandView.class);
+		registerPane("robot", RobotView.class, 540, 60, 305, 325);
+		registerPane("scene", SceneView.class, 7, 13, 488, 286);
+		registerPane("navigation", NavigationView.class, 7, 310, 307, 303);
+		registerPane("command", CommandView.class, 505, 13, 850, 602);
 	}
 
 	public void setMainWindow(MainWindow mainWindow) {
@@ -55,9 +58,7 @@ public class WindowService {
 		try {
 
 			// Load panes.
-			PaneBuilder paneBuilder = (paneType, x, y, width, height) -> show(
-					paneType, x, y, new Dimension(width, height));
-			SettingsReader reader = new SettingsReader(paneBuilder);
+			SettingsReader reader = new SettingsReader(this::show);
 			reader.read(UI_XML_FILE);
 
 			// Select command.
@@ -74,18 +75,13 @@ public class WindowService {
 		mainWindow.setVisible(true);
 	}
 
-	public PaneView create(String paneType) {
-		Class paneClass = paneTypes.get(paneType);
-		if (paneClass == null) {
+	public void show(String paneType) {
+		PaneLayout layout = paneLayouts.get(paneType);
+		if (layout == null) {
 			throw new RoboticException("The pane type '%s' is not recognized.",
 					paneType);
 		}
-		return (PaneView) container.get(paneClass);
-	}
-
-	public void show(String paneType) {
-		windowCount++;
-		show(paneType, windowCount * 30, windowCount * 30, null);
+		show(paneType, layout);
 	}
 
 	public Items<PaneView> panes() {
@@ -100,23 +96,65 @@ public class WindowService {
 		mainWindow.statusBar().error(String.format(format, parameters));
 	}
 
-	private void show(String paneType, int x, int y, Dimension size) {
+	private void show(String paneType, PaneLayout layout) {
+
+		// Pane class.
+		Class paneClass = paneTypes.get(paneType);
+		if (paneClass == null) {
+			throw new RoboticException("The pane type '%s' is not recognized.",
+					paneType);
+		}
+
+		// Already exists?
+		for (PaneView pane : mainWindow.panes()) {
+			if (pane.getClass() == paneClass) {
+				pane.focus();
+				return;
+			}
+		}
 
 		// Create pane.
-		PaneView pane = create(paneType);
+		PaneView pane = (PaneView) container.get(paneClass);
 
 		// Position.
-		windowCount++;
-		pane.setLocation(x, y);
+		pane.setLocation(layout.x(), layout.y());
 
 		// Size.
-		if (size != null) {
-			pane.setSize(size);
+		if (layout.size() != null) {
+			pane.setSize(layout.size());
 		}
 
 		// Add.
 		pane.setVisible(true);
 		mainWindow.addToDesktop(pane);
+		pane.focus();
+
+		// Listener.
+		pane.addInternalFrameListener(new InternalFrameListener() {
+			public void internalFrameOpened(InternalFrameEvent event) {
+			}
+
+			public void internalFrameClosing(InternalFrameEvent event) {
+			}
+
+			public void internalFrameClosed(InternalFrameEvent event) {
+				PaneView pane = (PaneView) event.getInternalFrame();
+				paneLayouts.put(pane.paneType(), new PaneLayout(pane.getX(),
+						pane.getY(), pane.getSize()));
+			}
+
+			public void internalFrameIconified(InternalFrameEvent event) {
+			}
+
+			public void internalFrameDeiconified(InternalFrameEvent event) {
+			}
+
+			public void internalFrameActivated(InternalFrameEvent event) {
+			}
+
+			public void internalFrameDeactivated(InternalFrameEvent event) {
+			}
+		});
 	}
 
 	public void exit() {
@@ -137,9 +175,9 @@ public class WindowService {
 	private void applyDefaultLayout() {
 
 		// Panes.
-		show("scene", 7, 13, new Dimension(488, 286));
-		show("navigation", 7, 310, new Dimension(307, 303));
-		show("command", 505, 13, new Dimension(850, 602));
+		show("scene");
+		show("navigation");
+		show("command");
 
 		// Command.
 		DataService dataService = container.get(DataService.class);
@@ -151,7 +189,10 @@ public class WindowService {
 		commandService.command(commandId);
 	}
 
-	private void registerPane(String paneType, Class paneClass) {
+	private void registerPane(String paneType, Class paneClass, int x, int y,
+			int width, int height) {
 		paneTypes.put(paneType, paneClass);
+		paneLayouts.put(paneType, new PaneLayout(x, y, new Dimension(width,
+				height)));
 	}
 }
