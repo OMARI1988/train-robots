@@ -35,10 +35,10 @@ public class Treebank {
 		// Configure.
 		this.dataPath = dataPath;
 		Log.configureConsole();
-		Log.info("Loading treebank...");
 
-		// Read archive.
+		// Load treebank.
 		String filename = file("treebank.zip");
+		Log.info("Loading: %s", filename);
 		try (ZipArchive zip = new ZipArchive(filename)) {
 
 			// Layout.
@@ -60,7 +60,7 @@ public class Treebank {
 			// Commands.
 			try (InputStream commandStream = zip.open("commands.xml")) {
 				try (InputStream losrStream = zip.open("losr.xml")) {
-					CommandReader reader = new CommandReader(scenes());
+					CommandReader reader = new CommandReader(scenes);
 					reader.readCommands(commandStream);
 					reader.readLosr(losrStream);
 					commands = reader.commands();
@@ -102,6 +102,7 @@ public class Treebank {
 	}
 
 	private String file(String filename) {
-		return Paths.get(dataPath, filename).toString();
+		return Paths.get(dataPath, filename).toAbsolutePath().normalize()
+				.toString();
 	}
 }
