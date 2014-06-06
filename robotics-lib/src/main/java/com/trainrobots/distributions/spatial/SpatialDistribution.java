@@ -43,10 +43,9 @@ public abstract class SpatialDistribution extends Distribution {
 			return new RightOffsetDistribution(landmarkDistribution);
 		case Front:
 			return new FrontOffsetDistribution(landmarkDistribution);
+		case Within:
 		case Above:
 			return new AboveDistribution(landmarkDistribution);
-		case Within:
-			return new WithinDistribution(landmarkDistribution);
 		case Adjacent:
 			return new AdjacentDistribution(landmarkDistribution);
 		case Nearest:

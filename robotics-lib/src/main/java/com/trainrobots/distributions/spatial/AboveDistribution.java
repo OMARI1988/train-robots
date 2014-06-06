@@ -33,98 +33,83 @@ public class AboveDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
+
+		// Observable.
+		Position p1 = null;
+		if (observable instanceof Shape) {
+			p1 = ((Shape) observable).position();
+		} else if (observable instanceof Stack) {
+			p1 = ((Stack) observable).base().position();
+		}
+
+		// Landmarks.
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
 			double weight = hypothesis.weight();
 
 			// Shape.
-			if (landmark instanceof Shape) {
-				Shape landmarkShape = (Shape) landmark;
-				if (observable instanceof Shape) {
-					Shape shape = (Shape) observable;
-					if (landmarkShape.position().add(0, 0, 1)
-							.equals(shape.position())) {
-						return weight;
-					}
-					continue;
+			if (landmark instanceof Shape && observable instanceof Shape) {
+				if (((Shape) landmark).position().add(0, 0, 1).equals(p1)) {
+					return weight;
 				}
+				continue;
 			}
 
 			// Corner.
-			if (landmark instanceof Corner) {
-				Corner corner = (Corner) landmark;
-				Position p1 = null;
-				if (observable instanceof Shape) {
-					p1 = ((Shape) observable).position();
-				} else if (observable instanceof Stack) {
-					p1 = ((Stack) observable).base().position();
+			if (landmark instanceof Corner && p1 != null) {
+				Position p2 = ((Corner) landmark).position();
+				if (p1.x() == p2.x() && p1.y() == p2.y()) {
+					return weight;
 				}
-				if (p1 != null) {
-					Position p2 = corner.position();
-					if (p1.x() == p2.x() && p1.y() == p2.y()) {
-						return weight;
-					}
-					continue;
-				}
+				continue;
 			}
 
 			// Board.
-			if (landmark instanceof Board) {
-				if (observable instanceof Shape) {
-					Shape shape = (Shape) observable;
-					if (shape.position().z() == 0) {
-						return weight;
-					}
-					continue;
+			if (landmark instanceof Board && observable instanceof Shape) {
+				if (p1.z() == 0) {
+					return weight;
 				}
+				continue;
 			}
 
 			// Edge.
-			if (landmark instanceof Edge) {
-				Position position = null;
-				if (observable instanceof Shape) {
-					position = ((Shape) observable).position();
-				} else if (observable instanceof Stack) {
-					position = ((Stack) observable).base().position();
+			if (landmark instanceof Edge && p1 != null) {
+				if (((Edge) landmark).supports(p1)) {
+					return weight;
 				}
-				if (position != null) {
-					if (((Edge) landmark).supports(position)) {
-						return weight;
-					}
-					continue;
-				}
+				continue;
 			}
 
 			// Stack.
-			if (landmark instanceof Stack) {
-				if (observable instanceof Shape) {
-					Shape shape = (Shape) observable;
-					Stack stack = (Stack) landmark;
-					if (stack.top().position().add(0, 0, 1)
-							.equals(shape.position())) {
+			if (landmark instanceof Stack && observable instanceof Shape) {
+				Stack stack = (Stack) landmark;
+				if (stack.top().position().add(0, 0, 1).equals(p1)) {
+					return weight;
+				}
+				continue;
+			}
+
+			// Region.
+			if (landmark instanceof Region && p1 != null) {
+				Region region = (Region) landmark;
+
+				// Center.
+				if (region.indicator() == Indicators.Center) {
+					if ((p1.x() == 3 || p1.x() == 4)
+							&& (p1.y() == 3 || p1.y() == 4)) {
 						return weight;
 					}
 					continue;
 				}
-			}
 
-			// Region.
-			if (landmark instanceof Region) {
-				Region region = (Region) landmark;
-				if (region.indicator() == Indicators.Center) {
-					Position p1 = null;
-					if (observable instanceof Shape) {
-						p1 = ((Shape) observable).position();
-					} else if (observable instanceof Stack) {
-						p1 = ((Stack) observable).base().position();
-					}
-					if (p1 != null) {
-						if ((p1.x() == 3 || p1.x() == 4)
-								&& (p1.y() == 3 || p1.y() == 4)) {
-							return weight;
-						}
-						continue;
-					}
+				// Left.
+				if (region.indicator() == Indicators.Left) {
+					return weight * p1.y();
+				}
+
+				// Right.
+				if (region.indicator() == Indicators.Right) {
+					return weight * (7 - p1.y());
 				}
 			}
 

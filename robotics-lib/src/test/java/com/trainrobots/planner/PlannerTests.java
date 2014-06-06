@@ -62,10 +62,12 @@ public class PlannerTests {
 			}
 		}
 
-		// Diagnostics.
-		System.out.println(String.format("Instructions: %d / %d = %.2f %%",
-				valid, total, 100.0 * valid / total));
-		assertThat(valid, is(3387));
-		assertThat(total, is(3409));
+		// Verify.
+		if (valid != total) {
+			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
+					valid, total, 100.0 * valid / total));
+		}
+		assertThat(valid, is(3408));
+		assertThat(total, is(3408));
 	}
 }
