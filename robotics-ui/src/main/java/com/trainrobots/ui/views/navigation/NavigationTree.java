@@ -66,18 +66,20 @@ public class NavigationTree extends JTree implements CommandAware {
 		SceneNode sceneNode = treebankNode.child(command.scene());
 		CommandNode commandNode = sceneNode.child(command);
 		Object[] nodes = { treebankNode, sceneNode, commandNode };
-		TreePath path = new TreePath(nodes);
+		TreePath commandPath = new TreePath(nodes);
 
 		// Already selected?
-		if (path.equals(getSelectionPath())) {
+		if (commandPath.equals(getSelectionPath())) {
 			return;
 		}
 
-		// Expand and select.
-		expandPath(path.getParentPath());
-		scrollPathToVisible(new TreePath(
-				new Object[] { treebankNode, sceneNode }));
-		setSelectionPath(path);
+		// Expand.
+		TreePath scenePath = commandPath.getParentPath();
+		expandPath(scenePath);
+		scrollPathToVisible(scenePath);
+
+		// Select.
+		setSelectionPath(commandPath);
 	}
 
 	private void handleKeyTyped(char ch) {
