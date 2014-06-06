@@ -99,6 +99,8 @@ public abstract class ObservableDistribution extends Distribution implements
 	}
 
 	protected void add(ObservableHypothesis hypothesis) {
-		hypotheses.add(hypothesis);
+		if (hypothesis.weight() != 0) {
+			hypotheses.add(hypothesis);
+		}
 	}
 }
