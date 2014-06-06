@@ -275,7 +275,7 @@ public class Planner {
 		// Indicators.
 		Items<Indicator> indicators = entity.indicators();
 		if (indicators != null) {
-			distribution = distribution(type, indicators, distribution);
+			distribution = distribution(context, type, indicators, distribution);
 		}
 
 		// Colors.
@@ -294,14 +294,25 @@ public class Planner {
 		return distribution;
 	}
 
-	private ObservableDistribution distribution(Types type,
-			Items<Indicator> indicators, ObservableDistribution distribution) {
+	private ObservableDistribution distribution(PlannerContext context,
+			Types type, Items<Indicator> indicators,
+			ObservableDistribution distribution) {
 		for (Indicator item : indicators) {
 			Indicators indicator = item.indicator();
 
 			// Individual.
 			if (indicator == Indicators.Individual) {
 				distribution = new IndividualDistribution(distribution);
+			}
+
+			// Nearest.
+			else if (indicator == Indicators.Nearest) {
+				TypeDistribution robot = new TypeDistribution(context, layout,
+						Types.Robot);
+				SpatialDistribution nearestRobot = SpatialDistribution.of(
+						Relations.Nearest, robot);
+				distribution = new RelativeDistribution(distribution,
+						nearestRobot);
 			}
 
 			// Exact.
