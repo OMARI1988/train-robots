@@ -137,9 +137,9 @@ public class WindowService {
 	private void applyDefaultLayout() {
 
 		// Panes.
-		show("scene", 7, 13, new Dimension(457, 318));
-		show("navigation", 7, 344, new Dimension(307, 302));
-		show("command", 477, 13, new Dimension(879, 633));
+		show("scene", 7, 13, new Dimension(488, 286));
+		show("navigation", 7, 310, new Dimension(307, 303));
+		show("command", 505, 13, new Dimension(850, 602));
 
 		// Command.
 		DataService dataService = container.get(DataService.class);
@@ -148,7 +148,7 @@ public class WindowService {
 
 	private void selectCommand(int commandId) {
 		CommandService commandService = container.get(CommandService.class);
-		commandService.select(commandId);
+		commandService.command(commandId);
 	}
 
 	private void registerPane(String paneType, Class paneClass) {

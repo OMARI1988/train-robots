@@ -8,6 +8,9 @@
 
 package com.trainrobots.ui.services.command;
 
+import com.trainrobots.RoboticException;
+import com.trainrobots.collections.Items;
+import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.services.window.WindowService;
@@ -23,11 +26,11 @@ public class CommandService {
 		this.windowService = windowService;
 	}
 
-	public void select(int commandId) {
-		select(dataService.treebank().command(commandId));
+	public void command(int commandId) {
+		command(dataService.treebank().command(commandId));
 	}
 
-	public void select(Command command) {
+	public void command(Command command) {
 
 		// Select.
 		dataService.selectedCommand(command);
@@ -41,5 +44,17 @@ public class CommandService {
 				((CommandAware) pane).bindTo(command);
 			}
 		}
+	}
+
+	public void scene(int sceneId) {
+		scene(dataService.treebank().scene(sceneId));
+	}
+
+	public void scene(Scene scene) {
+		Items<Command> commands = dataService.treebank().commands(scene);
+		if (commands == null || commands.count() == 0) {
+			throw new RoboticException("Scene %d has not commands.", scene.id());
+		}
+		command(commands.get(0));
 	}
 }

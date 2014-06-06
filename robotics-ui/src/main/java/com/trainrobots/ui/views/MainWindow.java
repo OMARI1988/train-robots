@@ -36,7 +36,8 @@ public class MainWindow extends JFrame {
 	private final JDesktopPane desktopPane;
 	private final StatusBar statusBar;
 
-	public MainWindow(WindowService windowService, MainMenu menu) {
+	public MainWindow(WindowService windowService, MainMenu menu,
+			ToolBar toolBar) {
 		super("Train Robots");
 
 		// Menu.
@@ -44,6 +45,9 @@ public class MainWindow extends JFrame {
 
 		// Layout.
 		setLayout(new BorderLayout());
+
+		// Tool bar.
+		add(toolBar, BorderLayout.NORTH);
 
 		// Desktop.
 		desktopPane = new JDesktopPane() {

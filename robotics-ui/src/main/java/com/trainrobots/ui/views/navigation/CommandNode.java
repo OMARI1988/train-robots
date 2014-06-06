@@ -28,6 +28,6 @@ public class CommandNode extends TreeNode {
 
 	@Override
 	public void select() {
-		commandService.select(command);
+		commandService.command(command);
 	}
 }
