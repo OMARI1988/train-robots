@@ -22,61 +22,61 @@ import com.trainrobots.scenes.Scenes;
 public class Treebank {
 
 	private final String dataPath;
-	private Layouts layouts;
-	private Scenes scenes;
-	private Commands commands;
+	private final Layouts layouts;
+	private final Scenes scenes;
+	private final Commands commands;
 
 	public Treebank(String dataPath) {
 		this.dataPath = dataPath;
 		Log.configureConsole();
 		Log.info("Loading treebank...");
+
+		// Layouts.
+		LayoutReader layoutReader = new LayoutReader();
+		layoutReader.read(file("layouts.xml"));
+		layouts = layoutReader.layouts();
+		Log.info("Loaded: %s layouts.", layouts.count());
+
+		// Scenes.
+		SceneReader sceneReader = new SceneReader(layouts());
+		sceneReader.read(file("scenes.xml"));
+		scenes = sceneReader.scenes();
+		Log.info("Loaded: %s scenes.", scenes.count());
+
+		// Commands.
+		CommandReader commandReader = new CommandReader(scenes());
+		commandReader.readCommands(file("commands.xml"));
+		commandReader.readLosr(file("losr.xml"));
+		commands = commandReader.commands();
+		Log.info("Loaded: %s commands.", commands.count());
 	}
 
 	public Layout layout(int id) {
-		return layouts().layout(id);
+		return layouts.layout(id);
 	}
 
 	public Layouts layouts() {
-		if (layouts == null) {
-			LayoutReader reader = new LayoutReader();
-			reader.read(file("layouts.xml"));
-			layouts = reader.layouts();
-			Log.info("Loaded: %s layouts.", layouts.count());
-		}
 		return layouts;
 	}
 
 	public Scene scene(int id) {
-		return scenes().scene(id);
+		return scenes.scene(id);
 	}
 
 	public Scenes scenes() {
-		if (scenes == null) {
-			SceneReader reader = new SceneReader(layouts());
-			reader.read(file("scenes.xml"));
-			scenes = reader.scenes();
-			Log.info("Loaded: %s scenes.", scenes.count());
-		}
 		return scenes;
 	}
 
 	public Command command(int id) {
-		return commands().command(id);
+		return commands.command(id);
 	}
 
 	public Commands commands() {
-		if (commands == null) {
-			CommandReader reader = new CommandReader(scenes());
-			reader.readCommands(file("commands.xml"));
-			reader.readLosr(file("losr.xml"));
-			commands = reader.commands();
-			Log.info("Loaded: %s commands.", commands.count());
-		}
 		return commands;
 	}
 
 	public Items<Command> commands(Scene scene) {
-		return commands().forScene(scene);
+		return commands.forScene(scene);
 	}
 
 	private String file(String filename) {
