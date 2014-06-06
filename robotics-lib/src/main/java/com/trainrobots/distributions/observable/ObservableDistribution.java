@@ -14,13 +14,14 @@ import java.util.List;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.distributions.Distribution;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Layout;
 
 public abstract class ObservableDistribution extends Distribution implements
-		Items<Observable> {
+		Items<ObservableHypothesis> {
 
-	private final List<Observable> observables = new ArrayList<Observable>();
+	private final List<ObservableHypothesis> observables = new ArrayList<ObservableHypothesis>();
 
 	protected ObservableDistribution(Layout layout) {
 		super(layout);
@@ -32,18 +33,19 @@ public abstract class ObservableDistribution extends Distribution implements
 	}
 
 	@Override
-	public Observable get(int index) {
+	public ObservableHypothesis get(int index) {
 		return observables.get(index);
 	}
 
 	@Override
-	public Iterator<Observable> iterator() {
+	public Iterator<ObservableHypothesis> iterator() {
 		return observables.iterator();
 	}
 
 	@Override
-	public Observable[] toArray() {
-		Observable[] array = new Observable[observables.size()];
+	public ObservableHypothesis[] toArray() {
+		ObservableHypothesis[] array = new ObservableHypothesis[observables
+				.size()];
 		observables.toArray(array);
 		return array;
 	}
@@ -55,7 +57,11 @@ public abstract class ObservableDistribution extends Distribution implements
 				+ (count == 1 ? "observable" : "observables") + ")";
 	}
 
-	protected void add(Observable observable) {
+	protected void add(Observable observable, double weight) {
+		add(new ObservableHypothesis(observable, weight));
+	}
+
+	protected void add(ObservableHypothesis observable) {
 		observables.add(observable);
 	}
 }

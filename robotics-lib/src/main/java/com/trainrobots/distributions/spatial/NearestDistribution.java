@@ -9,6 +9,7 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
@@ -33,7 +34,8 @@ public class NearestDistribution extends SpatialDistribution {
 
 		// Nearest.
 		double best = 0;
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 			Double distance = distance(observable, landmark);
 			if (distance == null) {
 				throw new RoboticException("%s nearest %s is not supported.",

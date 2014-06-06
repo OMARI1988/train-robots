@@ -10,6 +10,7 @@ package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Corner;
@@ -29,7 +30,8 @@ public class IndicatorDistribution extends ObservableDistribution {
 		int size = indicators.count();
 
 		// Observables.
-		for (Observable observable : distribution) {
+		for (ObservableHypothesis hypothesis : distribution) {
+			Observable observable = hypothesis.observable();
 
 			// Edge.
 			if (observable instanceof Edge) {
@@ -37,7 +39,7 @@ public class IndicatorDistribution extends ObservableDistribution {
 					Indicators indicator = indicators.get(0).indicator();
 					Edge edge = (Edge) observable;
 					if (edge.indicator() == indicator) {
-						add(edge);
+						add(hypothesis);
 					}
 				}
 				continue;
@@ -49,7 +51,7 @@ public class IndicatorDistribution extends ObservableDistribution {
 					Indicators indicator = indicators.get(0).indicator();
 					Region region = (Region) observable;
 					if (region.indicator() == indicator) {
-						add(region);
+						add(hypothesis);
 					}
 				}
 				continue;
@@ -65,7 +67,7 @@ public class IndicatorDistribution extends ObservableDistribution {
 							|| corner.leftOrRight() == indicator;
 				}
 				if (match) {
-					add(corner);
+					add(hypothesis);
 				}
 				continue;
 			}
@@ -76,7 +78,7 @@ public class IndicatorDistribution extends ObservableDistribution {
 				Shape shape = (Shape) observable;
 				Position p = shape.position();
 				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
-					add(shape);
+					add(hypothesis);
 				}
 				continue;
 			}

@@ -131,7 +131,7 @@ public class Planner {
 			throw new RoboticException(
 					"Expected a single observable for a move action.");
 		}
-		Observable observable = distribution.get(0);
+		Observable observable = distribution.get(0).observable();
 
 		// Shape.
 		if (!(observable instanceof Shape)) {
@@ -176,7 +176,7 @@ public class Planner {
 			throw new RoboticException(
 					"Expected a single observable for a take action.");
 		}
-		Observable observable = distribution.get(0);
+		Observable observable = distribution.get(0).observable();
 
 		// Shape.
 		if (!(observable instanceof Shape)) {
@@ -221,7 +221,7 @@ public class Planner {
 				throw new RoboticException(
 						"Expected a single observable for a drop action.");
 			}
-			Observable observable = distribution.get(0);
+			Observable observable = distribution.get(0).observable();
 
 			// Shape.
 			if (!(observable instanceof Shape)) {

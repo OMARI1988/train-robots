@@ -8,6 +8,7 @@
 
 package com.trainrobots.distributions.observable;
 
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Shape;
 
@@ -15,9 +16,9 @@ public class PickableDistribution extends ObservableDistribution {
 
 	public PickableDistribution(ObservableDistribution distribution) {
 		super(distribution.layout());
-		for (Observable observable : distribution) {
-			if (pickable(observable)) {
-				add(observable);
+		for (ObservableHypothesis hypothesis : distribution) {
+			if (pickable(hypothesis.observable())) {
+				add(hypothesis);
 			}
 		}
 	}

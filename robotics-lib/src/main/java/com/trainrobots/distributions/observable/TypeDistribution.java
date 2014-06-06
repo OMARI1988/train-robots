@@ -29,7 +29,7 @@ public class TypeDistribution extends ObservableDistribution {
 		if (type == Types.Cube || type == Types.Prism) {
 			for (Shape shape : layout.shapes()) {
 				if (shape.type() == type) {
-					add(shape);
+					add(shape, 1);
 				}
 			}
 			return;
@@ -37,48 +37,48 @@ public class TypeDistribution extends ObservableDistribution {
 
 		// Edge.
 		if (type == Types.Edge) {
-			add(Edge.Left);
-			add(Edge.Right);
-			add(Edge.Front);
-			add(Edge.Back);
+			add(Edge.Left, 1);
+			add(Edge.Right, 1);
+			add(Edge.Front, 1);
+			add(Edge.Back, 1);
 			return;
 		}
 
 		// Region.
 		if (type == Types.Region) {
-			add(Region.Left);
-			add(Region.Right);
-			add(Region.Front);
-			add(Region.Back);
-			add(Region.Center);
+			add(Region.Left, 1);
+			add(Region.Right, 1);
+			add(Region.Front, 1);
+			add(Region.Back, 1);
+			add(Region.Center, 1);
 			return;
 		}
 
 		// Corner.
 		if (type == Types.Corner) {
-			add(Corner.FrontLeft);
-			add(Corner.FrontRight);
-			add(Corner.BackLeft);
-			add(Corner.BackRight);
+			add(Corner.FrontLeft, 1);
+			add(Corner.FrontRight, 1);
+			add(Corner.BackLeft, 1);
+			add(Corner.BackRight, 1);
 			return;
 		}
 
 		// Board.
 		if (type == Types.Board) {
-			add(Board.board());
+			add(Board.board(), 1);
 			return;
 		}
 
 		// Robot.
 		if (type == Types.Robot) {
-			add(Robot.robot());
+			add(Robot.robot(), 1);
 			return;
 		}
 
 		// Stack.
 		if (type == Types.Stack || type == Types.CubeGroup) {
 			for (Stack stack : context.observables().stacks()) {
-				add(stack);
+				add(stack, 1);
 			}
 			return;
 		}

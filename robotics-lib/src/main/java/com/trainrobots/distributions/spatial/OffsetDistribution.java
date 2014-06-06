@@ -12,6 +12,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Observable;
@@ -38,7 +39,8 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 
 			// Shape/stack.
 			Position p1 = null;
@@ -75,7 +77,8 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 
 	public Items<DestinationHypothesis> destinations(PlannerContext context) {
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 
 			// Shape/stack.
 			Position p = null;

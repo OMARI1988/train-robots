@@ -12,6 +12,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Board;
@@ -35,7 +36,8 @@ public class AboveDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 
 			// Shape.
 			if (landmark instanceof Shape) {
@@ -138,7 +140,8 @@ public class AboveDistribution extends SpatialDistribution {
 	@Override
 	public Items<DestinationHypothesis> destinations(PlannerContext context) {
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 
 			// Shape.
 			if (landmark instanceof Shape) {

@@ -13,7 +13,6 @@ import java.util.List;
 
 import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.spatial.SpatialDistribution;
-import com.trainrobots.observables.Observable;
 
 public class RelativeDistribution extends ObservableDistribution {
 
@@ -23,22 +22,23 @@ public class RelativeDistribution extends ObservableDistribution {
 
 		// Weights.
 		double best = 0;
-		List<ObservableHypothesis> hypotheses = new ArrayList<ObservableHypothesis>();
-		for (Observable observable : landmarkDistribution) {
-			double weight = spatialDistribution.weight(observable);
+		List<ObservableHypothesis> result = new ArrayList<ObservableHypothesis>();
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			double weight = spatialDistribution.weight(hypothesis.observable());
 			if (weight == 0) {
 				continue;
 			}
-			hypotheses.add(new ObservableHypothesis(observable, weight));
+			// TODO: Multiply weights?
+			result.add(new ObservableHypothesis(hypothesis.observable(), weight));
 			if (weight > best) {
 				best = weight;
 			}
 		}
 
 		// Select best hypotheses.
-		for (ObservableHypothesis hypothesis : hypotheses) {
+		for (ObservableHypothesis hypothesis : result) {
 			if (hypothesis.weight() == best) {
-				add(hypothesis.observable());
+				add(hypothesis);
 			}
 		}
 	}

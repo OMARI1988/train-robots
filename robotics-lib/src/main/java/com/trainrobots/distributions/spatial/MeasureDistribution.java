@@ -13,6 +13,7 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.collections.SingleItem;
 import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Corner;
@@ -47,7 +48,8 @@ public class MeasureDistribution extends SpatialDistribution {
 
 		// Landmarks.
 		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 			destinations.add(destination(context, landmark));
 		}
 		return destinations;

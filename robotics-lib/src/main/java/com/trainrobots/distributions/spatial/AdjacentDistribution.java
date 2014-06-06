@@ -9,6 +9,7 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
@@ -27,7 +28,8 @@ public class AdjacentDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
-		for (Observable landmark : landmarkDistribution) {
+		for (ObservableHypothesis hypothesis : landmarkDistribution) {
+			Observable landmark = hypothesis.observable();
 
 			// Shape/stack.
 			Position p1 = null;

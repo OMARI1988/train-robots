@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.trainrobots.collections.Items;
+import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.observables.Observable;
@@ -23,14 +24,15 @@ public class ColorDistribution extends ObservableDistribution {
 	public ColorDistribution(ObservableDistribution distribution,
 			Items<Color> colors) {
 		super(distribution.layout());
-		for (Observable observable : distribution) {
+		for (ObservableHypothesis hypothesis : distribution) {
+			Observable observable = hypothesis.observable();
 
 			// Shape.
 			if (observable instanceof Shape) {
 				Shape shape = (Shape) observable;
 				if (colors.count() == 1
 						&& shape.color() == colors.get(0).color()) {
-					add(shape);
+					add(hypothesis);
 				}
 			}
 
@@ -42,7 +44,7 @@ public class ColorDistribution extends ObservableDistribution {
 					set.add(color.color());
 				}
 				if (stack.hasColors(set)) {
-					add(stack);
+					add(hypothesis);
 				}
 			}
 		}
