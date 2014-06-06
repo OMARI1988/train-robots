@@ -11,11 +11,15 @@ package com.trainrobots.treebank;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.XmlReader;
+import com.trainrobots.ZipArchive;
 import com.trainrobots.losr.Losr;
 
 public class TreebankTests {
@@ -23,10 +27,27 @@ public class TreebankTests {
 	private int count = 0;
 
 	@Test
-	public void shouldWriteTreebank() {
+	public void shouldWriteLosr() throws IOException {
 
-		// Read.
+		// Test.
 		Commands commands = TestContext.treebank().commands();
+		try (ZipArchive zip = new ZipArchive("../.data/treebank.zip")) {
+			try (InputStream stream = zip.open("losr.xml")) {
+				test(commands, stream);
+			}
+		}
+
+		// Verify count.
+		int expectedCount = 0;
+		for (Command command : commands) {
+			if (command.losr() != null) {
+				expectedCount++;
+			}
+		}
+		assertThat(count, is(expectedCount));
+	}
+
+	private void test(Commands commands, InputStream stream) {
 		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
@@ -48,15 +69,6 @@ public class TreebankTests {
 					count++;
 				}
 			}
-		}.read("../.data/losr.xml");
-
-		// Verify count.
-		int expectedCount = 0;
-		for (Command command : commands) {
-			if (command.losr() != null) {
-				expectedCount++;
-			}
-		}
-		assertThat(count, is(expectedCount));
+		}.read(stream);
 	}
 }

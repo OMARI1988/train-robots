@@ -8,6 +8,8 @@
 
 package com.trainrobots.treebank;
 
+import java.io.InputStream;
+
 import org.xml.sax.Attributes;
 
 import com.trainrobots.XmlReader;
@@ -28,7 +30,7 @@ public class CommandReader {
 		return commands;
 	}
 
-	public void readCommands(String filename) {
+	public void readCommands(InputStream stream) {
 		ItemsList<Command> commandList = new ItemsList<Command>();
 		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
@@ -41,11 +43,11 @@ public class CommandReader {
 							.add(new Command(id, scenes.scene(sceneId), text));
 				}
 			}
-		}.read(filename);
+		}.read(stream);
 		commands = new Commands(commandList);
 	}
 
-	public void readLosr(String filename) {
+	public void readLosr(InputStream stream) {
 		new XmlReader() {
 			protected void handleElementStart(String name, Attributes attributes) {
 				if (name.equals("command")) {
@@ -54,6 +56,6 @@ public class CommandReader {
 					commands.command(id).setLosr(losr);
 				}
 			}
-		}.read(filename);
+		}.read(stream);
 	}
 }

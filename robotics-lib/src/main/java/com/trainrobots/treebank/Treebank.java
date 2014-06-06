@@ -8,9 +8,13 @@
 
 package com.trainrobots.treebank;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 
 import com.trainrobots.Log;
+import com.trainrobots.RoboticException;
+import com.trainrobots.ZipArchive;
 import com.trainrobots.collections.Items;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.LayoutReader;
@@ -27,28 +31,46 @@ public class Treebank {
 	private final Commands commands;
 
 	public Treebank(String dataPath) {
+
+		// Configure.
 		this.dataPath = dataPath;
 		Log.configureConsole();
 		Log.info("Loading treebank...");
 
-		// Layouts.
-		LayoutReader layoutReader = new LayoutReader();
-		layoutReader.read(file("layouts.xml"));
-		layouts = layoutReader.layouts();
-		Log.info("Loaded: %s layouts.", layouts.count());
+		// Read archive.
+		String filename = file("treebank.zip");
+		try (ZipArchive zip = new ZipArchive(filename)) {
 
-		// Scenes.
-		SceneReader sceneReader = new SceneReader(layouts());
-		sceneReader.read(file("scenes.xml"));
-		scenes = sceneReader.scenes();
-		Log.info("Loaded: %s scenes.", scenes.count());
+			// Layout.
+			try (InputStream stream = zip.open("layouts.xml")) {
+				LayoutReader reader = new LayoutReader();
+				reader.read(stream);
+				layouts = reader.layouts();
+				Log.info("Loaded: %s layouts.", layouts.count());
+			}
 
-		// Commands.
-		CommandReader commandReader = new CommandReader(scenes());
-		commandReader.readCommands(file("commands.xml"));
-		commandReader.readLosr(file("losr.xml"));
-		commands = commandReader.commands();
-		Log.info("Loaded: %s commands.", commands.count());
+			// Scenes.
+			try (InputStream stream = zip.open("scenes.xml")) {
+				SceneReader reader = new SceneReader(layouts);
+				reader.read(stream);
+				scenes = reader.scenes();
+				Log.info("Loaded: %s scenes.", scenes.count());
+			}
+
+			// Commands.
+			try (InputStream commandStream = zip.open("commands.xml")) {
+				try (InputStream losrStream = zip.open("losr.xml")) {
+					CommandReader reader = new CommandReader(scenes());
+					reader.readCommands(commandStream);
+					reader.readLosr(losrStream);
+					commands = reader.commands();
+					Log.info("Loaded: %s commands.", commands.count());
+				}
+			}
+
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
+		}
 	}
 
 	public Layout layout(int id) {
