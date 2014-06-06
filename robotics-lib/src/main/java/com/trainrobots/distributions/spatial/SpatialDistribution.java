@@ -65,11 +65,11 @@ public abstract class SpatialDistribution extends Distribution {
 		// Relation.
 		switch (relation) {
 		case Left:
-			return new LeftDistribution(landmarkDistribution);
+			return new LeftOffsetDistribution(landmarkDistribution);
 		case Right:
-			return new RightDistribution(landmarkDistribution);
+			return new RightOffsetDistribution(landmarkDistribution);
 		case Front:
-			return new FrontDistribution(landmarkDistribution);
+			return new FrontOffsetDistribution(landmarkDistribution);
 		case Above:
 			return new AboveDistribution(landmarkDistribution);
 		case Within:

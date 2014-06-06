@@ -11,9 +11,9 @@ package com.trainrobots.distributions.spatial;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
 
-public class RightDistribution extends OffsetDistribution {
+public class RightOffsetDistribution extends OffsetDistribution {
 
-	public RightDistribution(ObservableDistribution landmarkDistribution) {
+	public RightOffsetDistribution(ObservableDistribution landmarkDistribution) {
 		super(Relations.Right, landmarkDistribution, 0, -1);
 	}
 }
