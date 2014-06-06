@@ -14,12 +14,10 @@ import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
-import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Shape;
 
-public class IndicatorDistribution extends ObservableDistribution {
+public class ExactIndicatorDistribution extends ObservableDistribution {
 
-	public IndicatorDistribution(ObservableDistribution distribution,
+	public ExactIndicatorDistribution(ObservableDistribution distribution,
 			Indicators indicator) {
 		super(distribution.layout());
 
@@ -50,17 +48,6 @@ public class IndicatorDistribution extends ObservableDistribution {
 				Corner corner = (Corner) observable;
 				if (corner.frontOrBack() == indicator
 						|| corner.leftOrRight() == indicator) {
-					add(hypothesis);
-				}
-				continue;
-			}
-
-			// Shape.
-			if (observable instanceof Shape
-					&& indicator == Indicators.Individual) {
-				Shape shape = (Shape) observable;
-				Position p = shape.position();
-				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
 					add(hypothesis);
 				}
 				continue;

@@ -13,10 +13,11 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
+import com.trainrobots.distributions.observable.IndividualDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
-import com.trainrobots.distributions.observable.IndicatorDistribution;
+import com.trainrobots.distributions.observable.ExactIndicatorDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
 import com.trainrobots.distributions.spatial.DropDestinationDistribution;
 import com.trainrobots.distributions.spatial.MeasureDistribution;
@@ -31,6 +32,7 @@ import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
+import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Measure;
 import com.trainrobots.losr.Relations;
@@ -273,10 +275,7 @@ public class Planner {
 		// Indicators.
 		Items<Indicator> indicators = entity.indicators();
 		if (indicators != null) {
-			for (Indicator indicator : indicators) {
-				distribution = new IndicatorDistribution(distribution,
-						indicator.indicator());
-			}
+			distribution = distribution(type, indicators, distribution);
 		}
 
 		// Colors.
@@ -291,6 +290,25 @@ public class Planner {
 					entity.spatialRelation());
 			distribution = new RelativeDistribution(distribution,
 					spatialDistribution);
+		}
+		return distribution;
+	}
+
+	private ObservableDistribution distribution(Types type,
+			Items<Indicator> indicators, ObservableDistribution distribution) {
+		for (Indicator item : indicators) {
+			Indicators indicator = item.indicator();
+
+			// Individual.
+			if (indicator == Indicators.Individual) {
+				distribution = new IndividualDistribution(distribution);
+			}
+
+			// Exact.
+			else {
+				distribution = new ExactIndicatorDistribution(distribution,
+						indicator);
+			}
 		}
 		return distribution;
 	}
