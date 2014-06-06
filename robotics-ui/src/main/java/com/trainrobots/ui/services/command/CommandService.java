@@ -23,12 +23,16 @@ public class CommandService {
 		this.windowService = windowService;
 	}
 
+	public void select(int commandId) {
+		select(dataService.treebank().command(commandId));
+	}
+
 	public void select(Command command) {
 
 		// Select.
 		dataService.selectedCommand(command);
 
-		// Update.
+		// Panes.
 		for (PaneView pane : windowService.panes()) {
 			if (pane instanceof CommandAware) {
 				((CommandAware) pane).bindTo(command);

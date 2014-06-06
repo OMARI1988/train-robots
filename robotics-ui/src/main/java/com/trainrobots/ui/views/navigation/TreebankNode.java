@@ -8,6 +8,7 @@
 
 package com.trainrobots.ui.views.navigation;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.command.CommandService;
@@ -22,6 +23,18 @@ public class TreebankNode extends TreeNode {
 		super("Treebank", false);
 		this.dataService = dataService;
 		this.commandService = commandService;
+	}
+
+	public SceneNode child(Scene scene) {
+		int size = getChildCount();
+		for (int i = 0; i < size; i++) {
+			SceneNode sceneNode = (SceneNode) getChildAt(i);
+			if (sceneNode.scene() == scene) {
+				return sceneNode;
+			}
+		}
+		throw new RoboticException(
+				"Failed to find child node for scene ID '%d'.", scene.id());
 	}
 
 	@Override

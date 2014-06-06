@@ -12,11 +12,15 @@ import java.awt.BorderLayout;
 
 import javax.swing.JScrollPane;
 
+import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.views.PaneView;
 
-public class NavigationView extends PaneView {
+public class NavigationView extends PaneView implements CommandAware {
+
+	private final NavigationTree navigationTree;
 
 	public NavigationView(DataService dataService, CommandService commandService) {
 		super("Treebank");
@@ -26,8 +30,7 @@ public class NavigationView extends PaneView {
 		setLayout(new BorderLayout());
 
 		// Tree.
-		NavigationTree navigationTree = new NavigationTree(dataService,
-				commandService);
+		navigationTree = new NavigationTree(dataService, commandService);
 
 		// Scroll pane.
 		add(new JScrollPane(navigationTree), BorderLayout.CENTER);
@@ -36,5 +39,10 @@ public class NavigationView extends PaneView {
 	@Override
 	public String paneType() {
 		return "navigation";
+	}
+
+	@Override
+	public void bindTo(Command command) {
+		navigationTree.bindTo(command);
 	}
 }

@@ -25,14 +25,17 @@ import org.w3c.dom.Element;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.views.PaneView;
 
-public class PaneWriter {
+public class SettingsWriter {
 
 	private final Items<PaneView> panes;
+	private final Command selectedCommand;
 
-	public PaneWriter(Items<PaneView> panes) {
+	public SettingsWriter(Items<PaneView> panes, Command selectedCommand) {
 		this.panes = panes;
+		this.selectedCommand = selectedCommand;
 	}
 
 	public void write(String filename) {
@@ -42,8 +45,20 @@ public class PaneWriter {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
 			Document document = builder.newDocument();
+
+			// Settings.
+			Element settingsElement = document.createElement("settings");
+			document.appendChild(settingsElement);
+
+			// Command.
+			Element commandElement = document.createElement("command");
+			commandElement.setAttribute("id",
+					Integer.toString(selectedCommand.id()));
+			settingsElement.appendChild(commandElement);
+
+			// Panes.
 			Element layoutElement = document.createElement("panes");
-			document.appendChild(layoutElement);
+			settingsElement.appendChild(layoutElement);
 			for (PaneView pane : panes) {
 				Element paneElement = document.createElement(pane.paneType());
 				layoutElement.appendChild(paneElement);

@@ -16,6 +16,8 @@ import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.ui.Container;
+import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
@@ -51,9 +53,18 @@ public class WindowService {
 
 		// Restore layout.
 		try {
+
+			// Load panes.
 			PaneBuilder paneBuilder = (paneType, x, y, width, height) -> show(
 					paneType, x, y, new Dimension(width, height));
-			new PaneReader(paneBuilder).read(UI_XML_FILE);
+			SettingsReader reader = new SettingsReader(paneBuilder);
+			reader.read(UI_XML_FILE);
+
+			// Select command.
+			if (reader.commandId() != null) {
+				selectCommand(reader.commandId());
+			}
+
 		} catch (Exception exception) {
 			Log.error("Failed to restore layout.", exception);
 			applyDefaultLayout();
@@ -61,12 +72,6 @@ public class WindowService {
 
 		// Show window.
 		mainWindow.setVisible(true);
-	}
-
-	private void applyDefaultLayout() {
-		show("scene", 7, 13, new Dimension(457, 318));
-		show("navigation", 7, 344, new Dimension(307, 328));
-		show("command", 477, 13, new Dimension(879, 659));
 	}
 
 	public PaneView create(String paneType) {
@@ -110,13 +115,32 @@ public class WindowService {
 
 		// Save layout.
 		try {
-			new PaneWriter(mainWindow.panes()).write(UI_XML_FILE);
+			DataService dataService = container.get(DataService.class);
+			new SettingsWriter(mainWindow.panes(),
+					dataService.selectedCommand()).write(UI_XML_FILE);
 		} catch (Exception exception) {
 			Log.error("Failed to save layout.", exception);
 		}
 
 		// Terminate.
 		System.exit(0);
+	}
+
+	private void applyDefaultLayout() {
+
+		// Panes.
+		show("scene", 7, 13, new Dimension(457, 318));
+		show("navigation", 7, 344, new Dimension(307, 328));
+		show("command", 477, 13, new Dimension(879, 659));
+
+		// Command.
+		DataService dataService = container.get(DataService.class);
+		selectCommand(dataService.selectedCommand().id());
+	}
+
+	private void selectCommand(int commandId) {
+		CommandService commandService = container.get(CommandService.class);
+		commandService.select(commandId);
 	}
 
 	private void registerPane(String paneType, Class paneClass) {

@@ -22,6 +22,10 @@ public class CommandNode extends TreeNode {
 		this.command = command;
 	}
 
+	public Command command() {
+		return command;
+	}
+
 	@Override
 	public void select() {
 		commandService.select(command);

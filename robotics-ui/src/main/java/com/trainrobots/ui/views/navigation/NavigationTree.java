@@ -17,10 +17,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.data.DataService;
 
-public class NavigationTree extends JTree {
+public class NavigationTree extends JTree implements CommandAware {
 
 	public NavigationTree(DataService dataService, CommandService commandService) {
 
@@ -54,6 +56,28 @@ public class NavigationTree extends JTree {
 			public void keyReleased(KeyEvent event) {
 			}
 		});
+	}
+
+	@Override
+	public void bindTo(Command command) {
+
+		// Path.
+		TreebankNode treebankNode = (TreebankNode) getModel().getRoot();
+		SceneNode sceneNode = treebankNode.child(command.scene());
+		CommandNode commandNode = sceneNode.child(command);
+		Object[] nodes = { treebankNode, sceneNode, commandNode };
+		TreePath path = new TreePath(nodes);
+
+		// Already selected?
+		if (path.equals(getSelectionPath())) {
+			return;
+		}
+
+		// Expand and select.
+		expandPath(path.getParentPath());
+		scrollPathToVisible(new TreePath(
+				new Object[] { treebankNode, sceneNode }));
+		setSelectionPath(path);
 	}
 
 	private void handleKeyTyped(char ch) {
