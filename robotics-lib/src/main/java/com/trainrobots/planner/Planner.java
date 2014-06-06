@@ -13,10 +13,10 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
-import com.trainrobots.distributions.observable.IndicatorDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
+import com.trainrobots.distributions.observable.IndicatorDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
 import com.trainrobots.distributions.spatial.DropDestinationDistribution;
 import com.trainrobots.distributions.spatial.MeasureDistribution;
@@ -270,16 +270,19 @@ public class Planner {
 		ObservableDistribution distribution = new TypeDistribution(context,
 				layout, type);
 
+		// Indicators.
+		Items<Indicator> indicators = entity.indicators();
+		if (indicators != null) {
+			for (Indicator indicator : indicators) {
+				distribution = new IndicatorDistribution(distribution,
+						indicator.indicator());
+			}
+		}
+
 		// Colors.
 		Items<Color> colors = entity.colors();
 		if (colors != null) {
 			distribution = new ColorDistribution(distribution, colors);
-		}
-
-		// Indicator.
-		Items<Indicator> indicators = entity.indicators();
-		if (indicators != null) {
-			distribution = new IndicatorDistribution(distribution, indicators);
 		}
 
 		// Spatial relation.

@@ -9,8 +9,6 @@
 package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
@@ -22,11 +20,8 @@ import com.trainrobots.scenes.Shape;
 public class IndicatorDistribution extends ObservableDistribution {
 
 	public IndicatorDistribution(ObservableDistribution distribution,
-			Items<Indicator> indicators) {
+			Indicators indicator) {
 		super(distribution.layout());
-
-		// Indicator.
-		int size = indicators.count();
 
 		// Observables.
 		for (ObservableHypothesis hypothesis : distribution) {
@@ -34,24 +29,18 @@ public class IndicatorDistribution extends ObservableDistribution {
 
 			// Edge.
 			if (observable instanceof Edge) {
-				if (size == 1) {
-					Indicators indicator = indicators.get(0).indicator();
-					Edge edge = (Edge) observable;
-					if (edge.indicator() == indicator) {
-						add(hypothesis);
-					}
+				Edge edge = (Edge) observable;
+				if (edge.indicator() == indicator) {
+					add(hypothesis);
 				}
 				continue;
 			}
 
 			// Region.
 			if (observable instanceof Region) {
-				if (size == 1) {
-					Indicators indicator = indicators.get(0).indicator();
-					Region region = (Region) observable;
-					if (region.indicator() == indicator) {
-						add(hypothesis);
-					}
+				Region region = (Region) observable;
+				if (region.indicator() == indicator) {
+					add(hypothesis);
 				}
 				continue;
 			}
@@ -59,21 +48,16 @@ public class IndicatorDistribution extends ObservableDistribution {
 			// Corner.
 			if (observable instanceof Corner) {
 				Corner corner = (Corner) observable;
-				boolean match = true;
-				for (int i = 0; i < size; i++) {
-					Indicators indicator = indicators.get(i).indicator();
-					match &= corner.frontOrBack() == indicator
-							|| corner.leftOrRight() == indicator;
-				}
-				if (match) {
+				if (corner.frontOrBack() == indicator
+						|| corner.leftOrRight() == indicator) {
 					add(hypothesis);
 				}
 				continue;
 			}
 
 			// Shape.
-			if (observable instanceof Shape && size == 1
-					&& indicators.get(0).indicator() == Indicators.Individual) {
+			if (observable instanceof Shape
+					&& indicator == Indicators.Individual) {
 				Shape shape = (Shape) observable;
 				Position p = shape.position();
 				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
@@ -83,18 +67,9 @@ public class IndicatorDistribution extends ObservableDistribution {
 			}
 
 			// Not supported.
-			StringBuilder text = new StringBuilder();
-			text.append("The indicator '");
-			for (int i = 0; i < size; i++) {
-				if (i > 0) {
-					text.append(' ');
-				}
-				text.append(indicators.get(i).indicator());
-			}
-			text.append("' is not supported with ");
-			text.append(observable);
-			text.append('.');
-			throw new RoboticException(text.toString());
+			throw new RoboticException(
+					"The indicator '%s' is not supported with %s.", indicator,
+					observable);
 		}
 	}
 }
