@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.trainrobots.collections.Items;
-import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.observables.Observable;

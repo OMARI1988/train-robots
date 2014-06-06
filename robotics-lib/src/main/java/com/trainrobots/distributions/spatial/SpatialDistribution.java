@@ -12,7 +12,6 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.Distribution;
-import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Observable;

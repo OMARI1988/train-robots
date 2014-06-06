@@ -9,8 +9,8 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.observable.ObservableDistribution;
+import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Stack;

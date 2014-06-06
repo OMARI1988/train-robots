@@ -10,7 +10,6 @@ package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Corner;

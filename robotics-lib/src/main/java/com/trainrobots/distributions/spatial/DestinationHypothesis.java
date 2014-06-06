@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions.hypotheses;
+package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Position;

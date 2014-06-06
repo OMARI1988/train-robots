@@ -15,7 +15,6 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.Distribution;
-import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Layout;
 

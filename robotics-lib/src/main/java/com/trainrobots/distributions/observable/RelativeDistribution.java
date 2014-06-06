@@ -8,7 +8,6 @@
 
 package com.trainrobots.distributions.observable;
 
-import com.trainrobots.distributions.hypotheses.ObservableHypothesis;
 import com.trainrobots.distributions.spatial.SpatialDistribution;
 import com.trainrobots.observables.Observable;
 

@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions.hypotheses;
+package com.trainrobots.distributions.observable;
 
 import com.trainrobots.observables.Observable;
 

@@ -10,7 +10,6 @@ package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
-import com.trainrobots.distributions.hypotheses.DestinationHypothesis;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Shape;
 
