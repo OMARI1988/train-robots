@@ -56,10 +56,17 @@ public class WindowService {
 			new PaneReader(paneBuilder).read(UI_XML_FILE);
 		} catch (Exception exception) {
 			Log.error("Failed to restore layout.", exception);
+			applyDefaultLayout();
 		}
 
 		// Show window.
 		mainWindow.setVisible(true);
+	}
+
+	private void applyDefaultLayout() {
+		show("scene", 7, 13, new Dimension(457, 318));
+		show("navigation", 7, 344, new Dimension(307, 328));
+		show("command", 477, 13, new Dimension(879, 659));
 	}
 
 	public PaneView create(String paneType) {
