@@ -22,7 +22,7 @@ import com.trainrobots.scenes.Layout;
 public abstract class ObservableDistribution extends Distribution implements
 		Items<ObservableHypothesis> {
 
-	private final List<ObservableHypothesis> observables = new ArrayList<ObservableHypothesis>();
+	private final List<ObservableHypothesis> hypotheses = new ArrayList<ObservableHypothesis>();
 
 	protected ObservableDistribution(Layout layout) {
 		super(layout);
@@ -30,24 +30,24 @@ public abstract class ObservableDistribution extends Distribution implements
 
 	@Override
 	public int count() {
-		return observables.size();
+		return hypotheses.size();
 	}
 
 	@Override
 	public ObservableHypothesis get(int index) {
-		return observables.get(index);
+		return hypotheses.get(index);
 	}
 
 	@Override
 	public Iterator<ObservableHypothesis> iterator() {
-		return observables.iterator();
+		return hypotheses.iterator();
 	}
 
 	@Override
 	public ObservableHypothesis[] toArray() {
-		ObservableHypothesis[] array = new ObservableHypothesis[observables
+		ObservableHypothesis[] array = new ObservableHypothesis[hypotheses
 				.size()];
-		observables.toArray(array);
+		hypotheses.toArray(array);
 		return array;
 	}
 
@@ -55,14 +55,14 @@ public abstract class ObservableDistribution extends Distribution implements
 	public String toString() {
 		int count = count();
 		return getClass().getSimpleName() + " (" + count + " "
-				+ (count == 1 ? "observable" : "observables") + ")";
+				+ (count == 1 ? "hypothesis" : "hypotheses") + ")";
 	}
 
 	public Items<Observable> best() {
 
 		// Best weight.
 		double best = 0;
-		for (ObservableHypothesis hypothesis : observables) {
+		for (ObservableHypothesis hypothesis : hypotheses) {
 			double weight = hypothesis.weight();
 			if (weight > best) {
 				best = weight;
@@ -71,7 +71,7 @@ public abstract class ObservableDistribution extends Distribution implements
 
 		// Select best hypotheses.
 		ItemsList<Observable> result = new ItemsList<>();
-		for (ObservableHypothesis hypothesis : observables) {
+		for (ObservableHypothesis hypothesis : hypotheses) {
 			if (hypothesis.weight() == best) {
 				result.add(hypothesis.observable());
 			}
@@ -84,6 +84,6 @@ public abstract class ObservableDistribution extends Distribution implements
 	}
 
 	protected void add(ObservableHypothesis observable) {
-		observables.add(observable);
+		hypotheses.add(observable);
 	}
 }
