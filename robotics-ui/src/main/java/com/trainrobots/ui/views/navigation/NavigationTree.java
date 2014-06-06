@@ -34,8 +34,7 @@ public class NavigationTree extends JTree implements CommandAware {
 		setShowsRootHandles(true);
 
 		// Tree node renderer.
-		TreeNodeRenderer treeNodeRenderer = new TreeNodeRenderer();
-		setCellRenderer(treeNodeRenderer);
+		setCellRenderer(new TreeNodeRenderer());
 
 		// Selection listener.
 		addTreeSelectionListener(new TreeSelectionListener() {

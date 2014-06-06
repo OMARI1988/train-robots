@@ -32,6 +32,9 @@ public class CommandService {
 		// Select.
 		dataService.selectedCommand(command);
 
+		// Status bar.
+		windowService.status("Command %d", command.id());
+
 		// Panes.
 		for (PaneView pane : windowService.panes()) {
 			if (pane instanceof CommandAware) {

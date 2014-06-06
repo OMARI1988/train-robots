@@ -8,6 +8,7 @@
 
 package com.trainrobots.ui.views;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -32,7 +33,8 @@ import com.trainrobots.ui.services.window.WindowService;
 
 public class MainWindow extends JFrame {
 
-	private final JDesktopPane desktop;
+	private final JDesktopPane desktopPane;
+	private final StatusBar statusBar;
 
 	public MainWindow(WindowService windowService, MainMenu menu) {
 		super("Train Robots");
@@ -40,8 +42,11 @@ public class MainWindow extends JFrame {
 		// Menu.
 		setJMenuBar(menu);
 
+		// Layout.
+		setLayout(new BorderLayout());
+
 		// Desktop.
-		desktop = new JDesktopPane() {
+		desktopPane = new JDesktopPane() {
 
 			public void updateUI() {
 				UIDefaults map = new UIDefaults();
@@ -56,7 +61,11 @@ public class MainWindow extends JFrame {
 				super.updateUI();
 			}
 		};
-		setContentPane(desktop);
+		add(desktopPane, BorderLayout.CENTER);
+
+		// Status bar.
+		statusBar = new StatusBar();
+		add(statusBar, BorderLayout.SOUTH);
 
 		// Icons.
 		List<Image> images = new ArrayList<Image>();
@@ -99,15 +108,19 @@ public class MainWindow extends JFrame {
 		});
 	}
 
+	public StatusBar statusBar() {
+		return statusBar;
+	}
+
 	public void addToDesktop(PaneView pane) {
 
 		// Always behind?
 		if (pane.alwaysBehind()) {
-			desktop.setLayer(pane, -1);
+			desktopPane.setLayer(pane, -1);
 		}
 
 		// Add.
-		desktop.add(pane);
+		desktopPane.add(pane);
 
 		// Focus.
 		try {
@@ -118,6 +131,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public Items<PaneView> panes() {
-		return new ItemsArray(desktop.getAllFrames());
+		return new ItemsArray(desktopPane.getAllFrames());
 	}
 }

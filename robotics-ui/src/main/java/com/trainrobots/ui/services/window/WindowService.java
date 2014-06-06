@@ -92,6 +92,14 @@ public class WindowService {
 		return mainWindow.panes();
 	}
 
+	public void status(String format, Object... parameters) {
+		mainWindow.statusBar().text(String.format(format, parameters));
+	}
+
+	public void error(String format, Object... parameters) {
+		mainWindow.statusBar().error(String.format(format, parameters));
+	}
+
 	private void show(String paneType, int x, int y, Dimension size) {
 
 		// Create pane.
@@ -130,8 +138,8 @@ public class WindowService {
 
 		// Panes.
 		show("scene", 7, 13, new Dimension(457, 318));
-		show("navigation", 7, 344, new Dimension(307, 328));
-		show("command", 477, 13, new Dimension(879, 659));
+		show("navigation", 7, 344, new Dimension(307, 302));
+		show("command", 477, 13, new Dimension(879, 633));
 
 		// Command.
 		DataService dataService = container.get(DataService.class);
