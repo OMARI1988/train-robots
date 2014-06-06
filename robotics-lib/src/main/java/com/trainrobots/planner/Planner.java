@@ -14,10 +14,12 @@ import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
 import com.trainrobots.distributions.observable.IndividualDistribution;
+import com.trainrobots.distributions.observable.LeftDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
 import com.trainrobots.distributions.observable.ExactIndicatorDistribution;
+import com.trainrobots.distributions.observable.RightDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
 import com.trainrobots.distributions.spatial.DropDestinationDistribution;
 import com.trainrobots.distributions.spatial.MeasureDistribution;
@@ -300,26 +302,51 @@ public class Planner {
 		for (Indicator item : indicators) {
 			Indicators indicator = item.indicator();
 
+			// Exact.
+			if ((type == Types.Edge || type == Types.Corner || type == Types.Region)
+					&& (indicator == Indicators.Left
+							|| indicator == Indicators.Right
+							|| indicator == Indicators.Front
+							|| indicator == Indicators.Back || indicator == Indicators.Center)) {
+				distribution = new ExactIndicatorDistribution(distribution,
+						indicator);
+				continue;
+			}
+
+			// Left.
+			if (indicator == Indicators.Left
+					|| indicator == Indicators.Leftmost) {
+				distribution = new LeftDistribution(distribution);
+				continue;
+			}
+
+			// Right.
+			if (indicator == Indicators.Right
+					|| indicator == Indicators.Rightmost) {
+				distribution = new RightDistribution(distribution);
+				continue;
+			}
+
 			// Individual.
 			if (indicator == Indicators.Individual) {
 				distribution = new IndividualDistribution(distribution);
+				continue;
 			}
 
 			// Nearest.
-			else if (indicator == Indicators.Nearest) {
+			if (indicator == Indicators.Nearest) {
 				TypeDistribution robot = new TypeDistribution(context, layout,
 						Types.Robot);
 				SpatialDistribution nearestRobot = SpatialDistribution.of(
 						Relations.Nearest, robot);
 				distribution = new RelativeDistribution(distribution,
 						nearestRobot);
+				continue;
 			}
 
-			// Exact.
-			else {
-				distribution = new ExactIndicatorDistribution(distribution,
-						indicator);
-			}
+			// Not supported.
+			throw new RoboticException("The indicator '%s' is not supported.",
+					indicator);
 		}
 		return distribution;
 	}
