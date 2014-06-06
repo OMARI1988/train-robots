@@ -58,5 +58,6 @@ public class ExactIndicatorDistribution extends ObservableDistribution {
 					"The indicator '%s' is not supported with %s.", indicator,
 					observable);
 		}
+		normalize();
 	}
 }

@@ -9,9 +9,6 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsList;
-import com.trainrobots.collections.SingleItem;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.losr.Relations;
@@ -38,20 +35,23 @@ public class MeasureDistribution extends SpatialDistribution {
 	}
 
 	@Override
-	public Items<DestinationHypothesis> destinations(PlannerContext context) {
+	public DestinationDistribution destinations(PlannerContext context) {
 
 		// No landmarks?
+		DestinationDistribution destinations = new DestinationDistribution(
+				layout);
 		if (landmarkDistribution == null) {
-			return new SingleItem(destination(context, null, 1));
+			destinations.add(destination(context, null, 1));
+			return destinations;
 		}
 
 		// Landmarks.
-		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
 			double weight = hypothesis.weight();
 			destinations.add(destination(context, landmark, weight));
 		}
+		destinations.normalize();
 		return destinations;
 	}
 

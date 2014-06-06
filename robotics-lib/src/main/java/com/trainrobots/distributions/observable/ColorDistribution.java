@@ -54,5 +54,6 @@ public class ColorDistribution extends ObservableDistribution {
 			throw new RoboticException("Color is not supported with %s.",
 					observable);
 		}
+		normalize();
 	}
 }

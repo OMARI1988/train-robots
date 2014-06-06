@@ -13,7 +13,7 @@ import com.trainrobots.observables.Observable;
 public class ObservableHypothesis {
 
 	private final Observable observable;
-	private final double weight;
+	private double weight;
 
 	public ObservableHypothesis(Observable observable, double weight) {
 		this.observable = observable;
@@ -26,6 +26,10 @@ public class ObservableHypothesis {
 
 	public double weight() {
 		return weight;
+	}
+
+	public void weight(double weight) {
+		this.weight = weight;
 	}
 
 	@Override

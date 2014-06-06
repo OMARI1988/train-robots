@@ -42,6 +42,7 @@ public abstract class DirectionDistribution extends ObservableDistribution {
 			throw new RoboticException("%s is not supported with %s.",
 					relation, observable);
 		}
+		normalize();
 	}
 
 	protected abstract double weight(Position position);

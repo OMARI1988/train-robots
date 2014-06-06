@@ -8,8 +8,6 @@
 
 package com.trainrobots.distributions.spatial;
 
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsList;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Shape;
 
@@ -23,8 +21,8 @@ public class DropDestinationDistribution extends SpatialDistribution {
 	}
 
 	@Override
-	public Items<DestinationHypothesis> destinations(PlannerContext context) {
-		ItemsList<DestinationHypothesis> result = new ItemsList<DestinationHypothesis>();
+	public DestinationDistribution destinations(PlannerContext context) {
+		DestinationDistribution result = new DestinationDistribution(layout);
 		Shape sourceShape = context.sourceShape();
 		for (DestinationHypothesis destination : distribution
 				.destinations(context)) {
@@ -40,6 +38,7 @@ public class DropDestinationDistribution extends SpatialDistribution {
 				result.add(destination);
 			}
 		}
+		result.normalize();
 		return result;
 	}
 }

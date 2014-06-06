@@ -24,7 +24,11 @@ public class Distance {
 
 	public static Double weight(Observable observable, Observable landmark) {
 		Double distance = distance(observable, landmark);
-		return distance != null ? 1 / distance : null;
+		if (distance == null) {
+			return null;
+		}
+		double value = distance.doubleValue();
+		return distance != null ? 1 / (value + 1) : null;
 	}
 
 	private static Double distance(Observable observable, Observable landmark) {

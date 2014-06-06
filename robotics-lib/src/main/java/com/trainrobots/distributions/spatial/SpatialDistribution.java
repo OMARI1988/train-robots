@@ -9,15 +9,12 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.Distribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
-import com.trainrobots.scenes.Position;
 
 public abstract class SpatialDistribution extends Distribution {
 
@@ -30,33 +27,9 @@ public abstract class SpatialDistribution extends Distribution {
 				.getSimpleName());
 	}
 
-	public Items<DestinationHypothesis> destinations(PlannerContext context) {
+	public DestinationDistribution destinations(PlannerContext context) {
 		throw new RoboticException("%s does not support destinations.",
 				getClass().getSimpleName());
-	}
-
-	public Items<Position> best(PlannerContext context) {
-
-		// Destinations.
-		Items<DestinationHypothesis> destinations = destinations(context);
-
-		// Best weight.
-		double best = 0;
-		for (DestinationHypothesis hypothesis : destinations) {
-			double weight = hypothesis.weight();
-			if (weight > best) {
-				best = weight;
-			}
-		}
-
-		// Select best hypotheses.
-		ItemsList<Position> result = new ItemsList<>();
-		for (DestinationHypothesis hypothesis : destinations) {
-			if (hypothesis.weight() == best) {
-				result.add(hypothesis.position());
-			}
-		}
-		return result;
 	}
 
 	public static SpatialDistribution of(Relations relation,

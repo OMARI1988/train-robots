@@ -9,8 +9,6 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.losr.Indicators;
@@ -83,8 +81,9 @@ public class WithinDistribution extends SpatialDistribution {
 	}
 
 	@Override
-	public Items<DestinationHypothesis> destinations(PlannerContext context) {
-		ItemsList<DestinationHypothesis> destinations = new ItemsList<DestinationHypothesis>();
+	public DestinationDistribution destinations(PlannerContext context) {
+		DestinationDistribution destinations = new DestinationDistribution(
+				layout);
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
 			double weight = hypothesis.weight();
@@ -103,6 +102,7 @@ public class WithinDistribution extends SpatialDistribution {
 						landmark);
 			}
 		}
+		destinations.normalize();
 		return destinations;
 	}
 }

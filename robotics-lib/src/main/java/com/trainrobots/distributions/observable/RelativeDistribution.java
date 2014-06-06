@@ -16,8 +16,6 @@ public class RelativeDistribution extends ObservableDistribution {
 	public RelativeDistribution(ObservableDistribution landmarkDistribution,
 			SpatialDistribution spatialDistribution) {
 		super(landmarkDistribution.layout());
-
-		// Combine weights.
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable observable = hypothesis.observable();
 			double weight = spatialDistribution.weight(observable);
@@ -25,5 +23,6 @@ public class RelativeDistribution extends ObservableDistribution {
 				add(observable, weight * hypothesis.weight());
 			}
 		}
+		normalize();
 	}
 }

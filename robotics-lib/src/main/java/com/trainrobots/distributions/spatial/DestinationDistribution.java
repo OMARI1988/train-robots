@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.distributions.observable;
+package com.trainrobots.distributions.spatial;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,15 +15,15 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.Distribution;
-import com.trainrobots.observables.Observable;
 import com.trainrobots.scenes.Layout;
+import com.trainrobots.scenes.Position;
 
-public abstract class ObservableDistribution extends Distribution implements
-		Items<ObservableHypothesis> {
+public class DestinationDistribution extends Distribution implements
+		Items<DestinationHypothesis> {
 
-	private final List<ObservableHypothesis> hypotheses = new ArrayList<ObservableHypothesis>();
+	private final List<DestinationHypothesis> hypotheses = new ArrayList<DestinationHypothesis>();
 
-	protected ObservableDistribution(Layout layout) {
+	public DestinationDistribution(Layout layout) {
 		super(layout);
 	}
 
@@ -33,18 +33,18 @@ public abstract class ObservableDistribution extends Distribution implements
 	}
 
 	@Override
-	public ObservableHypothesis get(int index) {
+	public DestinationHypothesis get(int index) {
 		return hypotheses.get(index);
 	}
 
 	@Override
-	public Iterator<ObservableHypothesis> iterator() {
+	public Iterator<DestinationHypothesis> iterator() {
 		return hypotheses.iterator();
 	}
 
 	@Override
-	public ObservableHypothesis[] toArray() {
-		ObservableHypothesis[] array = new ObservableHypothesis[hypotheses
+	public DestinationHypothesis[] toArray() {
+		DestinationHypothesis[] array = new DestinationHypothesis[hypotheses
 				.size()];
 		hypotheses.toArray(array);
 		return array;
@@ -57,11 +57,15 @@ public abstract class ObservableDistribution extends Distribution implements
 				+ (count == 1 ? "hypothesis" : "hypotheses") + ")";
 	}
 
-	public Items<Observable> best() {
+	public void add(DestinationHypothesis hypothesis) {
+		hypotheses.add(hypothesis);
+	}
+
+	public Items<Position> best() {
 
 		// Best weight.
 		double best = 0;
-		for (ObservableHypothesis hypothesis : hypotheses) {
+		for (DestinationHypothesis hypothesis : hypotheses) {
 			double weight = hypothesis.weight();
 			if (weight > best) {
 				best = weight;
@@ -69,16 +73,16 @@ public abstract class ObservableDistribution extends Distribution implements
 		}
 
 		// Select best hypotheses.
-		ItemsList<Observable> result = new ItemsList<>();
-		for (ObservableHypothesis hypothesis : hypotheses) {
+		ItemsList<Position> result = new ItemsList<>();
+		for (DestinationHypothesis hypothesis : hypotheses) {
 			if (hypothesis.weight() == best) {
-				result.add(hypothesis.observable());
+				result.add(hypothesis.position());
 			}
 		}
 		return result;
 	}
 
-	protected void normalize() {
+	public void normalize() {
 
 		// Sum.
 		double sum = 0;
@@ -89,16 +93,8 @@ public abstract class ObservableDistribution extends Distribution implements
 
 		// Normalize.
 		for (int i = 0; i < size; i++) {
-			ObservableHypothesis hypothesis = hypotheses.get(i);
+			DestinationHypothesis hypothesis = hypotheses.get(i);
 			hypothesis.weight(hypothesis.weight() / sum);
 		}
-	}
-
-	protected void add(Observable observable, double weight) {
-		add(new ObservableHypothesis(observable, weight));
-	}
-
-	protected void add(ObservableHypothesis hypothesis) {
-		hypotheses.add(hypothesis);
 	}
 }

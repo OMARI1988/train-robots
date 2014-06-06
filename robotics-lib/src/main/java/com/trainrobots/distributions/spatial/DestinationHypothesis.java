@@ -15,7 +15,7 @@ public class DestinationHypothesis {
 
 	private final Position position;
 	private final Observable landmark;
-	private final double weight;
+	private double weight;
 
 	public DestinationHypothesis(Position position, Observable landmark,
 			double weight) {
@@ -34,6 +34,10 @@ public class DestinationHypothesis {
 
 	public double weight() {
 		return weight;
+	}
+
+	public void weight(double weight) {
+		this.weight = weight;
 	}
 
 	@Override

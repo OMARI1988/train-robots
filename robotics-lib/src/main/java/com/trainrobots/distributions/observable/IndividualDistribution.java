@@ -17,8 +17,6 @@ public class IndividualDistribution extends ObservableDistribution {
 
 	public IndividualDistribution(ObservableDistribution distribution) {
 		super(distribution.layout());
-
-		// Observables.
 		for (ObservableHypothesis hypothesis : distribution) {
 			Observable observable = hypothesis.observable();
 
@@ -36,5 +34,6 @@ public class IndividualDistribution extends ObservableDistribution {
 			throw new RoboticException("Individual is not supported with %s.",
 					observable);
 		}
+		normalize();
 	}
 }

@@ -152,7 +152,8 @@ public class Planner {
 		}
 		SpatialDistribution spatialDistribution = new DropDestinationDistribution(
 				distribution(context, event.destination()));
-		Items<Position> destinations = spatialDistribution.best(context);
+		Items<Position> destinations = spatialDistribution
+				.destinations(context).best();
 		if (destinations.count() != 1) {
 			throw new RoboticException(
 					"Expected a single destination for a move action.");
@@ -244,7 +245,8 @@ public class Planner {
 		if (event.destination() != null) {
 			SpatialDistribution spatialDistribution = new DropDestinationDistribution(
 					distribution(context, event.destination()));
-			Items<Position> destinations = spatialDistribution.best(context);
+			Items<Position> destinations = spatialDistribution.destinations(
+					context).best();
 			if (destinations.count() != 1) {
 				throw new RoboticException(
 						"Expected a single destination for a drop action.");

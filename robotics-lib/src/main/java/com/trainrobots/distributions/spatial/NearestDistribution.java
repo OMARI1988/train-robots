@@ -25,16 +25,15 @@ public class NearestDistribution extends SpatialDistribution {
 
 	@Override
 	public double weight(Observable observable) {
-
-		// Nearest.
 		double best = 0;
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
-			Double weight = Distance.weight(observable, landmark);
-			if (weight == null) {
+			Double weightOfDistance = Distance.weight(observable, landmark);
+			if (weightOfDistance == null) {
 				throw new RoboticException("%s nearest %s is not supported.",
 						observable, landmark);
 			}
+			double weight = weightOfDistance * hypothesis.weight();
 			if (weight > best) {
 				best = weight;
 			}

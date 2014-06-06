@@ -32,34 +32,35 @@ public class TypeDistribution extends ObservableDistribution {
 					add(shape, 1);
 				}
 			}
+			normalize();
 			return;
 		}
 
 		// Edge.
 		if (type == Types.Edge) {
-			add(Edge.Left, 1);
-			add(Edge.Right, 1);
-			add(Edge.Front, 1);
-			add(Edge.Back, 1);
+			add(Edge.Left, 0.25);
+			add(Edge.Right, 0.25);
+			add(Edge.Front, 0.25);
+			add(Edge.Back, 0.25);
 			return;
 		}
 
 		// Region.
 		if (type == Types.Region) {
-			add(Region.Left, 1);
-			add(Region.Right, 1);
-			add(Region.Front, 1);
-			add(Region.Back, 1);
-			add(Region.Center, 1);
+			add(Region.Left, 0.2);
+			add(Region.Right, 0.2);
+			add(Region.Front, 0.2);
+			add(Region.Back, 0.2);
+			add(Region.Center, 0.2);
 			return;
 		}
 
 		// Corner.
 		if (type == Types.Corner) {
-			add(Corner.FrontLeft, 1);
-			add(Corner.FrontRight, 1);
-			add(Corner.BackLeft, 1);
-			add(Corner.BackRight, 1);
+			add(Corner.FrontLeft, 0.25);
+			add(Corner.FrontRight, 0.25);
+			add(Corner.BackLeft, 0.25);
+			add(Corner.BackRight, 0.25);
 			return;
 		}
 
@@ -80,6 +81,7 @@ public class TypeDistribution extends ObservableDistribution {
 			for (Stack stack : context.observables().stacks()) {
 				add(stack, 1);
 			}
+			normalize();
 			return;
 		}
 

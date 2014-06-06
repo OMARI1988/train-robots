@@ -14,8 +14,11 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
+import com.trainrobots.distributions.observable.ObservableDistribution;
+import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.instructions.MoveInstruction;
+import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Scene;
@@ -36,6 +39,31 @@ public class PlannerTests {
 		// Instruction.
 		assertThat(planner.instruction(event), is(new MoveInstruction(
 				new Position(1, 6, 1), new Position(7, 0, 0))));
+	}
+
+	@Test
+	public void shouldGetInstruction2() {
+		Command command = TestContext.treebank().command(14852);
+		Planner planner = new Planner(command.scene().before());
+		planner.instruction(command.losr());
+	}
+
+	@Test
+	public void shouldGetDistribution() {
+
+		// Entity.
+		Command command = TestContext.treebank().command(19824);
+		Event event = (Event) command.losr();
+		Entity entity = event.destination().entity();
+
+		// Planner.
+		Planner planner = new Planner(command.scene().before());
+
+		// Distribution.
+		ObservableDistribution distribution = planner.distribution(entity);
+		for (ObservableHypothesis hypothesis : distribution) {
+			System.out.println(hypothesis);
+		}
 	}
 
 	@Test
@@ -65,7 +93,7 @@ public class PlannerTests {
 		// Diagnostics.
 		System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 				valid, total, 100.0 * valid / total));
-		assertThat(valid, is(3386));
+		assertThat(valid, is(3387));
 		assertThat(total, is(3409));
 	}
 }

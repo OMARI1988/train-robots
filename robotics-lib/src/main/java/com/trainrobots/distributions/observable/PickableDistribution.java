@@ -20,6 +20,7 @@ public class PickableDistribution extends ObservableDistribution {
 				add(hypothesis);
 			}
 		}
+		normalize();
 	}
 
 	private boolean pickable(Observable observable) {

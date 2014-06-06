@@ -20,6 +20,7 @@ public class DroppableDistribution extends ObservableDistribution {
 				add(hypothesis);
 			}
 		}
+		normalize();
 	}
 
 	private boolean droppable(Observable observable) {
