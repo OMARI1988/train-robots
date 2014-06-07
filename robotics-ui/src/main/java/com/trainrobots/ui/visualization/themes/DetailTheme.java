@@ -8,9 +8,14 @@
 
 package com.trainrobots.ui.visualization.themes;
 
-public class Themes {
+import java.awt.Font;
 
-	public static SimpleTheme Simple = new SimpleTheme();
-	public static DetailTheme Detail = new DetailTheme();
-	public static DarkTheme Dark = new DarkTheme();
+public class DetailTheme extends SimpleTheme {
+
+	private final Font font = new Font("Segoe UI", Font.PLAIN, 12);
+
+	@Override
+	public Font font() {
+		return font;
+	}
 }

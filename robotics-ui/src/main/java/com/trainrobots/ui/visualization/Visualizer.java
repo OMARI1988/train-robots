@@ -10,7 +10,6 @@ package com.trainrobots.ui.visualization;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import com.trainrobots.ui.visualization.losr.LosrNode;
 import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.losr.Token;
 import com.trainrobots.ui.visualization.themes.Theme;
-import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.LosrVisual;
 import com.trainrobots.ui.visualization.visuals.Text;
@@ -33,8 +31,6 @@ import com.trainrobots.ui.visualization.visuals.Visual;
 public class Visualizer {
 
 	private final LosrTree tree;
-	private static final Font FONT = new Font("Times New Roman", Font.PLAIN, 16);
-	private static final Font FONT2 = new Font("Arial", Font.PLAIN, 16);
 	private static final int HORIZONTAL_MARGIN = 10;
 	private static final int VERTICAL_MARGIN = 20;
 	private Map<Integer, LosrVisual> tokens = new HashMap<Integer, LosrVisual>();
@@ -45,16 +41,6 @@ public class Visualizer {
 	private static final Stroke DASHED_LINE = new BasicStroke(1f,
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
-
-	private static final Color DEFAULT_COLOR = Color.BLACK;
-	private static final Color DEFAULT_COLOR2 = new Color(200, 200, 200);
-	private static final Color EVENT_COLOR = new Color(255, 0, 0);
-	private static final Color EVENT_COLOR2 = new Color(255, 165, 0);
-	private static final Color SP_COLOR = new Color(0, 176, 80);
-	private static final Color SP_COLOR2 = new Color(141, 244, 50);
-	private static final Color ENTITY_COLOR = new Color(0, 112, 192);
-	private static final Color ENTITY_COLOR2 = new Color(35, 206, 235);
-	private static final Color SKIP_COLOR = new Color(120, 120, 120);
 
 	private int lastId = 0;
 	private float maxY;
@@ -70,9 +56,8 @@ public class Visualizer {
 
 		// Tokens.
 		for (Token token : tree.tokens()) {
-			Text tag = new Text(context, token.text(),
-					theme == Themes.Dark ? FONT2 : FONT,
-					theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR);
+			Text tag = new Text(context, token.text(), theme.font(),
+					theme.foreground());
 			LosrVisual losrVisual = new LosrVisual(tag);
 			losrVisual.width(tag.width());
 			if (tokens.containsKey(token.id())) {
@@ -96,21 +81,20 @@ public class Visualizer {
 
 		// Node.
 		String text = losr.tag();
-		Color color = theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR;
+		Color color = theme.foreground();
 		if (text.equals("spatial-relation")) {
 			text = "sp-relation";
-			color = theme == Themes.Dark ? SP_COLOR2 : SP_COLOR;
+			color = theme.spatialRelation();
 		} else if (text.equals("entity")) {
-			color = theme == Themes.Dark ? ENTITY_COLOR2 : ENTITY_COLOR;
+			color = theme.entity();
 		} else if (text.equals("event")) {
-			color = theme == Themes.Dark ? EVENT_COLOR2 : EVENT_COLOR;
+			color = theme.event();
 		} else if (text.equals("type")) {
 			if (((Type) losr.losr()).type() == Types.Reference) {
 				text = "reference";
 			}
 		}
-		Text tag = new Text(context, text, theme == Themes.Dark ? FONT2 : FONT,
-				color);
+		Text tag = new Text(context, text, theme.font(), color);
 		LosrVisual result = new LosrVisual(tag);
 
 		// Pre-terminal?
@@ -126,7 +110,7 @@ public class Visualizer {
 						LosrVisual skipped = tokens.get(j);
 						if (skipped != null) {
 							skipped.skip = true;
-							skipped.tag().color(SKIP_COLOR);
+							skipped.tag().color(theme.skip());
 							skipList.add(skipped);
 						}
 					}
@@ -237,7 +221,7 @@ public class Visualizer {
 	private void addLines(float[] p, List<float[]> l, boolean terminal) {
 
 		// Triangle?
-		Color color = theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR;
+		Color color = theme.foreground();
 		if (terminal && l.size() >= 2) {
 			float[] u = l.get(0);
 			float[] v = l.get(l.size() - 1);

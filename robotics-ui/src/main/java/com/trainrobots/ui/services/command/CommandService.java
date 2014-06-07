@@ -31,7 +31,7 @@ public class CommandService {
 
 	private Command command;
 	private boolean boundingBoxes;
-	private Theme theme = Themes.Simple;
+	private Theme theme = Themes.Detail;
 
 	public CommandService(TreebankService treebankService,
 			WindowService windowService) {

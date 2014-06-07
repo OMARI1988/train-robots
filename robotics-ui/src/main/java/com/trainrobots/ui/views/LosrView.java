@@ -8,7 +8,6 @@
 
 package com.trainrobots.ui.views;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,7 +24,6 @@ import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.themes.Theme;
-import com.trainrobots.ui.visualization.themes.Themes;
 
 public class LosrView extends JPanel {
 
@@ -44,11 +42,7 @@ public class LosrView extends JPanel {
 
 		// Theme.
 		Theme theme = commandService.theme();
-		if (theme == Themes.Dark) {
-			setBackground(new Color(33, 33, 33));
-		} else {
-			setBackground(Color.WHITE);
-		}
+		setBackground(theme.background());
 
 		// Command.
 		Command command = commandService.command();

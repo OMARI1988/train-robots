@@ -45,7 +45,8 @@ public class MainMenu extends JMenuBar {
 				add(new Menu("Theme", 'h') {
 					{
 						addTheme("Simple", "s", Themes.Simple);
-						addTheme("Dark", "d", Themes.Dark);
+						addTheme("Detail", "d", Themes.Detail);
+						addTheme("Dark", "k", Themes.Dark);
 					}
 
 					private void addTheme(String name, String shortCutKey,

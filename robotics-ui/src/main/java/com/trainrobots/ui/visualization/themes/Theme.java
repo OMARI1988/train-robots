@@ -8,5 +8,22 @@
 
 package com.trainrobots.ui.visualization.themes;
 
-public class Theme {
+import java.awt.Color;
+import java.awt.Font;
+
+public interface Theme {
+
+	Font font();
+
+	Color foreground();
+	
+	Color background();
+	
+	Color entity();
+	
+	Color event();
+	
+	Color spatialRelation();
+	
+	Color skip();
 }

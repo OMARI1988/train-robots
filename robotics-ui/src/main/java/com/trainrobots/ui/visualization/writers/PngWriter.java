@@ -8,7 +8,6 @@
 
 package com.trainrobots.ui.visualization.writers;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -75,8 +74,7 @@ public class PngWriter implements GraphicsRenderer {
 
 		// Render.
 		Graphics2D graphics = image.createGraphics();
-		graphics.setPaint(theme == Themes.Dark ? new Color(33, 33, 33)
-				: Color.WHITE);
+		graphics.setPaint(theme.background());
 		graphics.fillRect(0, 0, width, height);
 		visualTree.render(new VisualContext(graphics, width, height, false));
 		graphics.dispose();
