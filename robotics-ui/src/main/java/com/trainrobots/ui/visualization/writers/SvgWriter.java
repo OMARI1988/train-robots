@@ -66,7 +66,7 @@ public class SvgWriter implements GraphicsRenderer {
 		// Write.
 		try (PrintStream out = new PrintStream(stream)) {
 			out.println("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");
-			write(out, 0, 0, visualTree.getRoot());
+			write(out, 0, 0, visualTree.root());
 			out.println("</svg>");
 		}
 	}

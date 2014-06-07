@@ -23,7 +23,7 @@ public class VisualTree {
 		this.root = root;
 	}
 
-	public Visual getRoot() {
+	public Visual root() {
 		return root;
 	}
 

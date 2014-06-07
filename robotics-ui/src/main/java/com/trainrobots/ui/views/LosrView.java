@@ -76,8 +76,8 @@ public class LosrView extends JPanel {
 			int width = 0;
 			int height = 0;
 			if (visualTree != null) {
-				width = (int) visualTree.getRoot().width() + 100;
-				height = (int) visualTree.getRoot().height() + 100;
+				width = (int) visualTree.root().width() + 100;
+				height = (int) visualTree.root().height() + 100;
 			}
 
 			// Changed size?

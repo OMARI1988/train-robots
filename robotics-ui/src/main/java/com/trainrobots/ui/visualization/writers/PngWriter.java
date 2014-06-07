@@ -63,7 +63,7 @@ public class PngWriter implements GraphicsRenderer {
 		Visualizer visualizer = new Visualizer(tree, darkTheme);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
-		Visual root = visualTree.getRoot();
+		Visual root = visualTree.root();
 
 		// Image.
 		int width = (int) (root.width() + 4);
