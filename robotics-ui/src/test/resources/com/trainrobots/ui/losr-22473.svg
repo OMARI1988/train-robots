@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+<text x="304.22095" y="14.597656" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">sequence</text>
+<text x="92.74341" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(255, 0, 0)">event</text>
+<text x="10.113281" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">action</text>
+<text x="0.0" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">pick</text>
+<text x="37.546875" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">up</text>
+<line x1="29.660156" y1="97.19531" x2="13.7734375" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="29.660156" y1="97.19531" x2="45.546875" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="13.7734375" y1="305.1875" x2="45.546875" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="172.25635" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="63.546875" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">the</text>
+<text x="93.09375" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">color</text>
+<text x="95.75781" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">blue</text>
+<line x1="109.53125" y1="135.59375" x2="109.53125" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="137.29688" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="135.96875" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">cube</text>
+<line x1="151.07031" y1="135.59375" x2="151.07031" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="237.20801" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
+<text x="176.17188" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
+<text x="177.95312" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">nearest</text>
+<line x1="200.60547" y1="173.99219" x2="200.60547" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="324.01367" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="235.03906" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">to</text>
+<text x="257.48438" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">the</text>
+<text x="287.03125" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
+<text x="304.8047" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">left</text>
+<line x1="315.46484" y1="212.39062" x2="315.46484" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="355.22656" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="353.89844" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">edge</text>
+<line x1="369.0" y1="212.39062" x2="369.0" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="342.23242" y1="173.99219" x2="315.46484" y2="189.99219" stroke-width="1.0" stroke="black"/>
+<line x1="342.23242" y1="173.99219" x2="369.0" y2="189.99219" stroke-width="1.0" stroke="black"/>
+<line x1="271.41895" y1="135.59375" x2="200.60547" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="271.41895" y1="135.59375" x2="342.23242" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="190.4751" y1="97.19531" x2="109.53125" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="190.4751" y1="97.19531" x2="151.07031" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="190.4751" y1="97.19531" x2="271.41895" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="110.06763" y1="58.796875" x2="29.660156" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="110.06763" y1="58.796875" x2="190.4751" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<text x="539.68286" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(255, 0, 0)">event</text>
+<text x="394.10156" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">and</text>
+<text x="427.20312" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">action</text>
+<text x="429.875" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">place</text>
+<line x1="446.75" y1="97.19531" x2="446.75" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="487.82422" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="476.29688" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">reference</text>
+<text x="501.59766" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">it</text>
+<line x1="506.04297" y1="135.59375" x2="506.04297" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="506.04297" y1="97.19531" x2="506.04297" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<text x="632.1587" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">destination</text>
+<text x="633.0532" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
+<text x="556.91016" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
+<text x="545.78906" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">on</text>
+<text x="571.78906" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">top</text>
+<text x="602.2344" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">of</text>
+<line x1="581.34375" y1="173.99219" x2="553.78906" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="581.34375" y1="173.99219" x2="608.89844" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="553.78906" y1="305.1875" x2="608.89844" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="734.9658" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="625.5625" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">the</text>
+<text x="655.1094" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">color</text>
+<text x="661.33203" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">red</text>
+<line x1="671.5469" y1="212.39062" x2="671.5469" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="699.3125" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="697.9844" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">cube</text>
+<line x1="713.08594" y1="212.39062" x2="713.08594" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="800.6113" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
+<text x="738.1875" y="244.98828" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
+<text x="739.96875" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">nearest</text>
+<line x1="762.6211" y1="250.78906" x2="762.6211" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="888.8047" y="244.98828" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="797.0547" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">to</text>
+<text x="819.5" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">the</text>
+<text x="849.0469" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">same</text>
+<text x="893.25" y="283.38672" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="891.9219" y="321.78516" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">edge</text>
+<line x1="907.02344" y1="289.1875" x2="907.02344" y2="305.1875" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="907.02344" y1="250.78906" x2="907.02344" y2="266.78906" stroke-width="1.0" stroke="black"/>
+<line x1="834.82227" y1="212.39062" x2="762.6211" y2="228.39062" stroke-width="1.0" stroke="black"/>
+<line x1="834.82227" y1="212.39062" x2="907.02344" y2="228.39062" stroke-width="1.0" stroke="black"/>
+<line x1="753.1846" y1="173.99219" x2="671.5469" y2="189.99219" stroke-width="1.0" stroke="black"/>
+<line x1="753.1846" y1="173.99219" x2="713.08594" y2="189.99219" stroke-width="1.0" stroke="black"/>
+<line x1="753.1846" y1="173.99219" x2="834.82227" y2="189.99219" stroke-width="1.0" stroke="black"/>
+<line x1="667.26416" y1="135.59375" x2="581.34375" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="667.26416" y1="135.59375" x2="753.1846" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="667.26416" y1="97.19531" x2="667.26416" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="557.0071" y1="58.796875" x2="446.75" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="557.0071" y1="58.796875" x2="506.04297" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="557.0071" y1="58.796875" x2="667.26416" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="333.53735" y1="20.398438" x2="110.06763" y2="36.398438" stroke-width="1.0" stroke="black"/>
+<line x1="333.53735" y1="20.398438" x2="557.0071" y2="36.398438" stroke-width="1.0" stroke="black"/>
+</svg>

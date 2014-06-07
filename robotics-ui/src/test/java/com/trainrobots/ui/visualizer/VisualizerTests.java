@@ -17,6 +17,8 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualizer.losr.LosrTree;
+import com.trainrobots.ui.visualizer.writers.PngWriter;
+import com.trainrobots.ui.visualizer.writers.SvgWriter;
 
 public class VisualizerTests {
 
@@ -42,5 +44,17 @@ public class VisualizerTests {
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473-dark.png")));
+	}
+
+	@Test
+	public void shouldRenderSvg() {
+
+		// Render.
+		Command command = TestContext.treebank().command(22473);
+		LosrTree tree = new LosrTree(command);
+		byte[] data = new SvgWriter(tree).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-22473.svg")));
 	}
 }

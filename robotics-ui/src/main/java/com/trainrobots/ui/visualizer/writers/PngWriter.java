@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer;
+package com.trainrobots.ui.visualizer.writers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.GraphicsRenderer;
+import com.trainrobots.ui.visualizer.Visualizer;
 import com.trainrobots.ui.visualizer.losr.LosrTree;
 import com.trainrobots.ui.visualizer.visuals.VisualContext;
 import com.trainrobots.ui.visualizer.visuals.VisualNode;
