@@ -102,17 +102,14 @@ public class Visualizer {
 				int tokenStart = terminal.context().start();
 				int tokenEnd = terminal.context().end();
 				for (int i = tokenStart; i <= tokenEnd; i++) {
-					Frame child = tokens.get(i);
 					for (int j = lastId + 1; j <= i - 1; j++) {
 						Frame skipped = tokens.get(j);
-						if (skipped != null) {
-							skipped.skip(true);
-							skipped.tag().color(theme.skip());
-							skipList.add(skipped);
-						}
+						skipped.skip(true);
+						skipped.tag().color(theme.skip());
+						skipList.add(skipped);
 					}
+					frame.add(tokens.get(i));
 					lastId = i;
-					frame.add(child);
 				}
 			}
 		}
@@ -158,18 +155,19 @@ public class Visualizer {
 		// Not a leaf?
 		if (!frame.leaf()) {
 
-			// Tag.
+			// Extent.
 			Frame first = null;
 			Frame last = null;
 			for (Frame child : frame.frames()) {
-				if (child.skip()) {
-					continue;
+				if (!child.skip()) {
+					if (first == null) {
+						first = child;
+					}
+					last = child;
 				}
-				if (first == null) {
-					first = child;
-				}
-				last = child;
 			}
+
+			// Position tag.
 			if (first != null) {
 				Text tag = frame.tag();
 				float fx = first.x() + first.tag().x() + 0.5f
