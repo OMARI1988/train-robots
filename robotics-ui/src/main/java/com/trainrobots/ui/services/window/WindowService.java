@@ -62,9 +62,7 @@ public class WindowService {
 
 			// Select command.
 			if (reader.commandId() != null) {
-				CommandService commandService = container
-						.get(CommandService.class);
-				commandService.command(reader.commandId());
+				commandService().command(reader.commandId());
 			}
 
 		} catch (Exception exception) {
@@ -170,8 +168,7 @@ public class WindowService {
 
 		// Save layout.
 		try {
-			CommandService commandService = container.get(CommandService.class);
-			new SettingsWriter(mainWindow.panes(), commandService.command())
+			new SettingsWriter(mainWindow.panes(), commandService().command())
 					.write(UI_XML_FILE);
 		} catch (Exception exception) {
 			Log.error("Failed to save layout.", exception);
@@ -189,7 +186,7 @@ public class WindowService {
 		show("command");
 
 		// Command.
-		container.get(CommandService.class).randomCommand();
+		commandService().randomCommand();
 	}
 
 	private void registerPane(String paneType, Class paneClass, int x, int y,
@@ -197,5 +194,9 @@ public class WindowService {
 		paneTypes.put(paneType, paneClass);
 		paneLayouts.put(paneType, new PaneLayout(x, y, new Dimension(width,
 				height)));
+	}
+
+	private CommandService commandService() {
+		return container.get(CommandService.class);
 	}
 }
