@@ -61,7 +61,7 @@ public class PngWriter implements GraphicsRenderer {
 	private BufferedImage image() {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(command, theme);
+		Visualizer visualizer = new Visualizer(theme, command);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 		Visual root = visualTree.root();

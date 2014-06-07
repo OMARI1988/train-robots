@@ -14,6 +14,7 @@ import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
@@ -38,25 +39,34 @@ public class Visualizer {
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
+	private final Theme theme;
+	private final Items<Terminal> tokens;
+	private final Losr losr;
+
 	private final List<Frame> skipList = new ArrayList<Frame>();
 	private final Visual canvas = new Visual();
-	private final Command command;
-	private final Theme theme;
 	private int lastId;
 
-	public Visualizer(Command command, Theme theme) {
-		this.command = command;
+	public Visualizer(Theme theme, Command command) {
+		this(theme, command.tokens(), command.losr());
+	}
+
+	public Visualizer(Theme theme, Items<Terminal> tokens, Losr losr) {
 		this.theme = theme;
+		this.tokens = tokens;
+		this.losr = losr;
 	}
 
 	public VisualTree createVisualTree(VisualContext context) {
 
 		// Layout.
 		Visual root = new Visual();
-		root.add(buildFrame(context, command.losr()));
+		if (losr != null) {
+			root.add(buildFrame(context, losr));
+		}
 
 		// Trailing skipped tokens.
-		for (int i = lastId + 1; i <= command.tokens().count(); i++) {
+		for (int i = lastId + 1; i <= tokens.count(); i++) {
 			root.add(skippedToken(context, i));
 		}
 
@@ -141,8 +151,8 @@ public class Visualizer {
 	}
 
 	private Frame buildToken(VisualContext context, int id) {
-		return buildToken(context, command.tokens().get(id - 1).context()
-				.text().toLowerCase());
+		return buildToken(context, tokens.get(id - 1).context().text()
+				.toLowerCase());
 	}
 
 	private Frame buildToken(VisualContext context, String text) {

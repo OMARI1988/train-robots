@@ -44,10 +44,8 @@ public class LosrView extends JPanel {
 
 		// Command.
 		Command command = commandService.command();
-		if (command.losr() != null) {
-			visualizer = new Visualizer(command, theme);
-			repaint();
-		}
+		visualizer = new Visualizer(theme, command);
+		repaint();
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class LosrView extends JPanel {
 				(Graphics2D) graphics, getWidth(), getHeight(),
 				commandService.boundingBoxes());
 
-		// New visual tree?
+		// Build visual tree once if changed.
 		if (visualizer != null) {
 			visualTree = visualizer.createVisualTree(context);
 			visualizer = null;
