@@ -26,4 +26,6 @@ public interface Theme {
 	Color spatialRelation();
 	
 	Color skip();
+	
+	Color boundingBox();
 }

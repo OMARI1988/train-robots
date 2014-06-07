@@ -20,6 +20,7 @@ public class DarkTheme implements Theme {
 	private final Color event = new Color(255, 165, 0);
 	private final Color spatialRelation = new Color(141, 244, 50);
 	private final Color skip = new Color(120, 120, 120);
+	private final Color boundingBox = new Color(153, 217, 234);
 
 	@Override
 	public Font font() {
@@ -54,5 +55,10 @@ public class DarkTheme implements Theme {
 	@Override
 	public Color skip() {
 		return skip;
+	}
+
+	@Override
+	public Color boundingBox() {
+		return boundingBox;
 	}
 }

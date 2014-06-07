@@ -60,8 +60,9 @@ public class LosrView extends JPanel {
 		super.paintComponent(graphics);
 
 		// Context.
-		VisualContext context = new VisualContext((Graphics2D) graphics,
-				getWidth(), getHeight(), commandService.boundingBoxes());
+		VisualContext context = new VisualContext(commandService.theme(),
+				(Graphics2D) graphics, getWidth(), getHeight(),
+				commandService.boundingBoxes());
 
 		// New visual tree?
 		if (visualizer != null) {

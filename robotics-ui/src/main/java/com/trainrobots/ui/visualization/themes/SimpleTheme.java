@@ -53,4 +53,9 @@ public class SimpleTheme implements Theme {
 	public Color skip() {
 		return skip;
 	}
+
+	@Override
+	public Color boundingBox() {
+		return Color.BLUE;
+	}
 }

@@ -12,8 +12,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import com.trainrobots.ui.visualization.themes.Theme;
+
 public class VisualContext {
 
+	private final Theme theme;
 	private final Graphics2D graphics;
 	private final int width;
 	private final int height;
@@ -25,17 +28,18 @@ public class VisualContext {
 		BufferedImage image = new BufferedImage(10, 10,
 				BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics = (Graphics2D) image.createGraphics();
-		defaultContext = new VisualContext(graphics, 10, 10, false);
+		defaultContext = new VisualContext(null, graphics, 10, 10, false);
 	}
 
 	public static VisualContext defaultContext() {
 		return defaultContext;
 	}
 
-	public VisualContext(Graphics2D graphics, int width, int height,
-			boolean boundingBoxes) {
+	public VisualContext(Theme theme, Graphics2D graphics, int width,
+			int height, boolean boundingBoxes) {
 
 		// Initiate.
+		this.theme = theme;
 		this.graphics = graphics;
 		this.width = width;
 		this.height = height;
@@ -48,6 +52,10 @@ public class VisualContext {
 		// Fractional metrics.
 		graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+	}
+
+	public Theme theme() {
+		return theme;
 	}
 
 	public Graphics2D graphics() {

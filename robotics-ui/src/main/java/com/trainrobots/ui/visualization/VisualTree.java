@@ -8,7 +8,6 @@
 
 package com.trainrobots.ui.visualization;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
@@ -50,7 +49,7 @@ public class VisualTree {
 		// Bounding box.
 		if (context.boundingBoxes() && !(visual instanceof Line)) {
 			Graphics2D graphics = context.graphics();
-			graphics.setPaint(Color.BLUE);
+			graphics.setPaint(context.theme().boundingBox());
 			graphics.draw(new Rectangle2D.Float(x, y, visual.width(), visual
 					.height()));
 		}

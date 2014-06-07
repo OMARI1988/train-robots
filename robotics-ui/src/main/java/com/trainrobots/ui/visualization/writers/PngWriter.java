@@ -76,7 +76,8 @@ public class PngWriter implements GraphicsRenderer {
 		Graphics2D graphics = image.createGraphics();
 		graphics.setPaint(theme.background());
 		graphics.fillRect(0, 0, width, height);
-		visualTree.render(new VisualContext(graphics, width, height, false));
+		visualTree.render(new VisualContext(theme, graphics, width, height,
+				false));
 		graphics.dispose();
 		return image;
 	}
