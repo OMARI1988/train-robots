@@ -6,34 +6,31 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.visuals;
+package com.trainrobots.ui.visualization.visuals;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
-public class LineNode extends VisualNode {
+import com.trainrobots.ui.visualization.VisualContext;
 
-	private Color color;
-	private Stroke stroke;
+public class Line extends Visual {
 
-	public LineNode(float x1, float y1, float x2, float y2) {
+	private final Color color;
+	private final Stroke stroke;
+
+	public Line(float x1, float y1, float x2, float y2, Color color,
+			Stroke stroke) {
 		this.x = x1;
 		this.y = y1;
 		this.width = x2 - x1;
 		this.height = y2 - y1;
-	}
-
-	public void setColor(Color color) {
 		this.color = color;
-	}
-
-	public Stroke getStroke() {
-		return stroke;
-	}
-
-	public void setStroke(Stroke stroke) {
 		this.stroke = stroke;
+	}
+
+	public Stroke stroke() {
+		return stroke;
 	}
 
 	@Override
@@ -44,7 +41,7 @@ public class LineNode extends VisualNode {
 		y += this.y;
 
 		// Render.
-		Graphics2D graphics = context.getGraphics();
+		Graphics2D graphics = context.graphics();
 		graphics.setPaint(color);
 		Stroke previous = graphics.getStroke();
 		graphics.setStroke(stroke);

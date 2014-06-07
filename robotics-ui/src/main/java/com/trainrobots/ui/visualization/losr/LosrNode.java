@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.losr;
+package com.trainrobots.ui.visualization.losr;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,7 +54,7 @@ public class LosrNode implements Iterable<LosrNode> {
 		return losr;
 	}
 
-	public int size() {
+	public int count() {
 		return children.size();
 	}
 
@@ -62,24 +62,11 @@ public class LosrNode implements Iterable<LosrNode> {
 		return parent;
 	}
 
-	public LosrNode get(int index) {
-		return children.get(index);
-	}
-
-	public void add(LosrNode child) {
-		child.parent = this;
-		children.add(child);
-	}
-
-	public void remove(int index) {
-		children.remove(index).parent = null;
-	}
-
 	public int tokenStart() {
 		return tokenStart;
 	}
 
-	public void setTokenStart(int tokenStart) {
+	public void tokenStart(int tokenStart) {
 		this.tokenStart = tokenStart;
 	}
 
@@ -87,7 +74,7 @@ public class LosrNode implements Iterable<LosrNode> {
 		return tokenEnd;
 	}
 
-	public void setTokenEnd(int tokenEnd) {
+	public void tokenEnd(int tokenEnd) {
 		this.tokenEnd = tokenEnd;
 	}
 
@@ -98,5 +85,10 @@ public class LosrNode implements Iterable<LosrNode> {
 	@Override
 	public String toString() {
 		return losr.toString();
+	}
+
+	private void add(LosrNode child) {
+		child.parent = this;
+		children.add(child);
 	}
 }

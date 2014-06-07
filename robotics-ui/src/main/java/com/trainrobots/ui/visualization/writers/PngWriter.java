@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.writers;
+package com.trainrobots.ui.visualization.writers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,11 +19,11 @@ import javax.imageio.ImageIO;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.GraphicsRenderer;
-import com.trainrobots.ui.visualizer.Visualizer;
-import com.trainrobots.ui.visualizer.losr.LosrTree;
-import com.trainrobots.ui.visualizer.visuals.VisualContext;
-import com.trainrobots.ui.visualizer.visuals.VisualNode;
-import com.trainrobots.ui.visualizer.visuals.VisualTree;
+import com.trainrobots.ui.visualization.VisualContext;
+import com.trainrobots.ui.visualization.VisualTree;
+import com.trainrobots.ui.visualization.Visualizer;
+import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class PngWriter implements GraphicsRenderer {
 
@@ -63,11 +63,11 @@ public class PngWriter implements GraphicsRenderer {
 		Visualizer visualizer = new Visualizer(tree, darkTheme);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
-		VisualNode root = visualTree.getRoot();
+		Visual root = visualTree.getRoot();
 
 		// Image.
-		int width = (int) (root.getWidth() + 4);
-		int height = (int) (root.getHeight() + 4);
+		int width = (int) (root.width() + 4);
+		int height = (int) (root.height() + 4);
 		BufferedImage image = new BufferedImage(width, height,
 				BufferedImage.TYPE_INT_RGB);
 

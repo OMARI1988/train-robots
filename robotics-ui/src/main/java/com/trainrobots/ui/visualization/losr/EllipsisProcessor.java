@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.losr;
+package com.trainrobots.ui.visualization.losr;
 
 import java.util.ArrayList;
 
@@ -37,11 +37,11 @@ public class EllipsisProcessor {
 		}
 
 		// Is this node a pre-terminal?
-		if (node.size() == 0) {
+		if (node.count() == 0) {
 
 			// Track tokens.
 			if (node.tokenStart() != 0) {
-				previousToken = tree.getToken(node.tokenStart());
+				previousToken = tree.token(node.tokenStart());
 				if (ellipsisList.size() > 0) {
 					EllipsisInfo ellipsisInfo = ellipsisList.get(ellipsisList
 							.size() - 1);
@@ -72,8 +72,8 @@ public class EllipsisProcessor {
 			int index = tokens.indexOf(info.previousToken);
 			int id = getMaxId(tree) + 1;
 			tokens.add(index + 1, new Token(id, "Ø"));
-			info.node.setTokenStart(id);
-			info.node.setTokenEnd(id);
+			info.node.tokenStart(id);
+			info.node.tokenEnd(id);
 		}
 	}
 

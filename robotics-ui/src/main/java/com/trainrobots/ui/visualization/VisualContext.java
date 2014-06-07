@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.visuals;
+package com.trainrobots.ui.visualization;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -17,7 +17,7 @@ public class VisualContext {
 	private final Graphics2D graphics;
 	private final int width;
 	private final int height;
-	private final boolean isBoundingBoxes;
+	private final boolean boundingBoxes;
 
 	private static final VisualContext defaultContext;
 
@@ -33,13 +33,13 @@ public class VisualContext {
 	}
 
 	public VisualContext(Graphics2D graphics, int width, int height,
-			boolean isBoundingBoxes) {
+			boolean boundingBoxes) {
 
 		// Initiate.
 		this.graphics = graphics;
 		this.width = width;
 		this.height = height;
-		this.isBoundingBoxes = isBoundingBoxes;
+		this.boundingBoxes = boundingBoxes;
 
 		// Anti-aliasing.
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -50,19 +50,19 @@ public class VisualContext {
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 	}
 
-	public Graphics2D getGraphics() {
+	public Graphics2D graphics() {
 		return graphics;
 	}
 
-	public int getWidth() {
+	public int width() {
 		return width;
 	}
 
-	public int getHeight() {
+	public int height() {
 		return height;
 	}
 
-	public boolean isBoundingBoxes() {
-		return isBoundingBoxes;
+	public boolean boundingBoxes() {
+		return boundingBoxes;
 	}
 }

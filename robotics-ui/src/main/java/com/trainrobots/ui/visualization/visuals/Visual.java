@@ -6,76 +6,78 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.visuals;
+package com.trainrobots.ui.visualization.visuals;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class VisualNode implements Iterable<VisualNode> {
+import com.trainrobots.ui.visualization.VisualContext;
+
+public class Visual implements Iterable<Visual> {
 
 	protected float x;
 	protected float y;
 	protected float width;
 	protected float height;
-	private List<VisualNode> children;
+	private List<Visual> children;
 
-	public void setX(float x) {
+	public void x(float x) {
 		this.x = x;
 	}
 
-	public float getX() {
+	public float x() {
 		return x;
 	}
 
-	public void setY(float y) {
+	public void y(float y) {
 		this.y = y;
 	}
 
-	public float getY() {
+	public float y() {
 		return y;
 	}
 
-	public void setWidth(float width) {
+	public void width(float width) {
 		this.width = width;
 	}
 
-	public float getWidth() {
+	public float width() {
 		return width;
 	}
 
-	public void setHeight(float height) {
+	public void height(float height) {
 		this.height = height;
 	}
 
-	public float getHeight() {
+	public float height() {
 		return height;
 	}
 
-	public float getX2() {
+	public float x2() {
 		return x + width;
 	}
 
-	public float getY2() {
+	public float y2() {
 		return y + height;
 	}
 
-	public void add(VisualNode child) {
+	public void add(Visual child) {
 		if (children == null) {
-			children = new ArrayList<VisualNode>();
+			children = new ArrayList<Visual>();
 		}
 		children.add(child);
 	}
 
-	public int getChildCount() {
+	public int count() {
 		return children != null ? children.size() : 0;
 	}
 
-	public VisualNode getChild(int index) {
+	public Visual get(int index) {
 		return children.get(index);
 	}
 
-	public Iterator<VisualNode> iterator() {
+	public Iterator<Visual> iterator() {
 		return children.iterator();
 	}
 
@@ -93,13 +95,13 @@ public class VisualNode implements Iterable<VisualNode> {
 		float maxY = Float.MIN_VALUE;
 
 		// Children.
-		for (VisualNode child : children) {
+		for (Visual child : children) {
 
 			// Child bounding box.
 			float x1 = child.x;
 			float y1 = child.y;
-			float x2 = child.getX2();
-			float y2 = child.getY2();
+			float x2 = child.x2();
+			float y2 = child.y2();
 
 			// Extent.
 			if (x1 < minX) {
@@ -123,17 +125,9 @@ public class VisualNode implements Iterable<VisualNode> {
 		height = maxY - minY;
 
 		// Update children.
-		for (VisualNode child : children) {
+		for (Visual child : children) {
 			child.x -= minX;
 			child.y -= minY;
-		}
-	}
-
-	public void centerContentHorizontally() {
-		if (children != null) {
-			for (VisualNode child : children) {
-				child.x = 0.5f * (width - child.width);
-			}
 		}
 	}
 

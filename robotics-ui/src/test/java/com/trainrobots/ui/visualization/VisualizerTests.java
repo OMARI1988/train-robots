@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer;
+package com.trainrobots.ui.visualization;
 
 import static com.trainrobots.ui.Resources.resource;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,9 +16,9 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.treebank.Command;
-import com.trainrobots.ui.visualizer.losr.LosrTree;
-import com.trainrobots.ui.visualizer.writers.PngWriter;
-import com.trainrobots.ui.visualizer.writers.SvgWriter;
+import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.writers.PngWriter;
+import com.trainrobots.ui.visualization.writers.SvgWriter;
 
 public class VisualizerTests {
 

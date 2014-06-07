@@ -20,10 +20,10 @@ import javax.swing.JViewport;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.visualizer.Visualizer;
-import com.trainrobots.ui.visualizer.losr.LosrTree;
-import com.trainrobots.ui.visualizer.visuals.VisualContext;
-import com.trainrobots.ui.visualizer.visuals.VisualTree;
+import com.trainrobots.ui.visualization.VisualContext;
+import com.trainrobots.ui.visualization.VisualTree;
+import com.trainrobots.ui.visualization.Visualizer;
+import com.trainrobots.ui.visualization.losr.LosrTree;
 
 public class LosrView extends JPanel {
 
@@ -76,8 +76,8 @@ public class LosrView extends JPanel {
 			int width = 0;
 			int height = 0;
 			if (visualTree != null) {
-				width = (int) visualTree.getRoot().getWidth() + 100;
-				height = (int) visualTree.getRoot().getHeight() + 100;
+				width = (int) visualTree.getRoot().width() + 100;
+				height = (int) visualTree.getRoot().height() + 100;
 			}
 
 			// Changed size?

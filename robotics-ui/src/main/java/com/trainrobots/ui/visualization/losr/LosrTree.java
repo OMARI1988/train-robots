@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.losr;
+package com.trainrobots.ui.visualization.losr;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -51,7 +51,7 @@ public class LosrTree {
 		return root;
 	}
 
-	public Token getToken(int id) {
+	public Token token(int id) {
 		for (Token token : tokens) {
 			if (token.id() == id) {
 				return token;

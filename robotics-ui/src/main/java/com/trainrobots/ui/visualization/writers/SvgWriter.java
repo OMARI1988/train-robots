@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.writers;
+package com.trainrobots.ui.visualization.writers;
 
 import java.awt.BasicStroke;
 import java.io.ByteArrayOutputStream;
@@ -17,13 +17,13 @@ import java.io.PrintStream;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.GraphicsRenderer;
-import com.trainrobots.ui.visualizer.Visualizer;
-import com.trainrobots.ui.visualizer.losr.LosrTree;
-import com.trainrobots.ui.visualizer.visuals.LineNode;
-import com.trainrobots.ui.visualizer.visuals.TextNode;
-import com.trainrobots.ui.visualizer.visuals.VisualContext;
-import com.trainrobots.ui.visualizer.visuals.VisualNode;
-import com.trainrobots.ui.visualizer.visuals.VisualTree;
+import com.trainrobots.ui.visualization.VisualContext;
+import com.trainrobots.ui.visualization.VisualTree;
+import com.trainrobots.ui.visualization.Visualizer;
+import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.visuals.Line;
+import com.trainrobots.ui.visualization.visuals.Text;
+import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class SvgWriter implements GraphicsRenderer {
 
@@ -71,58 +71,55 @@ public class SvgWriter implements GraphicsRenderer {
 		}
 	}
 
-	private static void write(PrintStream out, float x, float y, VisualNode node) {
+	private static void write(PrintStream out, float x, float y, Visual node) {
 
-		x += node.getX();
-		y += node.getY();
+		x += node.x();
+		y += node.y();
 
-		if (node instanceof TextNode) {
-			writeText(out, x, y, (TextNode) node);
-		} else if (node instanceof LineNode) {
-			writeLine(out, x, y, (LineNode) node);
+		if (node instanceof Text) {
+			writeText(out, x, y, (Text) node);
+		} else if (node instanceof Line) {
+			writeLine(out, x, y, (Line) node);
 		}
 
-		if (node.getChildCount() > 0) {
-			for (VisualNode child : node) {
+		if (node.count() > 0) {
+			for (Visual child : node) {
 				write(out, x, y, child);
 			}
 		}
 	}
 
-	private static void writeText(PrintStream out, float x, float y,
-			TextNode node) {
+	private static void writeText(PrintStream out, float x, float y, Text node) {
 
 		out.print("<text x=\"");
 		out.print(x);
 		out.print("\" y=\"");
-		out.print(y - node.getTextOffsetY());
+		out.print(y - node.textOffsetY());
 		out.print("\" font-family=\"");
-		out.print(node.getFont().getFontName());
+		out.print(node.font().getFontName());
 		out.print("\" font-size=\"");
-		out.print(node.getFont().getSize());
+		out.print(node.font().getSize());
 		out.print("\" fill=\"");
-		out.print("rgb(" + node.getColor().getRed() + ", "
-				+ node.getColor().getGreen() + ", " + node.getColor().getBlue()
-				+ ")");
+		out.print("rgb(" + node.color().getRed() + ", "
+				+ node.color().getGreen() + ", " + node.color().getBlue() + ")");
 		out.print("\">");
-		out.print(node.getText());
+		out.print(node.text());
 		out.println("</text>");
 	}
 
-	private static void writeLine(PrintStream out, float x, float y,
-			LineNode node) {
+	private static void writeLine(PrintStream out, float x, float y, Line node) {
 
-		BasicStroke stroke = (BasicStroke) node.getStroke();
+		BasicStroke stroke = (BasicStroke) node.stroke();
 		float[] da = stroke.getDashArray();
 
 		out.print("<line x1=\"");
-		out.print(node.getX());
+		out.print(node.x());
 		out.print("\" y1=\"");
-		out.print(node.getY());
+		out.print(node.y());
 		out.print("\" x2=\"");
-		out.print(node.getX2());
+		out.print(node.x2());
 		out.print("\" y2=\"");
-		out.print(node.getY2());
+		out.print(node.y2());
 		out.print("\" stroke-width=\"");
 		out.print(stroke.getLineWidth());
 		out.print("\" stroke=\"");

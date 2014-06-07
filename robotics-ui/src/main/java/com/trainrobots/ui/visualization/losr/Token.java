@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualizer.losr;
+package com.trainrobots.ui.visualization.losr;
 
 import com.trainrobots.RoboticException;
 
