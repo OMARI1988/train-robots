@@ -110,8 +110,8 @@ public class Visualizer {
 			}
 		}
 
-		// Attach.
-		if (frame.leaf()) {
+		// Non-terminal.
+		else {
 			for (Losr child : losr) {
 				Frame childFrame = buildFrame(context, child);
 				for (Frame skip : skipList) {
