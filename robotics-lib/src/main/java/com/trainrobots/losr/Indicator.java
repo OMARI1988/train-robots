@@ -27,6 +27,11 @@ public class Indicator extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "indicator";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Indicator) {
 			Indicator indicator = (Indicator) losr;
@@ -34,11 +39,6 @@ public class Indicator extends Terminal {
 					&& indicator.indicator == this.indicator;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("indicator");
 	}
 
 	@Override

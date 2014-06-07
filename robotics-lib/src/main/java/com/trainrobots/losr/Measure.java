@@ -32,6 +32,11 @@ public class Measure extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "measure";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Measure) {
 			Measure measure = (Measure) losr;
@@ -52,10 +57,5 @@ public class Measure extends Losr {
 			throw new IndexOutOfBoundsException();
 		}
 		return entity;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("measure");
 	}
 }

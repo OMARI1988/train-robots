@@ -27,6 +27,11 @@ public class Color extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "color";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Color) {
 			Color color = (Color) losr;
@@ -34,11 +39,6 @@ public class Color extends Terminal {
 					&& color.color == this.color;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("color");
 	}
 
 	@Override

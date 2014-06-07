@@ -10,6 +10,7 @@ package com.trainrobots.ui.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,9 +23,10 @@ import javax.media.opengl.GLOffscreenAutoDrawable;
 import javax.media.opengl.GLProfile;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.ui.GraphicsRenderer;
 import com.trainrobots.ui.renderer.scene.LayoutElement;
 
-public class Buffer implements AutoCloseable {
+public class Buffer implements GraphicsRenderer, Closeable {
 
 	private final Renderer renderer;
 	private final GLOffscreenAutoDrawable buffer;

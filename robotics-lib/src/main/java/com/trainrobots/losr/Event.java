@@ -100,6 +100,11 @@ public class Event extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "event";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Event) {
 			Event event = (Event) losr;
@@ -129,10 +134,5 @@ public class Event extends Losr {
 			break;
 		}
 		throw new IndexOutOfBoundsException();
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("event");
 	}
 }

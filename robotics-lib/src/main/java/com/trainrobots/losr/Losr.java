@@ -36,6 +36,8 @@ public abstract class Losr implements Items<Losr> {
 		return referenceId;
 	}
 
+	public abstract String name();
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof Losr && equals((Losr) object);
@@ -101,13 +103,11 @@ public abstract class Losr implements Items<Losr> {
 		return null;
 	}
 
-	protected abstract void writeName(StringBuilder text);
-
 	protected void write(StringBuilder text) {
 
 		// Name.
 		text.append('(');
-		writeName(text);
+		text.append(name());
 		text.append(':');
 
 		// ID.

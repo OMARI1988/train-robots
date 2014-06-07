@@ -27,6 +27,11 @@ public class Action extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "action";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Action) {
 			Action action = (Action) losr;
@@ -34,11 +39,6 @@ public class Action extends Terminal {
 					&& action.action == this.action;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("action");
 	}
 
 	@Override

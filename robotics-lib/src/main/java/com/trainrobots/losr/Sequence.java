@@ -28,6 +28,11 @@ public class Sequence extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "sequence";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (!(losr instanceof Sequence)) {
 			return false;
@@ -56,10 +61,5 @@ public class Sequence extends Losr {
 	@Override
 	public Losr get(int index) {
 		return events[index];
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("sequence");
 	}
 }

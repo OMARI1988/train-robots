@@ -26,6 +26,11 @@ public class Text extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "text";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Text) {
 			Text text = (Text) losr;
@@ -33,11 +38,6 @@ public class Text extends Terminal {
 					&& text.text.equals(this.text);
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("text");
 	}
 
 	@Override

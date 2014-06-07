@@ -33,6 +33,11 @@ public class Destination extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "destination";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Destination) {
 			Destination destination = (Destination) losr;
@@ -54,10 +59,5 @@ public class Destination extends Losr {
 			throw new IndexOutOfBoundsException();
 		}
 		return spatialRelation;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("destination");
 	}
 }

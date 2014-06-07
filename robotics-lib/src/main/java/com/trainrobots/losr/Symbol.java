@@ -26,6 +26,11 @@ public class Symbol extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "symbol";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Symbol) {
 			Symbol symbol = (Symbol) losr;
@@ -33,11 +38,6 @@ public class Symbol extends Terminal {
 					&& symbol.value == value;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("symbol");
 	}
 
 	@Override

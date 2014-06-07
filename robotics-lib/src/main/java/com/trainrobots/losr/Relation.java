@@ -27,6 +27,11 @@ public class Relation extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "relation";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Relation) {
 			Relation relation = (Relation) losr;
@@ -34,11 +39,6 @@ public class Relation extends Terminal {
 					&& relation.relation == this.relation;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("relation");
 	}
 
 	@Override

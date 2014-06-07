@@ -91,6 +91,11 @@ public class SpatialRelation extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "spatial-relation";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof SpatialRelation) {
 			SpatialRelation spatialRelation = (SpatialRelation) losr;
@@ -128,10 +133,5 @@ public class SpatialRelation extends Losr {
 			return entity;
 		}
 		throw new IndexOutOfBoundsException();
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("spatial-relation");
 	}
 }

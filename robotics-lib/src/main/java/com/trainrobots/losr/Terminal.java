@@ -35,7 +35,7 @@ public abstract class Terminal extends Losr {
 
 		// Name.
 		text.append('(');
-		writeName(text);
+		text.append(name());
 		text.append(": ");
 
 		// Content.

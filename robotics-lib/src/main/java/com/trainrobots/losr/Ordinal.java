@@ -26,6 +26,11 @@ public class Ordinal extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "ordinal";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Ordinal) {
 			Ordinal ordinal = (Ordinal) losr;
@@ -33,11 +38,6 @@ public class Ordinal extends Terminal {
 					&& ordinal.value == value;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("ordinal");
 	}
 
 	@Override

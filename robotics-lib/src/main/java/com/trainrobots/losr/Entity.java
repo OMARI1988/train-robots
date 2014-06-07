@@ -147,6 +147,11 @@ public class Entity extends Losr {
 	}
 
 	@Override
+	public String name() {
+		return "entity";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Entity) {
 			Entity entity = (Entity) losr;
@@ -207,10 +212,5 @@ public class Entity extends Losr {
 			return spatialRelation;
 		}
 		throw new IndexOutOfBoundsException();
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("entity");
 	}
 }

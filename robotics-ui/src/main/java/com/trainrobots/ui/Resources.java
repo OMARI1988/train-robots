@@ -8,6 +8,8 @@
 
 package com.trainrobots.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -36,5 +38,19 @@ public class Resources {
 					resourcePath);
 		}
 		return stream;
+	}
+
+	public static byte[] resource(String resourcePath) {
+		try (final InputStream input = open(resourcePath)) {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024 * 8];
+			int size = -1;
+			while ((size = input.read(buffer)) != -1) {
+				output.write(buffer, 0, size);
+			}
+			return output.toByteArray();
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
+		}
 	}
 }

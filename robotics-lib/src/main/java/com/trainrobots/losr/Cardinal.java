@@ -26,6 +26,11 @@ public class Cardinal extends Terminal {
 	}
 
 	@Override
+	public String name() {
+		return "cardinal";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Cardinal) {
 			Cardinal cardinal = (Cardinal) losr;
@@ -33,11 +38,6 @@ public class Cardinal extends Terminal {
 					&& cardinal.value == value;
 		}
 		return false;
-	}
-
-	@Override
-	protected void writeName(StringBuilder text) {
-		text.append("cardinal");
 	}
 
 	@Override
