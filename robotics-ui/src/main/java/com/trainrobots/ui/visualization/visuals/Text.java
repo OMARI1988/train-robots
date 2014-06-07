@@ -72,6 +72,11 @@ public class Text extends Visual {
 		return text;
 	}
 
+	@Override
+	public String toString() {
+		return text;
+	}
+
 	public float textOffsetY() {
 		return textOffsetY;
 	}

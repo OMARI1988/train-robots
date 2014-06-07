@@ -46,4 +46,9 @@ public class Frame extends Visual {
 	public void skip(boolean skip) {
 		this.skip = skip;
 	}
+
+	@Override
+	public String toString() {
+		return tag.text();
+	}
 }

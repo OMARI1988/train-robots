@@ -53,9 +53,14 @@ public class Visualizer {
 
 		// Layout.
 		Frame frame = buildFrame(context, command.losr());
-		arrange(frame);
 
-		// Pack.
+		// Trailing skipped tokens.
+		for (int i = lastId + 1; i <= command.tokens().count(); i++) {
+			frame.add(skippedToken(context, i));
+		}
+
+		// Arrange.
+		arrange(frame);
 		pushLeaves(0, 0, frame.height(), frame);
 		canvas.pack();
 		return new VisualTree(canvas);
@@ -95,12 +100,9 @@ public class Visualizer {
 				int tokenEnd = terminal.context().end();
 				for (int i = tokenStart; i <= tokenEnd; i++) {
 
-					// Skipped tokens?
+					// Skipped tokens.
 					for (int j = lastId + 1; j <= i - 1; j++) {
-						Frame skipped = buildToken(context, j);
-						skipped.skip(true);
-						skipped.tag().color(theme.skip());
-						skipList.add(skipped);
+						skipList.add(skippedToken(context, j));
 					}
 
 					// Add token.
@@ -122,6 +124,13 @@ public class Visualizer {
 			}
 		}
 		return frame;
+	}
+
+	private Frame skippedToken(VisualContext context, int id) {
+		Frame token = buildToken(context, id);
+		token.skip(true);
+		token.tag().color(theme.skip());
+		return token;
 	}
 
 	private Frame buildToken(VisualContext context, int id) {
