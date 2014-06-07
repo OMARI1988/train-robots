@@ -6,13 +6,12 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualization;
+package com.trainrobots.ui.visualization.visuals;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
-import com.trainrobots.ui.visualization.visuals.Line;
-import com.trainrobots.ui.visualization.visuals.Visual;
+import com.trainrobots.ui.visualization.VisualContext;
 
 public class VisualTree {
 

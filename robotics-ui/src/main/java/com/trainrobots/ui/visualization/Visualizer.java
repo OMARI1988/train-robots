@@ -29,6 +29,7 @@ import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.LosrVisual;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Visual;
+import com.trainrobots.ui.visualization.visuals.VisualTree;
 
 public class Visualizer {
 

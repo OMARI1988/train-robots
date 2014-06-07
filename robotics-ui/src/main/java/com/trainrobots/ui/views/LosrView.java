@@ -19,9 +19,9 @@ import javax.swing.JViewport;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.visualization.VisualContext;
-import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.visuals.VisualTree;
 
 public class LosrView extends JPanel {
 
