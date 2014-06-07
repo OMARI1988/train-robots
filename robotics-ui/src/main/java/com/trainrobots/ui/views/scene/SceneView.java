@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.views.scene;
 
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
@@ -18,9 +18,10 @@ import javax.swing.SpringLayout;
 
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
-import com.trainrobots.ui.FractionSpring;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.views.LayoutView;
+import com.trainrobots.ui.views.PaneView;
 
 public class SceneView extends PaneView implements CommandAware {
 

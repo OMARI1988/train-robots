@@ -24,8 +24,8 @@ import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.views.RobotView;
-import com.trainrobots.ui.views.SceneView;
 import com.trainrobots.ui.views.navigation.NavigationView;
+import com.trainrobots.ui.views.scene.SceneView;
 
 public class WindowService {
 
