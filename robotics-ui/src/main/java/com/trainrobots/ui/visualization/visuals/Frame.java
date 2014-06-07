@@ -11,13 +11,13 @@ package com.trainrobots.ui.visualization.visuals;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LosrVisual extends Visual {
+public class Frame extends Visual {
 
 	private final Text tag;
-	private final List<LosrVisual> losrChildren = new ArrayList<LosrVisual>();
+	private final List<Frame> frames = new ArrayList<Frame>();
 	private boolean skip;
 
-	public LosrVisual(Text tag) {
+	public Frame(Text tag) {
 		this.tag = tag;
 		add(tag);
 	}
@@ -26,17 +26,17 @@ public class LosrVisual extends Visual {
 		return tag;
 	}
 
-	public Iterable<LosrVisual> losrChildren() {
-		return losrChildren;
+	public Iterable<Frame> frames() {
+		return frames;
 	}
 
-	public boolean hasLosrChildren() {
-		return losrChildren.size() != 0;
+	public boolean leaf() {
+		return frames.size() == 0;
 	}
 
-	public void add(LosrVisual visual) {
-		super.add(visual);
-		losrChildren.add(visual);
+	public void add(Frame frame) {
+		super.add(frame);
+		frames.add(frame);
 	}
 
 	public boolean skip() {

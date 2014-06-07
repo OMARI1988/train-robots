@@ -26,7 +26,7 @@ import com.trainrobots.losr.Types;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.visuals.Line;
-import com.trainrobots.ui.visualization.visuals.LosrVisual;
+import com.trainrobots.ui.visualization.visuals.Frame;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Visual;
 import com.trainrobots.ui.visualization.visuals.VisualTree;
@@ -40,8 +40,8 @@ public class Visualizer {
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
-	private final Map<Integer, LosrVisual> tokens = new HashMap<Integer, LosrVisual>();
-	private final List<LosrVisual> skipList = new ArrayList<LosrVisual>();
+	private final Map<Integer, Frame> tokens = new HashMap<Integer, Frame>();
+	private final List<Frame> skipList = new ArrayList<Frame>();
 	private final Visual canvas = new Visual();
 	private final Command command;
 	private final Theme theme;
@@ -56,20 +56,20 @@ public class Visualizer {
 
 		// Tokens.
 		for (Terminal token : command.tokens()) {
-			buildTokenVisual(context, token.context().text().toLowerCase());
+			buildToken(context, token.context().text().toLowerCase());
 		}
 
 		// Layout.
-		LosrVisual root = buildLosrVisual(context, command.losr());
-		arrange(root);
+		Frame frame = buildFrame(context, command.losr());
+		arrange(frame);
 
 		// Pack.
-		pushLeaves(0, 0, root.height(), root);
+		pushLeaves(0, 0, frame.height(), frame);
 		canvas.pack();
 		return new VisualTree(canvas);
 	}
 
-	private LosrVisual buildLosrVisual(VisualContext context, Losr losr) {
+	private Frame buildFrame(VisualContext context, Losr losr) {
 
 		// Tag.
 		String text = losr.name();
@@ -81,13 +81,12 @@ public class Visualizer {
 			color = theme.entity();
 		} else if (losr instanceof Event) {
 			color = theme.event();
-		} else if (losr instanceof Type) {
-			if (((Type) losr).type() == Types.Reference) {
-				text = "reference";
-			}
+		} else if (losr instanceof Type
+				&& ((Type) losr).type() == Types.Reference) {
+			text = "reference";
 		}
 		Text tag = new Text(context, text, theme.font(), color);
-		LosrVisual result = new LosrVisual(tag);
+		Frame result = new Frame(tag);
 
 		// Terminal.
 		if (losr instanceof Terminal) {
@@ -95,7 +94,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				result.add(buildTokenVisual(context, "Ø"));
+				result.add(buildToken(context, "Ø"));
 			}
 
 			// Token.
@@ -103,9 +102,9 @@ public class Visualizer {
 				int tokenStart = terminal.context().start();
 				int tokenEnd = terminal.context().end();
 				for (int i = tokenStart; i <= tokenEnd; i++) {
-					LosrVisual child = tokens.get(i);
+					Frame child = tokens.get(i);
 					for (int j = lastId + 1; j <= i - 1; j++) {
-						LosrVisual skipped = tokens.get(j);
+						Frame skipped = tokens.get(j);
 						if (skipped != null) {
 							skipped.skip(true);
 							skipped.tag().color(theme.skip());
@@ -119,50 +118,50 @@ public class Visualizer {
 		}
 
 		// Attach.
-		if (!result.hasLosrChildren()) {
+		if (result.leaf()) {
 			for (Losr child : losr) {
-				LosrVisual losrVisual = buildLosrVisual(context, child);
-				for (LosrVisual skip : skipList) {
+				Frame frame = buildFrame(context, child);
+				for (Frame skip : skipList) {
 					result.add(skip);
 				}
 				skipList.clear();
-				result.add(losrVisual);
+				result.add(frame);
 			}
 		}
 		return result;
 	}
 
-	private LosrVisual buildTokenVisual(VisualContext context, String text) {
+	private Frame buildToken(VisualContext context, String text) {
 		Text tag = new Text(context, text, theme.font(), theme.foreground());
-		LosrVisual losrVisual = new LosrVisual(tag);
-		losrVisual.width(tag.width());
-		tokens.put(tokens.size() + 1, losrVisual);
-		return losrVisual;
+		Frame frame = new Frame(tag);
+		frame.width(tag.width());
+		tokens.put(tokens.size() + 1, frame);
+		return frame;
 	}
 
-	private void arrange(LosrVisual losrVisual) {
+	private void arrange(Frame frame) {
 
 		// Recurse.
-		for (LosrVisual child : losrVisual.losrChildren()) {
+		for (Frame child : frame.frames()) {
 			arrange(child);
 		}
 
 		// Position children.
 		float x = 0;
-		float y = losrVisual.tag().height() + VERTICAL_MARGIN;
-		for (LosrVisual child : losrVisual.losrChildren()) {
+		float y = frame.tag().height() + VERTICAL_MARGIN;
+		for (Frame child : frame.frames()) {
 			child.y(y);
 			child.x(x);
 			x += child.width() + HORIZONTAL_MARGIN;
 		}
 
 		// Not a leaf?
-		if (losrVisual.hasLosrChildren()) {
+		if (!frame.leaf()) {
 
 			// Tag.
-			LosrVisual first = null;
-			LosrVisual last = null;
-			for (LosrVisual child : losrVisual.losrChildren()) {
+			Frame first = null;
+			Frame last = null;
+			for (Frame child : frame.frames()) {
 				if (child.skip()) {
 					continue;
 				}
@@ -172,7 +171,7 @@ public class Visualizer {
 				last = child;
 			}
 			if (first != null) {
-				Text tag = losrVisual.tag();
+				Text tag = frame.tag();
 				float fx = first.x() + first.tag().x() + 0.5f
 						* first.tag().width();
 				float lx = last.x() + last.tag().x() + 0.5f
@@ -182,23 +181,23 @@ public class Visualizer {
 		}
 
 		// Pack.
-		losrVisual.pack();
+		frame.pack();
 	}
 
-	private void pushLeaves(float x, float y, float maxY, LosrVisual losrVisual) {
+	private void pushLeaves(float x, float y, float maxY, Frame frame) {
 
 		// Offset.
-		x += losrVisual.x();
-		y += losrVisual.y();
+		x += frame.x();
+		y += frame.y();
 
 		// Add.
-		Text tag = losrVisual.tag();
+		Text tag = frame.tag();
 		tag.x(x + tag.x());
 		tag.y(y + tag.y());
 		canvas.add(tag);
 
-		// No children?
-		if (!losrVisual.hasLosrChildren()) {
+		// Leaf?
+		if (frame.leaf()) {
 			tag.y(maxY - tag.height());
 		}
 
@@ -209,13 +208,13 @@ public class Visualizer {
 			float[] p = { tag.x() + 0.5f * tag.width(), tag.y2() + 2 };
 			List<float[]> l = new ArrayList<float[]>();
 			boolean terminal = false;
-			for (LosrVisual child : losrVisual.losrChildren()) {
+			for (Frame child : frame.frames()) {
 				pushLeaves(x, y, maxY, child);
 				if (!child.skip()) {
 					Text tag2 = child.tag();
 					l.add(new float[] { tag2.x() + 0.5f * tag2.width(),
 							tag2.y() - 2 });
-					terminal = !child.hasLosrChildren();
+					terminal = child.leaf();
 				}
 			}
 
