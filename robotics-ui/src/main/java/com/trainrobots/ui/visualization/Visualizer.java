@@ -23,6 +23,8 @@ import com.trainrobots.losr.Types;
 import com.trainrobots.ui.visualization.losr.LosrNode;
 import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.losr.Token;
+import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.LosrVisual;
 import com.trainrobots.ui.visualization.visuals.Text;
@@ -37,7 +39,7 @@ public class Visualizer {
 	private static final int VERTICAL_MARGIN = 20;
 	private Map<Integer, LosrVisual> tokens = new HashMap<Integer, LosrVisual>();
 	private final Visual canvas = new Visual();
-	private final boolean darkTheme;
+	private final Theme theme;
 
 	private static final Stroke SOLID_LINE = new BasicStroke();
 	private static final Stroke DASHED_LINE = new BasicStroke(1f,
@@ -59,9 +61,9 @@ public class Visualizer {
 
 	private List<LosrVisual> skipList = new ArrayList<LosrVisual>();
 
-	public Visualizer(LosrTree tree, boolean darkTheme) {
+	public Visualizer(LosrTree tree, Theme theme) {
 		this.tree = tree;
-		this.darkTheme = darkTheme;
+		this.theme = theme;
 	}
 
 	public VisualTree createVisualTree(VisualContext context) {
@@ -69,8 +71,8 @@ public class Visualizer {
 		// Tokens.
 		for (Token token : tree.tokens()) {
 			Text tag = new Text(context, token.text(),
-					darkTheme ? FONT2 : FONT, darkTheme ? DEFAULT_COLOR2
-							: DEFAULT_COLOR);
+					theme == Themes.Dark ? FONT2 : FONT,
+					theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR);
 			LosrVisual losrVisual = new LosrVisual(tag);
 			losrVisual.width(tag.width());
 			if (tokens.containsKey(token.id())) {
@@ -94,20 +96,21 @@ public class Visualizer {
 
 		// Node.
 		String text = losr.tag();
-		Color color = darkTheme ? DEFAULT_COLOR2 : DEFAULT_COLOR;
+		Color color = theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR;
 		if (text.equals("spatial-relation")) {
 			text = "sp-relation";
-			color = darkTheme ? SP_COLOR2 : SP_COLOR;
+			color = theme == Themes.Dark ? SP_COLOR2 : SP_COLOR;
 		} else if (text.equals("entity")) {
-			color = darkTheme ? ENTITY_COLOR2 : ENTITY_COLOR;
+			color = theme == Themes.Dark ? ENTITY_COLOR2 : ENTITY_COLOR;
 		} else if (text.equals("event")) {
-			color = darkTheme ? EVENT_COLOR2 : EVENT_COLOR;
+			color = theme == Themes.Dark ? EVENT_COLOR2 : EVENT_COLOR;
 		} else if (text.equals("type")) {
 			if (((Type) losr.losr()).type() == Types.Reference) {
 				text = "reference";
 			}
 		}
-		Text tag = new Text(context, text, darkTheme ? FONT2 : FONT, color);
+		Text tag = new Text(context, text, theme == Themes.Dark ? FONT2 : FONT,
+				color);
 		LosrVisual result = new LosrVisual(tag);
 
 		// Pre-terminal?
@@ -234,7 +237,7 @@ public class Visualizer {
 	private void addLines(float[] p, List<float[]> l, boolean terminal) {
 
 		// Triangle?
-		Color color = darkTheme ? DEFAULT_COLOR2 : DEFAULT_COLOR;
+		Color color = theme == Themes.Dark ? DEFAULT_COLOR2 : DEFAULT_COLOR;
 		if (terminal && l.size() >= 2) {
 			float[] u = l.get(0);
 			float[] v = l.get(l.size() - 1);

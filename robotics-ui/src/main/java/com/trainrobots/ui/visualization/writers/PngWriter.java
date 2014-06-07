@@ -23,20 +23,22 @@ import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class PngWriter implements GraphicsRenderer {
 
 	private final LosrTree tree;
-	private final boolean darkTheme;
+	private final Theme theme;
 
 	public PngWriter(LosrTree tree) {
-		this(tree, false);
+		this(tree, Themes.Simple);
 	}
 
-	public PngWriter(LosrTree tree, boolean darkTheme) {
+	public PngWriter(LosrTree tree, Theme theme) {
 		this.tree = tree;
-		this.darkTheme = darkTheme;
+		this.theme = theme;
 	}
 
 	public void renderToFile(String filename) {
@@ -60,7 +62,7 @@ public class PngWriter implements GraphicsRenderer {
 	private BufferedImage image() {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(tree, darkTheme);
+		Visualizer visualizer = new Visualizer(tree, theme);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 		Visual root = visualTree.root();
@@ -73,7 +75,8 @@ public class PngWriter implements GraphicsRenderer {
 
 		// Render.
 		Graphics2D graphics = image.createGraphics();
-		graphics.setPaint(darkTheme ? new Color(33, 33, 33) : Color.WHITE);
+		graphics.setPaint(theme == Themes.Dark ? new Color(33, 33, 33)
+				: Color.WHITE);
 		graphics.fillRect(0, 0, width, height);
 		visualTree.render(new VisualContext(graphics, width, height, false));
 		graphics.dispose();

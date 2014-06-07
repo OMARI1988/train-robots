@@ -24,6 +24,8 @@ import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.themes.Themes;
 
 public class LosrView extends JPanel {
 
@@ -40,8 +42,9 @@ public class LosrView extends JPanel {
 
 	public void bind() {
 
-		// Background.
-		if (commandService.darkTheme()) {
+		// Theme.
+		Theme theme = commandService.theme();
+		if (theme == Themes.Dark) {
 			setBackground(new Color(33, 33, 33));
 		} else {
 			setBackground(Color.WHITE);
@@ -51,8 +54,7 @@ public class LosrView extends JPanel {
 		Command command = commandService.command();
 		Losr losr = command.losr();
 		if (losr != null) {
-			visualizer = new Visualizer(new LosrTree(command),
-					commandService.darkTheme());
+			visualizer = new Visualizer(new LosrTree(command), theme);
 			repaint();
 		}
 	}

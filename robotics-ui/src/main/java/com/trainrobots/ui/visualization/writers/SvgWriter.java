@@ -21,6 +21,7 @@ import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Visual;
@@ -28,15 +29,9 @@ import com.trainrobots.ui.visualization.visuals.Visual;
 public class SvgWriter implements GraphicsRenderer {
 
 	private final LosrTree tree;
-	private final boolean darkTheme;
 
 	public SvgWriter(LosrTree tree) {
-		this(tree, false);
-	}
-
-	public SvgWriter(LosrTree tree, boolean darkTheme) {
 		this.tree = tree;
-		this.darkTheme = darkTheme;
 	}
 
 	public void renderToFile(String filename) {
@@ -59,7 +54,7 @@ public class SvgWriter implements GraphicsRenderer {
 	private void writeSvg(OutputStream stream) {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(tree, darkTheme);
+		Visualizer visualizer = new Visualizer(tree, Themes.Simple);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 

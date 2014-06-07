@@ -20,6 +20,8 @@ import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.PaneView;
+import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.themes.Themes;
 
 public class CommandService {
 
@@ -29,7 +31,7 @@ public class CommandService {
 
 	private Command command;
 	private boolean boundingBoxes;
-	private boolean darkTheme;
+	private Theme theme = Themes.Simple;
 
 	public CommandService(TreebankService treebankService,
 			WindowService windowService) {
@@ -85,12 +87,12 @@ public class CommandService {
 		}
 	}
 
-	public boolean darkTheme() {
-		return darkTheme;
+	public Theme theme() {
+		return theme;
 	}
 
-	public void darkTheme(boolean darkTheme) {
-		this.darkTheme = darkTheme;
+	public void theme(Theme theme) {
+		this.theme = theme;
 		CommandView commandView = windowService.pane(CommandView.class);
 		if (commandView != null) {
 			commandView.bindTo(command);

@@ -12,6 +12,8 @@ import javax.swing.JMenuBar;
 
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.window.WindowService;
+import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.themes.Themes;
 
 public class MainMenu extends JMenuBar {
 
@@ -28,9 +30,6 @@ public class MainMenu extends JMenuBar {
 				addCheckedItem("Bounding Boxes", "ctrl B",
 						commandService::boundingBoxes,
 						commandService.boundingBoxes());
-				addCheckedItem("Dark Theme", "ctrl D",
-						commandService::darkTheme, commandService.darkTheme());
-				addSeparator();
 				addItem("Random Command", "F5", commandService::randomCommand);
 			}
 		});
@@ -40,8 +39,21 @@ public class MainMenu extends JMenuBar {
 				addView("Treebank", "t", "navigation");
 				addView("Command", "c", "command");
 				addView("Scene", "s", "scene");
-				addSeparator();
 				addView("Robot", "r", "robot");
+
+				addSeparator();
+				add(new Menu("Theme", 'h') {
+					{
+						addTheme("Simple", "s", Themes.Simple);
+						addTheme("Dark", "d", Themes.Dark);
+					}
+
+					private void addTheme(String name, String shortCutKey,
+							Theme theme) {
+						addItem(name, shortCutKey,
+								() -> commandService.theme(theme));
+					}
+				});
 			}
 
 			private void addView(String name, String shortCutKey,

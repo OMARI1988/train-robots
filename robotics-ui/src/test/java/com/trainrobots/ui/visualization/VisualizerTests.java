@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.losr.LosrTree;
+import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
 import com.trainrobots.ui.visualization.writers.SvgWriter;
 
@@ -52,7 +53,7 @@ public class VisualizerTests {
 		// Render.
 		Command command = TestContext.treebank().command(22473);
 		LosrTree tree = new LosrTree(command);
-		byte[] data = new PngWriter(tree, true).renderToArray();
+		byte[] data = new PngWriter(tree, Themes.Dark).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473-dark.png")));
