@@ -31,8 +31,8 @@ import com.trainrobots.ui.visualization.visuals.VisualTree;
 
 public class Visualizer {
 
-	private static final int HORIZONTAL_MARGIN = 10;
-	private static final int VERTICAL_MARGIN = 20;
+	private static final int HORIZONTAL_FRAME_MARGIN = 10;
+	private static final int VERTICAL_FRAME_MARGIN = 20;
 	private static final Stroke SOLID_LINE = new BasicStroke();
 	private static final Stroke DASHED_LINE = new BasicStroke(1f,
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
@@ -145,11 +145,11 @@ public class Visualizer {
 
 		// Position children.
 		float x = 0;
-		float y = frame.tag().height() + VERTICAL_MARGIN;
+		float y = frame.tag().height() + VERTICAL_FRAME_MARGIN;
 		for (Frame child : frame.frames()) {
-			child.y(y);
 			child.x(x);
-			x += child.width() + HORIZONTAL_MARGIN;
+			child.y(y);
+			x += child.width() + HORIZONTAL_FRAME_MARGIN;
 		}
 
 		// Not a leaf?
