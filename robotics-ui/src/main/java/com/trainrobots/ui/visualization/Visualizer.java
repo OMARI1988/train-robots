@@ -86,7 +86,7 @@ public class Visualizer {
 			text = "reference";
 		}
 		Text tag = new Text(context, text, theme.font(), color);
-		Frame result = new Frame(tag);
+		Frame frame = new Frame(tag);
 
 		// Terminal.
 		if (losr instanceof Terminal) {
@@ -94,7 +94,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				result.add(buildToken(context, "Ø"));
+				frame.add(buildToken(context, "Ø"));
 			}
 
 			// Token.
@@ -112,23 +112,23 @@ public class Visualizer {
 						}
 					}
 					lastId = i;
-					result.add(child);
+					frame.add(child);
 				}
 			}
 		}
 
 		// Attach.
-		if (result.leaf()) {
+		if (frame.leaf()) {
 			for (Losr child : losr) {
-				Frame frame = buildFrame(context, child);
+				Frame childFrame = buildFrame(context, child);
 				for (Frame skip : skipList) {
-					result.add(skip);
+					frame.add(skip);
 				}
 				skipList.clear();
-				result.add(frame);
+				frame.add(childFrame);
 			}
 		}
-		return result;
+		return frame;
 	}
 
 	private Frame buildToken(VisualContext context, String text) {
