@@ -20,15 +20,15 @@ import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.FractionSpring;
 import com.trainrobots.ui.services.command.CommandAware;
-import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.command.CommandService;
 
 public class SceneView extends PaneView implements CommandAware {
 
 	private final LayoutView before;
 	private final LayoutView after;
 
-	public SceneView(DataService dataService) {
-		this(dataService.selectedCommand().scene());
+	public SceneView(CommandService commandService) {
+		this(commandService.command().scene());
 	}
 
 	public SceneView(Scene scene) {

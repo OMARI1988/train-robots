@@ -10,15 +10,27 @@ package com.trainrobots.ui.menus;
 
 import javax.swing.JMenuBar;
 
+import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.window.WindowService;
 
 public class MainMenu extends JMenuBar {
 
-	public MainMenu(WindowService windowService) {
+	public MainMenu(WindowService windowService, CommandService commandService) {
 
 		add(new Menu("File", 'F') {
 			{
 				addItem("Exit", "x", windowService::exit);
+			}
+		});
+
+		add(new Menu("View", 'V') {
+			{
+				addCheckedItem("Bounding Boxes", "ctrl B",
+						commandService::boundingBoxes, false);
+				addCheckedItem("Dark Theme", "ctrl D",
+						commandService::darkTheme, commandService.darkTheme());
+				addSeparator();
+				addItem("Random Command", "F5", commandService::randomCommand);
 			}
 		});
 

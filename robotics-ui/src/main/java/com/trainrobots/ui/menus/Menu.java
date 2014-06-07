@@ -8,10 +8,13 @@
 
 package com.trainrobots.ui.menus;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import com.trainrobots.ui.commands.Checkable;
+import com.trainrobots.ui.commands.CheckableAction;
 import com.trainrobots.ui.commands.Executable;
 import com.trainrobots.ui.commands.ExecutableAction;
 
@@ -22,13 +25,40 @@ public abstract class Menu extends JMenu {
 		setMnemonic(mnemonic);
 	}
 
-	protected JMenuItem addItem(String name, String shortCutKey,
+	protected void addItem(String name, String shortCutKey,
 			Executable executable) {
 
-		// Create item.
+		// Item.
 		JMenuItem item = new JMenuItem(name);
+		shortCutKey(item, shortCutKey);
 
-		// Short cut key.
+		// Action.
+		if (executable != null) {
+			item.addActionListener(new ExecutableAction(executable));
+		}
+
+		// Add.
+		add(item);
+	}
+
+	protected void addCheckedItem(String name, String shortCutKey,
+			Checkable checkable, boolean checked) {
+
+		// Item.
+		JCheckBoxMenuItem item = new JCheckBoxMenuItem(name, checked);
+		shortCutKey(item, shortCutKey);
+
+		// Action.
+		if (checkable != null) {
+			item.addActionListener(new CheckableAction(checkable, () -> item
+					.isSelected()));
+		}
+
+		// Add.
+		add(item);
+	}
+
+	private void shortCutKey(JMenuItem item, String shortCutKey) {
 		if (shortCutKey != null) {
 			if (shortCutKey.length() == 1) {
 				item.setMnemonic(shortCutKey.charAt(0));
@@ -36,16 +66,5 @@ public abstract class Menu extends JMenu {
 				item.setAccelerator(KeyStroke.getKeyStroke(shortCutKey));
 			}
 		}
-
-		// Action.
-		if (executable != null) {
-			item.addActionListener(new ExecutableAction(executable));
-		}
-
-		// Add item.
-		add(item);
-
-		// Return item.
-		return item;
 	}
 }

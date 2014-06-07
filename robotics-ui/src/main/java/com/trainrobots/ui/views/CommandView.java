@@ -9,34 +9,28 @@
 package com.trainrobots.ui.views;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
-import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.command.CommandService;
 
 public class CommandView extends PaneView implements CommandAware {
 
-	public CommandView(DataService dataService) {
-		this(dataService.selectedCommand());
-	}
+	private final LosrView losrView;
 
-	public CommandView(Command command) {
-		super(title(command));
+	public CommandView(CommandService commandService) {
+		super(title(commandService.command()));
 
-		// Initiate.
+		// Layout.
 		setLayout(new BorderLayout());
 
-		// Editor.
-		JTextArea editor = new JTextArea();
-		editor.setFont(new Font("Consolas", Font.PLAIN, 12));
-		editor.setTabSize(2);
+		// LOSR
+		losrView = new LosrView(commandService);
 
 		// Scroll pane.
-		add(new JScrollPane(editor), BorderLayout.CENTER);
+		add(new JScrollPane(losrView), BorderLayout.CENTER);
 	}
 
 	@Override
@@ -52,6 +46,7 @@ public class CommandView extends PaneView implements CommandAware {
 	@Override
 	public void bindTo(Command command) {
 		setTitle(title(command));
+		losrView.bind();
 	}
 
 	private static String title(Command command) {

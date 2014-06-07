@@ -12,16 +12,17 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.treebank.TreebankService;
 
 public class TreebankNode extends TreeNode {
 
-	private final DataService dataService;
+	private final TreebankService treebankService;
 	private final CommandService commandService;
 
-	public TreebankNode(DataService dataService, CommandService commandService) {
+	public TreebankNode(TreebankService treebankService,
+			CommandService commandService) {
 		super("Treebank", false);
-		this.dataService = dataService;
+		this.treebankService = treebankService;
 		this.commandService = commandService;
 	}
 
@@ -39,7 +40,7 @@ public class TreebankNode extends TreeNode {
 
 	@Override
 	protected void createChildNodes() {
-		Treebank treebank = dataService.treebank();
+		Treebank treebank = treebankService.treebank();
 		for (Scene scene : treebank.scenes()) {
 			add(new SceneNode(scene, commandService, treebank.commands(scene)));
 		}

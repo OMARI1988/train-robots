@@ -20,14 +20,15 @@ import javax.swing.tree.TreePath;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.treebank.TreebankService;
 
 public class NavigationTree extends JTree implements CommandAware {
 
-	public NavigationTree(DataService dataService, CommandService commandService) {
+	public NavigationTree(TreebankService treebankService,
+			CommandService commandService) {
 
 		// Model.
-		setModel(new DefaultTreeModel(new TreebankNode(dataService,
+		setModel(new DefaultTreeModel(new TreebankNode(treebankService,
 				commandService)));
 
 		// Show root handles.

@@ -16,7 +16,7 @@ import org.picocontainer.MutablePicoContainer;
 import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.services.data.DataService;
+import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.MainWindow;
@@ -34,7 +34,7 @@ public class Container {
 		// Services.
 		registerSingle(this);
 		registerSingle(WindowService.class);
-		registerSingle(DataService.class);
+		registerSingle(TreebankService.class);
 		registerSingle(CommandService.class);
 
 		// UI components.

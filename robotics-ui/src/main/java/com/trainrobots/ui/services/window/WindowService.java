@@ -20,7 +20,6 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.ui.Container;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.services.data.DataService;
 import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
@@ -31,7 +30,7 @@ import com.trainrobots.ui.views.navigation.NavigationView;
 public class WindowService {
 
 	private static final String UI_XML_FILE = "../.data/ui.xml";
-	private final Map<String, Class> paneTypes = new HashMap<>();
+	private final Map<String, Class<? extends PaneView>> paneTypes = new HashMap<>();
 	private final Map<String, PaneLayout> paneLayouts = new HashMap<>();
 	private final Container container;
 	private MainWindow mainWindow;
@@ -63,7 +62,9 @@ public class WindowService {
 
 			// Select command.
 			if (reader.commandId() != null) {
-				selectCommand(reader.commandId());
+				CommandService commandService = container
+						.get(CommandService.class);
+				commandService.command(reader.commandId());
 			}
 
 		} catch (Exception exception) {
@@ -88,6 +89,15 @@ public class WindowService {
 		return mainWindow.panes();
 	}
 
+	public <T extends PaneView> T pane(Class<T> paneClass) {
+		for (PaneView pane : mainWindow.panes()) {
+			if (pane.getClass() == paneClass) {
+				return (T) pane;
+			}
+		}
+		return null;
+	}
+
 	public void status(String format, Object... parameters) {
 		mainWindow.statusBar().text(String.format(format, parameters));
 	}
@@ -99,22 +109,21 @@ public class WindowService {
 	private void show(String paneType, PaneLayout layout) {
 
 		// Pane class.
-		Class paneClass = paneTypes.get(paneType);
+		Class<? extends PaneView> paneClass = paneTypes.get(paneType);
 		if (paneClass == null) {
 			throw new RoboticException("The pane type '%s' is not recognized.",
 					paneType);
 		}
 
 		// Already exists?
-		for (PaneView pane : mainWindow.panes()) {
-			if (pane.getClass() == paneClass) {
-				pane.focus();
-				return;
-			}
+		PaneView pane = pane(paneClass);
+		if (pane != null) {
+			pane.focus();
+			return;
 		}
 
 		// Create pane.
-		PaneView pane = (PaneView) container.get(paneClass);
+		pane = container.get(paneClass);
 
 		// Position.
 		pane.setLocation(layout.x(), layout.y());
@@ -161,9 +170,9 @@ public class WindowService {
 
 		// Save layout.
 		try {
-			DataService dataService = container.get(DataService.class);
-			new SettingsWriter(mainWindow.panes(),
-					dataService.selectedCommand()).write(UI_XML_FILE);
+			CommandService commandService = container.get(CommandService.class);
+			new SettingsWriter(mainWindow.panes(), commandService.command())
+					.write(UI_XML_FILE);
 		} catch (Exception exception) {
 			Log.error("Failed to save layout.", exception);
 		}
@@ -180,13 +189,7 @@ public class WindowService {
 		show("command");
 
 		// Command.
-		DataService dataService = container.get(DataService.class);
-		selectCommand(dataService.selectedCommand().id());
-	}
-
-	private void selectCommand(int commandId) {
-		CommandService commandService = container.get(CommandService.class);
-		commandService.command(commandId);
+		container.get(CommandService.class).randomCommand();
 	}
 
 	private void registerPane(String paneType, Class paneClass, int x, int y,

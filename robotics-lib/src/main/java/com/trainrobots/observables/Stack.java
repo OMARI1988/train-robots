@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Losr;
@@ -27,11 +28,6 @@ public class Stack extends Observable {
 
 	public Stack(boolean includesHead) {
 		this.includesHead = includesHead;
-	}
-
-	// TODO: USED??
-	public boolean includesHead() {
-		return includesHead;
 	}
 
 	public void add(Shape shape) {
@@ -57,6 +53,11 @@ public class Stack extends Observable {
 	}
 
 	public Stack excludeHead() {
+
+		// Already headless?
+		if (!includesHead) {
+			throw new RoboticException("Stack is already headless.");
+		}
 
 		// Must have at least 3 shapes.
 		int size = shapes.size();
