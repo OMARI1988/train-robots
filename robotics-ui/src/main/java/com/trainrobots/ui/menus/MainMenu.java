@@ -26,7 +26,8 @@ public class MainMenu extends JMenuBar {
 		add(new Menu("View", 'V') {
 			{
 				addCheckedItem("Bounding Boxes", "ctrl B",
-						commandService::boundingBoxes, false);
+						commandService::boundingBoxes,
+						commandService.boundingBoxes());
 				addCheckedItem("Dark Theme", "ctrl D",
 						commandService::darkTheme, commandService.darkTheme());
 				addSeparator();
