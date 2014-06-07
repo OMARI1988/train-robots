@@ -28,6 +28,7 @@ public class Main {
 				try {
 
 					// Configure logging.
+					Thread.currentThread().setName("ui");
 					Log.toFile("../.data/ui.log");
 					Log.info("===============================================================================");
 					Log.info("Starting UI...");
