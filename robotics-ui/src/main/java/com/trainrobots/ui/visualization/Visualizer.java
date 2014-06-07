@@ -61,7 +61,7 @@ public class Visualizer {
 		}
 
 		// Arrange.
-		arrangeRoot(root);
+		arrange(root);
 
 		// Push leaves.
 		for (Visual child : root) {
@@ -152,7 +152,7 @@ public class Visualizer {
 		return frame;
 	}
 
-	private void arrangeRoot(Visual root) {
+	private void arrange(Visual root) {
 
 		// Recurse.
 		for (Visual child : root) {
@@ -161,14 +161,10 @@ public class Visualizer {
 
 		// Position children.
 		float x = 0;
-		float y = 0;
 		for (Visual child : root) {
 			child.x(x);
-			child.y(y);
 			x += child.width() + HORIZONTAL_FRAME_MARGIN;
 		}
-
-		// Pack.
 		root.pack();
 	}
 
