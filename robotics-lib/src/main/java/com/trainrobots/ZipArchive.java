@@ -8,12 +8,11 @@
 
 package com.trainrobots;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipFile;
 
-public class ZipArchive implements Closeable {
+public class ZipArchive implements AutoCloseable {
 
 	private final ZipFile zipFile;
 

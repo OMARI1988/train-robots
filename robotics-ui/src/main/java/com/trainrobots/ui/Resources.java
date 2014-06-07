@@ -41,7 +41,7 @@ public class Resources {
 	}
 
 	public static byte[] resource(String resourcePath) {
-		try (final InputStream input = open(resourcePath)) {
+		try (InputStream input = open(resourcePath)) {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024 * 8];
 			int size = -1;
