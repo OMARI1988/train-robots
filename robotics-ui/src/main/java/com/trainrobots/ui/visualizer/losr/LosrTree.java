@@ -10,7 +10,7 @@ package com.trainrobots.ui.visualizer.losr;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.tokenizer.Tokenizer;
@@ -18,7 +18,7 @@ import com.trainrobots.treebank.Command;
 
 public class LosrTree {
 
-	private final Items<Token> tokens;
+	private final ItemsList<Token> tokens = new ItemsList<Token>();
 	private final LosrNode root;
 
 	public LosrTree(Command command) {
@@ -26,8 +26,21 @@ public class LosrTree {
 	}
 
 	public LosrTree(String text, Losr losr) {
-		tokens = tokens(text);
+
+		// Tokens.
+		Tokenizer tokenizer = new Tokenizer(text);
+		Items<Terminal> terminals = tokenizer.tokens();
+		int size = terminals.count();
+		for (int i = 0; i < size; i++) {
+			String token = terminals.get(i).context().text().toLowerCase();
+			tokens.add(new Token(i + 1, token));
+		}
+
+		// Root.
 		root = new LosrNode(losr);
+
+		// Normalize.
+		new EllipsisProcessor(this, tokens).normalize();
 	}
 
 	public Items<Token> tokens() {
@@ -45,17 +58,5 @@ public class LosrTree {
 			}
 		}
 		throw new RoboticException("Failed to find token " + id);
-	}
-
-	private static Items<Token> tokens(String text) {
-		Tokenizer tokenizer = new Tokenizer(text);
-		Items<Terminal> terminals = tokenizer.tokens();
-		int size = terminals.count();
-		Token[] tokens = new Token[size];
-		for (int i = 0; i < size; i++) {
-			String token = terminals.get(i).context().text().toLowerCase();
-			tokens[i] = new Token(i + 1, token);
-		}
-		return new ItemsArray<Token>(tokens);
 	}
 }

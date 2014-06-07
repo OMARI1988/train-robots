@@ -35,6 +35,18 @@ public class VisualizerTests {
 	}
 
 	@Test
+	public void shouldRenderPngWithEllipsis() {
+
+		// Render.
+		Command command = TestContext.treebank().command(13013);
+		LosrTree tree = new LosrTree(command);
+		byte[] data = new PngWriter(tree).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-13013.png")));
+	}
+
+	@Test
 	public void shouldRenderDarkPng() {
 
 		// Render.
@@ -56,5 +68,17 @@ public class VisualizerTests {
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473.svg")));
+	}
+
+	@Test
+	public void shouldRenderSvgWithEllipsis() {
+
+		// Render.
+		Command command = TestContext.treebank().command(13013);
+		LosrTree tree = new LosrTree(command);
+		byte[] data = new SvgWriter(tree).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-13013.svg")));
 	}
 }

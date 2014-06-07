@@ -34,8 +34,10 @@ public class LosrNode implements Iterable<LosrNode> {
 		// Terminal?
 		if (losr instanceof Terminal) {
 			TokenContext context = ((Terminal) losr).context();
-			this.tokenStart = context.start();
-			this.tokenEnd = context.end();
+			if (context != null) {
+				this.tokenStart = context.start();
+				this.tokenEnd = context.end();
+			}
 		}
 
 		// Recurse.
