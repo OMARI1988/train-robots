@@ -12,9 +12,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
@@ -25,8 +23,8 @@ import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.themes.Theme;
-import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.Frame;
+import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Visual;
 import com.trainrobots.ui.visualization.visuals.VisualTree;
@@ -40,7 +38,6 @@ public class Visualizer {
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
-	private final Map<Integer, Frame> tokens = new HashMap<Integer, Frame>();
 	private final List<Frame> skipList = new ArrayList<Frame>();
 	private final Visual canvas = new Visual();
 	private final Command command;
@@ -53,11 +50,6 @@ public class Visualizer {
 	}
 
 	public VisualTree createVisualTree(VisualContext context) {
-
-		// Tokens.
-		for (Terminal token : command.tokens()) {
-			buildToken(context, token.context().text().toLowerCase());
-		}
 
 		// Layout.
 		Frame frame = buildFrame(context, command.losr());
@@ -88,7 +80,7 @@ public class Visualizer {
 		Text tag = new Text(context, text, theme.font(), color);
 		Frame frame = new Frame(tag);
 
-		// Terminal.
+		// Terminal?
 		if (losr instanceof Terminal) {
 			Terminal terminal = (Terminal) losr;
 
@@ -97,18 +89,22 @@ public class Visualizer {
 				frame.add(buildToken(context, "Ø"));
 			}
 
-			// Token.
+			// Add tokens.
 			else {
 				int tokenStart = terminal.context().start();
 				int tokenEnd = terminal.context().end();
 				for (int i = tokenStart; i <= tokenEnd; i++) {
+
+					// Skipped tokens?
 					for (int j = lastId + 1; j <= i - 1; j++) {
-						Frame skipped = tokens.get(j);
+						Frame skipped = buildToken(context, j);
 						skipped.skip(true);
 						skipped.tag().color(theme.skip());
 						skipList.add(skipped);
 					}
-					frame.add(tokens.get(i));
+
+					// Add token.
+					frame.add(buildToken(context, i));
 					lastId = i;
 				}
 			}
@@ -128,11 +124,15 @@ public class Visualizer {
 		return frame;
 	}
 
+	private Frame buildToken(VisualContext context, int id) {
+		return buildToken(context, command.tokens().get(id - 1).context()
+				.text().toLowerCase());
+	}
+
 	private Frame buildToken(VisualContext context, String text) {
 		Text tag = new Text(context, text, theme.font(), theme.foreground());
 		Frame frame = new Frame(tag);
 		frame.width(tag.width());
-		tokens.put(tokens.size() + 1, frame);
 		return frame;
 	}
 
