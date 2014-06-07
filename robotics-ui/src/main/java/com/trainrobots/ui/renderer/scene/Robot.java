@@ -21,15 +21,15 @@ import com.trainrobots.ui.renderer.math.Vector;
 
 public class Robot implements Element {
 
-	private final Model base = load("base");
-	private final Model pivot = load("pivot");
-	private final Model arm = load("arm");
-	private final Model forearm = load("forearm");;
-	private final Model wrist = load("wrist");
-	private final Model tarsal = load("tarsal");
-	private final Model handWrist = load("hand-wrist");
-	private final Model finger1 = load("finger1");
-	private final Model finger2 = load("finger2");
+	private static final Model base = load("base");
+	private static final Model pivot = load("pivot");
+	private static final Model arm = load("arm");
+	private static final Model forearm = load("forearm");;
+	private static final Model wrist = load("wrist");
+	private static final Model tarsal = load("tarsal");
+	private static final Model handWrist = load("hand-wrist");
+	private static final Model finger1 = load("finger1");
+	private static final Model finger2 = load("finger2");
 
 	private Vector translation = new Vector(0, 0, 0);
 

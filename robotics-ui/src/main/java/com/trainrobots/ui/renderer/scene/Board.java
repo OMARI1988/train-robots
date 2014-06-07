@@ -18,7 +18,7 @@ import com.trainrobots.ui.renderer.math.Vector;
 
 public class Board implements Element {
 
-	private final Model board = ModelLoader.load("board");
+	private static final Model board = ModelLoader.load("board");
 	private final Model[][][] shapes = new Model[8][8][8];
 	private Vector translation = new Vector(0, 0, 0);
 	private int shadowX = 0;

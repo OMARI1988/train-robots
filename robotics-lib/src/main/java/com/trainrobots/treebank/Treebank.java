@@ -34,7 +34,6 @@ public class Treebank {
 
 		// Configure.
 		this.dataPath = dataPath;
-		Log.configureConsole();
 
 		// Load treebank.
 		String filename = file("treebank.zip");

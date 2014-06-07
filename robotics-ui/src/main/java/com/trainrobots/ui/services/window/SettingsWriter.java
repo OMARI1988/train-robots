@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.treebank.Command;
@@ -40,6 +41,9 @@ public class SettingsWriter {
 
 	public void write(String filename) {
 		try {
+
+			// Diagnostics.
+			Log.info("Saving settings...");
 
 			// Document.
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance()

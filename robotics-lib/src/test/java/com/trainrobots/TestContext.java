@@ -19,6 +19,7 @@ public class TestContext {
 
 	public static Treebank treebank() {
 		if (treebank == null) {
+			Log.toConsole();
 			treebank = new Treebank("../.data");
 		}
 		return treebank;

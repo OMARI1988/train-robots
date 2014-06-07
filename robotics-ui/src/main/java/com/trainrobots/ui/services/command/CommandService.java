@@ -51,6 +51,11 @@ public class CommandService {
 
 	public void command(Command command) {
 
+		// Same command?
+		if (command == this.command) {
+			return;
+		}
+
 		// Status bar.
 		this.command = command;
 		windowService.status("Command %d", command.id());

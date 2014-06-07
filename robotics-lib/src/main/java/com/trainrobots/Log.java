@@ -11,29 +11,29 @@ package com.trainrobots;
 import java.io.OutputStreamWriter;
 
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 public class Log {
 
-	private static Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getRootLogger();
+	private static final String pattern = "%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] [%t] %m%n";
 
 	private Log() {
 	}
 
-	public static void configureConsole() {
-
-		// Already configured?
-		if (logger.getAllAppenders().hasMoreElements()) {
-			return;
+	public static void toConsole() {
+		if (!appenders()) {
+			logger.addAppender(consoleAppender());
 		}
+	}
 
-		// Console appender.
-		ConsoleAppender appender = new ConsoleAppender();
-		appender.setWriter(new OutputStreamWriter(System.out));
-		appender.setLayout(new PatternLayout(
-				"%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] [%t] %m%n"));
-		logger.addAppender(appender);
+	public static void toFile(String filename) {
+		if (!appenders()) {
+			logger.addAppender(fileAppender(filename));
+			logger.addAppender(consoleAppender());
+		}
 	}
 
 	public static void debug(String message) {
@@ -70,5 +70,25 @@ public class Log {
 
 	public static void error(String format, Object... parameters) {
 		logger.error(String.format(format, parameters));
+	}
+
+	private static FileAppender fileAppender(String filename) {
+		FileAppender appender = new FileAppender();
+		appender.setFile(filename);
+		appender.setAppend(true);
+		appender.setLayout(new PatternLayout(pattern));
+		appender.activateOptions();
+		return appender;
+	}
+
+	private static ConsoleAppender consoleAppender() {
+		ConsoleAppender appender = new ConsoleAppender();
+		appender.setWriter(new OutputStreamWriter(System.out));
+		appender.setLayout(new PatternLayout(pattern));
+		return appender;
+	}
+
+	private static boolean appenders() {
+		return logger.getAllAppenders().hasMoreElements();
 	}
 }

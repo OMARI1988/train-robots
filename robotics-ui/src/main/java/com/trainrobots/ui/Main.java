@@ -28,7 +28,9 @@ public class Main {
 				try {
 
 					// Configure logging.
-					Log.configureConsole();
+					Log.toFile("../.data/ui.log");
+					Log.info("===============================================================================");
+					Log.info("Starting UI...");
 
 					// Look and feel.
 					try {
@@ -40,6 +42,7 @@ public class Main {
 					// Main window.
 					Container container = new Container();
 					container.get(WindowService.class).showMainWindow();
+					Log.info("UI started.");
 
 				} catch (Exception exception) {
 					Log.error("Failed start UI.", exception);

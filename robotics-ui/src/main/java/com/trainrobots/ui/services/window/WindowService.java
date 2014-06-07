@@ -97,11 +97,15 @@ public class WindowService {
 	}
 
 	public void status(String format, Object... parameters) {
-		mainWindow.statusBar().text(String.format(format, parameters));
+		String text = String.format(format, parameters);
+		Log.info(text);
+		mainWindow.statusBar().text(text);
 	}
 
 	public void error(String format, Object... parameters) {
-		mainWindow.statusBar().error(String.format(format, parameters));
+		String text = String.format(format, parameters);
+		Log.error(text);
+		mainWindow.statusBar().error(text);
 	}
 
 	private void show(String paneType, PaneLayout layout) {
@@ -167,6 +171,7 @@ public class WindowService {
 	public void exit() {
 
 		// Save layout.
+		Log.info("Closing UI...");
 		try {
 			new SettingsWriter(mainWindow.panes(), commandService().command())
 					.write(UI_XML_FILE);
@@ -175,6 +180,7 @@ public class WindowService {
 		}
 
 		// Terminate.
+		Log.info("UI closed.");
 		System.exit(0);
 	}
 
