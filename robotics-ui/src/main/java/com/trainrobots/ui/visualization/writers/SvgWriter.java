@@ -16,11 +16,11 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.GraphicsRenderer;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
-import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.Text;
@@ -28,10 +28,10 @@ import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class SvgWriter implements GraphicsRenderer {
 
-	private final LosrTree tree;
+	private final Command command;
 
-	public SvgWriter(LosrTree tree) {
-		this.tree = tree;
+	public SvgWriter(Command command) {
+		this.command = command;
 	}
 
 	public void renderToFile(String filename) {
@@ -54,7 +54,7 @@ public class SvgWriter implements GraphicsRenderer {
 	private void writeSvg(OutputStream stream) {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(tree, Themes.Simple);
+		Visualizer visualizer = new Visualizer(command, Themes.Simple);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 

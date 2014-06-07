@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.trainrobots.RoboticException;
+import com.trainrobots.losr.Entity;
+import com.trainrobots.losr.Event;
+import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.SpatialRelation;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
-import com.trainrobots.ui.visualization.losr.LosrNode;
-import com.trainrobots.ui.visualization.losr.LosrTree;
-import com.trainrobots.ui.visualization.losr.Token;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.visuals.Line;
 import com.trainrobots.ui.visualization.visuals.LosrVisual;
@@ -30,99 +32,94 @@ import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class Visualizer {
 
-	private final LosrTree tree;
 	private static final int HORIZONTAL_MARGIN = 10;
 	private static final int VERTICAL_MARGIN = 20;
-	private Map<Integer, LosrVisual> tokens = new HashMap<Integer, LosrVisual>();
-	private final Visual canvas = new Visual();
-	private final Theme theme;
-
 	private static final Stroke SOLID_LINE = new BasicStroke();
 	private static final Stroke DASHED_LINE = new BasicStroke(1f,
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
-	private int lastId = 0;
-	private float maxY;
+	private final Map<Integer, LosrVisual> tokens = new HashMap<Integer, LosrVisual>();
+	private final List<LosrVisual> skipList = new ArrayList<LosrVisual>();
+	private final Visual canvas = new Visual();
+	private final Command command;
+	private final Theme theme;
+	private int lastId;
 
-	private List<LosrVisual> skipList = new ArrayList<LosrVisual>();
-
-	public Visualizer(LosrTree tree, Theme theme) {
-		this.tree = tree;
+	public Visualizer(Command command, Theme theme) {
+		this.command = command;
 		this.theme = theme;
 	}
 
 	public VisualTree createVisualTree(VisualContext context) {
 
 		// Tokens.
-		for (Token token : tree.tokens()) {
-			Text tag = new Text(context, token.text(), theme.font(),
-					theme.foreground());
-			LosrVisual losrVisual = new LosrVisual(tag);
-			losrVisual.width(tag.width());
-			if (tokens.containsKey(token.id())) {
-				throw new RoboticException("Duplicate token ID " + token.id());
-			}
-			tokens.put(token.id(), losrVisual);
+		for (Terminal token : command.tokens()) {
+			buildTokenVisual(context, token.context().text().toLowerCase());
 		}
 
 		// Layout.
-		LosrVisual root = buildLosrVisual(context, tree.root());
+		LosrVisual root = buildLosrVisual(context, command.losr());
 		arrange(root);
-		maxY = root.height();
 
 		// Pack.
-		pushLeaves(0, 0, root);
+		pushLeaves(0, 0, root.height(), root);
 		canvas.pack();
 		return new VisualTree(canvas);
 	}
 
-	private LosrVisual buildLosrVisual(VisualContext context, LosrNode losr) {
+	private LosrVisual buildLosrVisual(VisualContext context, Losr losr) {
 
-		// Node.
-		String text = losr.tag();
+		// Tag.
+		String text = losr.name();
 		Color color = theme.foreground();
-		if (text.equals("spatial-relation")) {
+		if (losr instanceof SpatialRelation) {
 			text = "sp-relation";
 			color = theme.spatialRelation();
-		} else if (text.equals("entity")) {
+		} else if (losr instanceof Entity) {
 			color = theme.entity();
-		} else if (text.equals("event")) {
+		} else if (losr instanceof Event) {
 			color = theme.event();
-		} else if (text.equals("type")) {
-			if (((Type) losr.losr()).type() == Types.Reference) {
+		} else if (losr instanceof Type) {
+			if (((Type) losr).type() == Types.Reference) {
 				text = "reference";
 			}
 		}
 		Text tag = new Text(context, text, theme.font(), color);
 		LosrVisual result = new LosrVisual(tag);
 
-		// Pre-terminal?
-		if (losr.count() == 0) {
-			for (int i = losr.tokenStart(); i <= losr.tokenEnd(); i++) {
-				LosrVisual child = tokens.get(i);
-				if (child == null) {
-					throw new RoboticException("Failed to find token: " + i
-							+ " for node '" + losr.tag() + "'.'");
-				}
-				if (!child.tag().text().equals("Ø")) {
+		// Terminal.
+		if (losr instanceof Terminal) {
+			Terminal terminal = (Terminal) losr;
+
+			// Ellipsis.
+			if (terminal.context() == null) {
+				result.add(buildTokenVisual(context, "Ø"));
+			}
+
+			// Token.
+			else {
+				int tokenStart = terminal.context().start();
+				int tokenEnd = terminal.context().end();
+				for (int i = tokenStart; i <= tokenEnd; i++) {
+					LosrVisual child = tokens.get(i);
 					for (int j = lastId + 1; j <= i - 1; j++) {
 						LosrVisual skipped = tokens.get(j);
 						if (skipped != null) {
-							skipped.skip = true;
+							skipped.skip(true);
 							skipped.tag().color(theme.skip());
 							skipList.add(skipped);
 						}
 					}
 					lastId = i;
+					result.add(child);
 				}
-				result.add(child);
 			}
 		}
 
 		// Attach.
-		if (!result.hasLayoutChildren()) {
-			for (LosrNode child : losr) {
+		if (!result.hasLosrChildren()) {
+			for (Losr child : losr) {
 				LosrVisual losrVisual = buildLosrVisual(context, child);
 				for (LosrVisual skip : skipList) {
 					result.add(skip);
@@ -132,6 +129,14 @@ public class Visualizer {
 			}
 		}
 		return result;
+	}
+
+	private LosrVisual buildTokenVisual(VisualContext context, String text) {
+		Text tag = new Text(context, text, theme.font(), theme.foreground());
+		LosrVisual losrVisual = new LosrVisual(tag);
+		losrVisual.width(tag.width());
+		tokens.put(tokens.size() + 1, losrVisual);
+		return losrVisual;
 	}
 
 	private void arrange(LosrVisual losrVisual) {
@@ -151,13 +156,13 @@ public class Visualizer {
 		}
 
 		// Not a leaf?
-		if (losrVisual.hasLayoutChildren()) {
+		if (losrVisual.hasLosrChildren()) {
 
 			// Tag.
 			LosrVisual first = null;
 			LosrVisual last = null;
 			for (LosrVisual child : losrVisual.losrChildren()) {
-				if (child.skip) {
+				if (child.skip()) {
 					continue;
 				}
 				if (first == null) {
@@ -179,7 +184,7 @@ public class Visualizer {
 		losrVisual.pack();
 	}
 
-	private void pushLeaves(float x, float y, LosrVisual losrVisual) {
+	private void pushLeaves(float x, float y, float maxY, LosrVisual losrVisual) {
 
 		// Offset.
 		x += losrVisual.x();
@@ -192,7 +197,7 @@ public class Visualizer {
 		canvas.add(tag);
 
 		// No children?
-		if (!losrVisual.hasLayoutChildren()) {
+		if (!losrVisual.hasLosrChildren()) {
 			tag.y(maxY - tag.height());
 		}
 
@@ -204,12 +209,12 @@ public class Visualizer {
 			List<float[]> l = new ArrayList<float[]>();
 			boolean terminal = false;
 			for (LosrVisual child : losrVisual.losrChildren()) {
-				pushLeaves(x, y, child);
-				if (!child.skip) {
+				pushLeaves(x, y, maxY, child);
+				if (!child.skip()) {
 					Text tag2 = child.tag();
 					l.add(new float[] { tag2.x() + 0.5f * tag2.width(),
 							tag2.y() - 2 });
-					terminal = !child.hasLayoutChildren();
+					terminal = !child.hasLosrChildren();
 				}
 			}
 

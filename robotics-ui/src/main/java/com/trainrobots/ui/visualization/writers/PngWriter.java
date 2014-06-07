@@ -17,26 +17,26 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.GraphicsRenderer;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
-import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Visual;
 
 public class PngWriter implements GraphicsRenderer {
 
-	private final LosrTree tree;
+	private final Command command;
 	private final Theme theme;
 
-	public PngWriter(LosrTree tree) {
-		this(tree, Themes.Simple);
+	public PngWriter(Command command) {
+		this(command, Themes.Simple);
 	}
 
-	public PngWriter(LosrTree tree, Theme theme) {
-		this.tree = tree;
+	public PngWriter(Command command, Theme theme) {
+		this.command = command;
 		this.theme = theme;
 	}
 
@@ -61,7 +61,7 @@ public class PngWriter implements GraphicsRenderer {
 	private BufferedImage image() {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(tree, theme);
+		Visualizer visualizer = new Visualizer(command, theme);
 		VisualContext visualContext = VisualContext.defaultContext();
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 		Visual root = visualTree.root();

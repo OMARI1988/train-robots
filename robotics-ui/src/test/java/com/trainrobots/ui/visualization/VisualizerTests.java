@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.treebank.Command;
-import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
 import com.trainrobots.ui.visualization.writers.SvgWriter;
@@ -28,8 +27,7 @@ public class VisualizerTests {
 
 		// Render.
 		Command command = TestContext.treebank().command(22473);
-		LosrTree tree = new LosrTree(command);
-		byte[] data = new PngWriter(tree).renderToArray();
+		byte[] data = new PngWriter(command).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473.png")));
@@ -40,8 +38,7 @@ public class VisualizerTests {
 
 		// Render.
 		Command command = TestContext.treebank().command(13013);
-		LosrTree tree = new LosrTree(command);
-		byte[] data = new PngWriter(tree).renderToArray();
+		byte[] data = new PngWriter(command).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-13013.png")));
@@ -52,8 +49,7 @@ public class VisualizerTests {
 
 		// Render.
 		Command command = TestContext.treebank().command(22473);
-		LosrTree tree = new LosrTree(command);
-		byte[] data = new PngWriter(tree, Themes.Dark).renderToArray();
+		byte[] data = new PngWriter(command, Themes.Dark).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473-dark.png")));
@@ -64,8 +60,7 @@ public class VisualizerTests {
 
 		// Render.
 		Command command = TestContext.treebank().command(22473);
-		LosrTree tree = new LosrTree(command);
-		byte[] data = new SvgWriter(tree).renderToArray();
+		byte[] data = new SvgWriter(command).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-22473.svg")));
@@ -76,8 +71,7 @@ public class VisualizerTests {
 
 		// Render.
 		Command command = TestContext.treebank().command(13013);
-		LosrTree tree = new LosrTree(command);
-		byte[] data = new SvgWriter(tree).renderToArray();
+		byte[] data = new SvgWriter(command).renderToArray();
 
 		// Verify.
 		assertThat(data, is(resource("losr-13013.svg")));

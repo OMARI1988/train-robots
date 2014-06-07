@@ -15,8 +15,7 @@ public class LosrVisual extends Visual {
 
 	private final Text tag;
 	private final List<LosrVisual> losrChildren = new ArrayList<LosrVisual>();
-
-	public boolean skip;
+	private boolean skip;
 
 	public LosrVisual(Text tag) {
 		this.tag = tag;
@@ -31,12 +30,20 @@ public class LosrVisual extends Visual {
 		return losrChildren;
 	}
 
-	public boolean hasLayoutChildren() {
+	public boolean hasLosrChildren() {
 		return losrChildren.size() != 0;
 	}
 
 	public void add(LosrVisual visual) {
 		super.add(visual);
 		losrChildren.add(visual);
+	}
+
+	public boolean skip() {
+		return skip;
+	}
+
+	public void skip(boolean skip) {
+		this.skip = skip;
 	}
 }

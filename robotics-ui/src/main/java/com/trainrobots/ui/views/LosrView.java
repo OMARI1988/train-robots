@@ -16,13 +16,11 @@ import java.awt.Rectangle;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
-import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.VisualTree;
 import com.trainrobots.ui.visualization.Visualizer;
-import com.trainrobots.ui.visualization.losr.LosrTree;
 import com.trainrobots.ui.visualization.themes.Theme;
 
 public class LosrView extends JPanel {
@@ -46,9 +44,8 @@ public class LosrView extends JPanel {
 
 		// Command.
 		Command command = commandService.command();
-		Losr losr = command.losr();
-		if (losr != null) {
-			visualizer = new Visualizer(new LosrTree(command), theme);
+		if (command.losr() != null) {
+			visualizer = new Visualizer(command, theme);
 			repaint();
 		}
 	}

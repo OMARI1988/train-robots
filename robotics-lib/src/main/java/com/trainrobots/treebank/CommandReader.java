@@ -13,9 +13,12 @@ import java.io.InputStream;
 import org.xml.sax.Attributes;
 
 import com.trainrobots.XmlReader;
+import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.scenes.Scenes;
+import com.trainrobots.tokenizer.Tokenizer;
 
 public class CommandReader {
 
@@ -39,8 +42,9 @@ public class CommandReader {
 					int sceneId = Integer.parseInt(attributes
 							.getValue("sceneId"));
 					String text = attributes.getValue("text");
-					commandList
-							.add(new Command(id, scenes.scene(sceneId), text));
+					Items<Terminal> tokens = new Tokenizer(text).tokens();
+					commandList.add(new Command(id, scenes.scene(sceneId),
+							text, tokens));
 				}
 			}
 		}.read(stream);
@@ -53,7 +57,7 @@ public class CommandReader {
 				if (name.equals("command")) {
 					int id = Integer.parseInt(attributes.getValue("id"));
 					Losr losr = Losr.parse(attributes.getValue("losr"));
-					commands.command(id).setLosr(losr);
+					commands.command(id).losr(losr);
 				}
 			}
 		}.read(stream);
