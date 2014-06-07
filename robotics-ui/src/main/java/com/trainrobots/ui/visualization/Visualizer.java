@@ -52,16 +52,23 @@ public class Visualizer {
 	public VisualTree createVisualTree(VisualContext context) {
 
 		// Layout.
-		Frame frame = buildFrame(context, command.losr());
+		Visual root = new Visual();
+		root.add(buildFrame(context, command.losr()));
 
 		// Trailing skipped tokens.
 		for (int i = lastId + 1; i <= command.tokens().count(); i++) {
-			frame.add(skippedToken(context, i));
+			root.add(skippedToken(context, i));
 		}
 
 		// Arrange.
-		arrange(frame);
-		pushLeaves(0, 0, frame.height(), frame);
+		arrangeRoot(root);
+
+		// Push leaves.
+		for (Visual child : root) {
+			pushLeaves(0, 0, root.height(), (Frame) child);
+		}
+
+		// Pack.
 		canvas.pack();
 		return new VisualTree(canvas);
 	}
@@ -143,6 +150,26 @@ public class Visualizer {
 		Frame frame = new Frame(tag);
 		frame.width(tag.width());
 		return frame;
+	}
+
+	private void arrangeRoot(Visual root) {
+
+		// Recurse.
+		for (Visual child : root) {
+			arrange((Frame) child);
+		}
+
+		// Position children.
+		float x = 0;
+		float y = 0;
+		for (Visual child : root) {
+			child.x(x);
+			child.y(y);
+			x += child.width() + HORIZONTAL_FRAME_MARGIN;
+		}
+
+		// Pack.
+		root.pack();
 	}
 
 	private void arrange(Frame frame) {
