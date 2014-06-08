@@ -43,6 +43,6 @@ public class Relation extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(relation.toString().toLowerCase());
+		text.append(relation);
 	}
 }

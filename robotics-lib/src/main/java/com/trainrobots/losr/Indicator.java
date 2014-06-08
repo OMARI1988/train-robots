@@ -43,6 +43,6 @@ public class Indicator extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(indicator.toString().toLowerCase());
+		text.append(indicator);
 	}
 }

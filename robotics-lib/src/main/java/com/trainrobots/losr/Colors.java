@@ -12,14 +12,8 @@ import java.util.TreeMap;
 
 public enum Colors {
 
-	Blue	(0, 0, 1),
-	Cyan	(0, 1, 1),
-	Red		(1, 0, 0),
-	Yellow	(1, 1, 0),
-	Green	(0, 1, 0),
-	Magenta	(1, 0, 1),
-	White	(1, 1, 1),
-	Gray	(0.5f, 0.5f, 0.5f);
+	Blue(0, 0, 1), Cyan(0, 1, 1), Red(1, 0, 0), Yellow(1, 1, 0), Green(0, 1, 0), Magenta(
+			1, 0, 1), White(1, 1, 1), Gray(0.5f, 0.5f, 0.5f);
 
 	private final float red;
 	private final float green;
@@ -53,6 +47,11 @@ public enum Colors {
 					"The color '%s' is not recognized.", name));
 		}
 		return color;
+	}
+
+	@Override
+	public String toString() {
+		return name().toLowerCase();
 	}
 
 	static {

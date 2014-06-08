@@ -30,13 +30,13 @@ public enum Types {
 	public String toString() {
 		switch (this) {
 		case TypeReference:
-			return "Type-Reference";
+			return "type-reference";
 		case TypeReferenceGroup:
-			return "Type-Reference-Group";
+			return "type-reference-group";
 		case CubeGroup:
-			return "Cube-Group";
+			return "cube-group";
 		}
-		return super.toString();
+		return name().toString().toLowerCase();
 	}
 
 	static {
@@ -47,8 +47,8 @@ public enum Types {
 		}
 
 		// Alternative forms.
-		types.put("Type-Reference", TypeReference);
-		types.put("Type-Reference-Group", TypeReferenceGroup);
-		types.put("Cube-Group", CubeGroup);
+		types.put("type-reference", TypeReference);
+		types.put("type-reference-group", TypeReferenceGroup);
+		types.put("cube-group", CubeGroup);
 	}
 }

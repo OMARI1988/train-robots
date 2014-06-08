@@ -26,6 +26,11 @@ public enum Actions {
 		return action;
 	}
 
+	@Override
+	public String toString() {
+		return name().toLowerCase();
+	}
+
 	static {
 		for (Actions action : values()) {
 			actions.put(action.toString(), action);

@@ -69,7 +69,7 @@ public class Header extends Text {
 		}
 
 		// ID.
-		DetailList details = new DetailList(context);
+		DetailList details = new DetailList(context, this);
 		if (losr.id() != 0) {
 			details.add("id: " + losr.id());
 		}
@@ -79,31 +79,31 @@ public class Header extends Text {
 
 		// Action.
 		if (losr instanceof Action) {
-			details.add(((Action) losr).action().toString().toLowerCase());
+			details.add(((Action) losr).action().toString());
 			return details;
 		}
 
 		// Color.
 		if (losr instanceof Color) {
-			details.add(((Color) losr).color().toString().toLowerCase());
+			details.add(((Color) losr).color().toString());
 			return details;
 		}
 
 		// Indicator.
 		if (losr instanceof Indicator) {
-			details.add(((Indicator) losr).indicator().toString().toLowerCase());
+			details.add(((Indicator) losr).indicator().toString());
 			return details;
 		}
 
 		// Relation.
 		if (losr instanceof Relation) {
-			details.add(((Relation) losr).relation().toString().toLowerCase());
+			details.add(((Relation) losr).relation().toString());
 			return details;
 		}
 
 		// Type.
 		if (losr instanceof Type) {
-			details.add(((Type) losr).type().toString().toLowerCase());
+			details.add(((Type) losr).type().toString());
 			return details;
 		}
 		return details;

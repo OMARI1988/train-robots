@@ -26,7 +26,7 @@ import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.views.PaneView;
-import com.trainrobots.ui.visualization.visuals.Text;
+import com.trainrobots.ui.visualization.visuals.Detail;
 
 public class CommandView extends PaneView implements CommandAware {
 
@@ -119,7 +119,7 @@ public class CommandView extends PaneView implements CommandAware {
 		return "Command " + command.id();
 	}
 
-	private void showPopup(Text text) {
+	private void showPopup(Detail detail, Object[] options, Object selected) {
 
 		// Already visible?
 		if (popup != null) {
@@ -127,9 +127,7 @@ public class CommandView extends PaneView implements CommandAware {
 		}
 
 		// Create popup.
-		JComboBox<String> comboBox = new JComboBox<String>(new String[] {
-				"red", "blue", "yellow", "green" }) {
-
+		JComboBox comboBox = new JComboBox(options) {
 			public void processKeyEvent(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					closePopup();
@@ -139,27 +137,30 @@ public class CommandView extends PaneView implements CommandAware {
 			}
 		};
 		comboBox.setFont(commandService.theme().font());
+		comboBox.setSelectedItem(selected);
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent event) {
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 					closePopup();
-					editor.acceptChange(text);
+					editor.acceptChange(detail, event.getItem());
 				}
 			}
 		});
 
 		// Show.
-		showPopup(text, comboBox);
+		showPopup(detail, comboBox);
 	}
 
-	private void showPopup(Text text, Component component) {
+	private void showPopup(Detail detail, Component component) {
 
-		// Position.
-		Point2D.Float p = losrView.visualToWindow(text.x(), text.y());
+		// Bounds.
+		Point2D.Float p = losrView.visualToWindow(detail.x(), detail.y());
+		Dimension size = component.getPreferredSize();
 		int x = (int) p.x;
 		int y = (int) p.y;
-		Dimension size = component.getPreferredSize();
-		component.setBounds(x, y, size.width, size.height);
+		int width = size.width;
+		int height = size.height;
+		component.setBounds(x, y, width, height);
 
 		// Add.
 		layeredPane.add(component, JLayeredPane.POPUP_LAYER);

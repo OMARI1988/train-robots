@@ -26,6 +26,11 @@ public enum Relations {
 		return relation;
 	}
 
+	@Override
+	public String toString() {
+		return name().toLowerCase();
+	}
+
 	static {
 		for (Relations relation : values()) {
 			relations.put(relation.toString(), relation);

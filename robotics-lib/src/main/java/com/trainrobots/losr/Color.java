@@ -47,6 +47,6 @@ public class Color extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(color.toString().toLowerCase());
+		text.append(color);
 	}
 }

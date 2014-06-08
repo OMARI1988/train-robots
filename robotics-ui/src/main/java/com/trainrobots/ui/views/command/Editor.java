@@ -8,8 +8,6 @@
 
 package com.trainrobots.ui.views.command;
 
-import java.util.function.Consumer;
-
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
@@ -31,6 +29,7 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.ui.visualization.PartialTree;
+import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Token;
@@ -38,9 +37,9 @@ import com.trainrobots.ui.visualization.visuals.Token;
 public class Editor {
 
 	private final LosrView view;
-	private final Consumer<Text> popup;
+	private final Popup popup;
 
-	public Editor(LosrView view, Consumer<Text> popup) {
+	public Editor(LosrView view, Popup popup) {
 		this.view = view;
 		this.popup = popup;
 	}
@@ -101,14 +100,26 @@ public class Editor {
 		}
 		Text text = selection.get(0);
 
-		// Show popup.
-		popup.accept(text);
+		// Detail.
+		if (!(text instanceof Detail)) {
+			return;
+		}
+		Detail detail = (Detail) text;
+
+		// LOSR.
+		Losr losr = detail.header().losr();
+
+		// Color.
+		if (losr instanceof Color) {
+			popup.show(detail, (Object[]) Colors.values(),
+					((Color) losr).color());
+		}
 	}
 
-	public void acceptChange(Text text) {
-		Losr losr = ((Header) text).losr();
+	public void acceptChange(Detail detail, Object value) {
+		Losr losr = detail.header().losr();
 		Color color = (Color) losr;
-		color.color(Colors.Magenta);
+		color.color((Colors) value);
 		view.redrawTree();
 	}
 

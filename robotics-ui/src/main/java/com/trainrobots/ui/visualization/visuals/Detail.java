@@ -12,8 +12,15 @@ import com.trainrobots.ui.visualization.VisualContext;
 
 public class Detail extends Text {
 
-	public Detail(VisualContext context, String text) {
+	private final Header header;
+
+	public Detail(VisualContext context, Header header, String text) {
 		super(context, '(' + text + ')', context.theme().font(), context
 				.theme().detail());
+		this.header = header;
+	}
+
+	public Header header() {
+		return header;
 	}
 }

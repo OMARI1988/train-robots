@@ -26,6 +26,11 @@ public enum Indicators {
 		return indicator;
 	}
 
+	@Override
+	public String toString() {
+		return name().toLowerCase();
+	}
+
 	static {
 		for (Indicators indicator : values()) {
 			indicators.put(indicator.toString(), indicator);

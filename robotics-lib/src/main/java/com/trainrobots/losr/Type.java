@@ -42,6 +42,6 @@ public class Type extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(type.toString().toLowerCase());
+		text.append(type);
 	}
 }

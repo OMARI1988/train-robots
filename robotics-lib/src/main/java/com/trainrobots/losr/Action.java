@@ -43,10 +43,6 @@ public class Action extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(content());
-	}
-
-	private String content() {
-		return action.toString().toLowerCase();
+		text.append(action);
 	}
 }

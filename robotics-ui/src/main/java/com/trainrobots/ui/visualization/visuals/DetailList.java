@@ -14,12 +14,14 @@ import com.trainrobots.ui.visualization.VisualContext;
 public class DetailList extends ItemsList<Detail> {
 
 	private final VisualContext context;
+	private final Header header;
 
-	public DetailList(VisualContext context) {
+	public DetailList(VisualContext context, Header header) {
 		this.context = context;
+		this.header = header;
 	}
 
 	public void add(String text) {
-		add(new Detail(context, text));
+		add(new Detail(context, header, text));
 	}
 }
