@@ -68,7 +68,7 @@ public class Header extends Text {
 			return null;
 		}
 
-		// ID?
+		// ID.
 		DetailList details = new DetailList(context);
 		if (losr.id() != 0) {
 			details.add("id: " + losr.id());
@@ -103,21 +103,8 @@ public class Header extends Text {
 
 		// Type.
 		if (losr instanceof Type) {
-			Types type = ((Type) losr).type();
-			switch (type) {
-			case TypeReference:
-				details.add("type-reference");
-				break;
-			case TypeReferenceGroup:
-				details.add("type-reference-group");
-				break;
-			case CubeGroup:
-				details.add("cube-group");
-				break;
-			default:
-				details.add(type.toString().toLowerCase());
-				break;
-			}
+			details.add(((Type) losr).type().toString().toLowerCase());
+			return details;
 		}
 		return details;
 	}

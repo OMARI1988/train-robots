@@ -42,19 +42,6 @@ public class Type extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		switch (type) {
-		case TypeReference:
-			text.append("type-reference");
-			break;
-		case TypeReferenceGroup:
-			text.append("type-reference-group");
-			break;
-		case CubeGroup:
-			text.append("cube-group");
-			break;
-		default:
-			text.append(type.toString().toLowerCase());
-			break;
-		}
+		text.append(type.toString().toLowerCase());
 	}
 }

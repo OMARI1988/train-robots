@@ -101,10 +101,10 @@ public class CommandView extends PaneView implements CommandAware {
 	}
 
 	private void handleEscape() {
-		if (popup == null) {
-			losrView.clearSelection();
-		} else {
+		if (popup != null) {
 			closePopup();
+		} else {
+			losrView.clearSelection();
 		}
 	}
 
@@ -131,13 +131,10 @@ public class CommandView extends PaneView implements CommandAware {
 				"red", "blue", "yellow", "green" }) {
 
 			public void processKeyEvent(KeyEvent event) {
-				switch (event.getKeyCode()) {
-				case KeyEvent.VK_ESCAPE:
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					closePopup();
-					break;
-				default:
+				} else {
 					super.processKeyEvent(event);
-					break;
 				}
 			}
 		};

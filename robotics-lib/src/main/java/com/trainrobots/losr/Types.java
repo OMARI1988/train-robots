@@ -26,6 +26,19 @@ public enum Types {
 		return type;
 	}
 
+	@Override
+	public String toString() {
+		switch (this) {
+		case TypeReference:
+			return "Type-Reference";
+		case TypeReferenceGroup:
+			return "Type-Reference-Group";
+		case CubeGroup:
+			return "Cube-Group";
+		}
+		return super.toString();
+	}
+
 	static {
 
 		// Defaults.
