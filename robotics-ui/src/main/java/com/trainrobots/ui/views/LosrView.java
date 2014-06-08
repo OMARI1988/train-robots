@@ -12,6 +12,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.util.Objects;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -21,18 +24,75 @@ import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.visuals.Text;
+import com.trainrobots.ui.visualization.visuals.Visual;
 import com.trainrobots.ui.visualization.visuals.VisualTree;
 
 public class LosrView extends JPanel {
 
-	private Visualizer visualizer;
-	private VisualTree visualTree;
 	private final CommandService commandService;
 	private final Dimension area = new Dimension();
+	private Visualizer visualizer;
+	private VisualTree visualTree;
+	private Text hover;
 
 	public LosrView(CommandService commandService) {
+
+		// Services.
 		this.commandService = commandService;
+
+		// Background.
 		setOpaque(true);
+
+		// Mouse.
+		addMouseMotionListener(new MouseMotionListener() {
+
+			public void mouseDragged(MouseEvent event) {
+			}
+
+			public void mouseMoved(MouseEvent event) {
+
+				// No tree?
+				if (visualTree == null) {
+					return;
+				}
+
+				// Mouse coordinates.
+				int mx = event.getX();
+				int my = event.getY();
+
+				// Visual coordinates.
+				Visual root = visualTree.root();
+				float ox = 0.5f * (getWidth() - root.width());
+				float oy = 0.5f * (getHeight() - root.height());
+				float vx = mx - ox;
+				float vy = my - oy;
+
+				// Find element.
+				Text text = visualTree.find(Text.class, vx, vy);
+
+				// No change?
+				if (Objects.equals(text, hover)) {
+					return;
+				}
+
+				// Deselect previous.
+				if (hover != null) {
+					hover.selected(false);
+				}
+
+				// Select new.
+				hover = text;
+				if (hover != null) {
+					hover.selected(true);
+				}
+
+				// Repaint.
+				repaint();
+			}
+		});
+
+		// Command.
 		bind();
 	}
 

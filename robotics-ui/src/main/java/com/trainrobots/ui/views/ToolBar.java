@@ -61,17 +61,17 @@ public class ToolBar extends JPanel {
 
 		// Key listener.
 		searchBox.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == '\n') {
+			public void keyTyped(KeyEvent event) {
+				if (event.getKeyChar() == '\n') {
 					search(searchBox.getText(), comboBox.getSelectedItem()
 							.equals("Command"));
 				}
 			}
 
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(KeyEvent event) {
 			}
 
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(KeyEvent event) {
 			}
 		});
 	}

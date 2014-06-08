@@ -35,6 +35,10 @@ public class VisualTree {
 		renderVisual(context, x, y, root);
 	}
 
+	public <T> T find(Class<T> type, float x, float y) {
+		return root.find(type, x, y, 0, 0);
+	}
+
 	private void renderVisual(VisualContext context, float x, float y,
 			Visual visual) {
 

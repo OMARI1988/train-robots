@@ -23,6 +23,7 @@ public class Text extends Visual {
 	private final Color color;
 	private float textOffsetX;
 	private float textOffsetY;
+	private boolean selected;
 
 	public Text(VisualContext context, String text, Font font, Color color) {
 
@@ -63,6 +64,14 @@ public class Text extends Visual {
 		return textOffsetY;
 	}
 
+	public boolean selected() {
+		return selected;
+	}
+
+	public void selected(boolean selected) {
+		this.selected = selected;
+	}
+
 	@Override
 	public void render(VisualContext context, float x, float y) {
 
@@ -70,8 +79,14 @@ public class Text extends Visual {
 		x += this.x;
 		y += this.y;
 
-		// Draw text.
+		// Selected?
 		Graphics2D graphics = context.graphics();
+		if (selected) {
+			graphics.setPaint(context.theme().selected());
+			graphics.fill(new Rectangle2D.Float(x - 2, y, width + 4, height));
+		}
+
+		// Draw text.
 		graphics.setFont(font);
 		graphics.setColor(color);
 		graphics.drawString(text, x - textOffsetX, y - textOffsetY);

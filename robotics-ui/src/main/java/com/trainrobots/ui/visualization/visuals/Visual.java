@@ -81,6 +81,29 @@ public class Visual implements Iterable<Visual> {
 		return children.iterator();
 	}
 
+	public <T> T find(Class<T> type, float fx, float fy, float x, float y) {
+
+		// Offset.
+		x += this.x;
+		y += this.y;
+
+		// In bounds?
+		if (getClass() == type && fx >= x && fx <= x + width && fy >= y
+				&& fy <= y + height) {
+			return (T) this;
+		}
+
+		// Recurse.
+		int size = count();
+		for (int i = 0; i < size; i++) {
+			T match = get(i).find(type, fx, fy, x, y);
+			if (match != null) {
+				return match;
+			}
+		}
+		return null;
+	}
+
 	public void pack() {
 
 		// No children?

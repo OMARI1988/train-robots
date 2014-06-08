@@ -38,6 +38,10 @@ public abstract class Theme {
 		return detail;
 	}
 
+	public Color selected() {
+		return Color.YELLOW;
+	}
+
 	public boolean showDetail() {
 		return false;
 	}
