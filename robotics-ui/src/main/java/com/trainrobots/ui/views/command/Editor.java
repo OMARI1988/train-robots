@@ -42,18 +42,43 @@ public class Editor {
 			return;
 		}
 
-		// Token.
-		if (selection.count() == 1 && selection.get(0) instanceof Token) {
-			Token token = (Token) selection.get(0);
-			if (token.id() != 0) {
-				TextContext context = new TextContext(token.id());
-				view.partialTree().add(terminal(context, type));
-				view.redrawTree();
-			}
-		}
+		// Context.
+		TextContext context = context(selection);
+		view.partialTree().add(terminal(context, type));
+		view.redrawTree();
 	}
 
-	private <T extends Losr> T terminal(TextContext context, Class<T> type) {
+	private static TextContext context(Items<Text> selection) {
+
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+
+		int size = selection.count();
+		for (int i = 0; i < size; i++) {
+			Text item = selection.get(i);
+			if (!(item instanceof Token)) {
+				throw new RoboticException(
+						"Selection should contain only tokens.");
+			}
+			Token token = (Token) item;
+			int id = token.id();
+			if (id < min) {
+				min = id;
+			}
+			if (id > max) {
+				max = id;
+			}
+		}
+
+		if (max - min + 1 != size) {
+			throw new RoboticException("Contiguous tokens not selected.");
+		}
+
+		return new TextContext(min, max);
+	}
+
+	private static <T extends Losr> T terminal(TextContext context,
+			Class<T> type) {
 
 		if (type == Action.class) {
 			return (T) new Action(context, Actions.Take);
