@@ -16,7 +16,7 @@ public class Symbol extends Terminal {
 		this(null, value);
 	}
 
-	public Symbol(TokenContext context, char value) {
+	public Symbol(TextContext context, char value) {
 		super(context);
 		this.value = value;
 	}

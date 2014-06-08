@@ -8,23 +8,25 @@
 
 package com.trainrobots.losr;
 
-public class TokenContext {
+import java.util.Objects;
+
+public class TextContext {
 
 	private final String text;
 	private final int start;
 	private final int end;
 
-	public TokenContext(int token) {
+	public TextContext(int token) {
 		this(token, token);
 	}
 
-	public TokenContext(String text, int token) {
+	public TextContext(String text, int token) {
 		this.text = text;
 		this.start = token;
 		this.end = token;
 	}
 
-	public TokenContext(int start, int end) {
+	public TextContext(int start, int end) {
 		this.text = null;
 		this.start = start;
 		this.end = end;
@@ -40,6 +42,16 @@ public class TokenContext {
 
 	public int end() {
 		return end;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof TextContext) {
+			TextContext context = (TextContext) object;
+			return Objects.equals(context.text, text) && context.start == start
+					&& context.end == end;
+		}
+		return false;
 	}
 
 	@Override

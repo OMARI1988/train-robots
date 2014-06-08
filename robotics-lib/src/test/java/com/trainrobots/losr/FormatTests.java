@@ -22,7 +22,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatTextWithContext() {
-		assertThat(new Text(new TokenContext(1, 2), "red").toString(),
+		assertThat(new Text(new TextContext(1, 2), "red").toString(),
 				is("(text: red (token: 1 2))"));
 	}
 
@@ -33,7 +33,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatSymbolWithContext() {
-		assertThat(new Symbol(new TokenContext(18), '.').toString(),
+		assertThat(new Symbol(new TextContext(18), '.').toString(),
 				is("(symbol: . (token: 18))"));
 	}
 
@@ -44,7 +44,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatOrdinalWithContext() {
-		assertThat(new Ordinal(new TokenContext(5, 6), 22).toString(),
+		assertThat(new Ordinal(new TextContext(5, 6), 22).toString(),
 				is("(ordinal: 22 (token: 5 6))"));
 	}
 
@@ -55,7 +55,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldCardinalWithContext() {
-		assertThat(new Cardinal(new TokenContext(12), 45).toString(),
+		assertThat(new Cardinal(new TextContext(12), 45).toString(),
 				is("(cardinal: 45 (token: 12))"));
 	}
 
@@ -66,7 +66,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatColorWithContext() {
-		assertThat(new Color(new TokenContext(6, 8), Colors.Red).toString(),
+		assertThat(new Color(new TextContext(6, 8), Colors.Red).toString(),
 				is("(color: red (token: 6 8))"));
 	}
 
@@ -77,7 +77,7 @@ public class FormatTests {
 
 	@Test
 	public void shouldFormatTypeWithContext() {
-		assertThat(new Type(new TokenContext(1), Types.Cube).toString(),
+		assertThat(new Type(new TextContext(1), Types.Cube).toString(),
 				is("(type: cube (token: 1))"));
 	}
 
@@ -89,7 +89,7 @@ public class FormatTests {
 	@Test
 	public void shouldFormatActionWithContext() {
 		assertThat(
-				new Action(new TokenContext(12, 16), Actions.Move).toString(),
+				new Action(new TextContext(12, 16), Actions.Move).toString(),
 				is("(action: move (token: 12 16))"));
 	}
 
@@ -102,7 +102,7 @@ public class FormatTests {
 	@Test
 	public void shouldFormatRelationWithContext() {
 		assertThat(
-				new Relation(new TokenContext(4), Relations.Above).toString(),
+				new Relation(new TextContext(4), Relations.Above).toString(),
 				is("(relation: above (token: 4))"));
 	}
 
@@ -115,7 +115,7 @@ public class FormatTests {
 	@Test
 	public void shouldFormatIndicatorWithContext() {
 		assertThat(
-				new Indicator(new TokenContext(5), Indicators.Nearest)
+				new Indicator(new TextContext(5), Indicators.Nearest)
 						.toString(),
 				is("(indicator: nearest (token: 5))"));
 	}
@@ -137,7 +137,7 @@ public class FormatTests {
 	@Test
 	public void shouldFormatEntityWithContext() {
 		assertThat(
-				new Entity(new Type(new TokenContext(5), Types.Prism))
+				new Entity(new Type(new TextContext(5), Types.Prism))
 						.toString(),
 				is("(entity: (type: prism (token: 5)))"));
 	}
@@ -166,8 +166,8 @@ public class FormatTests {
 	public void shouldFormatEventWithContext() {
 		assertThat(
 				new Event(
-						new Action(new TokenContext(1, 2), Actions.Take),
-						new Entity(new Type(new TokenContext(3, 4), Types.Cube)))
+						new Action(new TextContext(1, 2), Actions.Take),
+						new Entity(new Type(new TextContext(3, 4), Types.Cube)))
 						.toString(),
 				is("(event: (action: take (token: 1 2)) (entity: (type: cube (token: 3 4))))"));
 	}

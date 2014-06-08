@@ -11,7 +11,7 @@ package com.trainrobots.losr.reader;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.TokenContext;
+import com.trainrobots.losr.TextContext;
 
 public class LosrParser {
 
@@ -44,7 +44,7 @@ public class LosrParser {
 		// Children.
 		int id = 0;
 		int referenceId = 0;
-		TokenContext context = null;
+		TextContext context = null;
 		String content = null;
 		ItemsList<Losr> children = null;
 		while (peek() != ')') {
@@ -133,7 +133,7 @@ public class LosrParser {
 		return id;
 	}
 
-	private TokenContext readContext() {
+	private TextContext readContext() {
 
 		// ':'
 		readSemiColon();
@@ -163,7 +163,7 @@ public class LosrParser {
 		readClosingBracket();
 
 		// Context.
-		return new TokenContext(start, end);
+		return new TextContext(start, end);
 	}
 
 	private void readClosingBracket() {

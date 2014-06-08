@@ -17,7 +17,6 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
-import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Frame;
 import com.trainrobots.ui.visualization.visuals.Header;
@@ -35,32 +34,32 @@ public class Visualizer {
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
-	private final Items<Terminal> tokens;
-	private final Losr losr;
+	private final PartialTree partialTree;
 
 	private final List<Frame> skipList = new ArrayList<Frame>();
 	private final Visual canvas = new Visual();
 	private int lastId;
 
-	public Visualizer(Command command) {
-		this(command.tokens(), command.losr());
-	}
-
-	public Visualizer(Items<Terminal> tokens, Losr losr) {
-		this.tokens = tokens;
-		this.losr = losr;
+	public Visualizer(PartialTree partialTree) {
+		this.partialTree = partialTree;
 	}
 
 	public VisualTree createVisualTree(VisualContext context) {
 
-		// Layout.
+		// Partial tree.
 		Visual root = new Visual();
-		if (losr != null) {
-			root.add(frame(context, losr));
+		for (Losr item : partialTree.items()) {
+			Frame frame = frame(context, item);
+			for (Frame skip : skipList) {
+				root.add(skip);
+			}
+			skipList.clear();
+			root.add(frame);
 		}
 
 		// Trailing skipped tokens.
-		for (int i = lastId + 1; i <= tokens.count(); i++) {
+		int tokenCount = partialTree.tokens().count();
+		for (int i = lastId + 1; i <= tokenCount; i++) {
 			root.add(token(context, i, true));
 		}
 
@@ -89,7 +88,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				frame.add(token(context, "\u00D8", false));
+				frame.add(token(context, 0, "\u00D8", false));
 			}
 
 			// Add tokens.
@@ -156,12 +155,12 @@ public class Visualizer {
 	}
 
 	private Frame token(VisualContext context, int id, boolean skip) {
-		return token(context,
-				tokens.get(id - 1).context().text().toLowerCase(), skip);
+		String text = partialTree.tokens().get(id - 1).context().text();
+		return token(context, id, text.toLowerCase(), skip);
 	}
 
-	private Frame token(VisualContext context, String text, boolean skip) {
-		Token token = new Token(context, text, skip);
+	private Frame token(VisualContext context, int id, String text, boolean skip) {
+		Token token = new Token(context, id, text, skip);
 		Frame frame = new Frame(token, skip);
 		frame.width(token.width());
 		return frame;

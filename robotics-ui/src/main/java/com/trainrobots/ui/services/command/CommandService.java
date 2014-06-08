@@ -11,16 +11,18 @@ package com.trainrobots.ui.services.command;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.losr.Losr;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Commands;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
-import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.PaneView;
+import com.trainrobots.ui.views.command.CommandView;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.themes.Themes;
 
@@ -108,10 +110,30 @@ public class CommandService {
 		command(command);
 	}
 
+	public <T extends Losr> void addLosr(Class<T> type) {
+		execute("Add " + type.getSimpleName().toLowerCase(), v -> v.editor()
+				.addLosr(type));
+	}
+
 	private void execute(Consumer<CommandView> action) {
-		CommandView commandView = windowService.pane(CommandView.class);
-		if (commandView != null) {
-			action.accept(commandView);
+		execute(null, action);
+	}
+
+	private void execute(String status, Consumer<CommandView> action) {
+		try {
+			CommandView commandView = windowService.pane(CommandView.class);
+			if (commandView != null) {
+				action.accept(commandView);
+			}
+			if (status != null) {
+				windowService.status(status);
+			}
+		} catch (Exception exception) {
+			if (exception.getMessage() == null) {
+				Log.error("Failed to execute UI action.", exception);
+			} else {
+				windowService.error(exception.getMessage());
+			}
 		}
 	}
 }

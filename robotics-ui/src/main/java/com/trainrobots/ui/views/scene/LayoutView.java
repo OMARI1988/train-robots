@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.views.scene;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;

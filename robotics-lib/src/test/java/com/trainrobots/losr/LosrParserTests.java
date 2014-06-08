@@ -23,7 +23,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseTextWithContext() {
 		assertThat(Losr.parse("(text: red (token: 1 2))"), is(new Text(
-				new TokenContext(1, 2), "red")));
+				new TextContext(1, 2), "red")));
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseSymbolWithContext() {
 		assertThat(Losr.parse("(symbol: . (token: 18))"), is(new Symbol(
-				new TokenContext(18), '.')));
+				new TextContext(18), '.')));
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseOrdinalWithContext() {
 		assertThat(Losr.parse("(ordinal: 22 (token: 5 6))"), is(new Ordinal(
-				new TokenContext(5, 6), 22)));
+				new TextContext(5, 6), 22)));
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseCardinalWithContext() {
 		assertThat(Losr.parse("(cardinal: 45 (token: 12))"), is(new Cardinal(
-				new TokenContext(12), 45)));
+				new TextContext(12), 45)));
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseColorWithContext() {
 		assertThat(Losr.parse("(color: red (token: 6 8))"), is(new Color(
-				new TokenContext(6, 8), Colors.Red)));
+				new TextContext(6, 8), Colors.Red)));
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseTypeWithContext() {
 		assertThat(Losr.parse("(type: cube (token: 1))"), is(new Type(
-				new TokenContext(1), Types.Cube)));
+				new TextContext(1), Types.Cube)));
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseActionWithContext() {
 		assertThat(Losr.parse("(action: move (token: 12 16))"), is(new Action(
-				new TokenContext(12, 16), Actions.Move)));
+				new TextContext(12, 16), Actions.Move)));
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseRelationWithContext() {
 		assertThat(Losr.parse("(relation: above (token: 4))"), is(new Relation(
-				new TokenContext(4), Relations.Above)));
+				new TextContext(4), Relations.Above)));
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseIndicatorWithContext() {
 		assertThat(Losr.parse("(indicator: nearest (token: 5))"),
-				is(new Indicator(new TokenContext(5), Indicators.Nearest)));
+				is(new Indicator(new TextContext(5), Indicators.Nearest)));
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseEntityWithContext() {
 		assertThat(Losr.parse("(entity: (type: prism (token: 5)))"),
-				is(new Entity(new Type(new TokenContext(5), Types.Prism))));
+				is(new Entity(new Type(new TextContext(5), Types.Prism))));
 	}
 
 	@Test
@@ -162,8 +162,8 @@ public class LosrParserTests {
 		assertThat(
 				Losr.parse("(event: (action: take (token: 1 2)) (entity: (type: cube (token: 3 4))))"),
 				is(new Event(
-						new Action(new TokenContext(1, 2), Actions.Take),
-						new Entity(new Type(new TokenContext(3, 4), Types.Cube)))));
+						new Action(new TextContext(1, 2), Actions.Take),
+						new Entity(new Type(new TextContext(3, 4), Types.Cube)))));
 	}
 
 	@Test

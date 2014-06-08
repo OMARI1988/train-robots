@@ -17,7 +17,7 @@ public class Action extends Terminal {
 		this.action = action;
 	}
 
-	public Action(TokenContext context, Actions action) {
+	public Action(TextContext context, Actions action) {
 		super(context);
 		this.action = action;
 	}

@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import com.trainrobots.RoboticException;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.GraphicsRenderer;
+import com.trainrobots.ui.visualization.PartialTree;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.themes.Themes;
@@ -28,10 +29,10 @@ import com.trainrobots.ui.visualization.visuals.VisualTree;
 
 public class SvgWriter implements GraphicsRenderer {
 
-	private final Command command;
+	private final PartialTree partialTree;
 
 	public SvgWriter(Command command) {
-		this.command = command;
+		this.partialTree = new PartialTree(command);
 	}
 
 	public void renderToFile(String filename) {
@@ -54,7 +55,7 @@ public class SvgWriter implements GraphicsRenderer {
 	private void writeSvg(OutputStream stream) {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(command);
+		Visualizer visualizer = new Visualizer(partialTree);
 		VisualContext visualContext = VisualContext.of(Themes.Simple);
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 

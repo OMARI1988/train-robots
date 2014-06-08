@@ -16,7 +16,7 @@ public class Type extends Terminal {
 		this(null, type);
 	}
 
-	public Type(TokenContext context, Types type) {
+	public Type(TextContext context, Types type) {
 		super(context);
 		this.type = type;
 	}

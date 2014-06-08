@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
+import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
@@ -86,5 +87,18 @@ public class VisualizerTests {
 
 		// Verify.
 		assertThat(data, is(resource("losr-13013.svg")));
+	}
+
+	@Test
+	public void shouldRenderPartialTree() {
+
+		// Render.
+		Command command = TestContext.treebank().command(16549);
+		PartialTree partialTree = new PartialTree(command.tokens());
+		partialTree.add(Losr.parse("(color: red (token: 4))"));
+		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("partial-16549.png")));
 	}
 }

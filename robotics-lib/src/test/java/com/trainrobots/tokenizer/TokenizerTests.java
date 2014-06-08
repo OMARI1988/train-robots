@@ -20,7 +20,7 @@ import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.Text;
-import com.trainrobots.losr.TokenContext;
+import com.trainrobots.losr.TextContext;
 import com.trainrobots.treebank.Command;
 
 public class TokenizerTests {
@@ -166,7 +166,7 @@ public class TokenizerTests {
 	private static void verifyContext(Items<Terminal> tokens, int size) {
 		assertThat(tokens.count(), is(size));
 		for (int i = 0; i < size; i++) {
-			TokenContext context = tokens.get(i).context();
+			TextContext context = tokens.get(i).context();
 			assertThat(context.start(), is(i + 1));
 			assertThat(context.end(), is(i + 1));
 		}

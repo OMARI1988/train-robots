@@ -18,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
+import com.trainrobots.ui.views.scene.LayoutView;
 
 public class RobotView extends PaneView {
 

@@ -17,7 +17,7 @@ public class Color extends Terminal {
 		this.color = color;
 	}
 
-	public Color(TokenContext context, Colors color) {
+	public Color(TextContext context, Colors color) {
 		super(context);
 		this.color = color;
 	}

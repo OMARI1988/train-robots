@@ -10,6 +10,13 @@ package com.trainrobots.ui.menus;
 
 import javax.swing.JMenuBar;
 
+import com.trainrobots.losr.Action;
+import com.trainrobots.losr.Cardinal;
+import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Indicator;
+import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Relation;
+import com.trainrobots.losr.Type;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.visualization.themes.Theme;
@@ -27,6 +34,17 @@ public class MainMenu extends JMenuBar {
 
 		add(new Menu("Edit", 'E') {
 			{
+				addLosr("New Action", "ctrl A", Action.class);
+				addLosr("New Cardinal", "ctrl N", Cardinal.class);
+				addLosr("New Color", "ctrl C", Color.class);
+				addLosr("New Indicator", "ctrl I", Indicator.class);
+				addLosr("New Relation", "ctrl R", Relation.class);
+				addLosr("New Type", "ctrl T", Type.class);
+			}
+
+			private <T extends Losr> void addLosr(String name,
+					String shortCutKey, Class<T> type) {
+				addItem(name, shortCutKey, () -> commandService.addLosr(type));
 			}
 		});
 

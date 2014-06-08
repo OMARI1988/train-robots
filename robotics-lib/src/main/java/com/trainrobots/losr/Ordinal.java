@@ -16,7 +16,7 @@ public class Ordinal extends Terminal {
 		this(null, value);
 	}
 
-	public Ordinal(TokenContext context, int value) {
+	public Ordinal(TextContext context, int value) {
 		super(context);
 		this.value = value;
 	}

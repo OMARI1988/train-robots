@@ -16,7 +16,7 @@ public class Text extends Terminal {
 		this(null, text);
 	}
 
-	public Text(TokenContext context, String text) {
+	public Text(TextContext context, String text) {
 		super(context);
 		this.text = text;
 	}

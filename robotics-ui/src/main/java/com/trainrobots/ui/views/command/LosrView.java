@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.views;
+package com.trainrobots.ui.views.command;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,8 +22,11 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
+import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.visualization.PartialTree;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.Visualizer;
 import com.trainrobots.ui.visualization.visuals.Text;
@@ -37,6 +40,7 @@ public class LosrView extends JPanel {
 	private final Set<Text> selection = new HashSet<>();
 	private Visualizer visualizer;
 	private VisualTree visualTree;
+	private PartialTree partialTree;
 	private Text hover;
 
 	public LosrView(CommandService commandService) {
@@ -122,6 +126,31 @@ public class LosrView extends JPanel {
 		bind();
 	}
 
+	public Items<Text> selection() {
+		int size = selection.size();
+		if (size == 0) {
+			return null;
+		}
+		Text[] items = new Text[size];
+		selection.toArray(items);
+		return new ItemsArray<Text>(items);
+	}
+
+	public PartialTree partialTree() {
+		return partialTree;
+	}
+
+	public void redrawTree() {
+
+		// Selection.
+		selection.clear();
+		hover = null;
+
+		// Redraw.
+		visualizer = new Visualizer(partialTree);
+		repaint();
+	}
+
 	public void bind() {
 
 		// Selection.
@@ -133,7 +162,8 @@ public class LosrView extends JPanel {
 
 		// Command.
 		Command command = commandService.command();
-		visualizer = new Visualizer(command);
+		partialTree = new PartialTree(command);
+		visualizer = new Visualizer(partialTree);
 		repaint();
 	}
 

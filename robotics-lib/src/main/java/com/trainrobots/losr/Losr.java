@@ -73,6 +73,25 @@ public abstract class Losr implements Items<Losr> {
 		return new LosrIterator(this);
 	}
 
+	public TextContext span() {
+		int size = count();
+		if (size == 0) {
+			return null;
+		}
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < size; i++) {
+			TextContext child = get(i).span();
+			if (child.start() < min) {
+				min = child.start();
+			}
+			if (child.end() > max) {
+				max = child.end();
+			}
+		}
+		return new TextContext(min, max);
+	}
+
 	public static Losr parse(String text) {
 		return new LosrParser(text).parse();
 	}

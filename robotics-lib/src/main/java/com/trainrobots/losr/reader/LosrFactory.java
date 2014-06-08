@@ -32,7 +32,7 @@ import com.trainrobots.losr.Sequence;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Text;
-import com.trainrobots.losr.TokenContext;
+import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 
@@ -63,7 +63,7 @@ public class LosrFactory {
 		nonTerminal("measure", Measure::new);
 	}
 
-	public Losr build(TokenContext context, String name, String content) {
+	public Losr build(TextContext context, String name, String content) {
 
 		// Builder.
 		TerminalBuilder builder = terminals.get(name);

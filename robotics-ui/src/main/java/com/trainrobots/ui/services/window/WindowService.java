@@ -20,10 +20,10 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.ui.Container;
 import com.trainrobots.ui.services.command.CommandService;
-import com.trainrobots.ui.views.CommandView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.views.RobotView;
+import com.trainrobots.ui.views.command.CommandView;
 import com.trainrobots.ui.views.navigation.NavigationView;
 import com.trainrobots.ui.views.scene.SceneView;
 

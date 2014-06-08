@@ -17,7 +17,7 @@ public class Relation extends Terminal {
 		this.relation = relation;
 	}
 
-	public Relation(TokenContext context, Relations relation) {
+	public Relation(TextContext context, Relations relation) {
 		super(context);
 		this.relation = relation;
 	}

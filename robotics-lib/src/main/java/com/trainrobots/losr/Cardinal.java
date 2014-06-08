@@ -16,7 +16,7 @@ public class Cardinal extends Terminal {
 		this(null, value);
 	}
 
-	public Cardinal(TokenContext context, int value) {
+	public Cardinal(TextContext context, int value) {
 		super(context);
 		this.value = value;
 	}

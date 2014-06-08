@@ -17,7 +17,7 @@ public class Indicator extends Terminal {
 		this.indicator = indicator;
 	}
 
-	public Indicator(TokenContext context, Indicators indicator) {
+	public Indicator(TextContext context, Indicators indicator) {
 		super(context);
 		this.indicator = indicator;
 	}

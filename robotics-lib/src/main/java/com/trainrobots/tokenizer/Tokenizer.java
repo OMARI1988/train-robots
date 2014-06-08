@@ -15,7 +15,7 @@ import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.Text;
-import com.trainrobots.losr.TokenContext;
+import com.trainrobots.losr.TextContext;
 
 public class Tokenizer {
 
@@ -65,7 +65,7 @@ public class Tokenizer {
 			position++;
 		}
 		String text = this.text.substring(index, position);
-		return new Text(new TokenContext(text, tokens.size() + 1), text);
+		return new Text(new TextContext(text, tokens.size() + 1), text);
 	}
 
 	private Terminal readNumber() {
@@ -82,11 +82,11 @@ public class Tokenizer {
 		if (hasOrdinalSuffix(value)) {
 			position += 2;
 			text = this.text.substring(index, position);
-			return new Ordinal(new TokenContext(text, tokens.size() + 1), value);
+			return new Ordinal(new TextContext(text, tokens.size() + 1), value);
 		}
 
 		// Cardinal.
-		return new Cardinal(new TokenContext(text, tokens.size() + 1), value);
+		return new Cardinal(new TextContext(text, tokens.size() + 1), value);
 	}
 
 	private boolean hasOrdinalSuffix(int value) {
@@ -118,7 +118,7 @@ public class Tokenizer {
 		char ch = peek();
 		position++;
 		String text = Character.toString(ch);
-		return new Symbol(new TokenContext(text, tokens.size() + 1), ch);
+		return new Symbol(new TextContext(text, tokens.size() + 1), ch);
 	}
 
 	private static boolean symbol(char ch) {
