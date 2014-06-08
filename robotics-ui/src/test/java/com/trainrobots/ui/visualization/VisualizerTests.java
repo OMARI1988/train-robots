@@ -95,7 +95,7 @@ public class VisualizerTests {
 		// Render.
 		Command command = TestContext.treebank().command(16549);
 		PartialTree partialTree = new PartialTree(command.tokens());
-		partialTree.add(Losr.parse("(color: red (token: 4))"));
+		partialTree.add(Losr.parse("(color: white (token: 3))"));
 		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
 
 		// Verify.
