@@ -118,6 +118,10 @@ public class CommandService {
 		execute(v -> v.editor().delete());
 	}
 
+	public void change() {
+		execute(v -> v.editor().change());
+	}
+
 	private void execute(Consumer<CommandView> action) {
 		try {
 			CommandView commandView = windowService.pane(CommandView.class);

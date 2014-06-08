@@ -38,23 +38,29 @@ public class MainMenu extends JMenuBar {
 
 		add(new Menu("Edit", 'E') {
 			{
-				add("New Action", "ctrl A", Action.class);
-				add("New Cardinal", "ctrl N", Cardinal.class);
-				add("New Color", "ctrl C", Color.class);
-				add("New Destination", "ctrl D", Destination.class);
-				add("New Entity", "ctrl E", Entity.class);
-				add("New Event", "ctrl V", Event.class);
-				add("New Indicator", "ctrl I", Indicator.class);
-				add("New Relation", "ctrl R", Relation.class);
-				add("New Spatial Relation", "ctrl S", SpatialRelation.class);
-				add("New Type", "ctrl T", Type.class);
+				addItem("Change", "F2", commandService::change);
+				addItem("Delete", "DELETE", commandService::delete);
 				addSeparator();
-				addItem("Delete Node", "DELETE", commandService::delete);
-			}
+				add(new Menu("New", 'N') {
+					{
+						add("Action", "ctrl A", Action.class);
+						add("Cardinal", "ctrl N", Cardinal.class);
+						add("Color", "ctrl C", Color.class);
+						add("Destination", "ctrl D", Destination.class);
+						add("Entity", "ctrl E", Entity.class);
+						add("Event", "ctrl V", Event.class);
+						add("Indicator", "ctrl I", Indicator.class);
+						add("Relation", "ctrl R", Relation.class);
+						add("Spatial Relation", "ctrl S", SpatialRelation.class);
+						add("Type", "ctrl T", Type.class);
+					}
 
-			private <T extends Losr> void add(String name, String shortCutKey,
-					Class<T> type) {
-				addItem(name, shortCutKey, () -> commandService.add(type));
+					private <T extends Losr> void add(String name,
+							String shortCutKey, Class<T> type) {
+						addItem(name, shortCutKey,
+								() -> commandService.add(type));
+					}
+				});
 			}
 		});
 

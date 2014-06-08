@@ -8,6 +8,8 @@
 
 package com.trainrobots.ui.views.command;
 
+import javax.swing.JOptionPane;
+
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
@@ -81,6 +83,24 @@ public class Editor {
 		// Remove.
 		view.partialTree().remove(losr);
 		view.redrawTree();
+	}
+
+	public void change() {
+
+		// Selection.
+		Items<Text> selection = view.selection();
+		if (selection == null) {
+			return;
+		}
+
+		// Single node.
+		if (selection.count() != 1) {
+			throw new RoboticException("Can't change multiple nodes.");
+		}
+		Text text = selection.get(0);
+
+		// TODO: FIX!!
+		JOptionPane.showMessageDialog(null, "Change " + text);
 	}
 
 	private static <T extends Losr> T losr(Class<T> type, Items<Text> selection) {
