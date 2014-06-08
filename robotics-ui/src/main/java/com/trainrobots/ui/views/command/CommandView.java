@@ -160,7 +160,7 @@ public class CommandView extends PaneView implements CommandAware {
 		int y = (int) p.y;
 		int width = size.width;
 		int height = size.height;
-		component.setBounds(x, y, width, height);
+		component.setBounds(x - 2, y, width, height);
 
 		// Add.
 		layeredPane.add(component, JLayeredPane.POPUP_LAYER);

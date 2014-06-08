@@ -105,11 +105,13 @@ public class Editor {
 			return;
 		}
 		Detail detail = (Detail) text;
-
-		// LOSR.
 		Losr losr = detail.header().losr();
 
-		// Color.
+		if (losr instanceof Action) {
+			popup.show(detail, (Object[]) Actions.values(),
+					((Action) losr).action());
+		}
+
 		if (losr instanceof Color) {
 			popup.show(detail, (Object[]) Colors.values(),
 					((Color) losr).color());
@@ -117,10 +119,20 @@ public class Editor {
 	}
 
 	public void acceptChange(Detail detail, Object value) {
+
 		Losr losr = detail.header().losr();
-		Color color = (Color) losr;
-		color.color((Colors) value);
-		view.redrawTree();
+
+		if (losr instanceof Action) {
+			Action action = (Action) losr;
+			action.action((Actions) value);
+			view.redrawTree();
+		}
+
+		if (losr instanceof Color) {
+			Color color = (Color) losr;
+			color.color((Colors) value);
+			view.redrawTree();
+		}
 	}
 
 	private static <T extends Losr> T losr(Class<T> type, Items<Text> selection) {

@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Action extends Terminal {
 
-	private final Actions action;
+	private Actions action;
 
 	public Action(Actions action) {
 		super(null);
@@ -24,6 +24,10 @@ public class Action extends Terminal {
 
 	public Actions action() {
 		return action;
+	}
+
+	public void action(Actions action) {
+		this.action = action;
 	}
 
 	@Override
