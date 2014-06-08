@@ -11,6 +11,7 @@ package com.trainrobots.ui.visualization.visuals;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.geom.Line2D;
 
 import com.trainrobots.ui.visualization.VisualContext;
 
@@ -36,17 +37,16 @@ public class Line extends Visual {
 	@Override
 	public void render(VisualContext context, float x, float y) {
 
-		// Offset.
+		// Position.
 		x += this.x;
 		y += this.y;
 
-		// Render.
+		// Draw line.
 		Graphics2D graphics = context.graphics();
 		graphics.setPaint(color);
 		Stroke previous = graphics.getStroke();
 		graphics.setStroke(stroke);
-		graphics.drawLine((int) x, (int) y, (int) (x + width),
-				(int) (y + height));
+		graphics.draw(new Line2D.Float(x, y, x + width, y + height));
 		graphics.setStroke(previous);
 	}
 }
