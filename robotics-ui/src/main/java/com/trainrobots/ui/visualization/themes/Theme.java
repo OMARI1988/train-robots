@@ -11,21 +11,29 @@ package com.trainrobots.ui.visualization.themes;
 import java.awt.Color;
 import java.awt.Font;
 
-public interface Theme {
+public abstract class Theme {
 
-	Font font();
+	private final Color skip = new Color(120, 120, 120);
 
-	Color foreground();
-	
-	Color background();
-	
-	Color entity();
-	
-	Color event();
-	
-	Color spatialRelation();
-	
-	Color skip();
-	
-	Color boundingBox();
+	public abstract Font font();
+
+	public abstract Color foreground();
+
+	public abstract Color background();
+
+	public abstract Color entity();
+
+	public abstract Color event();
+
+	public abstract Color spatialRelation();
+
+	public abstract Color boundingBox();
+
+	public Color skip() {
+		return skip;
+	}
+
+	public boolean detailedTags() {
+		return false;
+	}
 }

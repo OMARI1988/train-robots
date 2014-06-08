@@ -11,7 +11,7 @@ package com.trainrobots.ui.visualization.themes;
 import java.awt.Color;
 import java.awt.Font;
 
-public class DarkTheme implements Theme {
+public class DarkTheme extends Theme {
 
 	private final Font font = new Font("Arial", Font.PLAIN, 16);
 	private final Color foreground = new Color(200, 200, 200);
@@ -19,7 +19,6 @@ public class DarkTheme implements Theme {
 	private final Color entity = new Color(35, 206, 235);
 	private final Color event = new Color(255, 165, 0);
 	private final Color spatialRelation = new Color(141, 244, 50);
-	private final Color skip = new Color(120, 120, 120);
 	private final Color boundingBox = new Color(153, 217, 234);
 
 	@Override
@@ -50,11 +49,6 @@ public class DarkTheme implements Theme {
 	@Override
 	public Color spatialRelation() {
 		return spatialRelation;
-	}
-
-	@Override
-	public Color skip() {
-		return skip;
 	}
 
 	@Override

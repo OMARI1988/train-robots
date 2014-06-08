@@ -18,4 +18,9 @@ public class DetailTheme extends SimpleTheme {
 	public Font font() {
 		return font;
 	}
+
+	@Override
+	public boolean detailedTags() {
+		return true;
+	}
 }

@@ -11,13 +11,12 @@ package com.trainrobots.ui.visualization.themes;
 import java.awt.Color;
 import java.awt.Font;
 
-public class SimpleTheme implements Theme {
+public class SimpleTheme extends Theme {
 
 	private final Font font = new Font("Times New Roman", Font.PLAIN, 16);
 	private final Color entity = new Color(0, 112, 192);
 	private final Color event = new Color(255, 0, 0);
 	private final Color spatialRelation = new Color(0, 176, 80);
-	private final Color skip = new Color(120, 120, 120);
 
 	@Override
 	public Font font() {
@@ -47,11 +46,6 @@ public class SimpleTheme implements Theme {
 	@Override
 	public Color spatialRelation() {
 		return spatialRelation;
-	}
-
-	@Override
-	public Color skip() {
-		return skip;
 	}
 
 	@Override
