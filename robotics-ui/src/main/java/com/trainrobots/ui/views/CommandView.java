@@ -49,6 +49,10 @@ public class CommandView extends PaneView implements CommandAware {
 		losrView.bind();
 	}
 
+	public void redraw() {
+		losrView.repaint();
+	}
+
 	private static String title(Command command) {
 		return "Command " + command.id();
 	}

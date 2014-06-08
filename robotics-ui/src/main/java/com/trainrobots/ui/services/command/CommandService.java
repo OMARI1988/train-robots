@@ -88,7 +88,7 @@ public class CommandService {
 		this.boundingBoxes = boundingBoxes;
 		CommandView commandView = windowService.pane(CommandView.class);
 		if (commandView != null) {
-			commandView.bindTo(command);
+			commandView.redraw();
 		}
 	}
 
