@@ -57,12 +57,27 @@ public class LosrView extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent event) {
-				if (hover != null) {
+
+				// Clear.
+				if (hover == null) {
+					clearSelection();
+					return;
+				}
+
+				// Add.
+				if (event.isShiftDown()) {
 					selection.add(hover);
 					repaint();
-				} else {
-					clearSelection();
+					return;
 				}
+
+				// Single item.
+				for (Text item : selection) {
+					item.selected(false);
+				}
+				selection.clear();
+				selection.add(hover);
+				repaint();
 			}
 
 			public void mouseReleased(MouseEvent event) {
