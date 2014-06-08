@@ -12,9 +12,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
-import java.text.AttributedString;
 
 import com.trainrobots.ui.visualization.VisualContext;
 
@@ -23,7 +21,6 @@ public class Text extends Visual {
 	private final String text;
 	private final Font font;
 	private final Color color;
-	private final AttributedString attributedText;
 	private float textOffsetX;
 	private float textOffsetY;
 
@@ -31,15 +28,8 @@ public class Text extends Visual {
 
 		// Text.
 		this.text = text;
-		attributedText = new AttributedString(text);
-
-		// Font.
 		this.font = font;
-		attributedText.addAttribute(TextAttribute.FONT, font);
-
-		// Color.
 		this.color = color;
-		attributedText.addAttribute(TextAttribute.FOREGROUND, color);
 
 		// Bounds.
 		FontRenderContext fontRenderContext = context.graphics()
@@ -82,7 +72,8 @@ public class Text extends Visual {
 
 		// Draw text.
 		Graphics2D graphics = context.graphics();
-		graphics.drawString(attributedText.getIterator(), x - textOffsetX, y
-				- textOffsetY);
+		graphics.setFont(font);
+		graphics.setColor(color);
+		graphics.drawString(text, x - textOffsetX, y - textOffsetY);
 	}
 }
