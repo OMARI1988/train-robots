@@ -8,9 +8,6 @@
 
 package com.trainrobots.losr;
 
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.SingleItem;
-
 public class Action extends Terminal {
 
 	private final Actions action;
@@ -32,11 +29,6 @@ public class Action extends Terminal {
 	@Override
 	public String name() {
 		return "action";
-	}
-
-	@Override
-	public Items<String> detail() {
-		return new SingleItem(content());
 	}
 
 	@Override

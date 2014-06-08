@@ -23,7 +23,6 @@ import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.Visualizer;
-import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Visual;
 import com.trainrobots.ui.visualization.visuals.VisualTree;
@@ -99,12 +98,11 @@ public class LosrView extends JPanel {
 	public void bind() {
 
 		// Theme.
-		Theme theme = commandService.theme();
-		setBackground(theme.background());
+		setBackground(commandService.theme().background());
 
 		// Command.
 		Command command = commandService.command();
-		visualizer = new Visualizer(theme, command);
+		visualizer = new Visualizer(command);
 		repaint();
 	}
 

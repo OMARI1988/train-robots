@@ -54,8 +54,8 @@ public class SvgWriter implements GraphicsRenderer {
 	private void writeSvg(OutputStream stream) {
 
 		// Visual tree.
-		Visualizer visualizer = new Visualizer(Themes.Simple, command);
-		VisualContext visualContext = VisualContext.defaultContext();
+		Visualizer visualizer = new Visualizer(command);
+		VisualContext visualContext = VisualContext.of(Themes.Simple);
 		VisualTree visualTree = visualizer.createVisualTree(visualContext);
 
 		// Write.

@@ -88,7 +88,7 @@ public class Visual implements Iterable<Visual> {
 		y += this.y;
 
 		// In bounds?
-		if (getClass() == type && fx >= x && fx <= x + width && fy >= y
+		if (type.isInstance(this) && fx >= x && fx <= x + width && fy >= y
 				&& fy <= y + height) {
 			return (T) this;
 		}

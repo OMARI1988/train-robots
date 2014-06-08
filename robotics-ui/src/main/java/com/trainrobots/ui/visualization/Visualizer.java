@@ -15,18 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Entity;
-import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Terminal;
-import com.trainrobots.losr.Type;
-import com.trainrobots.losr.Types;
 import com.trainrobots.treebank.Command;
-import com.trainrobots.ui.visualization.themes.Theme;
+import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Frame;
+import com.trainrobots.ui.visualization.visuals.Header;
 import com.trainrobots.ui.visualization.visuals.Line;
-import com.trainrobots.ui.visualization.visuals.Text;
+import com.trainrobots.ui.visualization.visuals.Token;
 import com.trainrobots.ui.visualization.visuals.Visual;
 import com.trainrobots.ui.visualization.visuals.VisualTree;
 
@@ -39,7 +35,6 @@ public class Visualizer {
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, new float[] {
 					1.5f, 3 }, 0);
 
-	private final Theme theme;
 	private final Items<Terminal> tokens;
 	private final Losr losr;
 
@@ -47,12 +42,11 @@ public class Visualizer {
 	private final Visual canvas = new Visual();
 	private int lastId;
 
-	public Visualizer(Theme theme, Command command) {
-		this(theme, command.tokens(), command.losr());
+	public Visualizer(Command command) {
+		this(command.tokens(), command.losr());
 	}
 
-	public Visualizer(Theme theme, Items<Terminal> tokens, Losr losr) {
-		this.theme = theme;
+	public Visualizer(Items<Terminal> tokens, Losr losr) {
 		this.tokens = tokens;
 		this.losr = losr;
 	}
@@ -75,7 +69,7 @@ public class Visualizer {
 
 		// Push leaves.
 		for (Visual child : root) {
-			pushLeaves(0, 0, root.height(), (Frame) child);
+			pushLeaves(context, 0, 0, root.height(), (Frame) child);
 		}
 
 		// Pack.
@@ -95,7 +89,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				frame.add(token(context, "Ø", false));
+				frame.add(token(context, "\u00D8", false));
 			}
 
 			// Add tokens.
@@ -133,38 +127,22 @@ public class Visualizer {
 	private Visual tag(VisualContext context, Losr losr) {
 
 		// Header.
-		boolean showDetail = theme.showDetail();
-		String text = losr.shortName();
-		Color color = theme.foreground();
-		if (losr instanceof SpatialRelation) {
-			color = theme.spatialRelation();
-		} else if (losr instanceof Entity) {
-			color = theme.entity();
-		} else if (losr instanceof Event) {
-			color = theme.event();
-		} else if (!showDetail && losr instanceof Type
-				&& ((Type) losr).type() == Types.Reference) {
-			text = "reference";
-		}
-		Text header = new Text(context, text, theme.font(), color);
+		Header header = Header.from(context, losr);
 
-		// No detail?
-		Items<String> details;
-		if (!showDetail || (details = losr.detail()) == null) {
+		// Details?
+		Items<Detail> details = header.details(context);
+		if (details == null || details.count() == 0) {
 			return header;
 		}
 
-		// Create a detailed tag.
+		// Stack vertically.
 		Visual tag = new Visual();
 		tag.add(header);
 		float y = header.height();
-		for (String detail : details) {
-			detail = '(' + detail + ')';
-			Text header2 = new Text(context, detail, theme.font(),
-					theme.detail());
-			tag.add(header2);
-			header2.y(y);
-			y += header2.height();
+		for (Detail detail : details) {
+			tag.add(detail);
+			detail.y(y);
+			y += detail.height();
 		}
 
 		// Center horizontally.
@@ -183,10 +161,9 @@ public class Visualizer {
 	}
 
 	private Frame token(VisualContext context, String text, boolean skip) {
-		Color color = skip ? theme.skip() : theme.foreground();
-		Text tag = new Text(context, text, theme.font(), color);
-		Frame frame = new Frame(tag, skip);
-		frame.width(tag.width());
+		Token token = new Token(context, text, skip);
+		Frame frame = new Frame(token, skip);
+		frame.width(token.width());
 		return frame;
 	}
 
@@ -252,7 +229,8 @@ public class Visualizer {
 		frame.pack();
 	}
 
-	private void pushLeaves(float x, float y, float maxY, Frame frame) {
+	private void pushLeaves(VisualContext context, float x, float y,
+			float maxY, Frame frame) {
 
 		// Offset.
 		x += frame.x();
@@ -277,7 +255,7 @@ public class Visualizer {
 			List<float[]> l = new ArrayList<float[]>();
 			boolean terminal = false;
 			for (Frame child : frame.frames()) {
-				pushLeaves(x, y, maxY, child);
+				pushLeaves(context, x, y, maxY, child);
 				if (!child.skip()) {
 					Visual tag2 = child.tag();
 					l.add(new float[] { tag2.x() + 0.5f * tag2.width(),
@@ -287,14 +265,14 @@ public class Visualizer {
 			}
 
 			// Lines.
-			addLines(p, l, terminal);
+			addLines(context.theme().foreground(), p, l, terminal);
 		}
 	}
 
-	private void addLines(float[] p, List<float[]> l, boolean terminal) {
+	private void addLines(Color color, float[] p, List<float[]> l,
+			boolean terminal) {
 
 		// Triangle?
-		Color color = theme.foreground();
 		if (terminal && l.size() >= 2) {
 			float[] u = l.get(0);
 			float[] v = l.get(l.size() - 1);

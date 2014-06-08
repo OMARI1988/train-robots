@@ -22,19 +22,6 @@ public class VisualContext {
 	private final int height;
 	private final boolean boundingBoxes;
 
-	private static final VisualContext defaultContext;
-
-	static {
-		BufferedImage image = new BufferedImage(10, 10,
-				BufferedImage.TYPE_INT_RGB);
-		Graphics2D graphics = (Graphics2D) image.createGraphics();
-		defaultContext = new VisualContext(null, graphics, 10, 10, false);
-	}
-
-	public static VisualContext defaultContext() {
-		return defaultContext;
-	}
-
 	public VisualContext(Theme theme, Graphics2D graphics, int width,
 			int height, boolean boundingBoxes) {
 
@@ -52,6 +39,13 @@ public class VisualContext {
 		// Fractional metrics.
 		graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+	}
+
+	public static VisualContext of(Theme theme) {
+		BufferedImage image = new BufferedImage(10, 10,
+				BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = (Graphics2D) image.createGraphics();
+		return new VisualContext(theme, graphics, 10, 10, false);
 	}
 
 	public Theme theme() {

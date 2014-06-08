@@ -8,9 +8,6 @@
 
 package com.trainrobots.losr;
 
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.SingleItem;
-
 public class Type extends Terminal {
 
 	private final Types type;
@@ -34,11 +31,6 @@ public class Type extends Terminal {
 	}
 
 	@Override
-	public Items<String> detail() {
-		return new SingleItem(content());
-	}
-
-	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Type) {
 			Type type = (Type) losr;
@@ -50,18 +42,19 @@ public class Type extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(content());
-	}
-
-	private String content() {
 		switch (type) {
 		case TypeReference:
-			return "type-reference";
+			text.append("type-reference");
+			break;
 		case TypeReferenceGroup:
-			return "type-reference-group";
+			text.append("type-reference-group");
+			break;
 		case CubeGroup:
-			return "cube-group";
+			text.append("cube-group");
+			break;
+		default:
+			text.append(type.toString().toLowerCase());
+			break;
 		}
-		return type.toString().toLowerCase();
 	}
 }

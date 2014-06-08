@@ -42,7 +42,7 @@ public abstract class Theme {
 		return Color.YELLOW;
 	}
 
-	public boolean showDetail() {
+	public boolean showDetails() {
 		return false;
 	}
 }

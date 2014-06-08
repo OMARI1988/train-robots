@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
 
 import com.trainrobots.ui.visualization.VisualContext;
 
-public class Text extends Visual {
+public abstract class Text extends Visual {
 
 	private final String text;
 	private final Font font;
@@ -25,7 +25,7 @@ public class Text extends Visual {
 	private float textOffsetY;
 	private boolean selected;
 
-	public Text(VisualContext context, String text, Font font, Color color) {
+	protected Text(VisualContext context, String text, Font font, Color color) {
 
 		// Text.
 		this.text = text;

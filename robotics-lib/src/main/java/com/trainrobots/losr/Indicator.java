@@ -8,9 +8,6 @@
 
 package com.trainrobots.losr;
 
-import com.trainrobots.collections.Items;
-import com.trainrobots.collections.SingleItem;
-
 public class Indicator extends Terminal {
 
 	private final Indicators indicator;
@@ -35,11 +32,6 @@ public class Indicator extends Terminal {
 	}
 
 	@Override
-	public Items<String> detail() {
-		return new SingleItem(content());
-	}
-
-	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Indicator) {
 			Indicator indicator = (Indicator) losr;
@@ -51,10 +43,6 @@ public class Indicator extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(content());
-	}
-
-	private String content() {
-		return indicator.toString().toLowerCase();
+		text.append(indicator.toString().toLowerCase());
 	}
 }
