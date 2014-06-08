@@ -20,7 +20,7 @@ public class DetailTheme extends SimpleTheme {
 	}
 
 	@Override
-	public boolean detailedTags() {
+	public boolean showDetail() {
 		return true;
 	}
 }

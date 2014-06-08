@@ -29,7 +29,7 @@ public class Cardinal extends Terminal {
 	public String name() {
 		return "cardinal";
 	}
-
+	
 	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Cardinal) {

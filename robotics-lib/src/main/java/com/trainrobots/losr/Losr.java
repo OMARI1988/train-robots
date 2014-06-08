@@ -38,6 +38,14 @@ public abstract class Losr implements Items<Losr> {
 
 	public abstract String name();
 
+	public String shortName() {
+		return name();
+	}
+
+	public Items<String> detail() {
+		return null;
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof Losr && equals((Losr) object);

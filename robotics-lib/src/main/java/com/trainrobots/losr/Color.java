@@ -8,6 +8,9 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.collections.Items;
+import com.trainrobots.collections.SingleItem;
+
 public class Color extends Terminal {
 
 	private final Colors color;
@@ -32,6 +35,11 @@ public class Color extends Terminal {
 	}
 
 	@Override
+	public Items<String> detail() {
+		return new SingleItem(content());
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Color) {
 			Color color = (Color) losr;
@@ -43,6 +51,10 @@ public class Color extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(color.toString().toLowerCase());
+		text.append(content());
+	}
+
+	private String content() {
+		return color.toString().toLowerCase();
 	}
 }

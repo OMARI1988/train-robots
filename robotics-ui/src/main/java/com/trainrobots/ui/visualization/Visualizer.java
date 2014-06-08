@@ -62,12 +62,12 @@ public class Visualizer {
 		// Layout.
 		Visual root = new Visual();
 		if (losr != null) {
-			root.add(buildFrame(context, losr));
+			root.add(frame(context, losr));
 		}
 
 		// Trailing skipped tokens.
 		for (int i = lastId + 1; i <= tokens.count(); i++) {
-			root.add(buildToken(context, i, true));
+			root.add(token(context, i, true));
 		}
 
 		// Arrange.
@@ -83,23 +83,10 @@ public class Visualizer {
 		return new VisualTree(canvas);
 	}
 
-	private Frame buildFrame(VisualContext context, Losr losr) {
+	private Frame frame(VisualContext context, Losr losr) {
 
 		// Tag.
-		String text = losr.name();
-		Color color = theme.foreground();
-		if (losr instanceof SpatialRelation) {
-			text = "sp-relation";
-			color = theme.spatialRelation();
-		} else if (losr instanceof Entity) {
-			color = theme.entity();
-		} else if (losr instanceof Event) {
-			color = theme.event();
-		} else if (losr instanceof Type
-				&& ((Type) losr).type() == Types.Reference) {
-			text = "reference";
-		}
-		Text tag = new Text(context, text, theme.font(), color);
+		Visual tag = tag(context, losr);
 		Frame frame = new Frame(tag, false);
 
 		// Terminal?
@@ -108,7 +95,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				frame.add(buildToken(context, "Ø", false));
+				frame.add(token(context, "Ø", false));
 			}
 
 			// Add tokens.
@@ -119,11 +106,11 @@ public class Visualizer {
 
 					// Skipped tokens.
 					for (int j = lastId + 1; j <= i - 1; j++) {
-						skipList.add(buildToken(context, j, true));
+						skipList.add(token(context, j, true));
 					}
 
 					// Add token.
-					frame.add(buildToken(context, i, false));
+					frame.add(token(context, i, false));
 					lastId = i;
 				}
 			}
@@ -132,7 +119,7 @@ public class Visualizer {
 		// Non-terminal.
 		else {
 			for (Losr child : losr) {
-				Frame childFrame = buildFrame(context, child);
+				Frame childFrame = frame(context, child);
 				for (Frame skip : skipList) {
 					frame.add(skip);
 				}
@@ -143,12 +130,59 @@ public class Visualizer {
 		return frame;
 	}
 
-	private Frame buildToken(VisualContext context, int id, boolean skip) {
-		return buildToken(context, tokens.get(id - 1).context().text()
-				.toLowerCase(), skip);
+	private Visual tag(VisualContext context, Losr losr) {
+
+		// Header.
+		boolean showDetail = theme.showDetail();
+		String text = losr.shortName();
+		Color color = theme.foreground();
+		if (losr instanceof SpatialRelation) {
+			color = theme.spatialRelation();
+		} else if (losr instanceof Entity) {
+			color = theme.entity();
+		} else if (losr instanceof Event) {
+			color = theme.event();
+		} else if (!showDetail && losr instanceof Type
+				&& ((Type) losr).type() == Types.Reference) {
+			text = "reference";
+		}
+		Text header = new Text(context, text, theme.font(), color);
+
+		// No detail?
+		Items<String> details;
+		if (!showDetail || (details = losr.detail()) == null) {
+			return header;
+		}
+
+		// Create a detailed tag.
+		Visual tag = new Visual();
+		tag.add(header);
+		float y = header.height();
+		for (String detail : details) {
+			detail = '(' + detail + ')';
+			Text header2 = new Text(context, detail, theme.font(),
+					theme.detail());
+			tag.add(header2);
+			header2.y(y);
+			y += header2.height();
+		}
+
+		// Center horizontally.
+		tag.pack();
+		int size = tag.count();
+		for (int i = 0; i < size; i++) {
+			Visual visual = tag.get(i);
+			visual.x(0.5f * (tag.width() - visual.width()));
+		}
+		return tag;
 	}
 
-	private Frame buildToken(VisualContext context, String text, boolean skip) {
+	private Frame token(VisualContext context, int id, boolean skip) {
+		return token(context,
+				tokens.get(id - 1).context().text().toLowerCase(), skip);
+	}
+
+	private Frame token(VisualContext context, String text, boolean skip) {
 		Color color = skip ? theme.skip() : theme.foreground();
 		Text tag = new Text(context, text, theme.font(), color);
 		Frame frame = new Frame(tag, skip);

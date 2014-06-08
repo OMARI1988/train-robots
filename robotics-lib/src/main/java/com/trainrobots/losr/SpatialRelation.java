@@ -96,6 +96,11 @@ public class SpatialRelation extends Losr {
 	}
 
 	@Override
+	public String shortName() {
+		return "sp-relation";
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof SpatialRelation) {
 			SpatialRelation spatialRelation = (SpatialRelation) losr;

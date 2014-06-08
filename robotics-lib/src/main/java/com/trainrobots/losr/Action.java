@@ -8,6 +8,9 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.collections.Items;
+import com.trainrobots.collections.SingleItem;
+
 public class Action extends Terminal {
 
 	private final Actions action;
@@ -32,6 +35,11 @@ public class Action extends Terminal {
 	}
 
 	@Override
+	public Items<String> detail() {
+		return new SingleItem(content());
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Action) {
 			Action action = (Action) losr;
@@ -43,6 +51,10 @@ public class Action extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(action.toString().toLowerCase());
+		text.append(content());
+	}
+
+	private String content() {
+		return action.toString().toLowerCase();
 	}
 }

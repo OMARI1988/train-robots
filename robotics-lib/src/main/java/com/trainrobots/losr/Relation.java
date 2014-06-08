@@ -8,6 +8,9 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.collections.Items;
+import com.trainrobots.collections.SingleItem;
+
 public class Relation extends Terminal {
 
 	private final Relations relation;
@@ -32,6 +35,11 @@ public class Relation extends Terminal {
 	}
 
 	@Override
+	public Items<String> detail() {
+		return new SingleItem(content());
+	}
+
+	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Relation) {
 			Relation relation = (Relation) losr;
@@ -43,6 +51,10 @@ public class Relation extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		text.append(relation.toString().toLowerCase());
+		text.append(content());
+	}
+
+	private String content() {
+		return relation.toString().toLowerCase();
 	}
 }

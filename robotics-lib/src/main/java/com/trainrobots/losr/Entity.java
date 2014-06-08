@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.collections.SingleItem;
 
@@ -149,6 +150,27 @@ public class Entity extends Losr {
 	@Override
 	public String name() {
 		return "entity";
+	}
+
+	@Override
+	public Items<String> detail() {
+
+		// Details.
+		String detail1 = id != 0 ? "id: " + id : null;
+		String detail2 = referenceId != 0 ? "reference-id: " + referenceId
+				: null;
+
+		// Items.
+		if (detail1 != null && detail2 != null) {
+			return new ItemsArray(detail1, detail2);
+		}
+		if (detail1 != null) {
+			return new SingleItem(detail1);
+		}
+		if (detail2 != null) {
+			return new SingleItem(detail2);
+		}
+		return null;
 	}
 
 	@Override

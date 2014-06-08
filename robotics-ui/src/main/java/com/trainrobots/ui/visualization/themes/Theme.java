@@ -14,6 +14,7 @@ import java.awt.Font;
 public abstract class Theme {
 
 	private final Color skip = new Color(120, 120, 120);
+	private final Color detail = new Color(204, 102, 0);
 
 	public abstract Font font();
 
@@ -33,7 +34,11 @@ public abstract class Theme {
 		return skip;
 	}
 
-	public boolean detailedTags() {
+	public Color detail() {
+		return detail;
+	}
+
+	public boolean showDetail() {
 		return false;
 	}
 }
