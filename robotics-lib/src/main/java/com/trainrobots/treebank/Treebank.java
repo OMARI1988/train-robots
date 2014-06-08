@@ -25,18 +25,14 @@ import com.trainrobots.scenes.Scenes;
 
 public class Treebank {
 
-	private final String dataPath;
 	private final Layouts layouts;
 	private final Scenes scenes;
 	private final Commands commands;
 
-	public Treebank(String dataPath) {
-
-		// Configure.
-		this.dataPath = dataPath;
+	public Treebank(String filename) {
 
 		// Load treebank.
-		String filename = file("treebank.zip");
+		filename = Paths.get(filename).toAbsolutePath().normalize().toString();
 		Log.info("Loading: %s", filename);
 		try (ZipArchive zip = new ZipArchive(filename)) {
 
@@ -98,10 +94,5 @@ public class Treebank {
 
 	public Items<Command> commands(Scene scene) {
 		return commands.forScene(scene);
-	}
-
-	private String file(String filename) {
-		return Paths.get(dataPath, filename).toAbsolutePath().normalize()
-				.toString();
 	}
 }

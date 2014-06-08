@@ -46,6 +46,11 @@ public class Relation extends Terminal {
 	}
 
 	@Override
+	public Relation withContext(TextContext context) {
+		return new Relation(context, relation);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(relation);
 	}

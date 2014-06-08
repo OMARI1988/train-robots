@@ -35,6 +35,8 @@ public abstract class Terminal extends Losr {
 		throw new IndexOutOfBoundsException();
 	}
 
+	public abstract Terminal withContext(TextContext context);
+
 	@Override
 	protected void write(StringBuilder text) {
 

@@ -45,6 +45,11 @@ public class Type extends Terminal {
 	}
 
 	@Override
+	public Type withContext(TextContext context) {
+		return new Type(context, type);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(type);
 	}

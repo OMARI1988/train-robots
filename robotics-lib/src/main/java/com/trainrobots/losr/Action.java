@@ -46,6 +46,11 @@ public class Action extends Terminal {
 	}
 
 	@Override
+	public Action withContext(TextContext context) {
+		return new Action(context, action);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(action);
 	}

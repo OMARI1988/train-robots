@@ -41,6 +41,11 @@ public class Symbol extends Terminal {
 	}
 
 	@Override
+	public Symbol withContext(TextContext context) {
+		return new Symbol(context, value);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(value);
 	}

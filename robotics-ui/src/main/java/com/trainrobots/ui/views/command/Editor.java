@@ -8,6 +8,8 @@
 
 package com.trainrobots.ui.views.command;
 
+import static com.trainrobots.ui.services.treebank.LexicalKey.key;
+
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
@@ -25,9 +27,11 @@ import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.SpatialRelation;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
+import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.visualization.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
@@ -36,10 +40,12 @@ import com.trainrobots.ui.visualization.visuals.Token;
 
 public class Editor {
 
+	private final TreebankService treebankService;
 	private final LosrView view;
 	private final Popup popup;
 
-	public Editor(LosrView view, Popup popup) {
+	public Editor(TreebankService treebankService, LosrView view, Popup popup) {
+		this.treebankService = treebankService;
 		this.view = view;
 		this.popup = popup;
 	}
@@ -76,10 +82,14 @@ public class Editor {
 		Text text = selection.get(0);
 
 		// Header.
-		if (!(text instanceof Header)) {
+		Losr losr;
+		if (text instanceof Detail) {
+			losr = ((Detail) text).header().losr();
+		} else if (text instanceof Header) {
+			losr = ((Header) text).losr();
+		} else {
 			throw new RoboticException("Header node not selected.");
 		}
-		Losr losr = ((Header) text).losr();
 
 		// Remove.
 		view.partialTree().remove(losr);
@@ -177,48 +187,50 @@ public class Editor {
 		}
 	}
 
-	private static <T extends Losr> T losr(Class<T> type, Items<Text> selection) {
+	private <T extends Losr> T losr(Class<T> type, Items<Text> selection) {
 
+		// Non-terminals.
 		if (type == Event.class) {
 			return (T) new Event(0, 0, items(selection));
 		}
-
 		if (type == SpatialRelation.class) {
 			return (T) new SpatialRelation(0, 0, items(selection));
 		}
-
 		if (type == Entity.class) {
 			return (T) new Entity(0, 0, items(selection));
 		}
-
 		if (type == Destination.class) {
 			return (T) new Destination(0, 0, items(selection));
 		}
 
+		// Lexicon.
+		TextContext context = context(selection);
+		Terminal terminal = treebankService.terminal(
+				(Class<? extends Terminal>) type,
+				key(view.partialTree().tokens(), context), context);
+		if (terminal != null) {
+			return (T) terminal;
+		}
+
+		// Terminals.
 		if (type == Action.class) {
-			return (T) new Action(context(selection), Actions.Take);
+			return (T) new Action(context, Actions.Take);
 		}
-
 		if (type == Cardinal.class) {
-			return (T) new Cardinal(context(selection), 1);
+			return (T) new Cardinal(context, 1);
 		}
-
 		if (type == Color.class) {
-			return (T) new Color(context(selection), Colors.Red);
+			return (T) new Color(context, Colors.Red);
 		}
-
 		if (type == Indicator.class) {
-			return (T) new Indicator(context(selection), Indicators.Left);
+			return (T) new Indicator(context, Indicators.Left);
 		}
-
 		if (type == Relation.class) {
-			return (T) new Relation(context(selection), Relations.Above);
+			return (T) new Relation(context, Relations.Above);
 		}
-
 		if (type == Type.class) {
-			return (T) new Type(context(selection), Types.Cube);
+			return (T) new Type(context, Types.Cube);
 		}
-
 		throw new RoboticException("Can't create %s.", type.getSimpleName());
 	}
 

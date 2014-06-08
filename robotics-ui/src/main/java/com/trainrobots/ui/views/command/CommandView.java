@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.visualization.visuals.Detail;
 
@@ -36,7 +37,8 @@ public class CommandView extends PaneView implements CommandAware {
 	private final JLayeredPane layeredPane;
 	private Component popup;
 
-	public CommandView(CommandService commandService) {
+	public CommandView(CommandService commandService,
+			TreebankService treebankService) {
 		super(title(commandService.command()));
 
 		// View.
@@ -70,7 +72,7 @@ public class CommandView extends PaneView implements CommandAware {
 		add(layeredPane, BorderLayout.CENTER);
 
 		// Editor.
-		editor = new Editor(losrView, this::showPopup);
+		editor = new Editor(treebankService, losrView, this::showPopup);
 
 		// Keys.
 		bindKey("ESCAPE", this::handleEscape);

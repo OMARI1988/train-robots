@@ -46,6 +46,11 @@ public class Indicator extends Terminal {
 	}
 
 	@Override
+	public Indicator withContext(TextContext context) {
+		return new Indicator(context, indicator);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(indicator);
 	}

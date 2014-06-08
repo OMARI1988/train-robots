@@ -46,6 +46,11 @@ public class Color extends Terminal {
 	}
 
 	@Override
+	public Color withContext(TextContext context) {
+		return new Color(context, color);
+	}
+
+	@Override
 	protected void writeContent(StringBuilder text) {
 		text.append(color);
 	}
