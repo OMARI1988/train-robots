@@ -23,14 +23,13 @@ public class CommandView extends PaneView implements CommandAware {
 	public CommandView(CommandService commandService) {
 		super(title(commandService.command()));
 
-		// Layout.
+		// View.
 		setLayout(new BorderLayout());
-
-		// LOSR
 		losrView = new LosrView(commandService);
-
-		// Scroll pane.
 		add(new JScrollPane(losrView), BorderLayout.CENTER);
+
+		// Keys.
+		bindKey("ESCAPE", losrView::clearSelection);
 	}
 
 	@Override

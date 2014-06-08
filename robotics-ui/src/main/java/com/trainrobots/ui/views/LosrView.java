@@ -53,19 +53,12 @@ public class LosrView extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent event) {
-
-				// Add to selection.
 				if (hover != null) {
 					selection.add(hover);
+					repaint();
 				} else {
-
-					// Clear selection.
-					for (Text item : selection) {
-						item.selected(false);
-					}
-					selection.clear();
+					clearSelection();
 				}
-				repaint();
 			}
 
 			public void mouseReleased(MouseEvent event) {
@@ -141,6 +134,15 @@ public class LosrView extends JPanel {
 		// Command.
 		Command command = commandService.command();
 		visualizer = new Visualizer(command);
+		repaint();
+	}
+
+	public void clearSelection() {
+		for (Text item : selection) {
+			item.selected(false);
+		}
+		selection.clear();
+		hover = null;
 		repaint();
 	}
 

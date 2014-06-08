@@ -25,6 +25,11 @@ public class MainMenu extends JMenuBar {
 			}
 		});
 
+		add(new Menu("Edit", 'E') {
+			{
+			}
+		});
+
 		add(new Menu("View", 'V') {
 			{
 				addCheckedItem("Bounding Boxes", "ctrl B",

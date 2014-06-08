@@ -12,15 +12,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.ui.commands.Executable;
-import com.trainrobots.ui.commands.ExecutableAction;
 
 public class RobotView extends PaneView {
 
@@ -60,11 +57,6 @@ public class RobotView extends PaneView {
 	@Override
 	public String paneType() {
 		return "robot";
-	}
-
-	private void bindKey(String key, Executable executable) {
-		getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(key), key);
-		getActionMap().put(key, new ExecutableAction(executable));
 	}
 
 	private void moveGripper(int dx, int dy, int dz) {

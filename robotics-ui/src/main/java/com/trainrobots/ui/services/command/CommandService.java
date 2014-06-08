@@ -9,6 +9,7 @@
 package com.trainrobots.ui.services.command;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -86,10 +87,7 @@ public class CommandService {
 
 	public void boundingBoxes(boolean boundingBoxes) {
 		this.boundingBoxes = boundingBoxes;
-		CommandView commandView = windowService.pane(CommandView.class);
-		if (commandView != null) {
-			commandView.redraw();
-		}
+		execute(v -> v.redraw());
 	}
 
 	public Theme theme() {
@@ -98,10 +96,7 @@ public class CommandService {
 
 	public void theme(Theme theme) {
 		this.theme = theme;
-		CommandView commandView = windowService.pane(CommandView.class);
-		if (commandView != null) {
-			commandView.bindTo(command);
-		}
+		execute(v -> v.bindTo(command));
 	}
 
 	public void randomCommand() {
@@ -111,5 +106,12 @@ public class CommandService {
 			command = commands.get(random.nextInt(commands.count()));
 		} while (command.losr() == null);
 		command(command);
+	}
+
+	private void execute(Consumer<CommandView> action) {
+		CommandView commandView = windowService.pane(CommandView.class);
+		if (commandView != null) {
+			action.accept(commandView);
+		}
 	}
 }
