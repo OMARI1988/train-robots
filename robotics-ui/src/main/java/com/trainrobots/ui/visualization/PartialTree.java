@@ -45,7 +45,7 @@ public class PartialTree {
 		// Non-terminal?
 		if (!(item instanceof Terminal)) {
 			for (Losr child : item) {
-				items.remove(child);
+				remove(child, false);
 			}
 		}
 
@@ -80,6 +80,10 @@ public class PartialTree {
 	}
 
 	public void remove(Losr item) {
+		remove(item, true);
+	}
+
+	private void remove(Losr item, boolean replaceWithChildren) {
 
 		// Find item.
 		int size = items.count();
@@ -93,8 +97,10 @@ public class PartialTree {
 				items.remove(i);
 
 				// Add children.
-				for (Losr child : item) {
-					items.add(i++, child);
+				if (replaceWithChildren) {
+					for (Losr child : item) {
+						items.add(i++, child);
+					}
 				}
 				return;
 			}

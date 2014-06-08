@@ -13,6 +13,7 @@ import javax.swing.JMenuBar;
 import com.trainrobots.losr.Action;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
@@ -40,6 +41,7 @@ public class MainMenu extends JMenuBar {
 				add("New Action", "ctrl A", Action.class);
 				add("New Cardinal", "ctrl N", Cardinal.class);
 				add("New Color", "ctrl C", Color.class);
+				add("New Destination", "ctrl D", Destination.class);
 				add("New Entity", "ctrl E", Entity.class);
 				add("New Event", "ctrl V", Event.class);
 				add("New Indicator", "ctrl I", Indicator.class);

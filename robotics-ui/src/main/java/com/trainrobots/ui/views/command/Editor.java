@@ -16,6 +16,7 @@ import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
@@ -96,38 +97,35 @@ public class Editor {
 			return (T) new Entity(0, 0, items(selection));
 		}
 
-		return terminal(context(selection), type);
-	}
-
-	private static <T extends Losr> T terminal(TextContext context,
-			Class<T> type) {
+		if (type == Destination.class) {
+			return (T) new Destination(0, 0, items(selection));
+		}
 
 		if (type == Action.class) {
-			return (T) new Action(context, Actions.Take);
+			return (T) new Action(context(selection), Actions.Take);
 		}
 
 		if (type == Cardinal.class) {
-			return (T) new Cardinal(context, 1);
+			return (T) new Cardinal(context(selection), 1);
 		}
 
 		if (type == Color.class) {
-			return (T) new Color(context, Colors.Red);
+			return (T) new Color(context(selection), Colors.Red);
 		}
 
 		if (type == Indicator.class) {
-			return (T) new Indicator(context, Indicators.Left);
+			return (T) new Indicator(context(selection), Indicators.Left);
 		}
 
 		if (type == Relation.class) {
-			return (T) new Relation(context, Relations.Above);
+			return (T) new Relation(context(selection), Relations.Above);
 		}
 
 		if (type == Type.class) {
-			return (T) new Type(context, Types.Cube);
+			return (T) new Type(context(selection), Types.Cube);
 		}
 
-		throw new RoboticException("Can't create %s terminal.",
-				type.getSimpleName());
+		throw new RoboticException("Can't create %s.", type.getSimpleName());
 	}
 
 	private static Items<Losr> items(Items<Text> selection) {
