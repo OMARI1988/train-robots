@@ -110,30 +110,22 @@ public class CommandService {
 		command(command);
 	}
 
-	public <T extends Losr> void addLosr(Class<T> type) {
-		execute("Add " + type.getSimpleName().toLowerCase(), v -> v.editor()
-				.addLosr(type));
+	public <T extends Losr> void add(Class<T> type) {
+		execute(v -> v.editor().add(type));
+	}
+
+	public void delete() {
+		execute(v -> v.editor().delete());
 	}
 
 	private void execute(Consumer<CommandView> action) {
-		execute(null, action);
-	}
-
-	private void execute(String status, Consumer<CommandView> action) {
 		try {
 			CommandView commandView = windowService.pane(CommandView.class);
 			if (commandView != null) {
 				action.accept(commandView);
 			}
-			if (status != null) {
-				windowService.status(status);
-			}
 		} catch (Exception exception) {
-			if (exception.getMessage() == null) {
-				Log.error("Failed to execute UI action.", exception);
-			} else {
-				windowService.error(exception.getMessage());
-			}
+			Log.error("Failed to execute UI action.", exception);
 		}
 	}
 }

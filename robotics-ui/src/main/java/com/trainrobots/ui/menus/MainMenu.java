@@ -13,9 +13,12 @@ import javax.swing.JMenuBar;
 import com.trainrobots.losr.Action;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Entity;
+import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Relation;
+import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Type;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.window.WindowService;
@@ -34,17 +37,22 @@ public class MainMenu extends JMenuBar {
 
 		add(new Menu("Edit", 'E') {
 			{
-				addLosr("New Action", "ctrl A", Action.class);
-				addLosr("New Cardinal", "ctrl N", Cardinal.class);
-				addLosr("New Color", "ctrl C", Color.class);
-				addLosr("New Indicator", "ctrl I", Indicator.class);
-				addLosr("New Relation", "ctrl R", Relation.class);
-				addLosr("New Type", "ctrl T", Type.class);
+				add("New Action", "ctrl A", Action.class);
+				add("New Cardinal", "ctrl N", Cardinal.class);
+				add("New Color", "ctrl C", Color.class);
+				add("New Entity", "ctrl E", Entity.class);
+				add("New Event", "ctrl V", Event.class);
+				add("New Indicator", "ctrl I", Indicator.class);
+				add("New Relation", "ctrl R", Relation.class);
+				add("New Spatial Relation", "ctrl S", SpatialRelation.class);
+				add("New Type", "ctrl T", Type.class);
+				addSeparator();
+				addItem("Delete Node", "DELETE", commandService::delete);
 			}
 
-			private <T extends Losr> void addLosr(String name,
-					String shortCutKey, Class<T> type) {
-				addItem(name, shortCutKey, () -> commandService.addLosr(type));
+			private <T extends Losr> void add(String name, String shortCutKey,
+					Class<T> type) {
+				addItem(name, shortCutKey, () -> commandService.add(type));
 			}
 		});
 

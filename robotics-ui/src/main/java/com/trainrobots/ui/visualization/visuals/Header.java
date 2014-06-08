@@ -32,6 +32,10 @@ public class Header extends Text {
 		this.losr = losr;
 	}
 
+	public Losr losr() {
+		return losr;
+	}
+
 	public static Header from(VisualContext context, Losr losr) {
 
 		// Text and color.

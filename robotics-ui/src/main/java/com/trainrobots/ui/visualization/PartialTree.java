@@ -42,6 +42,13 @@ public class PartialTree {
 
 	public void add(Losr item) {
 
+		// Non-terminal?
+		if (!(item instanceof Terminal)) {
+			for (Losr child : item) {
+				items.remove(child);
+			}
+		}
+
 		// First item?
 		int size = items.count();
 		if (size == 0) {
@@ -70,5 +77,27 @@ public class PartialTree {
 
 		// Failed.
 		throw new RoboticException("Can't add overlapping items.");
+	}
+
+	public void remove(Losr item) {
+
+		// Find item.
+		int size = items.count();
+		for (int i = 0; i < size; i++) {
+
+			// Match?
+			Losr existing = items.get(i);
+			if (existing == item) {
+
+				// Remove.
+				items.remove(i);
+
+				// Add children.
+				for (Losr child : item) {
+					items.add(i++, child);
+				}
+				return;
+			}
+		}
 	}
 }
