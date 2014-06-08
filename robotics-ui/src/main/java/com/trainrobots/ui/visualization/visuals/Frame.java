@@ -13,17 +13,22 @@ import java.util.List;
 
 public class Frame extends Visual {
 
-	private final Text tag;
+	private final Visual tag;
 	private final List<Frame> frames = new ArrayList<Frame>();
-	private boolean skip;
+	private final boolean skip;
 
-	public Frame(Text tag) {
+	public Frame(Visual tag, boolean skip) {
 		this.tag = tag;
+		this.skip = skip;
 		add(tag);
 	}
 
-	public Text tag() {
+	public Visual tag() {
 		return tag;
+	}
+
+	public boolean skip() {
+		return skip;
 	}
 
 	public Iterable<Frame> frames() {
@@ -37,18 +42,5 @@ public class Frame extends Visual {
 	public void add(Frame frame) {
 		super.add(frame);
 		frames.add(frame);
-	}
-
-	public boolean skip() {
-		return skip;
-	}
-
-	public void skip(boolean skip) {
-		this.skip = skip;
-	}
-
-	@Override
-	public String toString() {
-		return tag.text();
 	}
 }

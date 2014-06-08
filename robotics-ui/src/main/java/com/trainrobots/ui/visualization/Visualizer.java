@@ -67,7 +67,7 @@ public class Visualizer {
 
 		// Trailing skipped tokens.
 		for (int i = lastId + 1; i <= tokens.count(); i++) {
-			root.add(skippedToken(context, i));
+			root.add(buildToken(context, i, true));
 		}
 
 		// Arrange.
@@ -100,7 +100,7 @@ public class Visualizer {
 			text = "reference";
 		}
 		Text tag = new Text(context, text, theme.font(), color);
-		Frame frame = new Frame(tag);
+		Frame frame = new Frame(tag, false);
 
 		// Terminal?
 		if (losr instanceof Terminal) {
@@ -108,7 +108,7 @@ public class Visualizer {
 
 			// Ellipsis.
 			if (terminal.context() == null) {
-				frame.add(buildToken(context, "Ø"));
+				frame.add(buildToken(context, "Ø", false));
 			}
 
 			// Add tokens.
@@ -119,11 +119,11 @@ public class Visualizer {
 
 					// Skipped tokens.
 					for (int j = lastId + 1; j <= i - 1; j++) {
-						skipList.add(skippedToken(context, j));
+						skipList.add(buildToken(context, j, true));
 					}
 
 					// Add token.
-					frame.add(buildToken(context, i));
+					frame.add(buildToken(context, i, false));
 					lastId = i;
 				}
 			}
@@ -143,21 +143,15 @@ public class Visualizer {
 		return frame;
 	}
 
-	private Frame skippedToken(VisualContext context, int id) {
-		Frame token = buildToken(context, id);
-		token.skip(true);
-		token.tag().color(theme.skip());
-		return token;
-	}
-
-	private Frame buildToken(VisualContext context, int id) {
+	private Frame buildToken(VisualContext context, int id, boolean skip) {
 		return buildToken(context, tokens.get(id - 1).context().text()
-				.toLowerCase());
+				.toLowerCase(), skip);
 	}
 
-	private Frame buildToken(VisualContext context, String text) {
-		Text tag = new Text(context, text, theme.font(), theme.foreground());
-		Frame frame = new Frame(tag);
+	private Frame buildToken(VisualContext context, String text, boolean skip) {
+		Color color = skip ? theme.skip() : theme.foreground();
+		Text tag = new Text(context, text, theme.font(), color);
+		Frame frame = new Frame(tag, skip);
 		frame.width(tag.width());
 		return frame;
 	}
@@ -211,7 +205,7 @@ public class Visualizer {
 
 			// Position tag.
 			if (first != null) {
-				Text tag = frame.tag();
+				Visual tag = frame.tag();
 				float fx = first.x() + first.tag().x() + 0.5f
 						* first.tag().width();
 				float lx = last.x() + last.tag().x() + 0.5f
@@ -231,7 +225,7 @@ public class Visualizer {
 		y += frame.y();
 
 		// Add.
-		Text tag = frame.tag();
+		Visual tag = frame.tag();
 		tag.x(x + tag.x());
 		tag.y(y + tag.y());
 		canvas.add(tag);
@@ -251,7 +245,7 @@ public class Visualizer {
 			for (Frame child : frame.frames()) {
 				pushLeaves(x, y, maxY, child);
 				if (!child.skip()) {
-					Text tag2 = child.tag();
+					Visual tag2 = child.tag();
 					l.add(new float[] { tag2.x() + 0.5f * tag2.width(),
 							tag2.y() - 2 });
 					terminal = child.leaf();

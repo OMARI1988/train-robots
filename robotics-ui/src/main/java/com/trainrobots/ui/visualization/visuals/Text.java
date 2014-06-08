@@ -22,54 +22,46 @@ public class Text extends Visual {
 
 	private final String text;
 	private final Font font;
+	private final Color color;
 	private final AttributedString attributedText;
 	private float textOffsetX;
 	private float textOffsetY;
-	private Color color;
 
 	public Text(VisualContext context, String text, Font font, Color color) {
 
-		// Initiate.
+		// Text.
 		this.text = text;
-		this.font = font;
-
-		// Attributed text.
 		attributedText = new AttributedString(text);
+
+		// Font.
+		this.font = font;
 		attributedText.addAttribute(TextAttribute.FONT, font);
 
+		// Color.
+		this.color = color;
+		attributedText.addAttribute(TextAttribute.FOREGROUND, color);
+
+		// Bounds.
 		FontRenderContext fontRenderContext = context.graphics()
 				.getFontRenderContext();
-		Rectangle2D.Float bounds;
-
-		// Measure the string.
-		bounds = (Rectangle2D.Float) font.getStringBounds(text,
-				fontRenderContext);
-
-		// Set bounds.
+		Rectangle2D.Float bounds = (Rectangle2D.Float) font.getStringBounds(
+				text, fontRenderContext);
 		textOffsetX = bounds.x;
 		textOffsetY = bounds.y;
 		width = bounds.width;
 		height = bounds.height;
+	}
 
-		// Color.
-		color(color);
+	public String text() {
+		return text;
 	}
 
 	public Font font() {
 		return font;
 	}
 
-	public void color(Color color) {
-		attributedText.addAttribute(TextAttribute.FOREGROUND, color);
-		this.color = color;
-	}
-
 	public Color color() {
 		return color;
-	}
-
-	public String text() {
-		return text;
 	}
 
 	@Override
