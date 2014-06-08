@@ -83,7 +83,7 @@ public class PartialTree {
 		remove(item, true);
 	}
 
-	private void remove(Losr item, boolean replaceWithChildren) {
+	public void remove(Losr item, boolean replaceWithChildren) {
 
 		// Find item.
 		int size = items.count();

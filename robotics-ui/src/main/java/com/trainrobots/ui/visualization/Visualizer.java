@@ -235,11 +235,21 @@ public class Visualizer {
 		x += frame.x();
 		y += frame.y();
 
-		// Add.
+		// Add to canvas.
 		Visual tag = frame.tag();
 		tag.x(x + tag.x());
 		tag.y(y + tag.y());
-		canvas.add(tag);
+		int size = tag.count();
+		if (size == 0) {
+			canvas.add(tag);
+		} else {
+			for (int i = 0; i < size; i++) {
+				Visual child = tag.get(i);
+				child.x(tag.x() + child.x());
+				child.y(tag.y() + child.y());
+				canvas.add(child);
+			}
+		}
 
 		// Leaf?
 		if (frame.leaf()) {

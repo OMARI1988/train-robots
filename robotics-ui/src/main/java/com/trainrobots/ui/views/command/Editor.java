@@ -8,7 +8,7 @@
 
 package com.trainrobots.ui.views.command;
 
-import javax.swing.JOptionPane;
+import java.util.function.Consumer;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -38,9 +38,11 @@ import com.trainrobots.ui.visualization.visuals.Token;
 public class Editor {
 
 	private final LosrView view;
+	private final Consumer<Text> popup;
 
-	public Editor(LosrView view) {
+	public Editor(LosrView view, Consumer<Text> popup) {
 		this.view = view;
+		this.popup = popup;
 	}
 
 	public <T extends Losr> void add(Class<T> type) {
@@ -99,8 +101,15 @@ public class Editor {
 		}
 		Text text = selection.get(0);
 
-		// TODO: FIX!!
-		JOptionPane.showMessageDialog(null, "Change " + text);
+		// Show popup.
+		popup.accept(text);
+	}
+
+	public void acceptChange(Text text) {
+		Losr losr = ((Header) text).losr();
+		Color color = (Color) losr;
+		color.color(Colors.Magenta);
+		view.redrawTree();
 	}
 
 	private static <T extends Losr> T losr(Class<T> type, Items<Text> selection) {

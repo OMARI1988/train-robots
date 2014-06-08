@@ -15,6 +15,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -57,27 +58,7 @@ public class LosrView extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent event) {
-
-				// Clear.
-				if (hover == null) {
-					clearSelection();
-					return;
-				}
-
-				// Add.
-				if (event.isShiftDown()) {
-					selection.add(hover);
-					repaint();
-					return;
-				}
-
-				// Single item.
-				for (Text item : selection) {
-					item.selected(false);
-				}
-				selection.clear();
-				selection.add(hover);
-				repaint();
+				handleMousePressed(event);
 			}
 
 			public void mouseReleased(MouseEvent event) {
@@ -96,44 +77,7 @@ public class LosrView extends JPanel {
 			}
 
 			public void mouseMoved(MouseEvent event) {
-
-				// No tree?
-				if (visualTree == null) {
-					return;
-				}
-
-				// Mouse coordinates.
-				int mx = event.getX();
-				int my = event.getY();
-
-				// Visual coordinates.
-				Visual root = visualTree.root();
-				float ox = 0.5f * (getWidth() - root.width());
-				float oy = 0.5f * (getHeight() - root.height());
-				float vx = mx - ox;
-				float vy = my - oy;
-
-				// Find element.
-				Text text = visualTree.find(Text.class, vx, vy);
-
-				// No change?
-				if (Objects.equals(text, hover)) {
-					return;
-				}
-
-				// Clear previous.
-				if (hover != null && !selection.contains(hover)) {
-					hover.selected(false);
-				}
-
-				// New hover.
-				hover = text;
-				if (hover != null) {
-					hover.selected(true);
-				}
-
-				// Repaint.
-				repaint();
+				handleMouseMoved(event);
 			}
 		});
 
@@ -216,7 +160,7 @@ public class LosrView extends JPanel {
 			}
 
 			// Changed size?
-			if (area.getWidth() != width || area.getHeight() != height) {
+			if (area.width != width || area.height != height) {
 
 				// Area has changed.
 				area.setSize(width, height);
@@ -235,5 +179,82 @@ public class LosrView extends JPanel {
 		if (visualTree != null) {
 			visualTree.render(context);
 		}
+	}
+
+	public Point2D.Float visualToWindow(float vx, float vy) {
+		Visual root = visualTree.root();
+		float ox = 0.5f * (getWidth() - root.width());
+		float oy = 0.5f * (getHeight() - root.height());
+		return new Point2D.Float(vx + ox, vy + oy);
+	}
+
+	private Point2D.Float windowToVisual(float wx, float wy) {
+		Visual root = visualTree.root();
+		float ox = 0.5f * (getWidth() - root.width());
+		float oy = 0.5f * (getHeight() - root.height());
+		return new Point2D.Float(wx - ox, wy - oy);
+	}
+
+	private void handleMouseMoved(MouseEvent event) {
+
+		// No tree?
+		if (visualTree == null) {
+			return;
+		}
+
+		// Find element.
+		Point2D.Float p = windowToVisual(event.getX(), event.getY());
+		Text text = visualTree.find(Text.class, p.x, p.y);
+
+		// No change?
+		if (Objects.equals(text, hover)) {
+			return;
+		}
+
+		// Clear previous.
+		if (hover != null && !selection.contains(hover)) {
+			hover.selected(false);
+		}
+
+		// New hover.
+		hover = text;
+		if (hover != null) {
+			hover.selected(true);
+		}
+
+		// Repaint.
+		repaint();
+	}
+
+	private void handleMousePressed(MouseEvent event) {
+
+		// Recalculate hover.
+		handleMouseMoved(event);
+
+		// Clear.
+		if (hover == null) {
+			clearSelection();
+			return;
+		}
+
+		// Already selected?
+		if (selection.contains(hover)) {
+			return;
+		}
+
+		// Add.
+		if (event.isShiftDown()) {
+			selection.add(hover);
+			repaint();
+			return;
+		}
+
+		// Single item.
+		for (Text item : selection) {
+			item.selected(false);
+		}
+		selection.clear();
+		selection.add(hover);
+		repaint();
 	}
 }

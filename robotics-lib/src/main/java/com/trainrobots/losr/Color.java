@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Color extends Terminal {
 
-	private final Colors color;
+	private Colors color;
 
 	public Color(Colors color) {
 		super(null);
@@ -24,6 +24,10 @@ public class Color extends Terminal {
 
 	public Colors color() {
 		return color;
+	}
+
+	public void color(Colors color) {
+		this.color = color;
 	}
 
 	@Override
