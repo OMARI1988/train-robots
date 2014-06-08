@@ -110,11 +110,30 @@ public class Editor {
 		if (losr instanceof Action) {
 			popup.show(detail, (Object[]) Actions.values(),
 					((Action) losr).action());
+			return;
 		}
 
 		if (losr instanceof Color) {
 			popup.show(detail, (Object[]) Colors.values(),
 					((Color) losr).color());
+			return;
+		}
+
+		if (losr instanceof Type) {
+			popup.show(detail, (Object[]) Types.values(), ((Type) losr).type());
+			return;
+		}
+
+		if (losr instanceof Relation) {
+			popup.show(detail, (Object[]) Relations.values(),
+					((Relation) losr).relation());
+			return;
+		}
+
+		if (losr instanceof Indicator) {
+			popup.show(detail, (Object[]) Indicators.values(),
+					((Indicator) losr).indicator());
+			return;
 		}
 	}
 
@@ -126,12 +145,35 @@ public class Editor {
 			Action action = (Action) losr;
 			action.action((Actions) value);
 			view.redrawTree();
+			return;
 		}
 
 		if (losr instanceof Color) {
 			Color color = (Color) losr;
 			color.color((Colors) value);
 			view.redrawTree();
+			return;
+		}
+
+		if (losr instanceof Type) {
+			Type type = (Type) losr;
+			type.type((Types) value);
+			view.redrawTree();
+			return;
+		}
+
+		if (losr instanceof Relation) {
+			Relation relation = (Relation) losr;
+			relation.relation((Relations) value);
+			view.redrawTree();
+			return;
+		}
+
+		if (losr instanceof Indicator) {
+			Indicator indicator = (Indicator) losr;
+			indicator.indicator((Indicators) value);
+			view.redrawTree();
+			return;
 		}
 	}
 

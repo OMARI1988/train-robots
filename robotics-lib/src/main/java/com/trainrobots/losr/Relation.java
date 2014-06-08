@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Relation extends Terminal {
 
-	private final Relations relation;
+	private Relations relation;
 
 	public Relation(Relations relation) {
 		super(null);
@@ -24,6 +24,10 @@ public class Relation extends Terminal {
 
 	public Relations relation() {
 		return relation;
+	}
+
+	public void relation(Relations relation) {
+		this.relation = relation;
 	}
 
 	@Override

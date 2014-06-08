@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Type extends Terminal {
 
-	private final Types type;
+	private Types type;
 
 	public Type(Types type) {
 		this(null, type);
@@ -23,6 +23,10 @@ public class Type extends Terminal {
 
 	public Types type() {
 		return type;
+	}
+
+	public void type(Types type) {
+		this.type = type;
 	}
 
 	@Override

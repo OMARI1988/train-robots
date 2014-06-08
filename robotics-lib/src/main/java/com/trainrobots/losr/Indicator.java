@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Indicator extends Terminal {
 
-	private final Indicators indicator;
+	private Indicators indicator;
 
 	public Indicator(Indicators indicator) {
 		super(null);
@@ -24,6 +24,10 @@ public class Indicator extends Terminal {
 
 	public Indicators indicator() {
 		return indicator;
+	}
+
+	public void indicator(Indicators indicator) {
+		this.indicator = indicator;
 	}
 
 	@Override
