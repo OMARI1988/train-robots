@@ -131,6 +131,10 @@ public class LosrView extends JPanel {
 
 	public void bind() {
 
+		// Selection.
+		selection.clear();
+		hover = null;
+
 		// Theme.
 		setBackground(commandService.theme().background());
 
