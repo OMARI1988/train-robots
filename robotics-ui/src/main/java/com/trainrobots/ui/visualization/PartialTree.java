@@ -55,7 +55,7 @@ public class PartialTree {
 		for (int i = 0; i < size; i++) {
 			TextContext nextSpan = items.get(i).span();
 			if ((previousSpan == null || newSpan.start() > previousSpan.end())
-					&& newSpan.end() < nextSpan.end()) {
+					&& newSpan.end() < nextSpan.start()) {
 				items.add(i, item);
 				return;
 			}
