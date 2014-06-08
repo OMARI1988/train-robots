@@ -13,8 +13,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -31,6 +34,7 @@ public class LosrView extends JPanel {
 
 	private final CommandService commandService;
 	private final Dimension area = new Dimension();
+	private final Set<Text> selection = new HashSet<>();
 	private Visualizer visualizer;
 	private VisualTree visualTree;
 	private Text hover;
@@ -44,6 +48,36 @@ public class LosrView extends JPanel {
 		setOpaque(true);
 
 		// Mouse.
+		addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent event) {
+			}
+
+			public void mousePressed(MouseEvent event) {
+
+				// Add to selection.
+				if (hover != null) {
+					selection.add(hover);
+				} else {
+
+					// Clear selection.
+					for (Text item : selection) {
+						item.selected(false);
+					}
+					selection.clear();
+				}
+				repaint();
+			}
+
+			public void mouseReleased(MouseEvent event) {
+			}
+
+			public void mouseEntered(MouseEvent event) {
+			}
+
+			public void mouseExited(MouseEvent event) {
+			}
+
+		});
 		addMouseMotionListener(new MouseMotionListener() {
 
 			public void mouseDragged(MouseEvent event) {
@@ -75,12 +109,12 @@ public class LosrView extends JPanel {
 					return;
 				}
 
-				// Deselect previous.
-				if (hover != null) {
+				// Clear previous.
+				if (hover != null && !selection.contains(hover)) {
 					hover.selected(false);
 				}
 
-				// Select new.
+				// New hover.
 				hover = text;
 				if (hover != null) {
 					hover.selected(true);
