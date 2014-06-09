@@ -95,6 +95,15 @@ public class LosrView extends JPanel {
 		return new ItemsArray<Text>(items);
 	}
 
+	public void clearSelection() {
+		for (Text item : selection) {
+			item.selected(false);
+		}
+		selection.clear();
+		hover = null;
+		repaint();
+	}
+
 	public PartialTree partialTree() {
 		return partialTree;
 	}
@@ -123,15 +132,6 @@ public class LosrView extends JPanel {
 		Command command = commandService.command();
 		partialTree = new PartialTree(command);
 		visualizer = new Visualizer(partialTree);
-		repaint();
-	}
-
-	public void clearSelection() {
-		for (Text item : selection) {
-			item.selected(false);
-		}
-		selection.clear();
-		hover = null;
 		repaint();
 	}
 
