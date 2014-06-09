@@ -12,7 +12,6 @@ import static com.trainrobots.nlp.lexicon.LexicalKey.key;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.losr.Action;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Cardinal;
@@ -243,6 +242,17 @@ public class Editor {
 			if (losr != null) {
 				return (T) losr;
 			}
+
+			// Diagnostics.
+			StringBuilder key = new StringBuilder();
+			int size = items.count();
+			for (int i = 0; i < size; i++) {
+				if (key.length() > 0) {
+					key.append(' ');
+				}
+				key.append(items.get(i).name());
+			}
+			throw new RoboticException("No grammar rule found for '%s'.", key);
 		}
 
 		// Non-terminals.
@@ -262,18 +272,22 @@ public class Editor {
 				type.getSimpleName());
 	}
 
-	private static Items<Losr> items(Items<Text> selection) {
+	private Items<Losr> items(Items<Text> selection) {
+
+		// Use a partial tree to preserve sort order.
+		PartialTree result = new PartialTree(view.partialTree().tokens());
+
+		// Add items.
 		int size = selection.count();
-		Losr[] result = new Losr[size];
 		for (int i = 0; i < size; i++) {
 			Text item = selection.get(i);
 			if (!(item instanceof Header)) {
 				throw new RoboticException(
 						"Selection should contain only headers.");
 			}
-			result[i] = ((Header) item).losr();
+			result.add(((Header) item).losr());
 		}
-		return new ItemsArray(result);
+		return result.items();
 	}
 
 	private static TextContext context(Items<Text> selection) {
