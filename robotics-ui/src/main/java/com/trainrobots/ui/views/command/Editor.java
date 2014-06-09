@@ -34,6 +34,8 @@ import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.visualization.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
+import com.trainrobots.ui.visualization.visuals.IdDetail;
+import com.trainrobots.ui.visualization.visuals.ReferenceIdDetail;
 import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Token;
 
@@ -82,8 +84,12 @@ public class Editor {
 		Text text = selection.get(0);
 
 		// Header.
-		Losr losr;
-		if (text instanceof Detail) {
+		Losr losr = null;
+		if (text instanceof IdDetail) {
+			((Detail) text).header().losr().id(0);
+		} else if (text instanceof ReferenceIdDetail) {
+			((Detail) text).header().losr().referenceId(0);
+		} else if (text instanceof Detail) {
 			losr = ((Detail) text).header().losr();
 		} else if (text instanceof Header) {
 			losr = ((Header) text).losr();
@@ -92,7 +98,9 @@ public class Editor {
 		}
 
 		// Remove.
-		view.partialTree().remove(losr);
+		if (losr != null) {
+			view.partialTree().remove(losr);
+		}
 		view.redrawTree();
 	}
 

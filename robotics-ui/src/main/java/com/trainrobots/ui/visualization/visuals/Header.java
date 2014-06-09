@@ -42,10 +42,10 @@ public class Header extends Text {
 		// ID.
 		details = new DetailList(context, this);
 		if (losr.id() != 0) {
-			details.add("id: " + losr.id());
+			details.add(new IdDetail(context, this, losr.id()));
 		}
 		if (losr.referenceId() != 0) {
-			details.add("reference-id: " + losr.referenceId());
+			details.add(new ReferenceIdDetail(context, this, losr.referenceId()));
 		}
 
 		// Action.

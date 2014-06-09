@@ -15,8 +15,8 @@ import com.trainrobots.collections.Items;
 
 public abstract class Losr implements Items<Losr> {
 
-	protected final int id;
-	protected final int referenceId;
+	protected int id;
+	protected int referenceId;
 
 	protected Losr() {
 		this(0, 0);
@@ -31,8 +31,16 @@ public abstract class Losr implements Items<Losr> {
 		return id;
 	}
 
+	public void id(int id) {
+		this.id = id;
+	}
+
 	public int referenceId() {
 		return referenceId;
+	}
+
+	public void referenceId(int referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	public abstract String name();
