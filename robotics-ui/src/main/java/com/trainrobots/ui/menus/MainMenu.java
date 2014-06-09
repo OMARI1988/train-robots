@@ -43,8 +43,10 @@ public class MainMenu extends JMenuBar {
 				addSeparator();
 				add(new Menu("New", 'N') {
 					{
+						add("Node", "ctrl N", Losr.class);
+						addSeparator();
 						add("Action", "ctrl A", Action.class);
-						add("Cardinal", "ctrl N", Cardinal.class);
+						add("Cardinal", "ctrl L", Cardinal.class);
 						add("Color", "ctrl C", Color.class);
 						add("Destination", "ctrl D", Destination.class);
 						add("Entity", "ctrl E", Entity.class);

@@ -58,8 +58,9 @@ public class Editor {
 			return;
 		}
 
-		// Losr.
-		Losr losr = losr(type, selection);
+		// Terminals?
+		Losr losr = selection.get(0) instanceof Token ? terminal(type,
+				selection) : nonTerminal(type, selection);
 
 		// Add.
 		PartialTree partialTree = view.partialTree();
@@ -187,26 +188,13 @@ public class Editor {
 		}
 	}
 
-	private <T extends Losr> T losr(Class<T> type, Items<Text> selection) {
-
-		// Non-terminals.
-		if (type == Event.class) {
-			return (T) new Event(0, 0, items(selection));
-		}
-		if (type == SpatialRelation.class) {
-			return (T) new SpatialRelation(0, 0, items(selection));
-		}
-		if (type == Entity.class) {
-			return (T) new Entity(0, 0, items(selection));
-		}
-		if (type == Destination.class) {
-			return (T) new Destination(0, 0, items(selection));
-		}
+	private <T extends Losr> T terminal(Class<T> type, Items<Text> selection) {
 
 		// Lexicon.
 		TextContext context = context(selection);
-		Terminal terminal = treebankService.terminal(
-				(Class<? extends Terminal>) type,
+		Class<? extends Terminal> terminalType = type == Losr.class ? null
+				: (Class<? extends Terminal>) type;
+		Terminal terminal = treebankService.terminal(terminalType,
 				key(view.partialTree().tokens(), context), context);
 		if (terminal != null) {
 			return (T) terminal;
@@ -231,7 +219,33 @@ public class Editor {
 		if (type == Type.class) {
 			return (T) new Type(context, Types.Cube);
 		}
-		throw new RoboticException("Can't create %s.", type.getSimpleName());
+
+		throw new RoboticException("Can't create %s from terminals.",
+				type.getSimpleName());
+	}
+
+	private <T extends Losr> T nonTerminal(Class<T> type, Items<Text> selection) {
+
+		Items<Losr> items = items(selection);
+
+		if (type == Event.class) {
+			return (T) new Event(0, 0, items);
+		}
+
+		if (type == SpatialRelation.class) {
+			return (T) new SpatialRelation(0, 0, items);
+		}
+
+		if (type == Entity.class) {
+			return (T) new Entity(0, 0, items);
+		}
+
+		if (type == Destination.class) {
+			return (T) new Destination(0, 0, items);
+		}
+
+		throw new RoboticException("Can't create %s from non-terminals.",
+				type.getSimpleName());
 	}
 
 	private static Items<Losr> items(Items<Text> selection) {

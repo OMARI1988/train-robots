@@ -64,10 +64,9 @@ public class TreebankService {
 		// Most frequent entry.
 		Entry entry = null;
 		for (Entry candidate : entries) {
-			if (candidate.terminal.getClass() == type) {
-				if (entry == null || candidate.count > entry.count) {
-					entry = candidate;
-				}
+			if ((type == null || candidate.terminal.getClass() == type)
+					&& (entry == null || candidate.count > entry.count)) {
+				entry = candidate;
 			}
 		}
 

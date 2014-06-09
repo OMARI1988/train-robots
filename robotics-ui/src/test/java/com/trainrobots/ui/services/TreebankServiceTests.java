@@ -35,5 +35,9 @@ public class TreebankServiceTests {
 		// Color.
 		Color color = service.terminal(Color.class, "pink", null);
 		assertThat(color, is(new Color(Colors.Magenta)));
+
+		// Lookup without specifiying type.
+		Color color2 = service.terminal(null, "purple", null);
+		assertThat(color2, is(new Color(Colors.Magenta)));
 	}
 }
