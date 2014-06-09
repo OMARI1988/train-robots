@@ -17,7 +17,9 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.losr.TextContext;
 import com.trainrobots.ui.visualization.losr.Ellipsis;
+import com.trainrobots.ui.visualization.losr.EllipticalContext;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Frame;
@@ -99,11 +101,17 @@ public class Visualizer {
 
 		// Ellipsis.
 		Terminal terminal = (Terminal) losr;
-		if (terminal.context() == null) {
+		TextContext textContext = terminal.context();
+		if (textContext == null || textContext instanceof EllipticalContext) {
 
 			// Skipped tokens.
+			Integer after = null;
 			if (terminal instanceof Ellipsis) {
-				int after = ((Ellipsis) terminal).after();
+				after = ((Ellipsis) terminal).after();
+			} else if (textContext instanceof EllipticalContext) {
+				after = ((EllipticalContext) textContext).after();
+			}
+			if (after != null) {
 				for (int j = lastId + 1; j <= after; j++) {
 					skipList.add(token(context, j, true));
 				}
@@ -116,8 +124,8 @@ public class Visualizer {
 		}
 
 		// Skipped tokens.
-		int tokenStart = terminal.context().start();
-		int tokenEnd = terminal.context().end();
+		int tokenStart = textContext.start();
+		int tokenEnd = textContext.end();
 		for (int j = lastId + 1; j < tokenStart; j++) {
 			skipList.add(token(context, j, true));
 		}

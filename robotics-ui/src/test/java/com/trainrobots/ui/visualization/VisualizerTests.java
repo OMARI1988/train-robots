@@ -16,8 +16,11 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Type;
+import com.trainrobots.losr.Types;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.visualization.losr.Ellipsis;
+import com.trainrobots.ui.visualization.losr.EllipticalContext;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
@@ -138,5 +141,28 @@ public class VisualizerTests {
 
 		// Verify.
 		assertThat(data, is(resource("partial-4674-2.png")));
+	}
+
+	@Test
+	public void shouldRenderPartialEllipsis3() {
+
+		// Render.
+		Command command = TestContext.treebank().command(4674);
+		PartialTree partialTree = new PartialTree(command.tokens());
+		partialTree.add(Losr.parse("(action: take (token: 1))"));
+		partialTree.add(Losr.parse("(color: blue (token: 3))"));
+		partialTree.add(Losr.parse("(type: cube (token: 4))"));
+		partialTree.add(Losr.parse("(relation: above (token: 7 9))"));
+		partialTree.add(Losr.parse("(action: drop (token: 6))"));
+		partialTree.add(Losr.parse("(color: green (token: 11))"));
+		partialTree.add(Losr.parse("(type: cube (token: 12))"));
+		Ellipsis ellipsis = new Ellipsis(6);
+		partialTree.add(ellipsis);
+		partialTree.remove(ellipsis);
+		partialTree.add(new Type(new EllipticalContext(6), Types.Reference));
+		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("partial-4674-3.png")));
 	}
 }

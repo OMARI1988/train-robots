@@ -45,10 +45,18 @@ public class PartialTree {
 
 		// Add ellipsis?
 		int size = items.count();
+		Integer after = null;
 		if (item instanceof Ellipsis) {
+			after = ((Ellipsis) item).after();
+		} else if (item instanceof Terminal) {
+			Terminal terminal = (Terminal) item;
+			if (terminal.context() instanceof EllipticalContext) {
+				after = ((EllipticalContext) terminal.context()).after();
+			}
+		}
+		if (after != null) {
 
 			// Preserve sort order.
-			int after = ((Ellipsis) item).after();
 			TextContext previousSpan = null;
 			for (int i = 0; i < size; i++) {
 				Losr nextItem = items.get(i);
