@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.losr.reader;
+package com.trainrobots.losr.factory;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;

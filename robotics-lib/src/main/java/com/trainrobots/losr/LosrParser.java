@@ -6,16 +6,14 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.losr.reader;
+package com.trainrobots.losr;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.ItemsList;
-import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.TextContext;
+import com.trainrobots.losr.factory.LosrFactory;
 
-public class LosrParser {
+class LosrParser {
 
-	private static final LosrFactory factory = new LosrFactory();
 	private final String text;
 	private int position;
 
@@ -90,9 +88,9 @@ public class LosrParser {
 
 		// Build node.
 		if (content != null) {
-			return factory.build(context, name, content);
+			return LosrFactory.build(context, name, content);
 		}
-		return factory.build(id, referenceId, name, children);
+		return LosrFactory.build(id, referenceId, name, children);
 	}
 
 	private String readName() {

@@ -243,7 +243,7 @@ public class LosrView extends JPanel {
 		}
 
 		// Add.
-		if (event.isShiftDown()) {
+		if (event.isShiftDown() || event.isControlDown()) {
 			selection.add(hover);
 			repaint();
 			return;

@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.losr.reader;
+package com.trainrobots.losr.factory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +38,13 @@ import com.trainrobots.losr.Types;
 
 public class LosrFactory {
 
-	private final Map<String, TerminalBuilder> terminals = new HashMap<>();
-	private final Map<String, NonTerminalBuilder> nonTerminals = new HashMap<>();
+	private static final Map<String, TerminalBuilder> terminals = new HashMap<>();
+	private static final Map<String, NonTerminalBuilder> nonTerminals = new HashMap<>();
 
-	public LosrFactory() {
+	private LosrFactory() {
+	}
+
+	static {
 
 		// Terminals.
 		terminal("text", Text::new);
@@ -63,7 +66,7 @@ public class LosrFactory {
 		nonTerminal("measure", Measure::new);
 	}
 
-	public Losr build(TextContext context, String name, String content) {
+	public static Losr build(TextContext context, String name, String content) {
 
 		// Builder.
 		TerminalBuilder builder = terminals.get(name);
@@ -76,7 +79,8 @@ public class LosrFactory {
 		return builder.build(context, content);
 	}
 
-	public Losr build(int id, int referenceId, String name, Items<Losr> children) {
+	public static Losr build(int id, int referenceId, String name,
+			Items<Losr> children) {
 
 		// Builder.
 		NonTerminalBuilder builder = nonTerminals.get(name);
@@ -89,11 +93,11 @@ public class LosrFactory {
 		return builder.build(id, referenceId, children);
 	}
 
-	private void terminal(String name, TerminalBuilder builder) {
+	private static void terminal(String name, TerminalBuilder builder) {
 		terminals.put(name, builder);
 	}
 
-	private void nonTerminal(String name, NonTerminalBuilder builder) {
+	private static void nonTerminal(String name, NonTerminalBuilder builder) {
 		nonTerminals.put(name, builder);
 	}
 }

@@ -8,6 +8,7 @@
 
 package com.trainrobots.ui.services.treebank;
 
+import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.treebank.Treebank;
 
@@ -15,6 +16,7 @@ public class TreebankService {
 
 	private final Treebank treebank;
 	private final Lexicon lexicon;
+	private final Grammar grammar;
 
 	public TreebankService() {
 		this(new Treebank("../.data/treebank.zip"));
@@ -23,6 +25,7 @@ public class TreebankService {
 	public TreebankService(Treebank treebank) {
 		this.treebank = treebank;
 		this.lexicon = new Lexicon(treebank);
+		this.grammar = new Grammar(treebank);
 	}
 
 	public Treebank treebank() {
@@ -31,5 +34,9 @@ public class TreebankService {
 
 	public Lexicon lexicon() {
 		return lexicon;
+	}
+
+	public Grammar grammar() {
+		return grammar;
 	}
 }

@@ -129,7 +129,7 @@ public class Visualizer {
 		Header header = Header.from(context, losr);
 
 		// Details?
-		Items<Detail> details = header.details(context);
+		Items<Detail> details = header.details();
 		if (details == null || details.count() == 0) {
 			return header;
 		}

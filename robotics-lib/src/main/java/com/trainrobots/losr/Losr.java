@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.reader.LosrParser;
 
 public abstract class Losr implements Items<Losr> {
 

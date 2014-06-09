@@ -42,11 +42,11 @@ public class Lexicon {
 		}
 	}
 
-	public <T extends Terminal> T terminal(Class<T> type, String token,
+	public <T extends Terminal> T terminal(Class<T> type, String key,
 			TextContext context) {
 
 		// Entries.
-		Items<Entry> entries = lexicon.get(token);
+		Items<Entry> entries = lexicon.get(key);
 		if (entries == null) {
 			return null;
 		}
@@ -60,7 +60,7 @@ public class Lexicon {
 			}
 		}
 
-		// Clone.
+		// Build.
 		return entry != null ? (T) entry.terminal.withContext(context) : null;
 	}
 

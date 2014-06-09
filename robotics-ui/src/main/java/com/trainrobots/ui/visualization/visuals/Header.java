@@ -25,15 +25,58 @@ import com.trainrobots.ui.visualization.themes.Theme;
 public class Header extends Text {
 
 	private final Losr losr;
+	private final DetailList details;
 
 	private Header(VisualContext context, Losr losr, String text,
 			java.awt.Color color) {
 		super(context, text, context.theme().font(), color);
 		this.losr = losr;
-	}
 
-	public Losr losr() {
-		return losr;
+		// No details?
+		Theme theme = context.theme();
+		if (!theme.showDetails()) {
+			details = null;
+			return;
+		}
+
+		// ID.
+		details = new DetailList(context, this);
+		if (losr.id() != 0) {
+			details.add("id: " + losr.id());
+		}
+		if (losr.referenceId() != 0) {
+			details.add("reference-id: " + losr.referenceId());
+		}
+
+		// Action.
+		if (losr instanceof Action) {
+			details.add(((Action) losr).action().toString());
+			return;
+		}
+
+		// Color.
+		if (losr instanceof Color) {
+			details.add(((Color) losr).color().toString());
+			return;
+		}
+
+		// Indicator.
+		if (losr instanceof Indicator) {
+			details.add(((Indicator) losr).indicator().toString());
+			return;
+		}
+
+		// Relation.
+		if (losr instanceof Relation) {
+			details.add(((Relation) losr).relation().toString());
+			return;
+		}
+
+		// Type.
+		if (losr instanceof Type) {
+			details.add(((Type) losr).type().toString());
+			return;
+		}
 	}
 
 	public static Header from(VisualContext context, Losr losr) {
@@ -60,52 +103,11 @@ public class Header extends Text {
 		return new Header(context, losr, text, color);
 	}
 
-	public Items<Detail> details(VisualContext context) {
+	public Losr losr() {
+		return losr;
+	}
 
-		// No details?
-		Theme theme = context.theme();
-		if (!theme.showDetails()) {
-			return null;
-		}
-
-		// ID.
-		DetailList details = new DetailList(context, this);
-		if (losr.id() != 0) {
-			details.add("id: " + losr.id());
-		}
-		if (losr.referenceId() != 0) {
-			details.add("reference-id: " + losr.referenceId());
-		}
-
-		// Action.
-		if (losr instanceof Action) {
-			details.add(((Action) losr).action().toString());
-			return details;
-		}
-
-		// Color.
-		if (losr instanceof Color) {
-			details.add(((Color) losr).color().toString());
-			return details;
-		}
-
-		// Indicator.
-		if (losr instanceof Indicator) {
-			details.add(((Indicator) losr).indicator().toString());
-			return details;
-		}
-
-		// Relation.
-		if (losr instanceof Relation) {
-			details.add(((Relation) losr).relation().toString());
-			return details;
-		}
-
-		// Type.
-		if (losr instanceof Type) {
-			details.add(((Type) losr).type().toString());
-			return details;
-		}
+	public Items<Detail> details() {
 		return details;
 	}
 }

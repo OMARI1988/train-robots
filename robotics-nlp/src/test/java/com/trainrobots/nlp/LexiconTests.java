@@ -23,9 +23,9 @@ import com.trainrobots.nlp.lexicon.Lexicon;
 public class LexiconTests {
 
 	@Test
-	public void shouldBuildLexicon() {
+	public void shouldGetTerminals() {
 
-		// Service.
+		// Lexicon.
 		Lexicon lexicon = new Lexicon(TestContext.treebank());
 
 		// Relation.

@@ -112,10 +112,20 @@ public class Editor {
 		Text text = selection.get(0);
 
 		// Detail.
-		if (!(text instanceof Detail)) {
+		Detail detail = null;
+		if (text instanceof Detail) {
+			detail = ((Detail) text);
+		} else if (text instanceof Header) {
+			Items<Detail> details = (((Header) text)).details();
+			if (details.count() > 0) {
+				detail = details.get(details.count() - 1);
+			}
+		}
+		if (detail == null) {
 			return;
 		}
-		Detail detail = (Detail) text;
+
+		// LOSR.
 		Losr losr = detail.header().losr();
 
 		if (losr instanceof Action) {
@@ -226,24 +236,28 @@ public class Editor {
 
 	private <T extends Losr> T nonTerminal(Class<T> type, Items<Text> selection) {
 
+		// Grammar.
 		Items<Losr> items = items(selection);
+		if (type == Losr.class) {
+			Losr losr = treebankService.grammar().nonTerminal(items);
+			if (losr != null) {
+				return (T) losr;
+			}
+		}
 
+		// Non-terminals.
 		if (type == Event.class) {
 			return (T) new Event(0, 0, items);
 		}
-
 		if (type == SpatialRelation.class) {
 			return (T) new SpatialRelation(0, 0, items);
 		}
-
 		if (type == Entity.class) {
 			return (T) new Entity(0, 0, items);
 		}
-
 		if (type == Destination.class) {
 			return (T) new Destination(0, 0, items);
 		}
-
 		throw new RoboticException("Can't create %s from non-terminals.",
 				type.getSimpleName());
 	}
