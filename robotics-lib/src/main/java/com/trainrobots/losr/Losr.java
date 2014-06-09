@@ -81,6 +81,9 @@ public abstract class Losr implements Items<Losr> {
 		int max = Integer.MIN_VALUE;
 		for (int i = 0; i < size; i++) {
 			TextContext child = get(i).span();
+			if (child == null) {
+				continue;
+			}
 			if (child.start() < min) {
 				min = child.start();
 			}
