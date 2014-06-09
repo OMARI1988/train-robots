@@ -22,12 +22,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 
+import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.views.PaneView;
-import com.trainrobots.ui.visualization.visuals.Detail;
+import com.trainrobots.ui.visualization.visuals.Text;
 
 public class CommandView extends PaneView implements CommandAware {
 
@@ -121,7 +122,8 @@ public class CommandView extends PaneView implements CommandAware {
 		return "Command " + command.id();
 	}
 
-	private void showPopup(Detail detail, Object[] options, Object selected) {
+	private void showPopup(Text text, Losr losr, Object[] options,
+			Object selected) {
 
 		// Already visible?
 		if (popup != null) {
@@ -133,6 +135,11 @@ public class CommandView extends PaneView implements CommandAware {
 			public void processKeyEvent(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					closePopup();
+				} else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+					closePopup();
+					CommandView.this.editor.acceptChange(losr,
+							((JComboBox) event.getComponent())
+									.getSelectedItem());
 				} else {
 					super.processKeyEvent(event);
 				}
@@ -144,19 +151,19 @@ public class CommandView extends PaneView implements CommandAware {
 			public void itemStateChanged(ItemEvent event) {
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 					closePopup();
-					editor.acceptChange(detail, event.getItem());
+					editor.acceptChange(losr, event.getItem());
 				}
 			}
 		});
 
 		// Show.
-		showPopup(detail, comboBox);
+		showPopup(text, comboBox);
 	}
 
-	private void showPopup(Detail detail, Component component) {
+	private void showPopup(Text text, Component component) {
 
 		// Bounds.
-		Point2D.Float p = losrView.visualToWindow(detail.x(), detail.y());
+		Point2D.Float p = losrView.visualToWindow(text.x(), text.y());
 		Dimension size = component.getPreferredSize();
 		int x = (int) p.x;
 		int y = (int) p.y;

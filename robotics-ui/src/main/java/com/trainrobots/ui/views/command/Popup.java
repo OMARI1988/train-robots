@@ -8,10 +8,11 @@
 
 package com.trainrobots.ui.views.command;
 
-import com.trainrobots.ui.visualization.visuals.Detail;
+import com.trainrobots.losr.Losr;
+import com.trainrobots.ui.visualization.visuals.Text;
 
 @FunctionalInterface
 public interface Popup {
 
-	void show(Detail detail, Object[] options, Object selected);
+	void show(Text text, Losr losr, Object[] options, Object selected);
 }

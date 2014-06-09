@@ -32,6 +32,7 @@ import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.visualization.losr.Ellipsis;
+import com.trainrobots.ui.visualization.losr.EllipticalContext;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
@@ -41,6 +42,10 @@ import com.trainrobots.ui.visualization.visuals.Text;
 import com.trainrobots.ui.visualization.visuals.Token;
 
 public class Editor {
+
+	private static final LosrType[] ellipticalTypes = {
+			new LosrType(new Type(Types.Region)),
+			new LosrType(new Relation(Relations.Above)) };
 
 	private final TreebankService treebankService;
 	private final LosrView view;
@@ -142,8 +147,22 @@ public class Editor {
 		Detail detail = null;
 		if (text instanceof Detail) {
 			detail = ((Detail) text);
-		} else if (text instanceof Header) {
-			Items<Detail> details = (((Header) text)).details();
+		}
+
+		// Header
+		else if (text instanceof Header) {
+			Header header = (Header) text;
+
+			// Ellipsis?
+			Losr losr = header.losr();
+			if (losr instanceof Ellipsis) {
+				popup.show(header, losr, (Object[]) ellipticalTypes,
+						ellipticalTypes[0]);
+				return;
+			}
+
+			// Detail.
+			Items<Detail> details = header.details();
 			if (details.count() > 0) {
 				detail = details.get(details.count() - 1);
 			}
@@ -156,38 +175,37 @@ public class Editor {
 		Losr losr = detail.header().losr();
 
 		if (losr instanceof Action) {
-			popup.show(detail, (Object[]) Actions.values(),
+			popup.show(detail, losr, (Object[]) Actions.values(),
 					((Action) losr).action());
 			return;
 		}
 
 		if (losr instanceof Color) {
-			popup.show(detail, (Object[]) Colors.values(),
+			popup.show(detail, losr, (Object[]) Colors.values(),
 					((Color) losr).color());
 			return;
 		}
 
 		if (losr instanceof Type) {
-			popup.show(detail, (Object[]) Types.values(), ((Type) losr).type());
+			popup.show(detail, losr, (Object[]) Types.values(),
+					((Type) losr).type());
 			return;
 		}
 
 		if (losr instanceof Relation) {
-			popup.show(detail, (Object[]) Relations.values(),
+			popup.show(detail, losr, (Object[]) Relations.values(),
 					((Relation) losr).relation());
 			return;
 		}
 
 		if (losr instanceof Indicator) {
-			popup.show(detail, (Object[]) Indicators.values(),
+			popup.show(detail, losr, (Object[]) Indicators.values(),
 					((Indicator) losr).indicator());
 			return;
 		}
 	}
 
-	public void acceptChange(Detail detail, Object value) {
-
-		Losr losr = detail.header().losr();
+	public void acceptChange(Losr losr, Object value) {
 
 		if (losr instanceof Action) {
 			Action action = (Action) losr;
@@ -220,6 +238,17 @@ public class Editor {
 		if (losr instanceof Indicator) {
 			Indicator indicator = (Indicator) losr;
 			indicator.indicator((Indicators) value);
+			view.redrawTree();
+			return;
+		}
+
+		if (losr instanceof Ellipsis) {
+			Ellipsis ellipsis = (Ellipsis) losr;
+			PartialTree partialTree = view.partialTree();
+			partialTree.remove(ellipsis);
+			LosrType type = (LosrType) value;
+			partialTree.add(type.terminal().withContext(
+					new EllipticalContext(ellipsis.after())));
 			view.redrawTree();
 			return;
 		}
