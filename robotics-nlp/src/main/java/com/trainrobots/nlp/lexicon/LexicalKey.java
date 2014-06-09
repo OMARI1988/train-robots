@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.services.treebank;
+package com.trainrobots.nlp.lexicon;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Terminal;

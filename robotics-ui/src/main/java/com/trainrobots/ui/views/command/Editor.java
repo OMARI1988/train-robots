@@ -8,7 +8,7 @@
 
 package com.trainrobots.ui.views.command;
 
-import static com.trainrobots.ui.services.treebank.LexicalKey.key;
+import static com.trainrobots.nlp.lexicon.LexicalKey.key;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
@@ -194,7 +194,7 @@ public class Editor {
 		TextContext context = context(selection);
 		Class<? extends Terminal> terminalType = type == Losr.class ? null
 				: (Class<? extends Terminal>) type;
-		Terminal terminal = treebankService.terminal(terminalType,
+		Terminal terminal = treebankService.lexicon().terminal(terminalType,
 				key(view.partialTree().tokens(), context), context);
 		if (terminal != null) {
 			return (T) terminal;
