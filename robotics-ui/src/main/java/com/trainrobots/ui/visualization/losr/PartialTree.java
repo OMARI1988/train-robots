@@ -43,6 +43,32 @@ public class PartialTree {
 
 	public void add(Losr item) {
 
+		// Add ellipsis?
+		int size = items.count();
+		if (item instanceof Ellipsis) {
+
+			// Preserve sort order.
+			int after = ((Ellipsis) item).after();
+			TextContext previousSpan = null;
+			for (int i = 0; i < size; i++) {
+				Losr nextItem = items.get(i);
+				TextContext nextSpan = nextItem.span();
+				if ((previousSpan == null || after >= previousSpan.end())
+						&& after < nextSpan.start()) {
+					items.add(i, item);
+					return;
+				}
+				previousSpan = nextSpan;
+			}
+
+			// Add to end?
+			if (previousSpan == null || after >= previousSpan.end()) {
+				items.add(item);
+				return;
+			}
+			throw new RoboticException("Can't add ellipsis.");
+		}
+
 		// Non-terminal?
 		if (!(item instanceof Terminal)) {
 			for (Losr child : item) {
@@ -50,18 +76,23 @@ public class PartialTree {
 			}
 		}
 
-		// First item?
-		int size = items.count();
-		if (size == 0) {
-			items.add(item);
-			return;
-		}
-
 		// Preserve sort order.
 		TextContext newSpan = item.span();
 		TextContext previousSpan = null;
 		for (int i = 0; i < size; i++) {
-			TextContext nextSpan = items.get(i).span();
+
+			// Next is an elliptical node.
+			Losr nextItem = items.get(i);
+			if (nextItem instanceof Ellipsis) {
+				if (newSpan.start() == ((Ellipsis) nextItem).after()) {
+					items.add(i, item);
+					return;
+				}
+				continue;
+			}
+
+			// Next is a non-elliptical node.
+			TextContext nextSpan = nextItem.span();
 			if ((previousSpan == null || newSpan.start() > previousSpan.end())
 					&& newSpan.end() < nextSpan.start()) {
 				items.add(i, item);
@@ -71,7 +102,7 @@ public class PartialTree {
 		}
 
 		// Add to end?
-		if (newSpan.start() > previousSpan.end()) {
+		if (previousSpan == null || newSpan.start() > previousSpan.end()) {
 			items.add(item);
 			return;
 		}

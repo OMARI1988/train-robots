@@ -71,39 +71,43 @@ public class Editor {
 	}
 
 	public void addEllipsis() {
+		Token token = token();
+		if (token != null) {
+			PartialTree partialTree = view.partialTree();
+			partialTree.add(new Ellipsis(token.id()));
+			view.redrawTree();
+		}
+	}
 
-		// Single token.
-		Items<Text> selection = view.selection();
-		if (selection == null) {
-			return;
+	public void addId() {
+		Header header = header();
+		if (header != null) {
+			Losr losr = header.losr();
+			if (losr.id() == 0) {
+				losr.id(1);
+				view.redrawTree();
+			}
 		}
-		if (selection.count() != 1) {
-			return;
-		}
-		if (!(selection.get(0) instanceof Token)) {
-			return;
-		}
-		Token token = (Token) selection.get(0);
+	}
 
-		// Add.
-		PartialTree partialTree = view.partialTree();
-		partialTree.add(new Ellipsis(token.id()));
-		view.redrawTree();
+	public void addReferenceId() {
+		Header header = header();
+		if (header != null) {
+			Losr losr = header.losr();
+			if (losr.referenceId() == 0) {
+				losr.referenceId(1);
+				view.redrawTree();
+			}
+		}
 	}
 
 	public void delete() {
 
 		// Selection.
-		Items<Text> selection = view.selection();
-		if (selection == null) {
+		Text text = selection();
+		if (text == null) {
 			return;
 		}
-
-		// Single node.
-		if (selection.count() != 1) {
-			throw new RoboticException("Can't delete multiple nodes.");
-		}
-		Text text = selection.get(0);
 
 		// Header.
 		Losr losr = null;
@@ -129,16 +133,10 @@ public class Editor {
 	public void change() {
 
 		// Selection.
-		Items<Text> selection = view.selection();
-		if (selection == null) {
+		Text text = selection();
+		if (text == null) {
 			return;
 		}
-
-		// Single node.
-		if (selection.count() != 1) {
-			throw new RoboticException("Can't change multiple nodes.");
-		}
-		Text text = selection.get(0);
 
 		// Detail.
 		Detail detail = null;
@@ -347,5 +345,32 @@ public class Editor {
 		}
 
 		return new TextContext(min, max);
+	}
+
+	private Header header() {
+		Text text = selection();
+		if (text == null) {
+			return null;
+		}
+		if (text instanceof Header) {
+			return (Header) text;
+		}
+		if (text instanceof Detail) {
+			return ((Detail) text).header();
+		}
+		return null;
+	}
+
+	private Token token() {
+		Text text = selection();
+		return text instanceof Token ? (Token) text : null;
+	}
+
+	private Text selection() {
+		Items<Text> selection = view.selection();
+		if (selection == null) {
+			return null;
+		}
+		return selection.count() == 1 ? selection.get(0) : null;
 	}
 }

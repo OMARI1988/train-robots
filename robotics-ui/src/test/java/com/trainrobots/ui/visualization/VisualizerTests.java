@@ -17,56 +17,13 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.visualization.losr.Ellipsis;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
 import com.trainrobots.ui.visualization.writers.SvgWriter;
 
 public class VisualizerTests {
-
-	@Test
-	public void shouldRenderPng() {
-
-		// Render.
-		Command command = TestContext.treebank().command(22473);
-		byte[] data = new PngWriter(command).renderToArray();
-
-		// Verify.
-		assertThat(data, is(resource("losr-22473.png")));
-	}
-
-	@Test
-	public void shouldRenderPngWithEllipsis() {
-
-		// Render.
-		Command command = TestContext.treebank().command(13013);
-		byte[] data = new PngWriter(command).renderToArray();
-
-		// Verify.
-		assertThat(data, is(resource("losr-13013.png")));
-	}
-
-	@Test
-	public void shouldRenderPngWithSkippedTokens() {
-
-		// Render.
-		Command command = TestContext.treebank().command(23991);
-		byte[] data = new PngWriter(command).renderToArray();
-
-		// Verify.
-		assertThat(data, is(resource("losr-23991.png")));
-	}
-
-	@Test
-	public void shouldRenderDarkPng() {
-
-		// Render.
-		Command command = TestContext.treebank().command(22473);
-		byte[] data = new PngWriter(command, Themes.Dark).renderToArray();
-
-		// Verify.
-		assertThat(data, is(resource("losr-22473-dark.png")));
-	}
 
 	@Test
 	public void shouldRenderSvg() {
@@ -91,6 +48,50 @@ public class VisualizerTests {
 	}
 
 	@Test
+	public void shouldRenderPng() {
+
+		// Render.
+		Command command = TestContext.treebank().command(22473);
+		byte[] data = new PngWriter(command).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-22473.png")));
+	}
+
+	@Test
+	public void shouldRenderDarkPng() {
+
+		// Render.
+		Command command = TestContext.treebank().command(22473);
+		byte[] data = new PngWriter(command, Themes.Dark).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-22473-dark.png")));
+	}
+
+	@Test
+	public void shouldRenderEllipsis() {
+
+		// Render.
+		Command command = TestContext.treebank().command(13013);
+		byte[] data = new PngWriter(command).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-13013.png")));
+	}
+
+	@Test
+	public void shouldRenderSkippedTokens() {
+
+		// Render.
+		Command command = TestContext.treebank().command(23991);
+		byte[] data = new PngWriter(command).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("losr-23991.png")));
+	}
+
+	@Test
 	public void shouldRenderPartialTree() {
 
 		// Render.
@@ -101,5 +102,41 @@ public class VisualizerTests {
 
 		// Verify.
 		assertThat(data, is(resource("partial-16549.png")));
+	}
+
+	@Test
+	public void shouldRenderPartialEllipsis1() {
+
+		// Render.
+		Command command = TestContext.treebank().command(4674);
+		PartialTree partialTree = new PartialTree(command.tokens());
+		partialTree.add(new Ellipsis(6));
+		partialTree.add(Losr.parse("(color: green (token: 11))"));
+		partialTree.add(Losr.parse("(relation: above (token: 7 9))"));
+		partialTree.add(Losr.parse("(action: drop (token: 6))"));
+		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("partial-4674-1.png")));
+	}
+
+	@Test
+	public void shouldRenderPartialEllipsis2() {
+
+		// Render.
+		Command command = TestContext.treebank().command(4674);
+		PartialTree partialTree = new PartialTree(command.tokens());
+		partialTree.add(Losr.parse("(action: take (token: 1))"));
+		partialTree.add(Losr.parse("(color: blue (token: 3))"));
+		partialTree.add(Losr.parse("(type: cube (token: 4))"));
+		partialTree.add(Losr.parse("(relation: above (token: 7 9))"));
+		partialTree.add(Losr.parse("(action: drop (token: 6))"));
+		partialTree.add(Losr.parse("(color: green (token: 11))"));
+		partialTree.add(Losr.parse("(type: cube (token: 12))"));
+		partialTree.add(new Ellipsis(6));
+		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
+
+		// Verify.
+		assertThat(data, is(resource("partial-4674-2.png")));
 	}
 }

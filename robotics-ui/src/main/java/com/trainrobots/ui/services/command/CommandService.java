@@ -117,6 +117,14 @@ public class CommandService {
 	public void addEllipsis() {
 		execute(v -> v.editor().addEllipsis());
 	}
+	
+	public void addId() {
+		execute(v -> v.editor().addId());
+	}
+
+	public void addReferenceId() {
+		execute(v -> v.editor().addReferenceId());
+	}
 
 	public void delete() {
 		execute(v -> v.editor().delete());

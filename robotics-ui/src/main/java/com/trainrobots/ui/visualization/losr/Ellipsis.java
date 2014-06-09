@@ -43,6 +43,8 @@ public class Ellipsis extends Terminal {
 
 	@Override
 	protected void writeContent(StringBuilder text) {
-		throw new NotImplementedException();
+		text.append("(after: ");
+		text.append(after);
+		text.append(')');
 	}
 }

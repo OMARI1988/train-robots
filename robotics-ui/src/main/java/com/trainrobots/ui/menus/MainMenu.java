@@ -44,7 +44,8 @@ public class MainMenu extends JMenuBar {
 				add(new Menu("New", 'N') {
 					{
 						add("Node", "ctrl N", Losr.class);
-						addItem("Ellipsis", "ctrl alt E", commandService::addEllipsis);
+						addItem("Ellipsis", "ctrl alt E",
+								commandService::addEllipsis);
 						addSeparator();
 						add("Action", "ctrl A", Action.class);
 						add("Cardinal", "ctrl L", Cardinal.class);
@@ -56,6 +57,10 @@ public class MainMenu extends JMenuBar {
 						add("Relation", "ctrl R", Relation.class);
 						add("Spatial Relation", "ctrl S", SpatialRelation.class);
 						add("Type", "ctrl T", Type.class);
+						addSeparator();
+						addItem("ID", "ctrl alt I", commandService::addId);
+						addItem("Reference ID", "ctrl alt R",
+								commandService::addReferenceId);
 					}
 
 					private <T extends Losr> void add(String name,

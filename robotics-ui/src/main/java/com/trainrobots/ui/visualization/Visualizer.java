@@ -17,6 +17,7 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.ui.visualization.losr.Ellipsis;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Frame;
@@ -83,35 +84,8 @@ public class Visualizer {
 		Visual tag = tag(context, losr);
 		Frame frame = new Frame(tag, false);
 
-		// Terminal?
-		if (losr instanceof Terminal) {
-			Terminal terminal = (Terminal) losr;
-
-			// Ellipsis.
-			if (terminal.context() == null) {
-				frame.add(token(context, 0, "\u00D8", false));
-			}
-
-			// Add tokens.
-			else {
-				int tokenStart = terminal.context().start();
-				int tokenEnd = terminal.context().end();
-				for (int i = tokenStart; i <= tokenEnd; i++) {
-
-					// Skipped tokens.
-					for (int j = lastId + 1; j <= i - 1; j++) {
-						skipList.add(token(context, j, true));
-					}
-
-					// Add token.
-					frame.add(token(context, i, false));
-					lastId = i;
-				}
-			}
-		}
-
-		// Non-terminal.
-		else {
+		// Non terminal.
+		if (!(losr instanceof Terminal)) {
 			for (Losr child : losr) {
 				Frame childFrame = frame(context, child);
 				for (Frame skip : skipList) {
@@ -120,7 +94,39 @@ public class Visualizer {
 				skipList.clear();
 				frame.add(childFrame);
 			}
+			return frame;
 		}
+
+		// Ellipsis.
+		Terminal terminal = (Terminal) losr;
+		if (terminal.context() == null) {
+
+			// Skipped tokens.
+			if (terminal instanceof Ellipsis) {
+				int after = ((Ellipsis) terminal).after();
+				for (int j = lastId + 1; j <= after; j++) {
+					skipList.add(token(context, j, true));
+				}
+				lastId = after;
+			}
+
+			// Elliptical token.
+			frame.add(token(context, 0, "\u00D8", false));
+			return frame;
+		}
+
+		// Skipped tokens.
+		int tokenStart = terminal.context().start();
+		int tokenEnd = terminal.context().end();
+		for (int j = lastId + 1; j < tokenStart; j++) {
+			skipList.add(token(context, j, true));
+		}
+
+		// Terminal tokens.
+		for (int i = tokenStart; i <= tokenEnd; i++) {
+			frame.add(token(context, i, false));
+		}
+		lastId = tokenEnd;
 		return frame;
 	}
 
