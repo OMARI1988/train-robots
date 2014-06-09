@@ -12,6 +12,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Path;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 import com.trainrobots.treebank.Command;
@@ -45,7 +46,7 @@ public class PartialTree {
 		// Non-terminal?
 		if (!(item instanceof Terminal)) {
 			for (Losr child : item) {
-				remove(child, false);
+				removeTopLevelItem(child, false);
 			}
 		}
 
@@ -80,12 +81,24 @@ public class PartialTree {
 	}
 
 	public void remove(Losr item) {
-		remove(item, true);
+
+		// Find path.
+		int size = items.count();
+		for (int i = 0; i < size; i++) {
+			Losr existing = items.get(i);
+			Path path = existing.path(item);
+			if (path != null) {
+
+				// Remove path.
+				for (Losr element : path) {
+					removeTopLevelItem(element, true);
+				}
+				return;
+			}
+		}
 	}
 
-	public void remove(Losr item, boolean replaceWithChildren) {
-
-		// Find item.
+	private void removeTopLevelItem(Losr item, boolean replaceWithChildren) {
 		int size = items.count();
 		for (int i = 0; i < size; i++) {
 

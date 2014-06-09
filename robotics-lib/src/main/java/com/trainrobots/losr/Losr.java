@@ -121,6 +121,10 @@ public abstract class Losr implements Items<Losr> {
 		return null;
 	}
 
+	public Path path(Losr item) {
+		return path(null, item);
+	}
+
 	protected void write(StringBuilder text) {
 
 		// Name.
@@ -150,5 +154,24 @@ public abstract class Losr implements Items<Losr> {
 			}
 		}
 		text.append(')');
+	}
+
+	private Path path(Path parentPath, Losr item) {
+
+		// Use reference equality to void duplicates.
+		Path path = parentPath != null ? parentPath.add(this) : new Path(this);
+		if (this == item) {
+			return path;
+		}
+
+		// Recurse.
+		int size = count();
+		for (int i = 0; i < size; i++) {
+			Path result = get(i).path(path, item);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 }
