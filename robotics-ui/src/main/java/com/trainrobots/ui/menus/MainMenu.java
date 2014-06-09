@@ -44,6 +44,7 @@ public class MainMenu extends JMenuBar {
 				add(new Menu("New", 'N') {
 					{
 						add("Node", "ctrl N", Losr.class);
+						addItem("Ellipsis", "ctrl alt E", commandService::addEllipsis);
 						addSeparator();
 						add("Action", "ctrl A", Action.class);
 						add("Cardinal", "ctrl L", Cardinal.class);

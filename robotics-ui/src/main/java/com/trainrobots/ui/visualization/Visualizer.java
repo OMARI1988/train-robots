@@ -17,6 +17,7 @@ import java.util.List;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Frame;
 import com.trainrobots.ui.visualization.visuals.Header;

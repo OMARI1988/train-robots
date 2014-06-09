@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
 import com.trainrobots.ui.visualization.writers.SvgWriter;

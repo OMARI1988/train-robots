@@ -114,6 +114,10 @@ public class CommandService {
 		execute(v -> v.editor().add(type));
 	}
 
+	public void addEllipsis() {
+		execute(v -> v.editor().addEllipsis());
+	}
+
 	public void delete() {
 		execute(v -> v.editor().delete());
 	}

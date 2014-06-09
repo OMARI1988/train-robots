@@ -31,7 +31,8 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.ui.services.treebank.TreebankService;
-import com.trainrobots.ui.visualization.PartialTree;
+import com.trainrobots.ui.visualization.losr.Ellipsis;
+import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
 import com.trainrobots.ui.visualization.visuals.IdDetail;
@@ -66,6 +67,27 @@ public class Editor {
 		// Add.
 		PartialTree partialTree = view.partialTree();
 		partialTree.add(losr);
+		view.redrawTree();
+	}
+
+	public void addEllipsis() {
+
+		// Single token.
+		Items<Text> selection = view.selection();
+		if (selection == null) {
+			return;
+		}
+		if (selection.count() != 1) {
+			return;
+		}
+		if (!(selection.get(0) instanceof Token)) {
+			return;
+		}
+		Token token = (Token) selection.get(0);
+
+		// Add.
+		PartialTree partialTree = view.partialTree();
+		partialTree.add(new Ellipsis(token.id()));
 		view.redrawTree();
 	}
 
