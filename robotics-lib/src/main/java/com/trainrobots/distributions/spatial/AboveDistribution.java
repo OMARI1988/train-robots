@@ -89,7 +89,16 @@ public class AboveDistribution extends SpatialDistribution {
 				continue;
 			}
 
-			// Region.
+			// Edge above region.
+			if (landmark instanceof Region && observable instanceof Edge) {
+				if (((Region) landmark).indicator() == ((Edge) observable)
+						.indicator()) {
+					return weight;
+				}
+				continue;
+			}
+
+			// Shape/stake above region.
 			if (landmark instanceof Region && p1 != null) {
 				Region region = (Region) landmark;
 

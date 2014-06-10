@@ -287,19 +287,24 @@ public class Editor {
 		}
 
 		// Ground.
-		Losr losr = header.losr();
-		Command command = view.partialTree().command();
-		Planner planner = new Planner(command.scene().before());
-		Losr root = command.losr();
 		Integer groundings = null;
-		if (losr instanceof Entity) {
-			groundings = planner.ground(root, (Entity) losr).best().count();
-		} else if (losr instanceof SpatialRelation) {
-			groundings = planner.ground(root, (SpatialRelation) losr).best()
-					.count();
-		} else if (losr instanceof Destination) {
-			groundings = planner.ground(root, (Destination) losr).best()
-					.count();
+		try {
+			Losr losr = header.losr();
+			Command command = view.partialTree().command();
+			Planner planner = new Planner(command.scene().before());
+			Losr root = command.losr();
+			if (losr instanceof Entity) {
+				groundings = planner.ground(root, (Entity) losr).best().count();
+			} else if (losr instanceof SpatialRelation) {
+				groundings = planner.ground(root, (SpatialRelation) losr)
+						.best().count();
+			} else if (losr instanceof Destination) {
+				groundings = planner.ground(root, (Destination) losr).best()
+						.count();
+			}
+		} catch (Exception exception) {
+			windowService.error(exception.getMessage());
+			return;
 		}
 
 		// Status.
