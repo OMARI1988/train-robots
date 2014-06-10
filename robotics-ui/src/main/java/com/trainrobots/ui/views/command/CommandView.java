@@ -11,6 +11,8 @@ package com.trainrobots.ui.views.command;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
@@ -45,16 +47,23 @@ public class CommandView extends PaneView implements CommandAware {
 		// View.
 		this.commandService = commandService;
 		setLayout(new BorderLayout());
+
+		// Scroll pane.
 		losrView = new LosrView(commandService);
+		JScrollPane scrollPane = new JScrollPane(losrView);
+		AdjustmentListener adjustmentListener = new AdjustmentListener() {
+			public void adjustmentValueChanged(AdjustmentEvent event) {
+				closePopup();
+			}
+		};
+		scrollPane.getHorizontalScrollBar().addAdjustmentListener(
+				adjustmentListener);
+		scrollPane.getVerticalScrollBar().addAdjustmentListener(
+				adjustmentListener);
 
 		// Layered pane.
 		layeredPane = new JLayeredPane();
-
-		// LOSR view.
-		JScrollPane scrollPane = new JScrollPane(losrView);
 		layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER);
-
-		// Handle resize event.
 		layeredPane.addComponentListener(new ComponentListener() {
 			public void componentResized(ComponentEvent event) {
 				scrollPane.setBounds(0, 0, layeredPane.getWidth(),
@@ -112,10 +121,12 @@ public class CommandView extends PaneView implements CommandAware {
 	}
 
 	private void closePopup() {
-		layeredPane.remove(popup);
-		layeredPane.revalidate();
-		losrView.clearSelection();
-		popup = null;
+		if (popup != null) {
+			layeredPane.remove(popup);
+			layeredPane.revalidate();
+			losrView.clearSelection();
+			popup = null;
+		}
 	}
 
 	private static String title(Command command) {

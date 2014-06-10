@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
 import com.trainrobots.collections.Items;
@@ -185,14 +186,17 @@ public class LosrView extends JPanel {
 		Visual root = visualTree.root();
 		float ox = 0.5f * (getWidth() - root.width());
 		float oy = 0.5f * (getHeight() - root.height());
-		return new Point2D.Float(vx + ox, vy + oy);
+		JScrollPane scrollPane = (JScrollPane) getParent().getParent();
+		int sx = scrollPane.getHorizontalScrollBar().getValue();
+		int sy = scrollPane.getVerticalScrollBar().getValue();
+		return new Point2D.Float(vx + ox - sx, vy + oy - sy);
 	}
 
-	private Point2D.Float windowToVisual(float wx, float wy) {
+	private Point2D.Float mouseToVisual(float mx, float my) {
 		Visual root = visualTree.root();
 		float ox = 0.5f * (getWidth() - root.width());
 		float oy = 0.5f * (getHeight() - root.height());
-		return new Point2D.Float(wx - ox, wy - oy);
+		return new Point2D.Float(mx - ox, my - oy);
 	}
 
 	private void handleMouseMoved(MouseEvent event) {
@@ -203,7 +207,7 @@ public class LosrView extends JPanel {
 		}
 
 		// Find element.
-		Point2D.Float p = windowToVisual(event.getX(), event.getY());
+		Point2D.Float p = mouseToVisual(event.getX(), event.getY());
 		Text text = visualTree.find(Text.class, p.x, p.y);
 
 		// No change?
