@@ -47,7 +47,7 @@ public class TreebankService {
 		new SwingWorker<Exception, Void>() {
 			protected Exception doInBackground() throws Exception {
 				try {
-					saveTreebank();
+					treebank.write();
 				} catch (Exception exception) {
 					return exception;
 				}
@@ -67,15 +67,5 @@ public class TreebankService {
 				}
 			}
 		}.execute();
-	}
-
-	private void saveTreebank() {
-		// TODO: REVIEW!!
-		// ValidationResults results = new Validator().validate(treebank);
-		// if (results.count() > 0) {
-		// throw new RoboticException(
-		// "Can't save treebank with validation errors.");
-		// }
-		treebank.write();
 	}
 }

@@ -100,9 +100,10 @@ public class MainMenu extends JMenuBar {
 				addView("Treebank", "t", "navigation");
 				addView("Command", "c", "command");
 				addView("Scene", "s", "scene");
+				addView("Comments", "m", "comments");
 				addView("Robot", "r", "robot");
-
 				addSeparator();
+
 				add(new Menu("Theme", 'h') {
 					{
 						addTheme("Simple", "s", Themes.Simple);

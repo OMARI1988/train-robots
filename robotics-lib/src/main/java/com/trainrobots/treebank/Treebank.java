@@ -56,15 +56,18 @@ public class Treebank {
 			}
 
 			// Commands.
-			try (InputStream commandStream = zip.open("commands.xml")) {
-				try (InputStream losrStream = zip.open("losr.xml")) {
-					CommandReader reader = new CommandReader(scenes);
-					reader.readCommands(commandStream);
-					reader.readLosr(losrStream);
-					commands = reader.commands();
-					Log.info("Loaded: %s commands.", commands.count());
-				}
+			CommandReader reader = new CommandReader(scenes);
+			try (InputStream stream = zip.open("commands.xml")) {
+				reader.readCommands(stream);
 			}
+			try (InputStream stream = zip.open("losr.xml")) {
+				reader.readLosr(stream);
+			}
+			try (InputStream stream = zip.open("comments.xml")) {
+				reader.readComments(stream);
+			}
+			commands = reader.commands();
+			Log.info("Loaded: %s commands.", commands.count());
 		} catch (IOException exception) {
 			throw new RoboticException(exception);
 		}
@@ -74,11 +77,13 @@ public class Treebank {
 
 		// Write treebank.
 		Log.info("Writing: %s", filename);
+		CommandWriter writer = new CommandWriter(commands);
 		try (ZipWriter zip = new ZipWriter(filename)) {
 			try (ZipEntryWriter entry = zip.open("losr.xml")) {
-				try (CommandWriter writer = new CommandWriter(entry.output())) {
-					writer.write(commands);
-				}
+				writer.writeLosr(entry.output());
+			}
+			try (ZipEntryWriter entry = zip.open("comments.xml")) {
+				writer.writeComments(entry.output());
 			}
 		}
 	}

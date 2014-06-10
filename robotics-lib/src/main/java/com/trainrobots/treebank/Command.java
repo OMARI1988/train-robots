@@ -20,6 +20,7 @@ public class Command {
 	private final String text;
 	private final Items<Terminal> tokens;
 	private Losr losr;
+	private String comment;
 
 	public Command(int id, Scene scene, String text, Items<Terminal> tokens) {
 		this.id = id;
@@ -50,5 +51,13 @@ public class Command {
 
 	public void losr(Losr losr) {
 		this.losr = losr;
+	}
+
+	public String comment() {
+		return comment;
+	}
+
+	public void comment(String comment) {
+		this.comment = comment;
 	}
 }

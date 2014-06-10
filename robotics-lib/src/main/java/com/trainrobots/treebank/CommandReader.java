@@ -62,4 +62,16 @@ public class CommandReader {
 			}
 		}.read(stream);
 	}
+
+	public void readComments(InputStream stream) {
+		new XmlReader() {
+			protected void handleElementStart(String name, Attributes attributes) {
+				if (name.equals("command")) {
+					int id = Integer.parseInt(attributes.getValue("id"));
+					String comment = attributes.getValue("comment");
+					commands.command(id).comment(comment);
+				}
+			}
+		}.read(stream);
+	}
 }

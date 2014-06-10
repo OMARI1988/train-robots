@@ -17,22 +17,19 @@ import javax.xml.stream.XMLStreamWriter;
 import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Losr;
 
-public class CommandWriter implements AutoCloseable {
+public class CommandWriter {
 
-	private final XMLStreamWriter writer;
+	private final Commands commands;
 
-	public CommandWriter(OutputStream stream) {
-		try {
-			writer = XMLOutputFactory.newInstance().createXMLStreamWriter(
-					stream, "UTF-8");
-		} catch (Exception exception) {
-			throw new RoboticException(exception);
-		}
+	public CommandWriter(Commands commands) {
+		this.commands = commands;
 	}
 
-	public void write(Commands commands) {
+	public void writeLosr(OutputStream stream) {
 		String newLine = System.getProperty("line.separator");
 		try {
+			XMLStreamWriter writer = XMLOutputFactory.newInstance()
+					.createXMLStreamWriter(stream, "UTF-8");
 			writer.writeStartElement("commands");
 			writer.writeCharacters(newLine);
 			for (Command command : commands) {
@@ -47,14 +44,31 @@ public class CommandWriter implements AutoCloseable {
 				writer.writeCharacters(newLine);
 			}
 			writer.writeEndElement();
+			writer.close();
 		} catch (XMLStreamException exception) {
 			throw new RoboticException(exception);
 		}
 	}
 
-	@Override
-	public void close() {
+	public void writeComments(OutputStream stream) {
+		String newLine = System.getProperty("line.separator");
 		try {
+			XMLStreamWriter writer = XMLOutputFactory.newInstance()
+					.createXMLStreamWriter(stream, "UTF-8");
+			writer.writeStartElement("commands");
+			writer.writeCharacters(newLine);
+			for (Command command : commands) {
+				String comment = command.comment();
+				if (comment == null) {
+					continue;
+				}
+				writer.writeCharacters("\t");
+				writer.writeEmptyElement("command");
+				writer.writeAttribute("id", Integer.toString(command.id()));
+				writer.writeAttribute("comment", comment);
+				writer.writeCharacters(newLine);
+			}
+			writer.writeEndElement();
 			writer.close();
 		} catch (XMLStreamException exception) {
 			throw new RoboticException(exception);

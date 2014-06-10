@@ -19,6 +19,7 @@ import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.validation.ValidationService;
 import com.trainrobots.ui.services.window.WindowService;
+import com.trainrobots.ui.views.CommentsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.RobotView;
 import com.trainrobots.ui.views.ToolBar;
@@ -49,6 +50,7 @@ public class Container {
 		register(SceneView.class);
 		register(NavigationView.class);
 		register(CommandView.class);
+		register(CommentsView.class);
 
 		// Register main window.
 		get(WindowService.class).setMainWindow(get(MainWindow.class));

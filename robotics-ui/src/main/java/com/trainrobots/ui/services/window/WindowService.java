@@ -20,6 +20,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.ui.Container;
 import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.views.CommentsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.views.RobotView;
@@ -45,6 +46,7 @@ public class WindowService {
 		registerPane("scene", SceneView.class, 7, 13, 488, 286);
 		registerPane("navigation", NavigationView.class, 7, 310, 307, 303);
 		registerPane("command", CommandView.class, 505, 13, 850, 602);
+		registerPane("comments", CommentsView.class, 1000, 55, 330, 210);
 	}
 
 	public void setMainWindow(MainWindow mainWindow) {
