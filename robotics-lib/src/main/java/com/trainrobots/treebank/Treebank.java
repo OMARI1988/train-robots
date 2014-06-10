@@ -71,6 +71,9 @@ public class Treebank {
 	}
 
 	public void write() {
+
+		// Write treebank.
+		Log.info("Writing: %s", filename);
 		try (ZipWriter zip = new ZipWriter(filename)) {
 			try (ZipEntryWriter entry = zip.open("losr.xml")) {
 				try (CommandWriter writer = new CommandWriter(entry.output())) {
