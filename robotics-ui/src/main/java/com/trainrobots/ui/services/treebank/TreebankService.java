@@ -15,6 +15,7 @@ import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.window.WindowService;
+import com.trainrobots.ui.views.navigation.NavigationView;
 
 public class TreebankService {
 
@@ -61,6 +62,13 @@ public class TreebankService {
 						windowService.error(exception.getMessage());
 					} else {
 						windowService.status("Saved");
+
+						// Refresh navigation tree.
+						NavigationView navigationView = windowService
+								.pane(NavigationView.class);
+						if (navigationView != null) {
+							navigationView.refresh();
+						}
 					}
 				} catch (Exception exception) {
 					Log.error("Failed to save.", exception);

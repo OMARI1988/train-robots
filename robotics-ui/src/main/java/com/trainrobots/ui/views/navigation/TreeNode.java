@@ -8,13 +8,18 @@
 
 package com.trainrobots.ui.views.navigation;
 
+import java.awt.Color;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class TreeNode extends DefaultMutableTreeNode {
 
-	private final String name;
+	protected static final Color DARK_GREEN = new Color(0, 200, 0);
+	protected static final Color DARK_ORANGE = new Color(255, 69, 0);
+
 	private final boolean isLeaf;
 	private boolean initiated;
+	private String name;
 
 	protected TreeNode(String name, boolean isLeaf) {
 		this.name = name;
@@ -23,6 +28,10 @@ public abstract class TreeNode extends DefaultMutableTreeNode {
 
 	public String name() {
 		return name;
+	}
+
+	public Color color() {
+		return Color.BLACK;
 	}
 
 	@Override

@@ -28,11 +28,7 @@ public class NavigationView extends PaneView implements CommandAware {
 
 		// Initiate.
 		setLayout(new BorderLayout());
-
-		// Tree.
 		navigationTree = new NavigationTree(treebankService, commandService);
-
-		// Scroll pane.
 		add(new JScrollPane(navigationTree), BorderLayout.CENTER);
 	}
 
@@ -44,5 +40,9 @@ public class NavigationView extends PaneView implements CommandAware {
 	@Override
 	public void bindTo(Command command) {
 		navigationTree.bindTo(command);
+	}
+
+	public void refresh() {
+		navigationTree.repaint();
 	}
 }
