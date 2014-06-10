@@ -6,17 +6,19 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots;
+package com.trainrobots.io;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipFile;
 
-public class ZipArchive implements AutoCloseable {
+import com.trainrobots.RoboticException;
+
+public class ZipReader implements AutoCloseable {
 
 	private final ZipFile zipFile;
 
-	public ZipArchive(String filename) {
+	public ZipReader(String filename) {
 		try {
 			zipFile = new ZipFile(filename);
 		} catch (IOException exception) {

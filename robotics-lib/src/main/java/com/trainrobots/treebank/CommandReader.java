@@ -12,9 +12,9 @@ import java.io.InputStream;
 
 import org.xml.sax.Attributes;
 
-import com.trainrobots.XmlReader;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsList;
+import com.trainrobots.io.XmlReader;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.scenes.Scenes;

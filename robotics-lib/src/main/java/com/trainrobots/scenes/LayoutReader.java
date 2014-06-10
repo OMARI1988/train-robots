@@ -10,9 +10,9 @@ package com.trainrobots.scenes;
 
 import org.xml.sax.Attributes;
 
-import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
+import com.trainrobots.io.XmlReader;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Types;
 

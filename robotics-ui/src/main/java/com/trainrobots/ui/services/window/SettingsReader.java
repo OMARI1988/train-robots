@@ -12,7 +12,7 @@ import java.awt.Dimension;
 
 import org.xml.sax.Attributes;
 
-import com.trainrobots.XmlReader;
+import com.trainrobots.io.XmlReader;
 
 public class SettingsReader extends XmlReader {
 

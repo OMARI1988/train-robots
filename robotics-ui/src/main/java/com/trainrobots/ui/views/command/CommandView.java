@@ -30,6 +30,7 @@ import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.views.PaneView;
+import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Text;
 
 public class CommandView extends PaneView implements CommandAware {
@@ -86,6 +87,10 @@ public class CommandView extends PaneView implements CommandAware {
 
 		// Keys.
 		bindKey("ESCAPE", this::handleEscape);
+	}
+
+	public PartialTree partialTree() {
+		return losrView.partialTree();
 	}
 
 	public Editor editor() {

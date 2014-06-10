@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.xml.sax.Attributes;
 
 import com.trainrobots.TestContext;
-import com.trainrobots.XmlReader;
-import com.trainrobots.ZipArchive;
+import com.trainrobots.io.XmlReader;
+import com.trainrobots.io.ZipReader;
 import com.trainrobots.losr.Losr;
 
 public class TreebankTests {
@@ -31,7 +31,7 @@ public class TreebankTests {
 
 		// Test.
 		Commands commands = TestContext.treebank().commands();
-		try (ZipArchive zip = new ZipArchive("../.data/treebank.zip")) {
+		try (ZipReader zip = new ZipReader("../.data/treebank.zip")) {
 			try (InputStream stream = zip.open("losr.xml")) {
 				test(commands, stream);
 			}

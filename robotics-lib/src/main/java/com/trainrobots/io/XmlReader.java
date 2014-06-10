@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots;
+package com.trainrobots.io;
 
 import java.io.InputStream;
 
@@ -16,6 +16,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.trainrobots.RoboticException;
 
 public abstract class XmlReader {
 

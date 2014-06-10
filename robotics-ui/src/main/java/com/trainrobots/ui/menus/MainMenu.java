@@ -22,16 +22,22 @@ import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Type;
 import com.trainrobots.ui.services.command.CommandService;
+import com.trainrobots.ui.services.treebank.TreebankService;
+import com.trainrobots.ui.services.validation.ValidationService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.themes.Themes;
 
 public class MainMenu extends JMenuBar {
 
-	public MainMenu(WindowService windowService, CommandService commandService) {
+	public MainMenu(WindowService windowService, CommandService commandService,
+			ValidationService validationService, TreebankService treebankService) {
 
 		add(new Menu("File", 'F') {
 			{
+				addItem("Validate", "F5", validationService::validate);
+				addItem("Save", "ctrl S", treebankService::save);
+				addSeparator();
 				addItem("Exit", "x", windowService::exit);
 			}
 		});
@@ -55,7 +61,7 @@ public class MainMenu extends JMenuBar {
 						add("Event", "ctrl V", Event.class);
 						add("Indicator", "ctrl I", Indicator.class);
 						add("Relation", "ctrl R", Relation.class);
-						add("Spatial Relation", "ctrl S", SpatialRelation.class);
+						add("Spatial Relation", "ctrl P", SpatialRelation.class);
 						add("Type", "ctrl T", Type.class);
 						addSeparator();
 						addItem("ID", "ctrl alt I", commandService::addId);
@@ -77,7 +83,7 @@ public class MainMenu extends JMenuBar {
 				addCheckedItem("Bounding Boxes", "ctrl B",
 						commandService::boundingBoxes,
 						commandService.boundingBoxes());
-				addItem("Random Command", "F5", commandService::randomCommand);
+				addItem("Random Command", "F1", commandService::randomCommand);
 			}
 		});
 

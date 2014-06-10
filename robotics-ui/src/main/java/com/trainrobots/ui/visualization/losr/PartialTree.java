@@ -19,18 +19,25 @@ import com.trainrobots.treebank.Command;
 
 public class PartialTree {
 
+	private final Command command;
 	private final Items<Terminal> tokens;
 	private final ItemsList<Losr> items = new ItemsList<Losr>();
 
 	public PartialTree(Command command) {
-		this(command.tokens());
+		this.command = command;
+		this.tokens = command.tokens();
 		if (command.losr() != null) {
-			add(command.losr());
+			items.add(command.losr());
 		}
 	}
 
 	public PartialTree(Items<Terminal> tokens) {
+		this.command = null;
 		this.tokens = tokens;
+	}
+
+	public Command command() {
+		return command;
 	}
 
 	public Items<Terminal> tokens() {
@@ -56,6 +63,7 @@ public class PartialTree {
 				if ((previousSpan == null || after >= previousSpan.end())
 						&& after < nextSpan.start()) {
 					items.add(i, item);
+					commit();
 					return;
 				}
 				previousSpan = nextSpan;
@@ -64,6 +72,7 @@ public class PartialTree {
 			// Add to end?
 			if (previousSpan == null || after >= previousSpan.end()) {
 				items.add(item);
+				commit();
 				return;
 			}
 			throw new RoboticException("Can't add ellipsis.");
@@ -88,6 +97,7 @@ public class PartialTree {
 			if (after != null) {
 				if (newSpan.start() == after) {
 					items.add(i, item);
+					commit();
 					return;
 				}
 				continue;
@@ -98,6 +108,7 @@ public class PartialTree {
 			if ((previousSpan == null || newSpan.start() > previousSpan.end())
 					&& newSpan.end() < nextSpan.start()) {
 				items.add(i, item);
+				commit();
 				return;
 			}
 			previousSpan = nextSpan;
@@ -106,6 +117,7 @@ public class PartialTree {
 		// Add to end?
 		if (previousSpan == null || newSpan.start() > previousSpan.end()) {
 			items.add(item);
+			commit();
 			return;
 		}
 
@@ -126,6 +138,7 @@ public class PartialTree {
 				for (Losr element : path) {
 					removeTopLevelItem(element, true);
 				}
+				commit();
 				return;
 			}
 		}
@@ -163,5 +176,11 @@ public class PartialTree {
 			}
 		}
 		return null;
+	}
+
+	private void commit() {
+		if (items.count() == 1 && command != null) {
+			command.losr(items.get(0));
+		}
 	}
 }

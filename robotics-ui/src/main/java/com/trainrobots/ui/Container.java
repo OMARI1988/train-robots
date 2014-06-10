@@ -17,6 +17,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.ui.menus.MainMenu;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
+import com.trainrobots.ui.services.validation.ValidationService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.RobotView;
@@ -36,6 +37,7 @@ public class Container {
 		registerSingle(WindowService.class);
 		registerSingle(TreebankService.class);
 		registerSingle(CommandService.class);
+		registerSingle(ValidationService.class);
 
 		// UI components.
 		registerSingle(MainWindow.class);

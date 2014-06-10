@@ -11,9 +11,9 @@ package com.trainrobots.scenes;
 import org.xml.sax.Attributes;
 
 import com.trainrobots.Log;
-import com.trainrobots.XmlReader;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.instructions.Instruction;
+import com.trainrobots.io.XmlReader;
 
 public class SceneReader extends XmlReader {
 

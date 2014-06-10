@@ -14,8 +14,10 @@ import java.nio.file.Paths;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
-import com.trainrobots.ZipArchive;
 import com.trainrobots.collections.Items;
+import com.trainrobots.io.ZipEntryWriter;
+import com.trainrobots.io.ZipReader;
+import com.trainrobots.io.ZipWriter;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.LayoutReader;
 import com.trainrobots.scenes.Layouts;
@@ -25,16 +27,17 @@ import com.trainrobots.scenes.Scenes;
 
 public class Treebank {
 
+	private final String filename;
 	private final Layouts layouts;
 	private final Scenes scenes;
 	private final Commands commands;
 
-	public Treebank(String filename) {
+	public Treebank(String path) {
 
 		// Load treebank.
-		filename = Paths.get(filename).toAbsolutePath().normalize().toString();
+		this.filename = Paths.get(path).toAbsolutePath().normalize().toString();
 		Log.info("Loading: %s", filename);
-		try (ZipArchive zip = new ZipArchive(filename)) {
+		try (ZipReader zip = new ZipReader(filename)) {
 
 			// Layout.
 			try (InputStream stream = zip.open("layouts.xml")) {
@@ -62,9 +65,18 @@ public class Treebank {
 					Log.info("Loaded: %s commands.", commands.count());
 				}
 			}
-
 		} catch (IOException exception) {
 			throw new RoboticException(exception);
+		}
+	}
+
+	public void write() {
+		try (ZipWriter zip = new ZipWriter(filename)) {
+			try (ZipEntryWriter entry = zip.open("losr.xml")) {
+				try (CommandWriter writer = new CommandWriter(entry.output())) {
+					writer.write(commands);
+				}
+			}
 		}
 	}
 
