@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public abstract class Terminal extends Losr {
 
-	protected final TextContext context;
+	protected TextContext context;
 
 	protected Terminal(TextContext context) {
 		this.context = context;
@@ -18,6 +18,10 @@ public abstract class Terminal extends Losr {
 
 	public TextContext context() {
 		return context;
+	}
+
+	public void context(TextContext context) {
+		this.context = context;
 	}
 
 	@Override

@@ -45,15 +45,7 @@ public class PartialTree {
 
 		// Add ellipsis?
 		int size = items.count();
-		Integer after = null;
-		if (item instanceof Ellipsis) {
-			after = ((Ellipsis) item).after();
-		} else if (item instanceof Terminal) {
-			Terminal terminal = (Terminal) item;
-			if (terminal.context() instanceof EllipticalContext) {
-				after = ((EllipticalContext) terminal.context()).after();
-			}
-		}
+		Integer after = after(item);
 		if (after != null) {
 
 			// Preserve sort order.
@@ -87,19 +79,21 @@ public class PartialTree {
 		// Preserve sort order.
 		TextContext newSpan = item.span();
 		TextContext previousSpan = null;
+		size = items.count();
 		for (int i = 0; i < size; i++) {
 
 			// Next is an elliptical node.
 			Losr nextItem = items.get(i);
-			if (nextItem instanceof Ellipsis) {
-				if (newSpan.start() == ((Ellipsis) nextItem).after()) {
+			after = after(nextItem);
+			if (after != null) {
+				if (newSpan.start() == after) {
 					items.add(i, item);
 					return;
 				}
 				continue;
 			}
 
-			// Next is a non-elliptical node.
+			// Next is not an elliptical node.
 			TextContext nextSpan = nextItem.span();
 			if ((previousSpan == null || newSpan.start() > previousSpan.end())
 					&& newSpan.end() < nextSpan.start()) {
@@ -157,5 +151,17 @@ public class PartialTree {
 				return;
 			}
 		}
+	}
+
+	private static Integer after(Losr item) {
+		if (item instanceof Ellipsis) {
+			return ((Ellipsis) item).after();
+		} else if (item instanceof Terminal) {
+			Terminal terminal = (Terminal) item;
+			if (terminal.context() instanceof EllipticalContext) {
+				return ((EllipticalContext) terminal.context()).after();
+			}
+		}
+		return null;
 	}
 }

@@ -66,8 +66,13 @@ public class Editor {
 		}
 
 		// Terminals?
-		Losr losr = selection.get(0) instanceof Token ? terminal(type,
-				selection) : nonTerminal(type, selection);
+		Losr losr;
+		if (selection.get(0) instanceof Token) {
+			losr = terminal(type, selection);
+		} else {
+			losr = nonTerminal(type, selection);
+			removeEllipticalContext(losr);
+		}
 
 		// Add.
 		PartialTree partialTree = view.partialTree();
@@ -327,6 +332,17 @@ public class Editor {
 		}
 		throw new RoboticException("Can't create %s from non-terminals.",
 				type.getSimpleName());
+	}
+
+	private void removeEllipticalContext(Items<Losr> items) {
+		for (Items item : items) {
+			if (item instanceof Terminal) {
+				Terminal terminal = (Terminal) item;
+				if (terminal.context() instanceof EllipticalContext) {
+					terminal.context(null);
+				}
+			}
+		}
 	}
 
 	private Items<Losr> items(Items<Text> selection) {
