@@ -208,7 +208,7 @@ public class Entity extends Losr {
 		if (index == count++) {
 			return type;
 		}
-		if (spatialRelation != null && index == count++) {
+		if (spatialRelation != null && index == count) {
 			return spatialRelation;
 		}
 		throw new IndexOutOfBoundsException();

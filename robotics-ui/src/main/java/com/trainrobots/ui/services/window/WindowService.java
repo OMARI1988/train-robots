@@ -102,6 +102,10 @@ public class WindowService {
 		mainWindow.statusBar().text(text);
 	}
 
+	public void defaultStatus() {
+		status("Command %d", commandService().command().id());
+	}
+
 	public void error(String format, Object... parameters) {
 		String text = String.format(format, parameters);
 		Log.error(text);

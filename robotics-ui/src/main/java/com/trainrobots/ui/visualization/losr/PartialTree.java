@@ -179,7 +179,9 @@ public class PartialTree {
 	}
 
 	private void commit() {
-		if (items.count() == 1 && command != null) {
+
+		// Update command.
+		if (items.size() == 1 && command != null) {
 			command.losr(items.get(0));
 		}
 	}

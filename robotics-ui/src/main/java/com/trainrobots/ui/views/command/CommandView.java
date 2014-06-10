@@ -29,6 +29,7 @@ import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
+import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.PaneView;
 import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Text;
@@ -42,7 +43,7 @@ public class CommandView extends PaneView implements CommandAware {
 	private Component popup;
 
 	public CommandView(CommandService commandService,
-			TreebankService treebankService) {
+			WindowService windowService, TreebankService treebankService) {
 		super(title(commandService.command()));
 
 		// View.
@@ -83,7 +84,8 @@ public class CommandView extends PaneView implements CommandAware {
 		add(layeredPane, BorderLayout.CENTER);
 
 		// Editor.
-		editor = new Editor(treebankService, losrView, this::showPopup);
+		editor = new Editor(windowService, treebankService, losrView,
+				this::showPopup);
 
 		// Keys.
 		bindKey("ESCAPE", this::handleEscape);

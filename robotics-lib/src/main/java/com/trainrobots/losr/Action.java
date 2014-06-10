@@ -51,7 +51,7 @@ public class Action extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(action);
+	protected Object content() {
+		return action;
 	}
 }

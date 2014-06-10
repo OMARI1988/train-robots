@@ -23,14 +23,20 @@ import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
+import com.trainrobots.losr.Source;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
+import com.trainrobots.nlp.grammar.Grammar;
+import com.trainrobots.planner.Planner;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.treebank.TreebankService;
+import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.visualization.losr.Ellipsis;
 import com.trainrobots.ui.visualization.losr.EllipticalContext;
 import com.trainrobots.ui.visualization.losr.PartialTree;
@@ -47,11 +53,14 @@ public class Editor {
 			new LosrType(new Type(Types.Region)),
 			new LosrType(new Relation(Relations.Above)) };
 
+	private final WindowService windowService;
 	private final TreebankService treebankService;
 	private final LosrView view;
 	private final Popup popup;
 
-	public Editor(TreebankService treebankService, LosrView view, Popup popup) {
+	public Editor(WindowService windowService, TreebankService treebankService,
+			LosrView view, Popup popup) {
+		this.windowService = windowService;
 		this.treebankService = treebankService;
 		this.view = view;
 		this.popup = popup;
@@ -77,6 +86,15 @@ public class Editor {
 		// Add.
 		PartialTree partialTree = view.partialTree();
 		partialTree.add(losr);
+
+		// Post-processing.
+		Items<Losr> items = partialTree.items();
+		Grammar grammar = treebankService.grammar();
+		if (items.count() >= 2 && (losr = grammar.nonTerminal(items)) != null) {
+			partialTree.add(losr);
+		}
+
+		// Redraw.
 		view.redrawTree();
 	}
 
@@ -259,6 +277,39 @@ public class Editor {
 		}
 	}
 
+	public void ground() {
+
+		// Header.
+		Header header = header();
+		if (header == null) {
+			windowService.defaultStatus();
+			return;
+		}
+
+		// Ground.
+		Losr losr = header.losr();
+		Command command = view.partialTree().command();
+		Planner planner = new Planner(command.scene().before());
+		Losr root = command.losr();
+		Integer groundings = null;
+		if (losr instanceof Entity) {
+			groundings = planner.ground(root, (Entity) losr).best().count();
+		} else if (losr instanceof SpatialRelation) {
+			groundings = planner.ground(root, (SpatialRelation) losr).best()
+					.count();
+		} else if (losr instanceof Destination) {
+			groundings = planner.ground(root, (Destination) losr).best()
+					.count();
+		}
+
+		// Status.
+		if (groundings != null) {
+			windowService.status("Groundings: %d", groundings);
+		} else {
+			windowService.defaultStatus();
+		}
+	}
+
 	private <T extends Losr> T terminal(Class<T> type, Items<Text> selection) {
 
 		// Lexicon.
@@ -289,6 +340,9 @@ public class Editor {
 		}
 		if (type == Type.class) {
 			return (T) new Type(context, Types.Cube);
+		}
+		if (type == Marker.class) {
+			return (T) new Marker(context);
 		}
 
 		throw new RoboticException("Can't create %s from terminals.",
@@ -329,6 +383,9 @@ public class Editor {
 		}
 		if (type == Destination.class) {
 			return (T) new Destination(0, 0, items);
+		}
+		if (type == Source.class) {
+			return (T) new Source(0, 0, items);
 		}
 		throw new RoboticException("Can't create %s from non-terminals.",
 				type.getSimpleName());

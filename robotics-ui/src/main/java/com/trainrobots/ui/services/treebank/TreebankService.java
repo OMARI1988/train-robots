@@ -11,11 +11,8 @@ package com.trainrobots.ui.services.treebank;
 import javax.swing.SwingWorker;
 
 import com.trainrobots.Log;
-import com.trainrobots.RoboticException;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.validation.ValidationResults;
-import com.trainrobots.nlp.validation.Validator;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.window.WindowService;
 
@@ -73,11 +70,12 @@ public class TreebankService {
 	}
 
 	private void saveTreebank() {
-		ValidationResults results = new Validator().validate(treebank);
-		if (results.count() > 0) {
-			throw new RoboticException(
-					"Can't save treebank with validation errors.");
-		}
+		// TODO: REVIEW!!
+		// ValidationResults results = new Validator().validate(treebank);
+		// if (results.count() > 0) {
+		// throw new RoboticException(
+		// "Can't save treebank with validation errors.");
+		// }
 		treebank.write();
 	}
 }

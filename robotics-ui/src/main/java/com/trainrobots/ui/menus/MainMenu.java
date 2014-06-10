@@ -18,7 +18,9 @@ import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Relation;
+import com.trainrobots.losr.Source;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Type;
 import com.trainrobots.ui.services.command.CommandService;
@@ -44,8 +46,8 @@ public class MainMenu extends JMenuBar {
 
 		add(new Menu("Edit", 'E') {
 			{
-				addItem("Change", "F2", commandService::change);
-				addItem("Delete", "DELETE", commandService::delete);
+				addItem("Change Node", "F2", commandService::change);
+				addItem("Delete Node", "DELETE", commandService::delete);
 				addSeparator();
 				add(new Menu("New", 'N') {
 					{
@@ -60,7 +62,9 @@ public class MainMenu extends JMenuBar {
 						add("Entity", "ctrl E", Entity.class);
 						add("Event", "ctrl V", Event.class);
 						add("Indicator", "ctrl I", Indicator.class);
+						add("Marker", "ctrl M", Marker.class);
 						add("Relation", "ctrl R", Relation.class);
+						add("Source", "ctrl alt S", Source.class);
 						add("Spatial Relation", "ctrl P", SpatialRelation.class);
 						add("Type", "ctrl T", Type.class);
 						addSeparator();
@@ -75,6 +79,8 @@ public class MainMenu extends JMenuBar {
 								() -> commandService.add(type));
 					}
 				});
+
+				addItem("Clear Command", null, commandService::clear);
 			}
 		});
 
@@ -83,6 +89,8 @@ public class MainMenu extends JMenuBar {
 				addCheckedItem("Bounding Boxes", "ctrl B",
 						commandService::boundingBoxes,
 						commandService.boundingBoxes());
+				addItem("Groundings", "ctrl G", commandService::ground);
+				addSeparator();
 				addItem("Random Command", "F1", commandService::randomCommand);
 			}
 		});

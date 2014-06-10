@@ -21,6 +21,7 @@ import com.trainrobots.distributions.observable.RelativeDistribution;
 import com.trainrobots.distributions.observable.ExactIndicatorDistribution;
 import com.trainrobots.distributions.observable.RightDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
+import com.trainrobots.distributions.spatial.DestinationDistribution;
 import com.trainrobots.distributions.spatial.DropDestinationDistribution;
 import com.trainrobots.distributions.spatial.MeasureDistribution;
 import com.trainrobots.distributions.spatial.SpatialDistribution;
@@ -31,14 +32,17 @@ import com.trainrobots.instructions.TakeInstruction;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Measure;
+import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Sequence;
+import com.trainrobots.losr.Source;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observable;
@@ -69,8 +73,20 @@ public class Planner {
 		return translate(context(losr), losr);
 	}
 
-	public ObservableDistribution distribution(Entity entity) {
-		return distribution(context(entity), entity);
+	public ObservableDistribution ground(Losr root, Entity entity) {
+		PlannerContext context = context(root);
+		return distribution(context, entity);
+	}
+
+	public DestinationDistribution ground(Losr root, Destination destination) {
+		PlannerContext context = context(root);
+		return distribution(context, destination).destinations(context);
+	}
+
+	public DestinationDistribution ground(Losr root,
+			SpatialRelation spatialRelation) {
+		PlannerContext context = context(root);
+		return distribution(context, spatialRelation).destinations(context);
 	}
 
 	private Instruction translate(PlannerContext context, Losr losr) {
@@ -125,8 +141,8 @@ public class Planner {
 	private MoveInstruction translateMove(PlannerContext context, Event event) {
 
 		// Pickable.
-		ObservableDistribution distribution = distribution(context,
-				event.entity());
+		Entity entity = normalizeSource(event.entity(), event.source());
+		ObservableDistribution distribution = distribution(context, entity);
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -170,8 +186,8 @@ public class Planner {
 		}
 
 		// Pickable.
-		ObservableDistribution distribution = distribution(context,
-				event.entity());
+		Entity entity = normalizeSource(event.entity(), event.source());
+		ObservableDistribution distribution = distribution(context, entity);
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -240,6 +256,12 @@ public class Planner {
 			}
 		}
 
+		// Source.
+		if (event.source() != null) {
+			throw new RoboticException(
+					"A source should not be specified for a take action.");
+		}
+
 		// Destination.
 		Position position = simulator.dropPosition(gripper.position());
 		if (event.destination() != null) {
@@ -254,6 +276,20 @@ public class Planner {
 			position = destinations.get(0);
 		}
 		return new DropInstruction(position);
+	}
+
+	private SpatialDistribution distribution(PlannerContext context,
+			Destination destination) {
+
+		// Normalize.
+		SpatialRelation spatialRelation = destination.spatialRelation();
+		if (destination.entity() != null) {
+			spatialRelation = new SpatialRelation(
+					new Relation(Relations.Above), destination.entity());
+		}
+
+		// Distribution.
+		return distribution(context, spatialRelation);
 	}
 
 	private ObservableDistribution distribution(PlannerContext context,
@@ -418,6 +454,24 @@ public class Planner {
 		// Distribution.
 		return new MeasureDistribution(layout, tileCount, relation,
 				landmarkDistribution);
+	}
+
+	private static Entity normalizeSource(Entity entity, Source source) {
+		if (source == null) {
+			return entity;
+		}
+		Entity sourceEntity = source.entity();
+		if (sourceEntity == null) {
+			throw new RoboticException("Source entity not specified.");
+		}
+		return new Entity(
+				entity.id(),
+				entity.referenceId(),
+				entity.cardinal(),
+				entity.indicators(),
+				entity.colors(),
+				entity.typeAttribute(),
+				new SpatialRelation(new Relation(Relations.Above), sourceEntity));
 	}
 
 	private PlannerContext context(Losr root) {

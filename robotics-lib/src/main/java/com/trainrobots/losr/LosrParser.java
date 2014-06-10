@@ -36,58 +36,62 @@ class LosrParser {
 
 	private Losr readNode(String name) {
 
-		// ':'
-		readSemiColon();
-
-		// Children.
+		// Node.
 		int id = 0;
 		int referenceId = 0;
 		TextContext context = null;
 		String content = null;
 		ItemsList<Losr> children = null;
-		while (peek() != ')') {
 
-			// Whitespace.
-			readWhitespace();
-
-			// Content.
-			if (peek() != '(') {
-				content = readContent();
-				continue;
-			}
-
-			// ID.
+		// ':'
+		if (peek() == ':') {
 			next();
-			String childName = readName();
-			if (childName.equals("id")) {
-				id = readId();
-				continue;
-			}
 
-			// Reference ID.
-			if (childName.equals("reference-id")) {
-				referenceId = readId();
-				continue;
-			}
+			// Children.
+			while (peek() != ')') {
 
-			// Token.
-			if (childName.equals("token")) {
-				context = readContext();
-				continue;
-			}
+				// Whitespace.
+				readWhitespace();
 
-			// Child.
-			if (children == null) {
-				children = new ItemsList<Losr>();
+				// Content.
+				if (peek() != '(') {
+					content = readContent();
+					continue;
+				}
+
+				// ID.
+				next();
+				String childName = readName();
+				if (childName.equals("id")) {
+					id = readId();
+					continue;
+				}
+
+				// Reference ID.
+				if (childName.equals("reference-id")) {
+					referenceId = readId();
+					continue;
+				}
+
+				// Token.
+				if (childName.equals("token")) {
+					context = readContext();
+					continue;
+				}
+
+				// Child.
+				if (children == null) {
+					children = new ItemsList<Losr>();
+				}
+				children.add(readNode(childName));
 			}
-			children.add(readNode(childName));
 		}
 
 		// ')'
 		readClosingBracket();
 
 		// Build node.
-		if (content != null) {
+		if (children == null) {
 			return LosrFactory.build(context, name, content);
 		}
 		return LosrFactory.build(id, referenceId, name, children);
@@ -95,7 +99,7 @@ class LosrParser {
 
 	private String readName() {
 		int index = position;
-		while (peek() != ':') {
+		while (peek() != ':' && peek() != ')') {
 			next();
 		}
 		return text.substring(index, position);

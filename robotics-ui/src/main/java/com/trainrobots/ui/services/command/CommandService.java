@@ -61,7 +61,7 @@ public class CommandService {
 
 		// Status bar.
 		this.command = command;
-		windowService.status("Command %d", command.id());
+		windowService.defaultStatus();
 
 		// Panes.
 		for (PaneView pane : windowService.panes()) {
@@ -117,7 +117,7 @@ public class CommandService {
 	public void addEllipsis() {
 		execute(v -> v.editor().addEllipsis());
 	}
-	
+
 	public void addId() {
 		execute(v -> v.editor().addId());
 	}
@@ -132,6 +132,15 @@ public class CommandService {
 
 	public void change() {
 		execute(v -> v.editor().change());
+	}
+
+	public void ground() {
+		execute(v -> v.editor().ground());
+	}
+
+	public void clear() {
+		command.losr(null);
+		execute(v -> v.bindTo(command));
 	}
 
 	private void execute(Consumer<CommandView> action) {

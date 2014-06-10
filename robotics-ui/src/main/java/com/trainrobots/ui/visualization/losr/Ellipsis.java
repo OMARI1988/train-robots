@@ -40,11 +40,4 @@ public class Ellipsis extends Terminal {
 	public Terminal withContext(TextContext context) {
 		throw new NotImplementedException();
 	}
-
-	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append("(after: ");
-		text.append(after);
-		text.append(')');
-	}
 }

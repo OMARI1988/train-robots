@@ -46,7 +46,7 @@ public class Symbol extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(value);
+	protected Object content() {
+		return value;
 	}
 }

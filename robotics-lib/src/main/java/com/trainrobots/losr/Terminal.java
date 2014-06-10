@@ -47,10 +47,16 @@ public abstract class Terminal extends Losr {
 		// Name.
 		text.append('(');
 		text.append(name());
-		text.append(": ");
 
 		// Content.
-		writeContent(text);
+		Object content = content();
+		if (content != null || context != null) {
+			text.append(':');
+		}
+		if (content != null) {
+			text.append(' ');
+			text.append(content);
+		}
 
 		// Context.
 		if (context != null) {
@@ -60,5 +66,7 @@ public abstract class Terminal extends Losr {
 		text.append(')');
 	}
 
-	protected abstract void writeContent(StringBuilder text);
+	protected Object content() {
+		return null;
+	}
 }

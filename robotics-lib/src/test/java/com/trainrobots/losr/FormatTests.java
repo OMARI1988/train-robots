@@ -165,8 +165,7 @@ public class FormatTests {
 	@Test
 	public void shouldFormatEventWithContext() {
 		assertThat(
-				new Event(
-						new Action(new TextContext(1, 2), Actions.Take),
+				new Event(new Action(new TextContext(1, 2), Actions.Take),
 						new Entity(new Type(new TextContext(3, 4), Types.Cube)))
 						.toString(),
 				is("(event: (action: take (token: 1 2)) (entity: (type: cube (token: 3 4))))"));
@@ -180,11 +179,19 @@ public class FormatTests {
 	}
 
 	@Test
-	public void shouldFormatDestination() {
+	public void shouldFormatDestination1() {
 		assertThat(
 				new Destination(
 						new SpatialRelation(Relations.Above, Types.Cube)).toString(),
 				is("(destination: (spatial-relation: (relation: above) (entity: (type: cube))))"));
+	}
+
+	@Test
+	public void shouldFormatDestination2() {
+		assertThat(
+				new Destination(new Marker(), new SpatialRelation(
+						Relations.Above, Types.Cube)).toString(),
+				is("(destination: (marker) (spatial-relation: (relation: above) (entity: (type: cube))))"));
 	}
 
 	@Test
@@ -193,5 +200,16 @@ public class FormatTests {
 				new Sequence(new Event(Actions.Take, Types.Cube), new Event(
 						Actions.Take, Types.Prism)).toString(),
 				is("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: take) (entity: (type: prism))))"));
+	}
+
+	@Test
+	public void shouldFormatMarker() {
+		assertThat(new Marker().toString(), is("(marker)"));
+	}
+
+	@Test
+	public void shouldFormatMarker2() {
+		assertThat(new Marker(new TextContext(5)).toString(),
+				is("(marker: (token: 5))"));
 	}
 }

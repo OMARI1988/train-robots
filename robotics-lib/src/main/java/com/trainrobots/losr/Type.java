@@ -50,7 +50,7 @@ public class Type extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(type);
+	protected Object content() {
+		return type;
 	}
 }

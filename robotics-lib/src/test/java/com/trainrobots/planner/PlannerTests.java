@@ -16,7 +16,6 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.instructions.MoveInstruction;
-import com.trainrobots.losr.Event;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
@@ -26,16 +25,13 @@ public class PlannerTests {
 	@Test
 	public void shouldGetInstruction() {
 
-		// Event.
-		Command command = TestContext.treebank().command(4436);
-		Event event = (Event) command.losr();
-
 		// Planner.
+		Command command = TestContext.treebank().command(1892);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
-		assertThat(planner.instruction(event), is(new MoveInstruction(
-				new Position(1, 6, 1), new Position(7, 0, 0))));
+		assertThat(planner.instruction(command.losr()), is(new MoveInstruction(
+				new Position(7, 7, 2), new Position(4, 5, 1))));
 	}
 
 	@Test
@@ -67,7 +63,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(3408));
-		assertThat(total, is(3408));
+		assertThat(valid, is(3407));
+		assertThat(total, is(3407));
 	}
 }

@@ -51,7 +51,7 @@ public class Relation extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(relation);
+	protected Object content() {
+		return relation;
 	}
 }

@@ -129,7 +129,7 @@ public class SpatialRelation extends Losr {
 		if (index == count++) {
 			return relation;
 		}
-		if (entity != null && index == count++) {
+		if (entity != null && index == count) {
 			return entity;
 		}
 		throw new IndexOutOfBoundsException();

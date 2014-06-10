@@ -51,7 +51,7 @@ public class Color extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(color);
+	protected Object content() {
+		return color;
 	}
 }

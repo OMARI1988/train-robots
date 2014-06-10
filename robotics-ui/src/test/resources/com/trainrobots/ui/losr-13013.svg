@@ -1,56 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-<text x="205.70459" y="14.597656" font-family="Times New Roman" font-size="16" fill="rgb(255, 0, 0)">event</text>
+<text x="183.37256" y="14.597656" font-family="Times New Roman" font-size="16" fill="rgb(255, 0, 0)">event</text>
 <text x="0.0" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">action</text>
 <text x="2.671875" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">place</text>
 <line x1="19.546875" y1="58.796875" x2="19.546875" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="127.35986" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="70.07422" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
 <text x="50.421875" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">color</text>
 <text x="49.09375" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">green</text>
 <line x1="66.859375" y1="97.19531" x2="66.859375" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
 <text x="95.953125" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
 <text x="94.625" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">cube</text>
 <line x1="109.72656" y1="97.19531" x2="109.72656" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="190.08691" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
-<text x="134.82812" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
-<text x="153.48438" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">Ø</text>
-<line x1="159.26172" y1="135.59375" x2="159.26172" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="271.11523" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
-<text x="193.69531" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(120, 120, 120)">from</text>
-<text x="234.79688" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
-<text x="243.6914" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">centre</text>
-<line x1="263.23047" y1="173.99219" x2="263.23047" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="301.66406" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
-<text x="309.66016" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">Ø</text>
-<line x1="315.4375" y1="173.99219" x2="315.4375" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<line x1="289.33398" y1="135.59375" x2="263.23047" y2="151.59375" stroke-width="1.0" stroke="black"/>
-<line x1="289.33398" y1="135.59375" x2="315.4375" y2="151.59375" stroke-width="1.0" stroke="black"/>
-<line x1="224.29785" y1="97.19531" x2="159.26172" y2="113.19531" stroke-width="1.0" stroke="black"/>
-<line x1="224.29785" y1="97.19531" x2="289.33398" y2="113.19531" stroke-width="1.0" stroke="black"/>
-<line x1="145.57861" y1="58.796875" x2="66.859375" y2="74.796875" stroke-width="1.0" stroke="black"/>
-<line x1="145.57861" y1="58.796875" x2="109.72656" y2="74.796875" stroke-width="1.0" stroke="black"/>
-<line x1="145.57861" y1="58.796875" x2="224.29785" y2="74.796875" stroke-width="1.0" stroke="black"/>
-<text x="391.40527" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">destination</text>
-<text x="392.2998" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
-<text x="339.21094" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
-<text x="355.64453" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">on</text>
-<line x1="363.64453" y1="135.59375" x2="363.64453" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="471.1582" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
-<text x="398.07812" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
-<text x="403.84375" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">bottom</text>
-<line x1="426.51172" y1="173.99219" x2="426.51172" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="464.9453" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
-<text x="478.26953" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">right</text>
-<line x1="493.3789" y1="173.99219" x2="493.3789" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<text x="538.46875" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
-<text x="531.8125" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">corner</text>
-<line x1="552.2422" y1="173.99219" x2="552.2422" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
-<line x1="489.37695" y1="135.59375" x2="426.51172" y2="151.59375" stroke-width="1.0" stroke="black"/>
-<line x1="489.37695" y1="135.59375" x2="493.3789" y2="151.59375" stroke-width="1.0" stroke="black"/>
-<line x1="489.37695" y1="135.59375" x2="552.2422" y2="151.59375" stroke-width="1.0" stroke="black"/>
-<line x1="426.51074" y1="97.19531" x2="363.64453" y2="113.19531" stroke-width="1.0" stroke="black"/>
-<line x1="426.51074" y1="97.19531" x2="489.37695" y2="113.19531" stroke-width="1.0" stroke="black"/>
-<line x1="426.51074" y1="58.796875" x2="426.51074" y2="74.796875" stroke-width="1.0" stroke="black"/>
-<line x1="223.02881" y1="20.398438" x2="19.546875" y2="36.398438" stroke-width="1.0" stroke="black"/>
-<line x1="223.02881" y1="20.398438" x2="145.57861" y2="36.398438" stroke-width="1.0" stroke="black"/>
-<line x1="223.02881" y1="20.398438" x2="426.51074" y2="36.398438" stroke-width="1.0" stroke="black"/>
+<line x1="88.29297" y1="58.796875" x2="66.859375" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="88.29297" y1="58.796875" x2="109.72656" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<text x="180.19629" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">source</text>
+<text x="134.82812" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">marker</text>
+<text x="141.92969" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">from</text>
+<line x1="157.48047" y1="97.19531" x2="157.48047" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="226.45117" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="190.13281" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
+<text x="199.02734" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">centre</text>
+<line x1="218.5664" y1="135.59375" x2="218.5664" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="257.0" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="264.9961" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">Ø</text>
+<line x1="270.77344" y1="135.59375" x2="270.77344" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="244.66992" y1="97.19531" x2="218.5664" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="244.66992" y1="97.19531" x2="270.77344" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="201.0752" y1="58.796875" x2="157.48047" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="201.0752" y1="58.796875" x2="244.66992" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<text x="346.7412" y="52.996094" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">destination</text>
+<text x="347.63574" y="91.39453" font-family="Times New Roman" font-size="16" fill="rgb(0, 176, 80)">sp-relation</text>
+<text x="294.54688" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">relation</text>
+<text x="310.98047" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">on</text>
+<line x1="318.98047" y1="135.59375" x2="318.98047" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="426.49414" y="129.79297" font-family="Times New Roman" font-size="16" fill="rgb(0, 112, 192)">entity</text>
+<text x="353.41406" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
+<text x="359.1797" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">bottom</text>
+<line x1="381.84766" y1="173.99219" x2="381.84766" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="420.28125" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">indicator</text>
+<text x="433.60547" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">right</text>
+<line x1="448.71484" y1="173.99219" x2="448.71484" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<text x="493.8047" y="168.1914" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">type</text>
+<text x="487.14844" y="206.58984" font-family="Times New Roman" font-size="16" fill="rgb(0, 0, 0)">corner</text>
+<line x1="507.57812" y1="173.99219" x2="507.57812" y2="189.99219" stroke-width="1.0" stroke="black" stroke-dasharray="1.5, 3.0"/>
+<line x1="444.7129" y1="135.59375" x2="381.84766" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="444.7129" y1="135.59375" x2="448.71484" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="444.7129" y1="135.59375" x2="507.57812" y2="151.59375" stroke-width="1.0" stroke="black"/>
+<line x1="381.84668" y1="97.19531" x2="318.98047" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="381.84668" y1="97.19531" x2="444.7129" y2="113.19531" stroke-width="1.0" stroke="black"/>
+<line x1="381.84668" y1="58.796875" x2="381.84668" y2="74.796875" stroke-width="1.0" stroke="black"/>
+<line x1="200.69678" y1="20.398438" x2="19.546875" y2="36.398438" stroke-width="1.0" stroke="black"/>
+<line x1="200.69678" y1="20.398438" x2="88.29297" y2="36.398438" stroke-width="1.0" stroke="black"/>
+<line x1="200.69678" y1="20.398438" x2="201.0752" y2="36.398438" stroke-width="1.0" stroke="black"/>
+<line x1="200.69678" y1="20.398438" x2="381.84668" y2="36.398438" stroke-width="1.0" stroke="black"/>
 </svg>

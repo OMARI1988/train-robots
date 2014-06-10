@@ -46,7 +46,7 @@ public class Text extends Terminal {
 	}
 
 	@Override
-	protected void writeContent(StringBuilder text) {
-		text.append(this.text);
+	protected Object content() {
+		return text;
 	}
 }

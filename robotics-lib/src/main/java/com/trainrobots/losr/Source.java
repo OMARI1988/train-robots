@@ -13,23 +13,23 @@ import java.util.Objects;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 
-public class Destination extends Losr {
+public class Source extends Losr {
 
 	private final Marker marker;
 	private final Entity entity;
 	private final SpatialRelation spatialRelation;
 
-	public Destination(SpatialRelation spatialRelation) {
+	public Source(SpatialRelation spatialRelation) {
 		this(null, spatialRelation);
 	}
 
-	public Destination(Marker marker, SpatialRelation spatialRelation) {
+	public Source(Marker marker, SpatialRelation spatialRelation) {
 		this.marker = marker;
 		this.entity = null;
 		this.spatialRelation = spatialRelation;
 	}
 
-	public Destination(int id, int referenceId, Items<Losr> items) {
+	public Source(int id, int referenceId, Items<Losr> items) {
 		super(id, referenceId);
 
 		// Items.
@@ -57,21 +57,21 @@ public class Destination extends Losr {
 			}
 
 			// Invalid.
-			throw new RoboticException("Invalid destination item: %s.", item);
+			throw new RoboticException("Invalid source item: %s.", item);
 		}
 
-		// Destination.
+		// Source.
 		if (entity == null && spatialRelation == null) {
 			throw new RoboticException(
-					"Either a spatial relation or an entity must be specified in a destination.");
+					"Either a spatial relation or an entity must be specified in a source.");
 		}
 		if (entity != null && spatialRelation != null) {
 			throw new RoboticException(
-					"A spatial relation and entity can not be specified together in a destination.");
+					"A spatial relation and entity can not be specified together in a source.");
 		}
 		if (entity != null && marker == null) {
 			throw new RoboticException(
-					"An entity can not be specified without a marker in a destination.");
+					"An entity can not be specified without a marker in a source.");
 		}
 		this.marker = marker;
 		this.entity = entity;
@@ -92,17 +92,17 @@ public class Destination extends Losr {
 
 	@Override
 	public String name() {
-		return "destination";
+		return "source";
 	}
 
 	@Override
 	public boolean equals(Losr losr) {
-		if (losr instanceof Destination) {
-			Destination destination = (Destination) losr;
-			return destination.id == id
-					&& destination.referenceId == referenceId
+		if (losr instanceof Source) {
+			Source source = (Source) losr;
+			return source.id == id
+					&& source.referenceId == referenceId
 					&& Objects.equals(marker, marker)
-					&& destination.spatialRelation.equals(spatialRelation);
+					&& source.spatialRelation.equals(spatialRelation);
 		}
 		return false;
 	}

@@ -42,7 +42,7 @@ public class MoveInstruction implements Instruction {
 		StringBuilder text = new StringBuilder();
 		text.append("Move (");
 		text.append(from);
-		text.append(") --> (");
+		text.append(") -> (");
 		text.append(to);
 		text.append(")");
 		return text.toString();

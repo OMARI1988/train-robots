@@ -161,8 +161,7 @@ public class LosrParserTests {
 	public void shouldParseEventWithContext() {
 		assertThat(
 				Losr.parse("(event: (action: take (token: 1 2)) (entity: (type: cube (token: 3 4))))"),
-				is(new Event(
-						new Action(new TextContext(1, 2), Actions.Take),
+				is(new Event(new Action(new TextContext(1, 2), Actions.Take),
 						new Entity(new Type(new TextContext(3, 4), Types.Cube)))));
 	}
 
@@ -174,11 +173,19 @@ public class LosrParserTests {
 	}
 
 	@Test
-	public void shouldParseDestination() {
+	public void shouldParseDestination1() {
 		assertThat(
 				Losr.parse("(destination: (spatial-relation: (relation: above) (entity: (type: cube))))"),
 				is(new Destination(new SpatialRelation(Relations.Above,
 						Types.Cube))));
+	}
+
+	@Test
+	public void shouldParseDestination2() {
+		assertThat(
+				Losr.parse("(destination: (marker: destination) (spatial-relation: (relation: above) (entity: (type: cube))))"),
+				is(new Destination(new Marker(), new SpatialRelation(
+						Relations.Above, Types.Cube))));
 	}
 
 	@Test
@@ -187,5 +194,16 @@ public class LosrParserTests {
 				Losr.parse("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: take) (entity: (type: prism))))"),
 				is(new Sequence(new Event(Actions.Take, Types.Cube), new Event(
 						Actions.Take, Types.Prism))));
+	}
+
+	@Test
+	public void shouldParseMarker() {
+		assertThat(Losr.parse("(marker)"), is(new Marker()));
+	}
+
+	@Test
+	public void shouldParseMarker2() {
+		assertThat(Losr.parse("(marker: (token: 5))"), is(new Marker(
+				new TextContext(5))));
 	}
 }

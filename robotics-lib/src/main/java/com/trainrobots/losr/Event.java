@@ -8,6 +8,8 @@
 
 package com.trainrobots.losr;
 
+import java.util.Objects;
+
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 
@@ -15,6 +17,7 @@ public class Event extends Losr {
 
 	private final Action action;
 	private final Entity entity;
+	private final Source source;
 	private final Destination destination;
 
 	public Event(Actions action, Types type) {
@@ -36,6 +39,7 @@ public class Event extends Losr {
 	public Event(Action action, Entity entity, Destination destination) {
 		this.action = action;
 		this.entity = entity;
+		this.source = null;
 		this.destination = destination;
 	}
 
@@ -45,6 +49,7 @@ public class Event extends Losr {
 		// Items.
 		Action action = null;
 		Entity entity = null;
+		Source source = null;
 		Destination destination = null;
 		for (Losr item : items) {
 
@@ -57,6 +62,12 @@ public class Event extends Losr {
 			// Entity.
 			if (item instanceof Entity && entity == null) {
 				entity = (Entity) item;
+				continue;
+			}
+
+			// Source.
+			if (item instanceof Source && source == null) {
+				source = (Source) item;
 				continue;
 			}
 
@@ -76,6 +87,7 @@ public class Event extends Losr {
 		}
 		this.action = action;
 		this.entity = entity;
+		this.source = source;
 		this.destination = destination;
 	}
 
@@ -91,12 +103,12 @@ public class Event extends Losr {
 		return entity;
 	}
 
-	public Destination destinationAttribute() {
-		return destination;
+	public Source source() {
+		return source;
 	}
 
-	public SpatialRelation destination() {
-		return destination != null ? destination.spatialRelation() : null;
+	public Destination destination() {
+		return destination;
 	}
 
 	@Override
@@ -110,28 +122,39 @@ public class Event extends Losr {
 			Event event = (Event) losr;
 			return event.id == id && event.referenceId == referenceId
 					&& event.action.equals(action)
-					&& event.entity.equals(entity);
+					&& event.entity.equals(entity)
+					&& Objects.equals(event.source, source)
+					&& Objects.equals(event.destination, destination);
 		}
 		return false;
 	}
 
 	@Override
 	public int count() {
-		return destination != null ? 3 : 2;
+		int count = 2;
+		if (source != null) {
+			count++;
+		}
+		if (destination != null) {
+			count++;
+		}
+		return count;
 	}
 
 	@Override
 	public Losr get(int index) {
-		switch (index) {
-		case 0:
+		int count = 0;
+		if (index == count++) {
 			return action;
-		case 1:
+		}
+		if (index == count++) {
 			return entity;
-		case 2:
-			if (destination != null) {
-				return destination;
-			}
-			break;
+		}
+		if (source != null && index == count++) {
+			return source;
+		}
+		if (destination != null && index == count) {
+			return destination;
 		}
 		throw new IndexOutOfBoundsException();
 	}

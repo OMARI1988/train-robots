@@ -24,11 +24,13 @@ import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Measure;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Sequence;
+import com.trainrobots.losr.Source;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Symbol;
 import com.trainrobots.losr.Text;
@@ -56,12 +58,14 @@ public class LosrFactory {
 		terminal("action", (t, c) -> new Action(t, Actions.parse(c)));
 		terminal("relation", (t, c) -> new Relation(t, Relations.parse(c)));
 		terminal("indicator", (t, c) -> new Indicator(t, Indicators.parse(c)));
+		terminal("marker", (t, c) -> new Marker(t));
 
 		// Non-terminals.
 		nonTerminal("entity", Entity::new);
 		nonTerminal("event", Event::new);
 		nonTerminal("spatial-relation", SpatialRelation::new);
 		nonTerminal("destination", Destination::new);
+		nonTerminal("source", Source::new);
 		nonTerminal("sequence", Sequence::new);
 		nonTerminal("measure", Measure::new);
 	}
