@@ -111,6 +111,16 @@ public class AboveDistribution extends SpatialDistribution {
 				if (region.indicator() == Indicators.Right) {
 					return weight * (7 - p1.y());
 				}
+
+				// Front.
+				if (region.indicator() == Indicators.Front) {
+					return weight * (7 - p1.x());
+				}
+
+				// Back.
+				if (region.indicator() == Indicators.Back) {
+					return weight * p1.x();
+				}
 			}
 
 			// Not supported.
