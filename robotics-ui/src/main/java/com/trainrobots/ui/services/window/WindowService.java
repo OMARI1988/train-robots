@@ -44,9 +44,9 @@ public class WindowService {
 		// Panes.
 		registerPane("robot", RobotView.class, 540, 60, 305, 325);
 		registerPane("scene", SceneView.class, 7, 13, 488, 286);
-		registerPane("navigation", NavigationView.class, 7, 310, 307, 303);
-		registerPane("command", CommandView.class, 505, 13, 850, 602);
-		registerPane("comments", CommentsView.class, 1000, 55, 330, 210);
+		registerPane("navigation", NavigationView.class, 7, 310, 229, 303);
+		registerPane("command", CommandView.class, 505, 13, 850, 600);
+		registerPane("comments", CommentsView.class, 247, 310, 248, 303);
 	}
 
 	public void setMainWindow(MainWindow mainWindow) {
@@ -196,6 +196,7 @@ public class WindowService {
 		show("scene");
 		show("navigation");
 		show("command");
+		show("comments");
 
 		// Command.
 		commandService().randomCommand();
