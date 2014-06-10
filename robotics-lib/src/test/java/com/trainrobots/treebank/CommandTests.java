@@ -32,7 +32,7 @@ public class CommandTests {
 				count++;
 			}
 		}
-		assertThat(count, is(3410));
+		assertThat(count, is(3412));
 
 		// Command 25495.
 		Command command = commands.command(25495);

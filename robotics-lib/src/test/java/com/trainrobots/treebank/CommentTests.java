@@ -19,7 +19,9 @@ public class CommentTests {
 	@Ignore
 	public void shouldShowComments() {
 		for (Command command : TestContext.treebank().commands()) {
-			if ("implict proximity".equals(command.comment())) {
+			String filter = "near";
+			if (command.comment() != null
+					&& (filter == null || command.comment().equals(filter))) {
 				System.out.println(command.id() + ": " + command.comment());
 			}
 		}
