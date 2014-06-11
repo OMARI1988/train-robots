@@ -63,7 +63,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(3696));
-		assertThat(total, is(3696));
+		assertThat(valid, is(3695));
+		assertThat(total, is(3695));
 	}
 }

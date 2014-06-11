@@ -22,6 +22,7 @@ import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.CommentsView;
 import com.trainrobots.ui.views.MainWindow;
 import com.trainrobots.ui.views.RobotView;
+import com.trainrobots.ui.views.StatusBar;
 import com.trainrobots.ui.views.ToolBar;
 import com.trainrobots.ui.views.command.CommandView;
 import com.trainrobots.ui.views.navigation.NavigationView;
@@ -44,6 +45,7 @@ public class Container {
 		registerSingle(MainWindow.class);
 		registerSingle(MainMenu.class);
 		registerSingle(ToolBar.class);
+		registerSingle(StatusBar.class);
 
 		// Views.
 		register(RobotView.class);

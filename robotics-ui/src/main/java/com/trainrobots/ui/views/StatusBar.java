@@ -9,6 +9,8 @@
 package com.trainrobots.ui.views;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -16,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.trainrobots.ui.Resources;
+import com.trainrobots.ui.services.validation.ValidationService;
 
 public class StatusBar extends JPanel {
 
@@ -27,7 +30,7 @@ public class StatusBar extends JPanel {
 	private static final ImageIcon ERROR_IMAGE = new ImageIcon(
 			Resources.url("/com/trainrobots/ui/icons/error.gif"));
 
-	public StatusBar() {
+	public StatusBar(ValidationService validationService) {
 
 		// Layout.
 		setLayout(new BorderLayout());
@@ -39,6 +42,26 @@ public class StatusBar extends JPanel {
 
 		// Ready.
 		text("Ready");
+
+		// Mouse.
+		this.addMouseListener(new MouseListener() {
+
+			public void mouseClicked(MouseEvent event) {
+				validationService.navigate();
+			}
+
+			public void mousePressed(MouseEvent event) {
+			}
+
+			public void mouseReleased(MouseEvent event) {
+			}
+
+			public void mouseEntered(MouseEvent event) {
+			}
+
+			public void mouseExited(MouseEvent event) {
+			}
+		});
 	}
 
 	public void text(String text) {

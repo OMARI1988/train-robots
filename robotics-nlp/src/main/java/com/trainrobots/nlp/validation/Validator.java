@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
 import com.trainrobots.nlp.validation.rules.PlannerRule;
+import com.trainrobots.nlp.validation.rules.StopWordRule;
 import com.trainrobots.nlp.validation.rules.ValidationRule;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
@@ -24,7 +25,7 @@ public class Validator {
 	public Validator() {
 		rules.add(new AboveOrWithinRule());
 		rules.add(new PlannerRule());
-		// rules.add(new StopWordRule());
+		rules.add(new StopWordRule());
 		// rules.add(new CommentRule());
 	}
 

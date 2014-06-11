@@ -15,6 +15,7 @@ import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.validation.ValidationResult;
 import com.trainrobots.nlp.validation.ValidationResults;
 import com.trainrobots.nlp.validation.Validator;
+import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.command.CommandView;
@@ -23,12 +24,15 @@ public class ValidationService {
 
 	private final WindowService windowService;
 	private final TreebankService treebankService;
+	private final CommandService commandService;
 	private final Validator validator = new Validator();
+	private ValidationResults results;
 
 	public ValidationService(WindowService windowService,
-			TreebankService treebankService) {
+			TreebankService treebankService, CommandService commandService) {
 		this.windowService = windowService;
 		this.treebankService = treebankService;
+		this.commandService = commandService;
 	}
 
 	public void validate() {
@@ -55,7 +59,8 @@ public class ValidationService {
 
 			public void done() {
 				try {
-					handleResults(get());
+					results = get();
+					handleResults();
 				} catch (Exception exception) {
 					Log.error("Failed to validate commands.", exception);
 				}
@@ -63,7 +68,16 @@ public class ValidationService {
 		}.execute();
 	}
 
-	private void handleResults(ValidationResults results) {
+	public void navigate() {
+
+		// Go to first error.
+		int size = results.count();
+		if (size > 0) {
+			commandService.command(results.get(0).command());
+		}
+	}
+
+	private void handleResults() {
 
 		// No errors?
 		int size = results.count();
@@ -74,7 +88,7 @@ public class ValidationService {
 
 		// Display first error.
 		ValidationResult result = results.get(0);
-		windowService.error("Command %d: %s", result.command().id(),
-				result.message());
+		windowService.error("%d %s. Command %d: %s", size, size == 1 ? "error"
+				: "errors", result.command().id(), result.message());
 	}
 }

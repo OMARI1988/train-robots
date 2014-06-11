@@ -35,7 +35,7 @@ public class MainWindow extends JFrame {
 	private final StatusBar statusBar;
 
 	public MainWindow(WindowService windowService, MainMenu menu,
-			ToolBar toolBar) {
+			ToolBar toolBar, StatusBar statusBar) {
 		super("Train Robots");
 
 		// Menu.
@@ -66,7 +66,7 @@ public class MainWindow extends JFrame {
 		add(desktopPane, BorderLayout.CENTER);
 
 		// Status bar.
-		statusBar = new StatusBar();
+		this.statusBar = statusBar;
 		add(statusBar, BorderLayout.SOUTH);
 
 		// Icons.
