@@ -14,6 +14,7 @@ import com.trainrobots.Log;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tagger.Tagger;
+import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.navigation.NavigationView;
@@ -68,7 +69,7 @@ public class TreebankService {
 					if (exception != null) {
 						windowService.error(exception.getMessage());
 					} else {
-						windowService.status("Saved");
+						showStatistics();
 
 						// Refresh navigation tree.
 						NavigationView navigationView = windowService
@@ -82,5 +83,19 @@ public class TreebankService {
 				}
 			}
 		}.execute();
+	}
+
+	private void showStatistics() {
+		int losr = 0;
+		int unreviewed = 0;
+		for (Command command : treebank.commands()) {
+			if (command.losr() != null) {
+				losr++;
+			} else if (command.comment() == null) {
+				unreviewed++;
+			}
+		}
+		windowService.status("Saved %d commands (%d unreviewed).", losr,
+				unreviewed);
 	}
 }
