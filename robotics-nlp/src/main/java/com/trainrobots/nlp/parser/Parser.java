@@ -29,7 +29,7 @@ import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.grammar.ProductionRule;
 import com.trainrobots.nlp.lexicon.LexicalEntry;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.validation.AboveWithinRule;
+import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.planner.Planner;
 import com.trainrobots.scenes.Layout;
@@ -46,13 +46,17 @@ public class Parser {
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
 	private final boolean verbose;
 
+	public Parser(Layout layout, Grammar grammar, Items<Losr> items) {
+		this(layout, grammar, null, items, null, false);
+	}
+
 	public Parser(Layout layout, Grammar grammar, Lexicon lexicon,
-			Items<Terminal> terminals, Items<Terminal> tokens, boolean verbose) {
+			Items<Losr> items, Items<Terminal> tokens, boolean verbose) {
 
 		this.planner = new Planner(layout);
 		this.grammar = grammar;
 		this.lexicon = lexicon;
-		this.queue = new Queue(terminals);
+		this.queue = new Queue(items);
 		this.tokens = tokens;
 		this.verbose = verbose;
 
@@ -208,8 +212,15 @@ public class Parser {
 		// Dequeue.
 		Node node = queue.read();
 
-		// Lexicon mappings.
-		Terminal terminal = (Terminal) node.losr();
+		// Parsing partial input?
+		Losr losr = node.losr();
+		if (tokens == null) {
+			createFrontier(new Node[] { node });
+			return;
+		}
+
+		// Terminal.
+		Terminal terminal = (Terminal) losr;
 		TextContext context = terminal.context();
 		String key = key(tokens, context);
 		Items<LexicalEntry> entries = lexicon.entries(terminal.getClass(), key);
@@ -331,7 +342,7 @@ public class Parser {
 
 			// Above/within.
 			Entity entity = (Entity) node.losr();
-			new AboveWithinRule().validate(entity);
+			new AboveOrWithinRule().validate(entity);
 
 			// Groundings.
 			if (entity.type() == Types.Reference

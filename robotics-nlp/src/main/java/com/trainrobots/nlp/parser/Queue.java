@@ -13,16 +13,16 @@ import java.util.List;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Terminal;
+import com.trainrobots.losr.Losr;
 
 public class Queue {
 
 	private final List<Node> items = new ArrayList<Node>();
 	private int position;
 
-	public Queue(Items<Terminal> terminals) {
-		for (Terminal terminal : terminals) {
-			items.add(new Node(terminal));
+	public Queue(Items<Losr> items) {
+		for (Losr item : items) {
+			this.items.add(new Node(item));
 		}
 	}
 

@@ -8,45 +8,37 @@
 
 package com.trainrobots.nlp.validation;
 
-import com.trainrobots.RoboticException;
-import com.trainrobots.instructions.Instruction;
-import com.trainrobots.planner.Planner;
-import com.trainrobots.scenes.Scene;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
+import com.trainrobots.nlp.validation.rules.PlannerRule;
+import com.trainrobots.nlp.validation.rules.ValidationRule;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
 public class Validator {
 
-	private final AboveWithinRule aboveWithinRule = new AboveWithinRule();
+	private final List<ValidationRule> rules = new ArrayList<>();
+
+	public Validator() {
+		rules.add(new AboveOrWithinRule());
+		rules.add(new PlannerRule());
+		// rules.add(new StopWordRule());
+		// rules.add(new CommentRule());
+	}
 
 	public ValidationResults validate(Treebank treebank) {
 		ValidationResults results = new ValidationResults();
 		for (Command command : treebank.commands()) {
-			if (command.losr() != null) {
+			for (ValidationRule rule : rules) {
 				try {
-					validate(command);
-					results.validCount(results.validCount() + 1);
+					rule.validate(command);
 				} catch (Exception exception) {
 					results.add(command, exception.getMessage());
 				}
 			}
 		}
 		return results;
-	}
-
-	private void validate(Command command) {
-
-		// Above/within.
-		aboveWithinRule.validate(command.losr());
-
-		// Planner.
-		Scene scene = command.scene();
-		Planner planner = new Planner(scene.before());
-
-		// Validate.
-		Instruction actual = planner.instruction(command.losr());
-		if (!actual.equals(scene.instruction())) {
-			throw new RoboticException("Instruction mismatch.");
-		}
 	}
 }

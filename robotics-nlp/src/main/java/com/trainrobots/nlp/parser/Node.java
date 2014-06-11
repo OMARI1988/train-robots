@@ -10,7 +10,6 @@ package com.trainrobots.nlp.parser;
 
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.factory.LosrFactory;
 
 public class Node {
@@ -19,8 +18,8 @@ public class Node {
 	private final Node[] children;
 	private Double weight;
 
-	public Node(Terminal terminal) {
-		this.losr = terminal;
+	public Node(Losr losr) {
+		this.losr = losr;
 		this.children = null;
 	}
 

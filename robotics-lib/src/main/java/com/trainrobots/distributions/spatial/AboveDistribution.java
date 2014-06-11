@@ -66,10 +66,10 @@ public class AboveDistribution extends SpatialDistribution {
 
 			// Board.
 			if (landmark instanceof Board && observable instanceof Shape) {
-				if (p1.z() == 0) {
-					return weight;
-				}
-				continue;
+				//if (p1.z() == 0) {
+					return weight * (7 - p1.z());
+				//}
+				//continue;
 			}
 
 			// Edge.

@@ -21,20 +21,11 @@ public class ValidationResults implements Items<ValidationResult> {
 
 	private final List<ValidationResult> list = new ArrayList<>();
 	private final Map<Integer, ValidationResult> map = new HashMap<>();
-	private int validCount;
 
 	public void add(Command command, String message) {
 		ValidationResult result = new ValidationResult(command, message);
 		list.add(result);
 		map.put(result.command().id(), result);
-	}
-
-	public int validCount() {
-		return validCount;
-	}
-
-	public void validCount(int validCount) {
-		this.validCount = validCount;
 	}
 
 	@Override

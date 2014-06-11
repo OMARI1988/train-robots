@@ -11,13 +11,13 @@ package com.trainrobots.ui.services.validation;
 import javax.swing.SwingWorker;
 
 import com.trainrobots.Log;
+import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.validation.ValidationResult;
 import com.trainrobots.nlp.validation.ValidationResults;
 import com.trainrobots.nlp.validation.Validator;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.command.CommandView;
-import com.trainrobots.ui.visualization.losr.PartialTree;
 
 public class ValidationService {
 
@@ -41,7 +41,7 @@ public class ValidationService {
 				CommandView commandView = windowService.pane(CommandView.class);
 				if (commandView != null) {
 					PartialTree partialTree = commandView.partialTree();
-					if (partialTree.items().count() != 1) {
+					if (partialTree.items().count() >= 2) {
 						ValidationResults results = new ValidationResults();
 						results.add(partialTree.command(),
 								"Annotation not complete.");
@@ -68,7 +68,7 @@ public class ValidationService {
 		// No errors?
 		int size = results.count();
 		if (size == 0) {
-			windowService.status("Validated %d commands", results.validCount());
+			windowService.status("Validated successfully.");
 			return;
 		}
 

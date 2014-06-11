@@ -25,13 +25,13 @@ import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 
 import com.trainrobots.losr.Losr;
+import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.command.CommandAware;
 import com.trainrobots.ui.services.command.CommandService;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.PaneView;
-import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Text;
 
 public class CommandView extends PaneView implements CommandAware {

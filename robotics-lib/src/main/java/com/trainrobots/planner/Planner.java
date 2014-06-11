@@ -471,21 +471,27 @@ public class Planner {
 	}
 
 	private static Entity normalizeSource(Entity entity, Source source) {
+
+		// Source.
 		if (source == null) {
 			return entity;
 		}
-		Entity sourceEntity = source.entity();
-		if (sourceEntity == null) {
-			throw new RoboticException("Source entity not specified.");
+
+		// Spatial relation.
+		SpatialRelation spatialRelation = source.spatialRelation();
+		if (spatialRelation == null) {
+			Entity sourceEntity = source.entity();
+			if (sourceEntity == null) {
+				throw new RoboticException("Source entity not specified.");
+			}
+			spatialRelation = new SpatialRelation(
+					new Relation(Relations.Above), sourceEntity);
 		}
-		return new Entity(
-				entity.id(),
-				entity.referenceId(),
-				entity.cardinal(),
-				entity.indicators(),
-				entity.colors(),
-				entity.typeAttribute(),
-				new SpatialRelation(new Relation(Relations.Above), sourceEntity));
+
+		// Normalized entity.
+		return new Entity(entity.id(), entity.referenceId(), entity.cardinal(),
+				entity.indicators(), entity.colors(), entity.typeAttribute(),
+				spatialRelation);
 	}
 
 	private PlannerContext context(Losr root) {

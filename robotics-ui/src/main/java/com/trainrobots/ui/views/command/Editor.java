@@ -33,13 +33,15 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.nlp.grammar.Grammar;
+import com.trainrobots.nlp.losr.Ellipsis;
+import com.trainrobots.nlp.losr.EllipticalContext;
+import com.trainrobots.nlp.losr.PartialTree;
+import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.planner.Planner;
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
-import com.trainrobots.ui.visualization.losr.Ellipsis;
-import com.trainrobots.ui.visualization.losr.EllipticalContext;
-import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.visuals.Detail;
 import com.trainrobots.ui.visualization.visuals.Header;
 import com.trainrobots.ui.visualization.visuals.IdDetail;
@@ -87,11 +89,18 @@ public class Editor {
 		PartialTree partialTree = view.partialTree();
 		partialTree.add(losr);
 
-		// Post-processing.
-		Items<Losr> items = partialTree.items();
+		// Try parsing.
+		Layout layout = partialTree.command().scene().before();
 		Grammar grammar = treebankService.grammar();
-		if (items.count() >= 2 && (losr = grammar.nonTerminal(items)) != null) {
-			partialTree.add(losr);
+		Losr parseTree = null;
+		try {
+			Parser parser = new Parser(layout, grammar, partialTree.items());
+			parseTree = parser.parse();
+		} catch (Exception exception) {
+		}
+		if (parseTree != null) {
+			partialTree.clear();
+			partialTree.add(parseTree);
 		}
 
 		// Redraw.

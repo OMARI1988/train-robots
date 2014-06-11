@@ -6,17 +6,19 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.ui.visualization.losr;
+package com.trainrobots.nlp.losr;
 
 import com.trainrobots.NotImplementedException;
+import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 
-public class EllipticalContext extends TextContext {
+public class Ellipsis extends Terminal {
 
 	private final int after;
 
-	public EllipticalContext(int after) {
-		super(0, 0);
+	public Ellipsis(int after) {
+		super(null);
 		this.after = after;
 	}
 
@@ -25,27 +27,17 @@ public class EllipticalContext extends TextContext {
 	}
 
 	@Override
-	public String text() {
+	public String name() {
+		return "ellipsis";
+	}
+
+	@Override
+	public boolean equals(Losr losr) {
 		throw new NotImplementedException();
 	}
 
 	@Override
-	public int start() {
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public int end() {
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public String toString() {
+	public Terminal withContext(TextContext context) {
 		throw new NotImplementedException();
 	}
 }

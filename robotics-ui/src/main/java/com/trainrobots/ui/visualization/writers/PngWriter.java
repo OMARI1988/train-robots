@@ -17,11 +17,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.GraphicsRenderer;
 import com.trainrobots.ui.visualization.VisualContext;
 import com.trainrobots.ui.visualization.Visualizer;
-import com.trainrobots.ui.visualization.losr.PartialTree;
 import com.trainrobots.ui.visualization.themes.Theme;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.visuals.Visual;

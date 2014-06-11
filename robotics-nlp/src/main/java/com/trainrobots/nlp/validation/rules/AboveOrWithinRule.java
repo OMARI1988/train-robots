@@ -6,7 +6,7 @@
  * Released under version 3 of the GNU General Public License (GPL).
  */
 
-package com.trainrobots.nlp.validation;
+package com.trainrobots.nlp.validation.rules;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Entity;
@@ -14,8 +14,17 @@ import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Types;
+import com.trainrobots.treebank.Command;
 
-public class AboveWithinRule {
+public class AboveOrWithinRule implements ValidationRule {
+
+	@Override
+	public void validate(Command command) {
+		Losr losr = command.losr();
+		if (losr != null) {
+			validate(losr);
+		}
+	}
 
 	public void validate(Losr root) {
 		root.visit(x -> {

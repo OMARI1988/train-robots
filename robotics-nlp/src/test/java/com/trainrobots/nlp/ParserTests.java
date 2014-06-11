@@ -18,9 +18,12 @@ import org.junit.Test;
 import com.trainrobots.TestContext;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.losr.TextContext;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
+import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.treebank.Command;
@@ -37,6 +40,29 @@ public class ParserTests {
 		lexicon = new Lexicon(treebank);
 		grammar = new Grammar(treebank);
 		tagger = new Tagger(treebank, lexicon);
+	}
+
+	@Test
+	@Ignore
+	public void shouldParsePartialStructure() {
+
+		// Tree.
+		Command command = TestContext.treebank().command(8703);
+		Losr losr = command.losr();
+		PartialTree partialTree = new PartialTree(command);
+
+		// Partial structure.
+		partialTree.remove(losr.find(1));
+		partialTree.add(new Marker(new TextContext(6)));
+		assertThat(partialTree.items().count(), is(6));
+
+		// Parse.
+		Parser parser = new Parser(command.scene().before(), grammar,
+				partialTree.items());
+		Losr result = parser.parse();
+
+		// Final result.
+		System.out.println("FINAL RESULT = " + result);
 	}
 
 	@Test
@@ -82,7 +108,7 @@ public class ParserTests {
 		try {
 			Items<Terminal> terminals = tagger.terminals(command);
 			Parser parser = new Parser(command.scene().before(), grammar,
-					lexicon, terminals, command.tokens(), verbose);
+					lexicon, (Items) terminals, command.tokens(), verbose);
 			losr = parser.parse();
 		} catch (Exception exception) {
 			System.out.println(command.id() + ": " + exception.getMessage());
