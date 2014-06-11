@@ -149,7 +149,8 @@ public class Planner {
 		Items<Observable> best = distribution.best();
 		if (best.count() != 1) {
 			throw new RoboticException(
-					"Expected a single observable for a move action.");
+					"Expected a single observable for a move action (%s).",
+					count(best.count()));
 		}
 		Observable observable = best.get(0);
 
@@ -172,7 +173,8 @@ public class Planner {
 				.destinations(context).best();
 		if (destinations.count() != 1) {
 			throw new RoboticException(
-					"Expected a single destination for a move action.");
+					"Expected a single destination for a move action (%s).",
+					count(destinations.count()));
 		}
 		return new MoveInstruction(shape.position(), destinations.get(0));
 	}
@@ -194,7 +196,8 @@ public class Planner {
 		Items<Observable> best = distribution.best();
 		if (best.count() != 1) {
 			throw new RoboticException(
-					"Expected a single observable for a take action.");
+					"Expected a single observable for a take action (%s).",
+					count(best.count()));
 		}
 		Observable observable = best.get(0);
 
@@ -209,6 +212,12 @@ public class Planner {
 	}
 
 	private DropInstruction translateDrop(PlannerContext context, Event event) {
+
+		// Source.
+		if (event.source() != null) {
+			throw new RoboticException(
+					"A source should not be specified for a drop action.");
+		}
 
 		// Entity reference?
 		Entity entity = event.entity();
@@ -240,7 +249,8 @@ public class Planner {
 			Items<Observable> best = distribution.best();
 			if (best.count() != 1) {
 				throw new RoboticException(
-						"Expected a single observable for a drop action.");
+						"Expected a single observable for a drop action (%s).",
+						count(best.count()));
 			}
 			Observable observable = best.get(0);
 
@@ -256,12 +266,6 @@ public class Planner {
 			}
 		}
 
-		// Source.
-		if (event.source() != null) {
-			throw new RoboticException(
-					"A source should not be specified for a take action.");
-		}
-
 		// Destination.
 		Position position = simulator.dropPosition(gripper.position());
 		if (event.destination() != null) {
@@ -271,7 +275,8 @@ public class Planner {
 					context).best();
 			if (destinations.count() != 1) {
 				throw new RoboticException(
-						"Expected a single destination for a drop action.");
+						"Expected a single destination for a drop action (%s).",
+						count(destinations.count()));
 			}
 			position = destinations.get(0);
 		}
@@ -305,12 +310,20 @@ public class Planner {
 		}
 
 		// Type.
+		ObservableDistribution distribution;
 		Types type = entity.type();
 		if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
 			type = context.referenceType(entity.referenceId());
 		}
-		ObservableDistribution distribution = new TypeDistribution(context,
-				layout, type);
+		if (type == Types.Reference) {
+			distribution = context.get(entity.referenceId());
+			if (distribution == null) {
+				throw new RoboticException(
+						"Failed to find distribution for %s.", entity);
+			}
+			return distribution;
+		}
+		distribution = new TypeDistribution(context, layout, type);
 
 		// Indicators.
 		Items<Indicator> indicators = entity.indicators();
@@ -331,6 +344,7 @@ public class Planner {
 			distribution = new RelativeDistribution(distribution,
 					spatialDistribution);
 		}
+		context.add(entity, distribution);
 		return distribution;
 	}
 
@@ -479,5 +493,9 @@ public class Planner {
 				root);
 		context.sourceShape(layout.gripper().shape());
 		return context;
+	}
+
+	private static String count(int count) {
+		return count == 1 ? "1 grounding" : count + " groundings";
 	}
 }

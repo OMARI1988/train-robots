@@ -14,12 +14,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class TreeNode extends DefaultMutableTreeNode {
 
-	protected static final Color DARK_GREEN = new Color(0, 200, 0);
-	protected static final Color DARK_ORANGE = new Color(255, 69, 0);
-
 	private final boolean isLeaf;
 	private boolean initiated;
-	private String name;
+	protected String name;
+
+	protected TreeNode(boolean isLeaf) {
+		this(null, isLeaf);
+	}
 
 	protected TreeNode(String name, boolean isLeaf) {
 		this.name = name;

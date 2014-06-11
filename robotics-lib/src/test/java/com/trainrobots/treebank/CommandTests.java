@@ -25,15 +25,6 @@ public class CommandTests {
 		Commands commands = TestContext.treebank().commands();
 		assertThat(commands.count(), is(8970));
 
-		// LOSR statements.
-		int count = 0;
-		for (Command command : commands) {
-			if (command.losr() != null) {
-				count++;
-			}
-		}
-		assertThat(count, is(3414));
-
 		// Command 25495.
 		Command command = commands.command(25495);
 		assertThat(command.id(), is(25495));

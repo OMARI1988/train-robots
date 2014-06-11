@@ -26,12 +26,12 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(21790);
+		Command command = TestContext.treebank().command(7690);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
 		assertThat(planner.instruction(command.losr()), is(new MoveInstruction(
-				new Position(5, 2, 1), new Position(1, 3, 2))));
+				new Position(6, 4, 1), new Position(5, 4, 1))));
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(3414));
-		assertThat(total, is(3414));
+		assertThat(valid, is(3415));
+		assertThat(total, is(3415));
 	}
 }

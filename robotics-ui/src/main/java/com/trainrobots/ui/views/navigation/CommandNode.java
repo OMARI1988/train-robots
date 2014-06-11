@@ -19,7 +19,7 @@ public class CommandNode extends TreeNode {
 	private final Command command;
 
 	public CommandNode(CommandService commandService, Command command) {
-		super("Command " + Integer.toString(command.id()), true);
+		super("Command " + command.id(), true);
 		this.commandService = commandService;
 		this.command = command;
 	}
@@ -30,25 +30,11 @@ public class CommandNode extends TreeNode {
 
 	@Override
 	public Color color() {
-		if (ignore(command)) {
-			return Color.GRAY;
-		}
-		if (command.comment() != null) {
-			return DARK_ORANGE;
-		}
-		if (command.losr() != null) {
-			return DARK_GREEN;
-		}
-		return Color.BLACK;
+		return CommandType.of(command).color();
 	}
 
 	@Override
 	public void select() {
 		commandService.command(command);
-	}
-
-	private static boolean ignore(Command command) {
-		return command.comment() != null
-				&& command.comment().startsWith("ignore");
 	}
 }

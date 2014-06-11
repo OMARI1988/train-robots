@@ -24,8 +24,13 @@ import com.trainrobots.ui.services.treebank.TreebankService;
 
 public class NavigationTree extends JTree implements CommandAware {
 
+	private final CommandService commandService;
+
 	public NavigationTree(TreebankService treebankService,
 			CommandService commandService) {
+
+		// Services.
+		this.commandService = commandService;
 
 		// Model.
 		setModel(new DefaultTreeModel(new TreebankNode(treebankService,
@@ -56,6 +61,20 @@ public class NavigationTree extends JTree implements CommandAware {
 			public void keyReleased(KeyEvent event) {
 			}
 		});
+	}
+
+	public void refresh() {
+
+		// Command.
+		Command command = commandService.command();
+
+		// Scene.
+		TreebankNode treebankNode = (TreebankNode) getModel().getRoot();
+		SceneNode sceneNode = treebankNode.child(command.scene());
+
+		// Refresh.
+		sceneNode.refresh();
+		repaint();
 	}
 
 	@Override

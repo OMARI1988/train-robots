@@ -8,7 +8,11 @@
 
 package com.trainrobots.planner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.trainrobots.RoboticException;
+import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
@@ -19,6 +23,7 @@ import com.trainrobots.simulator.Simulator;
 
 public class PlannerContext {
 
+	private final Map<Integer, ObservableDistribution> distributions = new HashMap<>();
 	private Observables observables;
 	private final Simulator simulator;
 	private final Losr root;
@@ -78,5 +83,15 @@ public class PlannerContext {
 
 	public void sourceShape(Shape sourceShape) {
 		this.sourceShape = sourceShape;
+	}
+
+	public void add(Entity entity, ObservableDistribution distribution) {
+		if (entity.id() != 0) {
+			distributions.put(entity.id(), distribution);
+		}
+	}
+
+	public ObservableDistribution get(int id) {
+		return distributions.get(id);
 	}
 }

@@ -43,6 +43,6 @@ public class NavigationView extends PaneView implements CommandAware {
 	}
 
 	public void refresh() {
-		navigationTree.repaint();
+		navigationTree.refresh();
 	}
 }
