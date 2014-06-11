@@ -31,25 +31,4 @@ public class EllipsisRule {
 	public String after() {
 		return after;
 	}
-
-	@Override
-	public String toString() {
-
-		// Before.
-		StringBuilder text = new StringBuilder();
-		if (before != null) {
-			text.append(before);
-			text.append(' ');
-		}
-
-		// Tag.
-		text.append(tag);
-
-		// After.
-		if (after != null) {
-			text.append(' ');
-			text.append(after);
-		}
-		return text.toString();
-	}
 }

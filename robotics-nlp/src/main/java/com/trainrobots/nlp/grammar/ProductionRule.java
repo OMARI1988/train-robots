@@ -14,7 +14,7 @@ public class ProductionRule {
 
 	private final String lhs;
 	private final String[] rhs;
-	private int frequency = 0;
+	private int frequency;
 
 	public ProductionRule(Losr losr) {
 		lhs = losr.name();

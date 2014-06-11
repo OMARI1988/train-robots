@@ -37,7 +37,7 @@ public class AnaphoraResolver {
 		});
 	}
 
-	private static void map(Entity entity, Entity reference) {
+	private void map(Entity entity, Entity reference) {
 		reference.id(1);
 		entity.referenceId(1);
 	}
