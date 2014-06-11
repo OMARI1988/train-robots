@@ -13,6 +13,7 @@ import javax.swing.SwingWorker;
 import com.trainrobots.Log;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
+import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.treebank.Treebank;
 import com.trainrobots.ui.services.window.WindowService;
 import com.trainrobots.ui.views.navigation.NavigationView;
@@ -23,12 +24,14 @@ public class TreebankService {
 	private final Treebank treebank;
 	private final Lexicon lexicon;
 	private final Grammar grammar;
+	private final Tagger tagger;
 
 	public TreebankService(WindowService windowService) {
 		this.windowService = windowService;
 		this.treebank = new Treebank("../.data/treebank.zip");
 		this.lexicon = new Lexicon(treebank);
 		this.grammar = new Grammar(treebank);
+		this.tagger = new Tagger(treebank, lexicon);
 	}
 
 	public Treebank treebank() {
@@ -41,6 +44,10 @@ public class TreebankService {
 
 	public Grammar grammar() {
 		return grammar;
+	}
+
+	public Tagger tagger() {
+		return tagger;
 	}
 
 	public void save() {

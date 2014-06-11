@@ -138,6 +138,10 @@ public class CommandService {
 		execute(v -> v.editor().ground());
 	}
 
+	public void tag() {
+		execute(v -> v.editor().tag(command));
+	}
+
 	public void clear() {
 		command.losr(null);
 		execute(v -> v.bindTo(command));

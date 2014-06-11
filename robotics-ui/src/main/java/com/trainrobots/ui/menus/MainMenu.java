@@ -48,7 +48,7 @@ public class MainMenu extends JMenuBar {
 			{
 				addItem("Change Node", "F2", commandService::change);
 				addItem("Delete Node", "DELETE", commandService::delete);
-				addSeparator();
+
 				add(new Menu("New", 'N') {
 					{
 						add("Node", "ctrl N", Losr.class);
@@ -80,6 +80,8 @@ public class MainMenu extends JMenuBar {
 					}
 				});
 
+				addSeparator();
+				addItem("Tag Command", "ctrl alt T", commandService::tag);
 				addItem("Clear Command", null, commandService::clear);
 			}
 		});

@@ -48,6 +48,10 @@ public class PartialTree {
 		return items;
 	}
 
+	public void clear() {
+		items.clear();
+	}
+
 	public void add(Losr item) {
 
 		// Add ellipsis?

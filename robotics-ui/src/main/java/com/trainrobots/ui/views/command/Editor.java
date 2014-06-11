@@ -315,6 +315,22 @@ public class Editor {
 		}
 	}
 
+	public void tag(Command command) {
+
+		// Clear.
+		PartialTree partialTree = view.partialTree();
+		partialTree.clear();
+
+		// Tag.
+		Items<Losr> items = treebankService.tagger().losr(command);
+		for (Losr item : items) {
+			partialTree.add(item);
+		}
+
+		// Redraw.
+		view.redrawTree();
+	}
+
 	private <T extends Losr> T terminal(Class<T> type, Items<Text> selection) {
 
 		// Lexicon.
