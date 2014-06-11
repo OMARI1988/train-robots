@@ -102,7 +102,8 @@ public class Destination extends Losr {
 			return destination.id == id
 					&& destination.referenceId == referenceId
 					&& Objects.equals(marker, marker)
-					&& destination.spatialRelation.equals(spatialRelation);
+					&& Objects.equals(entity, entity)
+					&& Objects.equals(spatialRelation, spatialRelation);
 		}
 		return false;
 	}

@@ -17,6 +17,8 @@ import com.trainrobots.treebank.Treebank;
 
 public class Validator {
 
+	private final AboveWithinRule aboveWithinRule = new AboveWithinRule();
+
 	public ValidationResults validate(Treebank treebank) {
 		ValidationResults results = new ValidationResults();
 		for (Command command : treebank.commands()) {
@@ -33,6 +35,9 @@ public class Validator {
 	}
 
 	private void validate(Command command) {
+
+		// Above/within.
+		aboveWithinRule.validate(command.losr());
 
 		// Planner.
 		Scene scene = command.scene();

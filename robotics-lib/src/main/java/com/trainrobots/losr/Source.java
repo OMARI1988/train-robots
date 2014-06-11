@@ -99,10 +99,10 @@ public class Source extends Losr {
 	public boolean equals(Losr losr) {
 		if (losr instanceof Source) {
 			Source source = (Source) losr;
-			return source.id == id
-					&& source.referenceId == referenceId
+			return source.id == id && source.referenceId == referenceId
 					&& Objects.equals(marker, marker)
-					&& source.spatialRelation.equals(spatialRelation);
+					&& Objects.equals(entity, entity)
+					&& Objects.equals(spatialRelation, spatialRelation);
 		}
 		return false;
 	}

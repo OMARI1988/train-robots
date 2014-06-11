@@ -18,10 +18,10 @@ import org.junit.Test;
 import com.trainrobots.RoboticException;
 import com.trainrobots.TestContext;
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.nlp.tagger.Sequence;
+import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
@@ -40,10 +40,10 @@ public class TaggerTests {
 
 		// Test.
 		for (Command command : treebank.commands()) {
-			Items<Losr> losr = tagger.losr(command);
+			Items<Terminal> terminals = tagger.terminals(command);
 			System.out.println();
 			System.out.println(command.text());
-			System.out.println(losr);
+			System.out.println(terminals);
 		}
 	}
 

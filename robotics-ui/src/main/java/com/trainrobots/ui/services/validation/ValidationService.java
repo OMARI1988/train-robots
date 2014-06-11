@@ -23,6 +23,7 @@ public class ValidationService {
 
 	private final WindowService windowService;
 	private final TreebankService treebankService;
+	private final Validator validator = new Validator();
 
 	public ValidationService(WindowService windowService,
 			TreebankService treebankService) {
@@ -49,7 +50,7 @@ public class ValidationService {
 				}
 
 				// Validate.
-				return new Validator().validate(treebankService.treebank());
+				return validator.validate(treebankService.treebank());
 			}
 
 			public void done() {

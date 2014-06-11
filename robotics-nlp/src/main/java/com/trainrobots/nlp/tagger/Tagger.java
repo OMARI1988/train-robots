@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 
 import com.trainrobots.Log;
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.tokenizer.Tokenizer;
@@ -115,8 +114,8 @@ public class Tagger {
 		tagger = new HMMTagger(model, wordHandler, languageModel, 1000);
 	}
 
-	public Items<Losr> losr(Command command) {
-		return sequence(command.tokens()).losr(lexicon);
+	public Items<Terminal> terminals(Command command) {
+		return sequence(command.tokens()).terminals(lexicon);
 	}
 
 	public Sequence sequence(String text) {

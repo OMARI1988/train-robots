@@ -322,9 +322,8 @@ public class Editor {
 		partialTree.clear();
 
 		// Tag.
-		Items<Losr> items = treebankService.tagger().losr(command);
-		for (Losr item : items) {
-			partialTree.add(item);
+		for (Terminal terminal : treebankService.tagger().terminals(command)) {
+			partialTree.add(terminal);
 		}
 
 		// Redraw.

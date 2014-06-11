@@ -19,7 +19,12 @@ public class LexicalKey {
 
 	public static String key(Items<Terminal> tokens, TextContext context) {
 		StringBuilder text = new StringBuilder();
-		for (int i = context.start(); i <= context.end(); i++) {
+		int start = context.start();
+		int end = context.end();
+		if (start == end) {
+			return tokens.get(start - 1).context().text().toLowerCase();
+		}
+		for (int i = start; i <= end; i++) {
 			if (text.length() > 0) {
 				text.append(' ');
 			}

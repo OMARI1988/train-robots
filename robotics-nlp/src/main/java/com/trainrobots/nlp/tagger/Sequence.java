@@ -18,6 +18,7 @@ import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Terminal;
@@ -93,12 +94,14 @@ public class Sequence {
 				tag(t, "ORD");
 			} else if (t instanceof Cardinal) {
 				tag(t, "CARD");
+			} else if (t instanceof Marker) {
+				tag(t, "MARK");
 			}
 		});
 	}
 
-	public Items<Losr> losr(Lexicon lexicon) {
-		ItemsList<Losr> result = new ItemsList<Losr>();
+	public Items<Terminal> terminals(Lexicon lexicon) {
+		ItemsList<Terminal> result = new ItemsList<Terminal>();
 		for (int i = 0; i < tags.length; i++) {
 
 			// O
@@ -118,9 +121,9 @@ public class Sequence {
 			String tag = token.substring(2);
 			TextContext context = new TextContext(i + 1, i + size);
 			i += size - 1;
-			Losr losr = losr(lexicon, tag, context);
-			if (losr != null) {
-				result.add(losr);
+			Terminal terminal = terminal(lexicon, tag, context);
+			if (terminal != null) {
+				result.add(terminal);
 			}
 		}
 		return result;
@@ -138,7 +141,7 @@ public class Sequence {
 		return tags[index];
 	}
 
-	private Losr losr(Lexicon lexicon, String tag, TextContext context) {
+	private Terminal terminal(Lexicon lexicon, String tag, TextContext context) {
 
 		// Map.
 		Class type;
@@ -156,6 +159,8 @@ public class Sequence {
 			type = Ordinal.class;
 		} else if (tag.equals("CARD")) {
 			type = Cardinal.class;
+		} else if (tag.equals("MARK")) {
+			type = Marker.class;
 		} else {
 			throw new RoboticException("Failed to map tag '" + tag
 					+ "' to LOSR.");
