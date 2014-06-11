@@ -68,6 +68,7 @@ public class Treebank {
 			}
 			commands = reader.commands();
 			Log.info("Loaded: %s commands.", commands.count());
+
 		} catch (IOException exception) {
 			throw new RoboticException(exception);
 		}
