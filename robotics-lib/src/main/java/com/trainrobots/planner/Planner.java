@@ -11,8 +11,10 @@ package com.trainrobots.planner;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.distributions.observable.BackDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
+import com.trainrobots.distributions.observable.FrontDistribution;
 import com.trainrobots.distributions.observable.IndividualDistribution;
 import com.trainrobots.distributions.observable.LeftDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
@@ -70,26 +72,28 @@ public class Planner {
 	}
 
 	public Instruction instruction(Losr losr) {
-		return translate(context(losr), losr);
+		return translateItem(context(losr), losr);
 	}
 
 	public ObservableDistribution ground(Losr root, Entity entity) {
 		PlannerContext context = context(root);
-		return distribution(context, entity);
+		return distributionOfEntity(context, entity);
 	}
 
 	public DestinationDistribution ground(Losr root, Destination destination) {
 		PlannerContext context = context(root);
-		return distribution(context, destination).destinations(context);
+		return distributionOfDestination(context, destination).destinations(
+				context);
 	}
 
 	public DestinationDistribution ground(Losr root,
 			SpatialRelation spatialRelation) {
 		PlannerContext context = context(root);
-		return distribution(context, spatialRelation).destinations(context);
+		return distributionOfSpatialRelation(context, spatialRelation)
+				.destinations(context);
 	}
 
-	private Instruction translate(PlannerContext context, Losr losr) {
+	private Instruction translateItem(PlannerContext context, Losr losr) {
 
 		// Event.
 		if (losr instanceof Event) {
@@ -113,7 +117,7 @@ public class Planner {
 		Instruction[] instructions = new Instruction[size];
 		for (int i = 0; i < size; i++) {
 			Losr item = sequence.get(i);
-			instructions[i] = translate(context, item);
+			instructions[i] = translateItem(context, item);
 			context.previousEvent(item instanceof Event ? (Event) item : null);
 		}
 
@@ -142,7 +146,8 @@ public class Planner {
 
 		// Pickable.
 		Entity entity = normalizeSource(event.entity(), event.source());
-		ObservableDistribution distribution = distribution(context, entity);
+		ObservableDistribution distribution = distributionOfEntity(context,
+				entity);
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -168,7 +173,7 @@ public class Planner {
 					"Destination not specified for move action.");
 		}
 		SpatialDistribution spatialDistribution = new DropDestinationDistribution(
-				distribution(context, event.destination()));
+				distributionOfDestination(context, event.destination()));
 		Items<Position> destinations = spatialDistribution
 				.destinations(context).best();
 		if (destinations.count() != 1) {
@@ -189,7 +194,8 @@ public class Planner {
 
 		// Pickable.
 		Entity entity = normalizeSource(event.entity(), event.source());
-		ObservableDistribution distribution = distribution(context, entity);
+		ObservableDistribution distribution = distributionOfEntity(context,
+				entity);
 		distribution = new PickableDistribution(distribution);
 
 		// Single observable.
@@ -242,7 +248,8 @@ public class Planner {
 		if (!dropEntityReference) {
 
 			// Droppable.
-			ObservableDistribution distribution = distribution(context, entity);
+			ObservableDistribution distribution = distributionOfEntity(context,
+					entity);
 			distribution = new DroppableDistribution(distribution);
 
 			// Single observable.
@@ -267,10 +274,10 @@ public class Planner {
 		}
 
 		// Destination.
-		Position position = simulator.dropPosition(gripper.position());
+		Position position;
 		if (event.destination() != null) {
 			SpatialDistribution spatialDistribution = new DropDestinationDistribution(
-					distribution(context, event.destination()));
+					distributionOfDestination(context, event.destination()));
 			Items<Position> destinations = spatialDistribution.destinations(
 					context).best();
 			if (destinations.count() != 1) {
@@ -279,12 +286,14 @@ public class Planner {
 						count(destinations.count()));
 			}
 			position = destinations.get(0);
+		} else {
+			position = simulator.dropPosition(gripper.position());
 		}
 		return new DropInstruction(position);
 	}
 
-	private SpatialDistribution distribution(PlannerContext context,
-			Destination destination) {
+	private SpatialDistribution distributionOfDestination(
+			PlannerContext context, Destination destination) {
 
 		// Normalize.
 		SpatialRelation spatialRelation = destination.spatialRelation();
@@ -294,10 +303,10 @@ public class Planner {
 		}
 
 		// Distribution.
-		return distribution(context, spatialRelation);
+		return distributionOfSpatialRelation(context, spatialRelation);
 	}
 
-	private ObservableDistribution distribution(PlannerContext context,
+	private ObservableDistribution distributionOfEntity(PlannerContext context,
 			Entity entity) {
 
 		// Cardinality.
@@ -328,7 +337,8 @@ public class Planner {
 		// Indicators.
 		Items<Indicator> indicators = entity.indicators();
 		if (indicators != null) {
-			distribution = distribution(context, type, indicators, distribution);
+			distribution = distributionOfIndicators(context, type, indicators,
+					distribution);
 		}
 
 		// Colors.
@@ -339,8 +349,8 @@ public class Planner {
 
 		// Spatial relation.
 		if (entity.spatialRelation() != null) {
-			SpatialDistribution spatialDistribution = distribution(context,
-					entity.spatialRelation());
+			SpatialDistribution spatialDistribution = distributionOfSpatialRelation(
+					context, entity.spatialRelation());
 			distribution = new RelativeDistribution(distribution,
 					spatialDistribution);
 		}
@@ -348,8 +358,8 @@ public class Planner {
 		return distribution;
 	}
 
-	private ObservableDistribution distribution(PlannerContext context,
-			Types type, Items<Indicator> indicators,
+	private ObservableDistribution distributionOfIndicators(
+			PlannerContext context, Types type, Items<Indicator> indicators,
 			ObservableDistribution distribution) {
 		for (Indicator item : indicators) {
 			Indicators indicator = item.indicator();
@@ -359,7 +369,8 @@ public class Planner {
 					&& (indicator == Indicators.Left
 							|| indicator == Indicators.Right
 							|| indicator == Indicators.Front
-							|| indicator == Indicators.Back || indicator == Indicators.Center)) {
+							|| indicator == Indicators.Back || indicator == Indicators.Center)
+					|| (type == Types.Position && indicator == Indicators.Active)) {
 				distribution = new ExactIndicatorDistribution(distribution,
 						indicator);
 				continue;
@@ -376,6 +387,18 @@ public class Planner {
 			if (indicator == Indicators.Right
 					|| indicator == Indicators.Rightmost) {
 				distribution = new RightDistribution(distribution);
+				continue;
+			}
+
+			// Front.
+			if (indicator == Indicators.Front) {
+				distribution = new FrontDistribution(distribution);
+				continue;
+			}
+
+			// Front.
+			if (indicator == Indicators.Back) {
+				distribution = new BackDistribution(distribution);
 				continue;
 			}
 
@@ -403,21 +426,22 @@ public class Planner {
 		return distribution;
 	}
 
-	private SpatialDistribution distribution(PlannerContext context,
-			SpatialRelation spatialRelation) {
+	private SpatialDistribution distributionOfSpatialRelation(
+			PlannerContext context, SpatialRelation spatialRelation) {
 
 		// Relation.
 		Relations relation = spatialRelation.relation();
 
 		// Entity.
 		Entity entity = spatialRelation.entity();
-		ObservableDistribution landmarkDistribution = entity != null ? distribution(
+		ObservableDistribution landmarkDistribution = entity != null ? distributionOfEntity(
 				context, entity) : null;
 
 		// Measure.
 		Measure measure = spatialRelation.measure();
 		if (measure != null) {
-			return distribution(measure, relation, landmarkDistribution);
+			return distributionOfmeasure(measure, relation,
+					landmarkDistribution);
 		}
 
 		// Distribution.
@@ -428,7 +452,7 @@ public class Planner {
 		return SpatialDistribution.of(relation, landmarkDistribution);
 	}
 
-	private SpatialDistribution distribution(Measure measure,
+	private SpatialDistribution distributionOfmeasure(Measure measure,
 			Relations relation, ObservableDistribution landmarkDistribution) {
 
 		// Colors.

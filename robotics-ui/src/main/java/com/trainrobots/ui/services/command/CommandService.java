@@ -139,7 +139,11 @@ public class CommandService {
 	}
 
 	public void tag() {
-		execute(v -> v.editor().tag(command));
+		execute(v -> v.editor().tag());
+	}
+	
+	public void parse() {
+		execute(v -> v.editor().parse());
 	}
 
 	public void clear() {

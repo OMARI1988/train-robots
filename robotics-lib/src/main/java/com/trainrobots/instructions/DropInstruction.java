@@ -31,7 +31,7 @@ public class DropInstruction implements Instruction {
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
-		text.append("Drop: (");
+		text.append("Drop (");
 		text.append(to);
 		text.append(')');
 		return text.toString();

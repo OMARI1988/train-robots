@@ -12,5 +12,7 @@ import com.trainrobots.treebank.Command;
 
 public interface ValidationRule {
 
+	String name();
+	
 	void validate(Command command);
 }

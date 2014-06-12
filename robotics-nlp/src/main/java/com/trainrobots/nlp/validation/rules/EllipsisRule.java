@@ -10,26 +10,35 @@ package com.trainrobots.nlp.validation.rules;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.nlp.losr.StopWords;
+import com.trainrobots.losr.Relation;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.treebank.Command;
 
-public class StopWordRule implements ValidationRule {
+public class EllipsisRule implements ValidationRule {
 
 	@Override
 	public String name() {
-		return "stop word";
+		return "ellipsis";
 	}
 
 	@Override
 	public void validate(Command command) {
 		Losr losr = command.losr();
 		if (losr != null) {
-			StopWords.visit(command, x -> {
-				if (x.context().text().equalsIgnoreCase("from")) {
-					throw new RoboticException(
-							"'From' should not be a stop word.");
-				}
-			});
+			validate(losr);
 		}
+	}
+
+	public void validate(Losr root) {
+		root.visit(x -> {
+			if (x instanceof Terminal) {
+				if (x instanceof Relation) {
+					Relation relation = (Relation) x;
+					if (relation.context() == null) {
+						throw new RoboticException("Elliptical relation.");
+					}
+				}
+			}
+		});
 	}
 }

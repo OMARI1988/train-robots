@@ -9,27 +9,23 @@
 package com.trainrobots.nlp.validation.rules;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.losr.Losr;
-import com.trainrobots.nlp.losr.StopWords;
 import com.trainrobots.treebank.Command;
 
-public class StopWordRule implements ValidationRule {
+public class CurrentPositionRule implements ValidationRule {
 
 	@Override
 	public String name() {
-		return "stop word";
+		return "current position";
 	}
 
 	@Override
 	public void validate(Command command) {
-		Losr losr = command.losr();
-		if (losr != null) {
-			StopWords.visit(command, x -> {
-				if (x.context().text().equalsIgnoreCase("from")) {
-					throw new RoboticException(
-							"'From' should not be a stop word.");
-				}
-			});
+		if (command.losr() != null) {
+			return;
+		}
+		String text = command.text().toLowerCase();
+		if (text.contains("current") && text.contains("position")) {
+			throw new RoboticException("'Current position' not annotated.");
 		}
 	}
 }

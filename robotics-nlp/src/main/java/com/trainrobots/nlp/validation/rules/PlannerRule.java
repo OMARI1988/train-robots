@@ -18,6 +18,11 @@ import com.trainrobots.treebank.Command;
 public class PlannerRule implements ValidationRule {
 
 	@Override
+	public String name() {
+		return "planner";
+	}
+
+	@Override
 	public void validate(Command command) {
 		Losr losr = command.losr();
 		if (losr != null) {
@@ -27,9 +32,11 @@ public class PlannerRule implements ValidationRule {
 			Planner planner = new Planner(scene.before());
 
 			// Validate.
+			Instruction expected = scene.instruction();
 			Instruction actual = planner.instruction(command.losr());
-			if (!actual.equals(scene.instruction())) {
-				throw new RoboticException("Instruction mismatch.");
+			if (!actual.equals(expected)) {
+				throw new RoboticException(String.format(
+						"Expected %s. Actual %s.", expected, actual));
 			}
 		}
 	}

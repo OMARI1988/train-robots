@@ -12,7 +12,20 @@ import java.util.TreeMap;
 
 public enum Types {
 
-	Reference, TypeReference, TypeReferenceGroup, Cube, CubeGroup, Prism, Stack, Tile, Edge, Corner, Region, Board, Robot;
+	Reference,
+	TypeReference,
+	TypeReferenceGroup,
+	Cube,
+	CubeGroup,
+	Prism,
+	Stack,
+	Tile,
+	Edge,
+	Corner,
+	Region,
+	Board,
+	Robot,
+	Position;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

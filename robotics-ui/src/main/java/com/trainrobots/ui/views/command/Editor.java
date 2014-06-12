@@ -12,6 +12,8 @@ import static com.trainrobots.nlp.lexicon.LexicalKey.key;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.distributions.observable.ObservableDistribution;
+import com.trainrobots.distributions.spatial.DestinationDistribution;
 import com.trainrobots.losr.Action;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Cardinal;
@@ -33,6 +35,7 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
 import com.trainrobots.nlp.grammar.Grammar;
+import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.losr.Ellipsis;
 import com.trainrobots.nlp.losr.EllipticalContext;
 import com.trainrobots.nlp.losr.PartialTree;
@@ -54,6 +57,8 @@ public class Editor {
 	private static final LosrType[] ellipticalTypes = {
 			new LosrType(new Type(Types.Region)),
 			new LosrType(new Relation(Relations.Above)) };
+
+	private static final Integer[] numbers = { 1, 2, 3, 4, 5, 6, 7 };
 
 	private final WindowService windowService;
 	private final TreebankService treebankService;
@@ -88,23 +93,7 @@ public class Editor {
 		// Add.
 		PartialTree partialTree = view.partialTree();
 		partialTree.add(losr);
-
-		// Try parsing.
-		Layout layout = partialTree.command().scene().before();
-		Grammar grammar = treebankService.grammar();
-		Losr parseTree = null;
-		try {
-			Parser parser = new Parser(layout, grammar, partialTree.items());
-			parseTree = parser.parse();
-		} catch (Exception exception) {
-		}
-		if (parseTree != null) {
-			partialTree.clear();
-			partialTree.add(parseTree);
-		}
-
-		// Redraw.
-		view.redrawTree();
+		update();
 	}
 
 	public void addEllipsis() {
@@ -112,7 +101,7 @@ public class Editor {
 		if (token != null) {
 			PartialTree partialTree = view.partialTree();
 			partialTree.add(new Ellipsis(token.id()));
-			view.redrawTree();
+			update();
 		}
 	}
 
@@ -122,7 +111,7 @@ public class Editor {
 			Losr losr = header.losr();
 			if (losr.id() == 0) {
 				losr.id(1);
-				view.redrawTree();
+				update();
 			}
 		}
 	}
@@ -133,7 +122,7 @@ public class Editor {
 			Losr losr = header.losr();
 			if (losr.referenceId() == 0) {
 				losr.referenceId(1);
-				view.redrawTree();
+				update();
 			}
 		}
 	}
@@ -235,6 +224,12 @@ public class Editor {
 					((Indicator) losr).indicator());
 			return;
 		}
+
+		if (losr instanceof Cardinal) {
+			popup.show(detail, losr, (Object[]) numbers,
+					((Cardinal) losr).value());
+			return;
+		}
 	}
 
 	public void acceptChange(Losr losr, Object value) {
@@ -242,35 +237,42 @@ public class Editor {
 		if (losr instanceof Action) {
 			Action action = (Action) losr;
 			action.action((Actions) value);
-			view.redrawTree();
+			update();
 			return;
 		}
 
 		if (losr instanceof Color) {
 			Color color = (Color) losr;
 			color.color((Colors) value);
-			view.redrawTree();
+			update();
 			return;
 		}
 
 		if (losr instanceof Type) {
 			Type type = (Type) losr;
 			type.type((Types) value);
-			view.redrawTree();
+			update();
 			return;
 		}
 
 		if (losr instanceof Relation) {
 			Relation relation = (Relation) losr;
 			relation.relation((Relations) value);
-			view.redrawTree();
+			update();
 			return;
 		}
 
 		if (losr instanceof Indicator) {
 			Indicator indicator = (Indicator) losr;
 			indicator.indicator((Indicators) value);
-			view.redrawTree();
+			update();
+			return;
+		}
+
+		if (losr instanceof Cardinal) {
+			Cardinal cardinal = (Cardinal) losr;
+			cardinal.value((Integer) value);
+			update();
 			return;
 		}
 
@@ -281,8 +283,7 @@ public class Editor {
 			LosrType type = (LosrType) value;
 			partialTree.add(type.terminal().withContext(
 					new EllipticalContext(ellipsis.after())));
-			view.redrawTree();
-			return;
+			update();
 		}
 	}
 
@@ -297,45 +298,75 @@ public class Editor {
 
 		// Ground.
 		Integer groundings = null;
+		Integer total = null;
 		try {
 			Losr losr = header.losr();
 			Command command = view.partialTree().command();
 			Planner planner = new Planner(command.scene().before());
 			Losr root = command.losr();
 			if (losr instanceof Entity) {
-				groundings = planner.ground(root, (Entity) losr).best().count();
+				ObservableDistribution distribution = planner.ground(root,
+						(Entity) losr);
+				groundings = distribution.best().count();
+				total = distribution.count();
 			} else if (losr instanceof SpatialRelation) {
-				groundings = planner.ground(root, (SpatialRelation) losr)
-						.best().count();
+				DestinationDistribution distribution = planner.ground(root,
+						(SpatialRelation) losr);
+				groundings = distribution.best().count();
+				total = distribution.count();
 			} else if (losr instanceof Destination) {
-				groundings = planner.ground(root, (Destination) losr).best()
-						.count();
+				DestinationDistribution distribution = planner.ground(root,
+						(Destination) losr);
+				groundings = distribution.best().count();
+				total = distribution.count();
 			}
 		} catch (Exception exception) {
 			windowService.error(exception.getMessage());
 			return;
 		}
 
-		// Status.
-		if (groundings != null) {
-			windowService.status("Groundings: %d", groundings);
-		} else {
+		// No groundings?
+		if (groundings == null) {
 			windowService.defaultStatus();
+			return;
 		}
+
+		// Status.
+		StringBuilder text = new StringBuilder();
+		text.append("Groundings: ");
+		text.append(groundings);
+		if (total != groundings) {
+			text.append(" of ");
+			text.append(total);
+		}
+		windowService.status(text.toString());
 	}
 
-	public void tag(Command command) {
+	public void tag() {
 
 		// Clear.
 		PartialTree partialTree = view.partialTree();
 		partialTree.clear();
 
 		// Tag.
+		Command command = partialTree.command();
 		for (Terminal terminal : treebankService.tagger().terminals(command)) {
 			partialTree.add(terminal);
 		}
 
-		// Redraw.
+		// Update.
+		update();
+	}
+
+	public void parse() {
+
+		// Clear.
+		view.partialTree().clear();
+
+		// Parse.
+		parsePartialTree();
+
+		// Update.
 		view.redrawTree();
 	}
 
@@ -503,5 +534,57 @@ public class Editor {
 			return null;
 		}
 		return selection.count() == 1 ? selection.get(0) : null;
+	}
+
+	public void update() {
+		parsePartialTree();
+		view.redrawTree();
+	}
+
+	private void parsePartialTree() {
+
+		// Items.
+		PartialTree partialTree = view.partialTree();
+		Items<Losr> items = partialTree.items();
+
+		// Context.
+		Command command = partialTree.command();
+		Items<Terminal> tokens = command.tokens();
+		Layout layout = command.scene().before();
+		Lexicon lexicon = treebankService.lexicon();
+		Grammar grammar = treebankService.grammar();
+
+		// Partial tree?
+		Parser parser;
+		if (items.count() > 0) {
+			parser = new Parser(layout, grammar, items);
+		} else {
+
+			// Tag.
+			Items<Terminal> terminals;
+			try {
+				terminals = treebankService.tagger().sequence(tokens)
+						.terminals(lexicon);
+			} catch (Exception exception) {
+				return;
+			}
+
+			// Parser.
+			parser = new Parser(layout, grammar, lexicon, (Items) terminals,
+					tokens, false);
+		}
+
+		// Parse.
+		Losr losr = null;
+		try {
+			losr = parser.parse(false);
+		} catch (Exception exception) {
+		}
+
+		// Result.
+		if (losr != null) {
+			partialTree.clear();
+			partialTree.add(losr);
+		}
 	}
 }

@@ -44,4 +44,9 @@ public class SingleItem<T> implements Items<T> {
 		array[0] = item;
 		return array;
 	}
+
+	@Override
+	public String toString() {
+		return item != null ? item.toString() : null;
+	}
 }

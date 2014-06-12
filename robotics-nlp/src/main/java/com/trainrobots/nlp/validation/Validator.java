@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
+import com.trainrobots.nlp.validation.rules.CommentRule;
+import com.trainrobots.nlp.validation.rules.CurrentPositionRule;
+import com.trainrobots.nlp.validation.rules.EllipsisRule;
 import com.trainrobots.nlp.validation.rules.PlannerRule;
 import com.trainrobots.nlp.validation.rules.StopWordRule;
 import com.trainrobots.nlp.validation.rules.ValidationRule;
@@ -26,13 +29,25 @@ public class Validator {
 		rules.add(new AboveOrWithinRule());
 		rules.add(new PlannerRule());
 		rules.add(new StopWordRule());
-		// rules.add(new CommentRule());
+		rules.add(new CurrentPositionRule());
+		rules.add(new EllipsisRule());
+		rules.add(new CommentRule());
 	}
 
 	public ValidationResults validate(Treebank treebank) {
 		ValidationResults results = new ValidationResults();
 		for (Command command : treebank.commands()) {
 			for (ValidationRule rule : rules) {
+
+				// Ignore rule?
+				String comment = command.comment();
+				if (comment != null
+						&& comment.contains("// ignore validation:")
+						&& comment.contains(rule.name())) {
+					continue;
+				}
+
+				// Validate.
 				try {
 					rule.validate(command);
 				} catch (Exception exception) {

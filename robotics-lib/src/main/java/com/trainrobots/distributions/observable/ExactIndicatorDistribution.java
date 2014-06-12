@@ -13,6 +13,7 @@ import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Region;
 
 public class ExactIndicatorDistribution extends ObservableDistribution {
@@ -50,6 +51,14 @@ public class ExactIndicatorDistribution extends ObservableDistribution {
 						|| corner.leftOrRight() == indicator) {
 					add(hypothesis);
 				}
+				continue;
+			}
+
+			// Position.
+			if (observable instanceof ObservablePosition
+					&& indicator == Indicators.Active) {
+				add(new ObservableHypothesis(ObservablePosition.Active,
+						hypothesis.weight()));
 				continue;
 			}
 

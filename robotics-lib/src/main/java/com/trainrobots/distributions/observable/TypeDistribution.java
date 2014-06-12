@@ -13,6 +13,7 @@ import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
+import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Robot;
 import com.trainrobots.observables.Stack;
@@ -67,6 +68,12 @@ public class TypeDistribution extends ObservableDistribution {
 		// Board.
 		if (type == Types.Board) {
 			add(Board.board(), 1);
+			return;
+		}
+
+		// Position.
+		if (type == Types.Position) {
+			add(ObservablePosition.Unspecified, 1);
 			return;
 		}
 

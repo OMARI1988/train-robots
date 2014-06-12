@@ -10,7 +10,7 @@ package com.trainrobots.losr;
 
 public class Cardinal extends Terminal {
 
-	private final int value;
+	private int value;
 
 	public Cardinal(int value) {
 		this(null, value);
@@ -23,6 +23,10 @@ public class Cardinal extends Terminal {
 
 	public int value() {
 		return value;
+	}
+
+	public void value(int value) {
+		this.value = value;
 	}
 
 	@Override

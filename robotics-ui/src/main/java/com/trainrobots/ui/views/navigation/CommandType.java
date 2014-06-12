@@ -30,7 +30,7 @@ public enum CommandType {
 	}
 
 	public static CommandType of(Command command) {
-		if (command.comment() != null && command.comment().startsWith("ignore")) {
+		if (command.comment() != null && command.comment().startsWith("ignore:")) {
 			return Ignore;
 		}
 		if (command.comment() != null) {

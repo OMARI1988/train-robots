@@ -12,7 +12,17 @@ import java.util.TreeMap;
 
 public enum Relations {
 
-	Above, Adjacent, Left, Right, Front, Forward, Backward, Within, Nearest;
+	Above,
+	Below,
+	Adjacent,
+	Left,
+	Right,
+	Front,
+	Forward,
+	Back,
+	Backward,
+	Within,
+	Nearest;
 
 	private static final TreeMap<String, Relations> relations = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

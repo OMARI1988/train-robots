@@ -14,6 +14,7 @@ import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
@@ -81,6 +82,11 @@ public class MeasureDistribution extends SpatialDistribution {
 		// Corner.
 		else if (landmark instanceof Corner) {
 			position = ((Corner) landmark).position();
+		}
+
+		// Active position.
+		else if (landmark == ObservablePosition.Active) {
+			position = layout.gripper().position();
 		}
 
 		// Not supported.

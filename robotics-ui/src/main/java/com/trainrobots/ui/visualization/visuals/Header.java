@@ -10,6 +10,7 @@ package com.trainrobots.ui.visualization.visuals;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Action;
+import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
@@ -75,6 +76,12 @@ public class Header extends Text {
 		// Type.
 		if (losr instanceof Type) {
 			details.add(((Type) losr).type().toString());
+			return;
+		}
+
+		// Cardinal.
+		if (losr instanceof Cardinal) {
+			details.add(Integer.toString(((Cardinal) losr).value()));
 			return;
 		}
 	}

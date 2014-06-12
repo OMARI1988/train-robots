@@ -19,6 +19,11 @@ import com.trainrobots.treebank.Command;
 public class AboveOrWithinRule implements ValidationRule {
 
 	@Override
+	public String name() {
+		return "above/within";
+	}
+
+	@Override
 	public void validate(Command command) {
 		Losr losr = command.losr();
 		if (losr != null) {

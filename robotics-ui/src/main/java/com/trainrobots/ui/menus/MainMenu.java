@@ -82,6 +82,7 @@ public class MainMenu extends JMenuBar {
 
 				addSeparator();
 				addItem("Tag Command", "ctrl alt T", commandService::tag);
+				addItem("Parse Command", "ctrl alt P", commandService::parse);
 				addItem("Clear Command", null, commandService::clear);
 			}
 		});

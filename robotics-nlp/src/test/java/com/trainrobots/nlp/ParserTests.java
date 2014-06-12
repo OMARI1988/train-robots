@@ -9,8 +9,13 @@
 package com.trainrobots.nlp;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,6 +31,8 @@ import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.tagger.Tagger;
+import com.trainrobots.planner.Planner;
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
@@ -40,6 +47,12 @@ public class ParserTests {
 		lexicon = new Lexicon(treebank);
 		grammar = new Grammar(treebank);
 		tagger = new Tagger(treebank, lexicon);
+	}
+
+	@Test
+	@Ignore
+	public void shouldParseCommand() {
+		assertTrue(parse(4073, true));
 	}
 
 	@Test
@@ -60,15 +73,45 @@ public class ParserTests {
 		Parser parser = new Parser(command.scene().before(), grammar,
 				partialTree.items());
 		Losr result = parser.parse();
-
-		// Final result.
-		System.out.println("FINAL RESULT = " + result);
+		assertThat(result, is(not(nullValue())));
 	}
 
 	@Test
 	@Ignore
-	public void shouldParseCommand() {
-		assertTrue(parse(1892, true));
+	public void shouldParseNewCommands() {
+
+		Set<Integer> ignoreList = new HashSet<>();
+		ignoreList.add(3111);
+		ignoreList.add(4211);
+		ignoreList.add(8460);
+		ignoreList.add(9305);
+		ignoreList.add(21444);
+		ignoreList.add(23568);
+		ignoreList.add(24528);
+
+		for (Command command : TestContext.treebank().commands()) {
+			if (!ignoreList.contains(command.id()) && command.losr() == null) {
+				try {
+
+					// Parse.
+					Layout layout = command.scene().before();
+					Items<Terminal> terminals = tagger.terminals(command);
+					Parser parser = new Parser(layout, grammar, lexicon,
+							(Items) terminals, command.tokens(), false);
+					Losr losr = parser.parse(false);
+
+					// Validate.
+					Planner planner = new Planner(layout);
+					if (!planner.instruction(losr).equals(
+							command.scene().instruction())) {
+						continue;
+					}
+				} catch (Exception exception) {
+					continue;
+				}
+				System.out.println(command.id());
+			}
+		}
 	}
 
 	@Test
@@ -90,8 +133,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(3510));
-		assertThat(total, is(3698));
+		assertThat(valid, is(3705));
+		assertThat(total, is(3939));
 	}
 
 	private boolean parse(int id) {

@@ -18,8 +18,6 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.Relation;
-import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
@@ -67,6 +65,10 @@ public class Parser {
 	}
 
 	public Losr parse() {
+		return parse(true);
+	}
+
+	public Losr parse(boolean singleResult) {
 
 		// Parse.
 		List<Node> trees = shiftReduce();
@@ -80,7 +82,7 @@ public class Parser {
 		for (Node tree : trees) {
 			Candidate candidate = new Candidate(tree);
 			new AnaphoraResolver().resolve(candidate.losr());
-			if (validateEvent(candidate.losr())) {
+			if (validateResult(candidate.losr())) {
 				valid.add(candidate);
 			} else {
 				invalid.add(candidate);
@@ -110,8 +112,10 @@ public class Parser {
 		}
 
 		// Ranked?
-		if (!duplicate && best != null) {
-			return best.losr();
+		if (best != null) {
+			if (!singleResult || !duplicate) {
+				return best.losr();
+			}
 		}
 
 		// Duplicates?
@@ -167,14 +171,8 @@ public class Parser {
 		}
 
 		// Add.
-		Node[] nodes = new Node[2];
-		if (tag.equals("relation")) {
-			nodes[0] = new Node(new Relation(Relations.Above));
-			nodes[1] = new Node(new Relation(Relations.Within));
-		} else {
-			nodes[0] = new Node(new Type(Types.Reference));
-			nodes[1] = new Node(new Type(Types.Region));
-		}
+		Node[] nodes = { new Node(new Type(Types.Reference)),
+				new Node(new Type(Types.Region)) };
 		createFrontier(nodes);
 		return true;
 	}
@@ -328,9 +326,10 @@ public class Parser {
 		}
 	}
 
-	private boolean validateEvent(Losr losr) {
+	private boolean validateResult(Losr losr) {
 		try {
 			planner.instruction(losr);
+			new AboveOrWithinRule().validate(losr);
 			return true;
 		} catch (Exception exception) {
 			return false;

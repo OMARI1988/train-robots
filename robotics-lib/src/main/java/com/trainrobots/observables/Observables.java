@@ -60,6 +60,7 @@ public class Observables {
 				if (z == 1) {
 					return null;
 				} else {
+					stack.normalize();
 					return stack;
 				}
 			}

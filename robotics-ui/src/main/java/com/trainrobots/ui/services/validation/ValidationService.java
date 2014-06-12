@@ -88,7 +88,26 @@ public class ValidationService {
 
 		// Display first error.
 		ValidationResult result = results.get(0);
-		windowService.error("%d %s. Command %d: %s", size, size == 1 ? "error"
-				: "errors", result.command().id(), result.message());
+		StringBuilder text = new StringBuilder();
+		if (commandService.command() != result.command()) {
+			text.append(" Command ");
+			text.append(result.command().id());
+			text.append(":");
+		}
+		text.append(' ');
+		text.append(result.message());
+		size--;
+		if (size > 0) {
+			int length = text.length();
+			if (text.charAt(length - 1) == '.') {
+				text.setLength(length - 1);
+			}
+			text.append(" (");
+			text.append(size);
+			text.append(" other ");
+			text.append(size == 1 ? "error" : "errors");
+			text.append(").");
+		}
+		windowService.error(text.toString());
 	}
 }

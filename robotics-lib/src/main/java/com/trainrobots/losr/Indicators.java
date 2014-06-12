@@ -12,7 +12,16 @@ import java.util.TreeMap;
 
 public enum Indicators {
 
-	Left, Leftmost, Right, Rightmost, Front, Back, Center, Nearest, Individual;
+	Left,
+	Leftmost,
+	Right,
+	Rightmost,
+	Front,
+	Back,
+	Center,
+	Nearest,
+	Individual,
+	Active;
 
 	private static final TreeMap<String, Indicators> indicators = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

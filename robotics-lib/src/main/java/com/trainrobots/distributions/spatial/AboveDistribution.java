@@ -16,6 +16,7 @@ import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
@@ -78,9 +79,19 @@ public class AboveDistribution extends SpatialDistribution {
 			}
 
 			// Stack.
-			if (landmark instanceof Stack && observable instanceof Shape) {
+			if (landmark instanceof Stack && observable instanceof Shape
+					&& p1 != null) {
 				Stack stack = (Stack) landmark;
 				if (stack.top().position().add(0, 0, 1).equals(p1)) {
+					return weight;
+				}
+				continue;
+			}
+
+			// Active position.
+			if (landmark == ObservablePosition.Active && p1 != null) {
+				Position p2 = layout.gripper().position();
+				if (p1.x() == p2.x() && p1.y() == p2.y()) {
 					return weight;
 				}
 				continue;
@@ -95,7 +106,7 @@ public class AboveDistribution extends SpatialDistribution {
 				continue;
 			}
 
-			// Shape/stake above region.
+			// Shape/stack above region.
 			if (landmark instanceof Region && p1 != null) {
 				Region region = (Region) landmark;
 
@@ -163,6 +174,13 @@ public class AboveDistribution extends SpatialDistribution {
 				Stack stack = (Stack) landmark;
 				destinations.add(new DestinationHypothesis(stack.top()
 						.position().add(0, 0, 1), stack, weight));
+			}
+
+			// Active position.
+			else if (landmark == ObservablePosition.Active) {
+				destinations.add(new DestinationHypothesis((context.simulator()
+						.dropPosition(layout.gripper().position())), null,
+						weight));
 			}
 
 			// Board.
