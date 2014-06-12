@@ -26,6 +26,7 @@ public class StopWordTests {
 		stopWords.add(".");
 		stopWords.add(",");
 		stopWords.add("-");
+		stopWords.add("!");
 		stopWords.add("a");
 		stopWords.add("is");
 		stopWords.add("which");

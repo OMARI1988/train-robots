@@ -15,7 +15,9 @@ import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Region;
+import com.trainrobots.scenes.Gripper;
 
 public class PartDistribution extends SpatialDistribution {
 
@@ -34,6 +36,12 @@ public class PartDistribution extends SpatialDistribution {
 			// Region/edge/corner of board.
 			if ((observable instanceof Region || observable instanceof Edge || observable instanceof Corner)
 					&& landmark instanceof Board) {
+				return hypothesis.weight();
+			}
+
+			// Active position of gripper.
+			if (observable == ObservablePosition.Active
+					&& landmark instanceof Gripper) {
 				return hypothesis.weight();
 			}
 

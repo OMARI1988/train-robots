@@ -19,7 +19,6 @@ public class Robot extends Observable {
 	}
 
 	private Robot() {
-
 	}
 
 	@Override

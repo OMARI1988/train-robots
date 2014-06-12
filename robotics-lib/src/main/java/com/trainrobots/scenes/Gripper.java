@@ -8,7 +8,12 @@
 
 package com.trainrobots.scenes;
 
-public class Gripper {
+import com.trainrobots.losr.Entity;
+import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Types;
+import com.trainrobots.observables.Observable;
+
+public class Gripper extends Observable {
 
 	private final Layout layout;
 	private Position position;
@@ -44,5 +49,10 @@ public class Gripper {
 
 	public Shape shape() {
 		return layout.shape(position);
+	}
+
+	@Override
+	public Losr toLosr() {
+		return new Entity(Types.Gripper);
 	}
 }

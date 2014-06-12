@@ -15,6 +15,7 @@ import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
+import com.trainrobots.scenes.Gripper;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
@@ -52,6 +53,16 @@ public class BelowDistribution extends SpatialDistribution {
 				continue;
 			}
 
+			// Gripper.
+			if (landmark instanceof Gripper) {
+				Gripper gripper = (Gripper) landmark;
+				Position p2 = gripper.position();
+				if (p1.x() == p2.x() && p1.y() == p2.y()) {
+					return weight;
+				}
+				continue;
+			}
+
 			// Not supported.
 			throw new RoboticException("%s below %s is not supported.",
 					observable, landmark);
@@ -72,6 +83,13 @@ public class BelowDistribution extends SpatialDistribution {
 				destinations.add(new DestinationHypothesis((context.simulator()
 						.dropPosition(layout.gripper().position())), null,
 						weight));
+			}
+
+			// Gripper.
+			else if (landmark instanceof Gripper) {
+				Gripper gripper = (Gripper) landmark;
+				destinations.add(new DestinationHypothesis((context.simulator()
+						.dropPosition(gripper.position())), null, weight));
 			}
 
 			// Not supported.

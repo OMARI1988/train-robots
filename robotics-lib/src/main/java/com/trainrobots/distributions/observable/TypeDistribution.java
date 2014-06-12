@@ -78,8 +78,14 @@ public class TypeDistribution extends ObservableDistribution {
 		}
 
 		// Robot.
-		if (type == Types.Robot) {
+		if (type == Types.Robot || type == Types.Listener) {
 			add(Robot.robot(), 1);
+			return;
+		}
+
+		// Gripper.
+		if (type == Types.Gripper) {
+			add(layout.gripper(), 1);
 			return;
 		}
 

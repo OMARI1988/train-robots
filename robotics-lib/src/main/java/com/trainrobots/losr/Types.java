@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 public enum Types {
 
+	Listener,
 	Reference,
 	TypeReference,
 	TypeReferenceGroup,
@@ -25,7 +26,8 @@ public enum Types {
 	Region,
 	Board,
 	Robot,
-	Position;
+	Position,
+	Gripper;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

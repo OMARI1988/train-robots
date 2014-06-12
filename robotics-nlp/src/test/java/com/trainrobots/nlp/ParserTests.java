@@ -134,8 +134,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(3705));
-		assertThat(total, is(3939));
+		assertThat(valid, is(3714));
+		assertThat(total, is(3945));
 	}
 
 	private boolean parse(int id) {
