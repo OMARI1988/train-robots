@@ -84,17 +84,6 @@ public class VisualizerTests {
 	}
 
 	@Test
-	public void shouldRenderSkippedTokens() {
-
-		// Render.
-		Command command = TestContext.treebank().command(23991);
-		byte[] data = new PngWriter(command).renderToArray();
-
-		// Verify.
-		assertThat(data, is(resource("losr-23991.png")));
-	}
-
-	@Test
 	public void shouldRenderPartialTree() {
 
 		// Render.

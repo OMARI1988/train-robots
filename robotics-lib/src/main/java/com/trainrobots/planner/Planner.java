@@ -364,6 +364,13 @@ public class Planner {
 		for (Indicator item : indicators) {
 			Indicators indicator = item.indicator();
 
+			// Rightmost/leftmost.
+			if (indicator == Indicators.Rightmost) {
+				indicator = Indicators.Right;
+			} else if (indicator == Indicators.Leftmost) {
+				indicator = Indicators.Left;
+			}
+
 			// Exact.
 			if ((type == Types.Edge || type == Types.Corner || type == Types.Region)
 					&& (indicator == Indicators.Left
@@ -377,15 +384,13 @@ public class Planner {
 			}
 
 			// Left.
-			if (indicator == Indicators.Left
-					|| indicator == Indicators.Leftmost) {
+			if (indicator == Indicators.Left) {
 				distribution = new LeftDistribution(distribution);
 				continue;
 			}
 
 			// Right.
-			if (indicator == Indicators.Right
-					|| indicator == Indicators.Rightmost) {
+			if (indicator == Indicators.Right) {
 				distribution = new RightDistribution(distribution);
 				continue;
 			}
