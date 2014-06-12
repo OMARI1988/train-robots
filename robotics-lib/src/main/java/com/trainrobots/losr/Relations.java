@@ -22,7 +22,8 @@ public enum Relations {
 	Back,
 	Backward,
 	Within,
-	Nearest;
+	Nearest,
+	Part;
 
 	private static final TreeMap<String, Relations> relations = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

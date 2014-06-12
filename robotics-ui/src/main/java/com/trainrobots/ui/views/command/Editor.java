@@ -100,7 +100,8 @@ public class Editor {
 		Token token = token();
 		if (token != null) {
 			PartialTree partialTree = view.partialTree();
-			partialTree.add(new Ellipsis(token.id()));
+			partialTree.add(new Type(new EllipticalContext(token.id()),
+					Types.Region));
 			update();
 		}
 	}

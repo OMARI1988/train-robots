@@ -81,6 +81,7 @@ public class ParserTests {
 	public void shouldParseNewCommands() {
 
 		Set<Integer> ignoreList = new HashSet<>();
+		ignoreList.add(99);
 		ignoreList.add(3111);
 		ignoreList.add(4211);
 		ignoreList.add(8460);

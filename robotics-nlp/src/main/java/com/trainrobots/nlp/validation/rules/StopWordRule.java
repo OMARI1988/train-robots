@@ -24,12 +24,16 @@ public class StopWordRule implements ValidationRule {
 	public void validate(Command command) {
 		Losr losr = command.losr();
 		if (losr != null) {
-			StopWords.visit(command, x -> {
-				if (x.context().text().equalsIgnoreCase("from")) {
-					throw new RoboticException(
-							"'From' should not be a stop word.");
-				}
-			});
+			StopWords.visit(
+					command,
+					x -> {
+						String text = x.context().text();
+						if (text.equalsIgnoreCase("from")
+								|| text.equalsIgnoreCase("board")) {
+							throw new RoboticException(
+									"'%s' should not be a stop word.", text);
+						}
+					});
 		}
 	}
 }
