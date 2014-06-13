@@ -66,6 +66,6 @@ public class PlannerTests {
 					valid, total, 100.0 * valid / total));
 		}
 		assertThat(valid, is(3947));
-		assertThat(total, is(3947));
+		assertThat(total, is(3948));
 	}
 }
