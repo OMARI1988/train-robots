@@ -243,6 +243,12 @@ public class Planner {
 			}
 		}
 
+		// Match source shape?
+		if (!dropEntityReference
+				&& entity.equals(context.sourceShape().toLosr())) {
+			dropEntityReference = true;
+		}
+
 		// Source.
 		Gripper gripper = layout.gripper();
 		if (!dropEntityReference) {
@@ -312,9 +318,14 @@ public class Planner {
 		// Cardinality.
 		if (entity.cardinal() != null) {
 			if (entity.cardinal().value() != 1) {
-				throw new RoboticException(
-						"Non-singular cardinality is not supported: %s.",
-						entity.cardinal());
+
+				// between ... two ...
+				if (context.entityOfBetween() && entity.cardinal().value() == 2) {
+				} else {
+					throw new RoboticException(
+							"Non-singular cardinality is not supported: %s.",
+							entity.cardinal());
+				}
 			}
 		}
 
@@ -439,8 +450,10 @@ public class Planner {
 
 		// Entity.
 		Entity entity = spatialRelation.entity();
+		context.entityOfBetween(relation == Relations.Between);
 		ObservableDistribution landmarkDistribution = entity != null ? distributionOfEntity(
 				context, entity) : null;
+		context.entityOfBetween(false);
 
 		// Measure.
 		Measure measure = spatialRelation.measure();

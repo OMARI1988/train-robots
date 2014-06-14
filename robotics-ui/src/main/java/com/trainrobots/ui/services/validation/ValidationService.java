@@ -86,8 +86,13 @@ public class ValidationService {
 			return;
 		}
 
-		// Display first error.
-		ValidationResult result = results.get(0);
+		// Display the error for this command (or the first error).
+		ValidationResult result = results.get(commandService.command());
+		if (result == null) {
+			result = results.get(0);
+		}
+
+		// Update status.
 		StringBuilder text = new StringBuilder();
 		if (commandService.command() != result.command()) {
 			text.append(" Command ");
