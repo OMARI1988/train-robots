@@ -113,12 +113,9 @@ public class Stack extends Observable {
 		}
 
 		// Normalize.
-		// System.out.println("\nSTACK:");
 		int sum = shapes.size();
 		for (Entry<Colors, Double> e : colors.entrySet()) {
 			colors.put(e.getKey(), e.getValue() / sum);
-			// System.out.println("    " + e.getKey() + " "
-			// + colors.get(e.getKey()));
 		}
 	}
 }
