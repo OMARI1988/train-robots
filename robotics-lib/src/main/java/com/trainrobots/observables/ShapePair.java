@@ -33,7 +33,8 @@ public class ShapePair extends Observable {
 		return shape2;
 	}
 
-	public Position midPoint() {
+	@Override
+	public Position referencePoint() {
 		Position p1 = shape1.position();
 		Position p2 = shape2.position();
 		if (p1.z() != p2.z()) {

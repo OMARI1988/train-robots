@@ -43,7 +43,7 @@ public class BetweenDistribution extends SpatialDistribution {
 
 			// Shape pair.
 			if (landmark instanceof ShapePair && p1 != null) {
-				if (((ShapePair) landmark).midPoint().equals(p1)) {
+				if (landmark.referencePoint().equals(p1)) {
 					return weight;
 				}
 				continue;
@@ -66,16 +66,16 @@ public class BetweenDistribution extends SpatialDistribution {
 
 			// Shape pair.
 			if (landmark instanceof ShapePair) {
-				ShapePair shapePair = (ShapePair) landmark;
-				destinations.add(new DestinationHypothesis(
-						shapePair.midPoint(), null, weight));
-				continue;
+				destinations.add(new DestinationHypothesis(landmark
+						.referencePoint(), null, weight));
 			}
 
 			// Not supported.
-			throw new RoboticException(
-					"Between destination is not supported with landmark %s.",
-					landmark);
+			else {
+				throw new RoboticException(
+						"Between destination is not supported with landmark %s.",
+						landmark);
+			}
 		}
 		destinations.normalize();
 		return destinations;
