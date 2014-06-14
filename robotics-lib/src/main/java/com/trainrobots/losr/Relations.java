@@ -23,6 +23,7 @@ public enum Relations {
 	Backward,
 	Within,
 	Nearest,
+	Furthest,
 	Part,
 	Between;
 

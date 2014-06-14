@@ -14,6 +14,7 @@ import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.distributions.observable.ActiveDistribution;
 import com.trainrobots.distributions.observable.BackDistribution;
 import com.trainrobots.distributions.observable.BetweenObservableDistribution;
+import com.trainrobots.distributions.observable.CenterDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
 import com.trainrobots.distributions.observable.FrontDistribution;
@@ -337,12 +338,12 @@ public class Planner {
 			Entity entity) {
 
 		// Cardinality.
-		boolean betweenEntity = context.betweenEntity() == entity;
+		boolean between = context.parentRelation() == Relations.Between;
 		if (entity.cardinal() != null) {
 			if (entity.cardinal().value() != 1) {
 
 				// between ... two ...
-				if (betweenEntity && entity.cardinal().value() == 2) {
+				if (between && entity.cardinal().value() == 2) {
 				} else {
 					throw new RoboticException(
 							"Non-singular cardinality is not supported: %s.",
@@ -368,7 +369,7 @@ public class Planner {
 
 		// Group?
 		if (type == Types.CubeGroup || type == Types.PrismGroup) {
-			if (betweenEntity) {
+			if (between) {
 				distribution = distributionOfBetweenEntity(type.single(),
 						entity.colors());
 			} else if (type == Types.CubeGroup) {
@@ -387,7 +388,7 @@ public class Planner {
 		}
 
 		// Colors.
-		if (!betweenEntity) {
+		if (!between) {
 			Items<Colors> colors = entity.colors();
 			if (colors != null) {
 				distribution = new ColorDistribution(distribution, colors);
@@ -461,6 +462,9 @@ public class Planner {
 			case Back:
 				distribution = new BackDistribution(distribution);
 				continue;
+			case Center:
+				distribution = new CenterDistribution(distribution);
+				continue;
 			case Highest:
 				distribution = new HighestDistribution(distribution);
 				continue;
@@ -475,12 +479,14 @@ public class Planner {
 				continue;
 			}
 
-			// Nearest.
-			if (indicator == Indicators.Nearest) {
+			// Nearest/furthest.
+			if (indicator == Indicators.Nearest
+					|| indicator == Indicators.Furthest) {
 				TypeDistribution robot = new TypeDistribution(context,
 						Types.Robot);
 				SpatialDistribution nearestRobot = SpatialDistribution.of(
-						Relations.Nearest, robot);
+						indicator == Indicators.Nearest ? Relations.Nearest
+								: Relations.Furthest, robot);
 				distribution = new RelativeDistribution(distribution,
 						nearestRobot);
 				continue;
@@ -501,10 +507,10 @@ public class Planner {
 
 		// Entity.
 		Entity entity = spatialRelation.entity();
-		context.betweenEntity(relation == Relations.Between ? entity : null);
+		context.parentRelation(relation);
 		ObservableDistribution landmarkDistribution = entity != null ? distributionOfEntity(
 				context, entity) : null;
-		context.betweenEntity(null);
+		context.parentRelation(null);
 
 		// Measure.
 		Measure measure = spatialRelation.measure();

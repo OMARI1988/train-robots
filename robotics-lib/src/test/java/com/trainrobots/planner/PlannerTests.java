@@ -26,12 +26,12 @@ public class PlannerTests {
 	@Ignore
 	public void shouldFindExamples() {
 		int i = 0;
-		String[] list = { "tallest", "taller", "higher", "highest", "lower",
-				"lowest", "upper", "tall", "short", "shortest", "shorter",
-				"high", "low", "small", "smaller", "smallest", "big", "bigger",
-				"biggest" };
+		String[] list = { "further", "furthest", "farther", "farthest" };
 		for (Command command : TestContext.treebank().commands()) {
-			if (command.losr() != null) {
+			if (command.losr() != null || command.scene().instruction() == null) {
+				continue;
+			}
+			if ("ignore: image confusion".equals(command.comment())) {
 				continue;
 			}
 			for (Terminal token : command.tokens()) {
@@ -46,11 +46,10 @@ public class PlannerTests {
 	}
 
 	@Test
-	@Ignore
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(26214);
+		Command command = TestContext.treebank().command(22095);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -91,7 +90,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4285));
-		assertThat(total, is(4286));
+		assertThat(valid, is(4324));
+		assertThat(total, is(4324));
 	}
 }

@@ -17,6 +17,7 @@ import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
+import com.trainrobots.observables.Stack;
 import com.trainrobots.scenes.Gripper;
 
 public class PartDistribution extends SpatialDistribution {
@@ -42,6 +43,11 @@ public class PartDistribution extends SpatialDistribution {
 			// Active position of gripper.
 			if (observable instanceof ActivePosition
 					&& landmark instanceof Gripper) {
+				return hypothesis.weight();
+			}
+
+			// Stack of cubes.
+			if (observable instanceof Stack && landmark instanceof Stack) {
 				return hypothesis.weight();
 			}
 

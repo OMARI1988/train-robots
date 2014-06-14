@@ -63,8 +63,7 @@ public class AboveDistribution extends SpatialDistribution {
 			}
 
 			// Board.
-			if (landmark instanceof Board && observable instanceof Shape
-					&& p1 != null) {
+			if (landmark instanceof Board && p1 != null) {
 				return weight * Weights.low(p1);
 			}
 

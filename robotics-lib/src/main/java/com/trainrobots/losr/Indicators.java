@@ -22,6 +22,7 @@ public enum Indicators {
 	Highest,
 	Lowest,
 	Nearest,
+	Furthest,
 	Individual,
 	Active;
 

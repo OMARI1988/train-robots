@@ -16,6 +16,7 @@ import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observables;
 import com.trainrobots.scenes.Shape;
@@ -29,7 +30,7 @@ public class PlannerContext {
 	private final Losr root;
 	private Event previousEvent;
 	private Shape sourceShape;
-	private Entity betweenEntity;
+	private Relations parentRelation;
 
 	public PlannerContext(Observables observables, Simulator simulator,
 			Losr root) {
@@ -90,12 +91,12 @@ public class PlannerContext {
 		this.sourceShape = sourceShape;
 	}
 
-	public Entity betweenEntity() {
-		return betweenEntity;
+	public Relations parentRelation() {
+		return parentRelation;
 	}
 
-	public void betweenEntity(Entity betweenEntity) {
-		this.betweenEntity = betweenEntity;
+	public void parentRelation(Relations parentRelation) {
+		this.parentRelation = parentRelation;
 	}
 
 	public void add(Entity entity, ObservableDistribution distribution) {

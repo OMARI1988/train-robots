@@ -28,8 +28,7 @@ public class StopWordRule implements ValidationRule {
 					command,
 					x -> {
 						String text = x.context().text();
-						if (text.equalsIgnoreCase("from")
-								|| text.equalsIgnoreCase("board")) {
+						if (text.equalsIgnoreCase("board")) {
 							throw new RoboticException(
 									"'%s' should not be a stop word.", text);
 						}
