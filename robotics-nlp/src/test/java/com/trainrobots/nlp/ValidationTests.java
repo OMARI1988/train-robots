@@ -29,6 +29,6 @@ public class ValidationTests {
 		for (ValidationResult result : results) {
 			System.out.println(result.command().id() + " " + result.message());
 		}
-		assertThat(results.count(), is(4));
+		assertThat(results.count(), is(0));
 	}
 }

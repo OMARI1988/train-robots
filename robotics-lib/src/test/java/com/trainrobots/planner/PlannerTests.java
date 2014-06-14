@@ -24,7 +24,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(1072);
+		Command command = TestContext.treebank().command(1260);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -65,7 +65,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(3967));
-		assertThat(total, is(3970));
+		assertThat(valid, is(3968));
+		assertThat(total, is(3968));
 	}
 }

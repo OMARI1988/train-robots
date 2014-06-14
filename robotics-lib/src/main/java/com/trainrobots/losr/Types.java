@@ -19,6 +19,7 @@ public enum Types {
 	Cube,
 	CubeGroup,
 	Prism,
+	PrismGroup,
 	Stack,
 	Tile,
 	Edge,
@@ -50,6 +51,8 @@ public enum Types {
 			return "type-reference-group";
 		case CubeGroup:
 			return "cube-group";
+		case PrismGroup:
+			return "prism-group";
 		}
 		return name().toString().toLowerCase();
 	}

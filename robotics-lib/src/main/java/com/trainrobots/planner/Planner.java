@@ -346,8 +346,8 @@ public class Planner {
 			return distribution;
 		}
 
-		// Cube group?
-		if (type == Types.CubeGroup) {
+		// Group?
+		if (type == Types.CubeGroup || type == Types.PrismGroup) {
 			if (betweenEntity) {
 				distribution = distributionOfBetweenEntity(entity);
 			} else {
@@ -386,6 +386,16 @@ public class Planner {
 
 	private ObservableDistribution distributionOfBetweenEntity(Entity entity) {
 
+		// Type.
+		Types type = entity.type();
+		if (type == Types.CubeGroup) {
+			type = Types.Cube;
+		} else if (type == Types.PrismGroup) {
+			type = Types.Prism;
+		} else {
+			throw new RoboticException("%s is not supported as group.", type);
+		}
+
 		// Colors.
 		Items<Colors> colors = entity.colors();
 		if (colors == null) {
@@ -399,7 +409,7 @@ public class Planner {
 		Colors color2 = colors.count() == 2 ? colors.get(1) : color1;
 
 		// Distribution.
-		return new BetweenObservableDistribution(layout, color1, color2);
+		return new BetweenObservableDistribution(layout, type, color1, color2);
 	}
 
 	private ObservableDistribution distributionOfIndicators(

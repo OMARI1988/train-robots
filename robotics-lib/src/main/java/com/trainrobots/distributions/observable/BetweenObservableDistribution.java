@@ -10,6 +10,7 @@ package com.trainrobots.distributions.observable;
 
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Colors;
+import com.trainrobots.losr.Types;
 import com.trainrobots.observables.ShapePair;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
@@ -17,8 +18,8 @@ import com.trainrobots.scenes.Shape;
 
 public class BetweenObservableDistribution extends ObservableDistribution {
 
-	public BetweenObservableDistribution(Layout layout, Colors color1,
-			Colors color2) {
+	public BetweenObservableDistribution(Layout layout, Types type,
+			Colors color1, Colors color2) {
 		super(layout);
 
 		// Shapes.
@@ -27,9 +28,14 @@ public class BetweenObservableDistribution extends ObservableDistribution {
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < i; j++) {
 
-				// Colors.
+				// Types.
 				Shape shape1 = shapes.get(i);
 				Shape shape2 = shapes.get(j);
+				if (shape1.type() != type || shape2.type() != type) {
+					continue;
+				}
+
+				// Colors.
 				if ((shape1.color() == color1 && shape2.color() == color2)
 						|| (shape1.color() == color2 && shape2.color() == color1)) {
 
