@@ -11,7 +11,6 @@ package com.trainrobots.planner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
@@ -22,7 +21,6 @@ import com.trainrobots.treebank.Command;
 public class PlannerTests {
 
 	@Test
-	@Ignore
 	public void shouldGetInstruction() {
 
 		// Planner.
@@ -67,7 +65,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(3949));
-		assertThat(total, is(3971));
+		assertThat(valid, is(3966));
+		assertThat(total, is(3970));
 	}
 }

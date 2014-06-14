@@ -54,6 +54,8 @@ public abstract class SpatialDistribution extends Distribution {
 			return new NearestDistribution(landmarkDistribution);
 		case Part:
 			return new PartDistribution(landmarkDistribution);
+		case Between:
+			return new BetweenDistribution(landmarkDistribution);
 		}
 
 		// Not supported.

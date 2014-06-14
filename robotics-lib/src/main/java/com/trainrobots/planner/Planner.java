@@ -366,9 +366,11 @@ public class Planner {
 		}
 
 		// Colors.
-		Items<Colors> colors = entity.colors();
-		if (colors != null) {
-			distribution = new ColorDistribution(distribution, colors);
+		if (!betweenEntity) {
+			Items<Colors> colors = entity.colors();
+			if (colors != null) {
+				distribution = new ColorDistribution(distribution, colors);
+			}
 		}
 
 		// Spatial relation.
@@ -394,7 +396,7 @@ public class Planner {
 					"More than two colors specified for %s.", entity);
 		}
 		Colors color1 = colors.get(0);
-		Colors color2 = colors.count() == 2 ? colors.get(1) : null;
+		Colors color2 = colors.count() == 2 ? colors.get(1) : color1;
 
 		// Distribution.
 		return new BetweenObservableDistribution(layout, color1, color2);
