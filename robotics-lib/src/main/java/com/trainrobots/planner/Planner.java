@@ -17,8 +17,10 @@ import com.trainrobots.distributions.observable.BetweenObservableDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
 import com.trainrobots.distributions.observable.FrontDistribution;
+import com.trainrobots.distributions.observable.HighestDistribution;
 import com.trainrobots.distributions.observable.IndividualDistribution;
 import com.trainrobots.distributions.observable.LeftDistribution;
+import com.trainrobots.distributions.observable.LowestDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
@@ -159,15 +161,7 @@ public class Planner {
 					"Expected a single observable for a move action (%s).",
 					count(best.count()));
 		}
-		Observable observable = best.get(0);
-
-		// Shape.
-		if (!(observable instanceof Shape)) {
-			throw new RoboticException(
-					"Observable was not a shape for a move action.");
-		}
-		Shape shape = (Shape) observable;
-		context.sourceShape(shape);
+		context.sourceShape((Shape) best.get(0));
 
 		// Destination.
 		if (event.destination() == null) {
@@ -183,7 +177,8 @@ public class Planner {
 					"Expected a single destination for a move action (%s).",
 					count(destinations.count()));
 		}
-		return new MoveInstruction(shape.position(), destinations.get(0));
+		return new MoveInstruction(context.sourceShape().position(),
+				destinations.get(0));
 	}
 
 	private TakeInstruction translateTake(PlannerContext context, Event event) {
@@ -207,14 +202,9 @@ public class Planner {
 					"Expected a single observable for a take action (%s).",
 					count(best.count()));
 		}
-		Observable observable = best.get(0);
 
 		// Shape.
-		if (!(observable instanceof Shape)) {
-			throw new RoboticException(
-					"Observable was not a shape for a take action.");
-		}
-		Shape shape = (Shape) observable;
+		Shape shape = (Shape) best.get(0);
 		context.sourceShape(shape);
 		return new TakeInstruction(shape.position());
 	}
@@ -256,25 +246,30 @@ public class Planner {
 		if (!dropEntityReference) {
 
 			// Droppable.
-			ObservableDistribution distribution = distributionOfEntity(context,
-					entity);
-			distribution = new DroppableDistribution(distribution);
+			ObservableDistribution entityDistribution = distributionOfEntity(
+					context, entity);
+			DroppableDistribution distribution = new DroppableDistribution(
+					entityDistribution);
 
 			// Single observable.
 			Items<Observable> best = distribution.best();
 			if (best.count() != 1) {
+
+				// Provide a more useful error if possible.
+				if (best.count() == 0) {
+					best = entityDistribution.best();
+					if (best.count() == 1) {
+						throw new RoboticException("%s it not droppable.",
+								best.get(0));
+					}
+				}
 				throw new RoboticException(
 						"Expected a single observable for a drop action (%s).",
 						count(best.count()));
 			}
-			Observable observable = best.get(0);
 
 			// Shape.
-			if (!(observable instanceof Shape)) {
-				throw new RoboticException(
-						"Observable was not a shape for a drop action.");
-			}
-			Shape shape = (Shape) observable;
+			Shape shape = (Shape) best.get(0);
 			if (!shape.equals(gripper.shape())) {
 				throw new RoboticException(
 						"Specified shape does not match gripper shape for a drop action.");
@@ -452,38 +447,30 @@ public class Planner {
 				continue;
 			}
 
-			// Left.
-			if (indicator == Indicators.Left) {
+			// Distribution.
+			switch (indicator) {
+			case Left:
 				distribution = new LeftDistribution(distribution);
 				continue;
-			}
-
-			// Right.
-			if (indicator == Indicators.Right) {
+			case Right:
 				distribution = new RightDistribution(distribution);
 				continue;
-			}
-
-			// Front.
-			if (indicator == Indicators.Front) {
+			case Front:
 				distribution = new FrontDistribution(distribution);
 				continue;
-			}
-
-			// Front.
-			if (indicator == Indicators.Back) {
+			case Back:
 				distribution = new BackDistribution(distribution);
 				continue;
-			}
-
-			// Individual.
-			if (indicator == Indicators.Individual) {
+			case Highest:
+				distribution = new HighestDistribution(distribution);
+				continue;
+			case Lowest:
+				distribution = new LowestDistribution(distribution);
+				continue;
+			case Individual:
 				distribution = new IndividualDistribution(distribution);
 				continue;
-			}
-
-			// Active.
-			if (indicator == Indicators.Active) {
+			case Active:
 				distribution = new ActiveDistribution(distribution);
 				continue;
 			}

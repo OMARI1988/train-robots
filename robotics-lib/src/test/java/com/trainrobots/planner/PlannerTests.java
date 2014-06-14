@@ -11,20 +11,46 @@ package com.trainrobots.planner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.instructions.Instruction;
+import com.trainrobots.losr.Terminal;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 
 public class PlannerTests {
 
 	@Test
+	@Ignore
+	public void shouldFindExamples() {
+		int i = 0;
+		String[] list = { "tallest", "taller", "higher", "highest", "lower",
+				"lowest", "upper", "tall", "short", "shortest", "shorter",
+				"high", "low", "small", "smaller", "smallest", "big", "bigger",
+				"biggest" };
+		for (Command command : TestContext.treebank().commands()) {
+			if (command.losr() != null) {
+				continue;
+			}
+			for (Terminal token : command.tokens()) {
+				for (String item : list) {
+					if (token.context().text().equalsIgnoreCase(item)) {
+						System.out.println(++i + " | " + command.id() + " | "
+								+ command.text());
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	@Ignore
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(25415);
+		Command command = TestContext.treebank().command(26214);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -65,7 +91,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4207));
-		assertThat(total, is(4207));
+		assertThat(valid, is(4285));
+		assertThat(total, is(4286));
 	}
 }

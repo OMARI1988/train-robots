@@ -25,15 +25,16 @@ public class DropDestinationDistribution extends SpatialDistribution {
 	@Override
 	public DestinationDistribution destinations(PlannerContext context) {
 		DestinationDistribution result = new DestinationDistribution(layout);
-		Shape sourceShape = context.sourceShape();
-		for (DestinationHypothesis destination : distribution
-				.destinations(context)) {
+		DestinationDistribution distribution = this.distribution
+				.destinations(context);
+		for (DestinationHypothesis destination : distribution) {
 
 			// Destination must be clear.
 			Position p = destination.position();
 			if (layout.shape(p) == null) {
 
 				// Ignore whatever is being moved.
+				Shape sourceShape = context.sourceShape();
 				if (sourceShape != null
 						&& sourceShape.equals(destination.landmark())) {
 					continue;

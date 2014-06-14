@@ -19,6 +19,8 @@ public enum Indicators {
 	Front,
 	Back,
 	Center,
+	Highest,
+	Lowest,
 	Nearest,
 	Individual,
 	Active;

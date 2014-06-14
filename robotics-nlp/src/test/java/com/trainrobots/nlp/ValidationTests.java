@@ -20,8 +20,6 @@ import com.trainrobots.nlp.validation.Validator;
 
 public class ValidationTests {
 
-	int count = 0;
-
 	@Test
 	public void shouldValidateTreebank() {
 		Validator validator = new Validator();
@@ -29,6 +27,6 @@ public class ValidationTests {
 		for (ValidationResult result : results) {
 			System.out.println(result.command().id() + " " + result.message());
 		}
-		assertThat(results.count(), is(0));
+		assertThat(results.count(), is(1));
 	}
 }

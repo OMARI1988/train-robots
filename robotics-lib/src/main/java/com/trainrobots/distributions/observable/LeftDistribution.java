@@ -8,17 +8,18 @@
 
 package com.trainrobots.distributions.observable;
 
-import com.trainrobots.losr.Relations;
+import com.trainrobots.distributions.Weights;
+import com.trainrobots.losr.Indicators;
 import com.trainrobots.scenes.Position;
 
 public class LeftDistribution extends DirectionDistribution {
 
 	public LeftDistribution(ObservableDistribution distribution) {
-		super(Relations.Left, distribution);
+		super(Indicators.Left, distribution);
 	}
 
 	@Override
 	protected double weight(Position position) {
-		return position.y();
+		return Weights.left(position);
 	}
 }

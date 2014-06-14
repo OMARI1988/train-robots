@@ -9,15 +9,13 @@
 package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.losr.Relations;
+import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.Stack;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Shape;
 
 public abstract class DirectionDistribution extends ObservableDistribution {
 
-	protected DirectionDistribution(Relations relation,
+	protected DirectionDistribution(Indicators indicator,
 			ObservableDistribution distribution) {
 		super(distribution.layout());
 		for (ObservableHypothesis hypothesis : distribution) {
@@ -25,14 +23,15 @@ public abstract class DirectionDistribution extends ObservableDistribution {
 			double weight = hypothesis.weight();
 
 			// Observable.
-			if (observable instanceof Shape || observable instanceof Stack) {
-				add(observable, weight * weight(observable.referencePoint()));
+			Position p = observable.referencePoint();
+			if (p != null) {
+				add(observable, weight * weight(p));
 				continue;
 			}
 
 			// Not supported.
 			throw new RoboticException("%s is not supported with %s.",
-					relation, observable);
+					indicator, observable);
 		}
 		normalize();
 	}

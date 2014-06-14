@@ -14,7 +14,23 @@ import com.trainrobots.RoboticException;
 
 public enum Types {
 
-	Listener, Reference, TypeReference, TypeReferenceGroup, Cube, CubeGroup, Prism, PrismGroup, Stack, Tile, Edge, Corner, Region, Board, Robot, Position, Gripper;
+	Listener,
+	Reference,
+	TypeReference,
+	TypeReferenceGroup,
+	Cube,
+	CubeGroup,
+	Prism,
+	PrismGroup,
+	Stack,
+	Tile,
+	Edge,
+	Corner,
+	Region,
+	Board,
+	Robot,
+	Position,
+	Gripper;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);

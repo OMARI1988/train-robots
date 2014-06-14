@@ -12,14 +12,14 @@ import com.trainrobots.distributions.Weights;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.scenes.Position;
 
-public class RightDistribution extends DirectionDistribution {
+public class HighestDistribution extends DirectionDistribution {
 
-	public RightDistribution(ObservableDistribution distribution) {
-		super(Indicators.Right, distribution);
+	public HighestDistribution(ObservableDistribution distribution) {
+		super(Indicators.Highest, distribution);
 	}
 
 	@Override
 	protected double weight(Position position) {
-		return Weights.right(position);
+		return Weights.high(position);
 	}
 }

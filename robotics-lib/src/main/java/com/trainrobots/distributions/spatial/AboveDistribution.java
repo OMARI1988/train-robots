@@ -9,9 +9,9 @@
 package com.trainrobots.distributions.spatial;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.distributions.Weights;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
-import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.ActivePosition;
 import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
@@ -65,7 +65,7 @@ public class AboveDistribution extends SpatialDistribution {
 			// Board.
 			if (landmark instanceof Board && observable instanceof Shape
 					&& p1 != null) {
-				return weight * (7 - p1.z());
+				return weight * Weights.low(p1);
 			}
 
 			// Edge.
@@ -87,35 +87,17 @@ public class AboveDistribution extends SpatialDistribution {
 
 			// Shape/stack above region.
 			if (landmark instanceof Region && p1 != null) {
-				Region region = (Region) landmark;
-
-				// Center.
-				if (region.indicator() == Indicators.Center) {
-					if ((p1.x() == 3 || p1.x() == 4)
-							&& (p1.y() == 3 || p1.y() == 4)) {
-						return weight;
-					}
-					continue;
-				}
-
-				// Left.
-				if (region.indicator() == Indicators.Left) {
-					return weight * p1.y();
-				}
-
-				// Right.
-				if (region.indicator() == Indicators.Right) {
-					return weight * (7 - p1.y());
-				}
-
-				// Front.
-				if (region.indicator() == Indicators.Front) {
-					return weight * (7 - p1.x());
-				}
-
-				// Back.
-				if (region.indicator() == Indicators.Back) {
-					return weight * p1.x();
+				switch (((Region) landmark).indicator()) {
+				case Left:
+					return weight * Weights.left(p1);
+				case Right:
+					return weight * Weights.right(p1);
+				case Front:
+					return weight * Weights.front(p1);
+				case Back:
+					return weight * Weights.back(p1);
+				case Center:
+					return weight * Weights.center(p1);
 				}
 			}
 

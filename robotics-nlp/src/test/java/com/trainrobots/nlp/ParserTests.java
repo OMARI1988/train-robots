@@ -61,8 +61,12 @@ public class ParserTests {
 		ignoreList.add(4211);
 		ignoreList.add(8460);
 		ignoreList.add(9305);
+		ignoreList.add(16012);
+		ignoreList.add(17864);
 		ignoreList.add(21444);
 		ignoreList.add(23568);
+		ignoreList.add(24003);
+		ignoreList.add(24292);
 		ignoreList.add(24528);
 
 		for (Command command : TestContext.treebank().commands()) {
