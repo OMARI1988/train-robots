@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.collections.Items;
+import com.trainrobots.instructions.Instruction;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.grammar.Grammar;
@@ -85,6 +86,45 @@ public class ParserTests {
 					continue;
 				}
 				System.out.println(command.id());
+			}
+		}
+	}
+
+	@Test
+	@Ignore
+	public void shouldFindImageConfusion() {
+		int i = 0;
+		for (Command command : TestContext.treebank().commands()) {
+			if (command.losr() == null) {
+				try {
+
+					// Expected.
+					Layout before = command.scene().before();
+					Layout after = command.scene().after();
+					Instruction expected;
+					try {
+						expected = Instruction.instruction(after, before);
+					} catch (Exception exception) {
+						continue;
+					}
+
+					// Parse.
+					Items<Terminal> terminals = tagger.terminals(command);
+					Parser parser = new Parser(after, grammar, lexicon,
+							(Items) terminals, command.tokens(), false);
+					Losr losr = parser.parse(false);
+
+					// Validate.
+					Planner planner = new Planner(after);
+					if (!planner.instruction(losr).equals(expected)) {
+						continue;
+					}
+				} catch (Exception exception) {
+					continue;
+				}
+				if (command.comment() == null) {
+					System.out.println(++i + " | " + command.id());
+				}
 			}
 		}
 	}

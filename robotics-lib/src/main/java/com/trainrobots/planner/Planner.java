@@ -11,6 +11,7 @@ package com.trainrobots.planner;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.distributions.observable.ActiveDistribution;
 import com.trainrobots.distributions.observable.BackDistribution;
 import com.trainrobots.distributions.observable.BetweenObservableDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
@@ -478,6 +479,12 @@ public class Planner {
 			// Individual.
 			if (indicator == Indicators.Individual) {
 				distribution = new IndividualDistribution(distribution);
+				continue;
+			}
+
+			// Active.
+			if (indicator == Indicators.Active) {
+				distribution = new ActiveDistribution(distribution);
 				continue;
 			}
 
