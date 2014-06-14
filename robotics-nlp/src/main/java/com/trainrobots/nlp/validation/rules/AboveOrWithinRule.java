@@ -45,7 +45,6 @@ public class AboveOrWithinRule implements ValidationRule {
 
 			Types type = spatialRelation.entity().type();
 			if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
-
 				Losr resolved = root.find(spatialRelation.entity()
 						.referenceId());
 				type = ((Entity) resolved).type();

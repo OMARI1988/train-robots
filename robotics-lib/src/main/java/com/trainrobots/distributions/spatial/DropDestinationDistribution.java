@@ -42,7 +42,8 @@ public class DropDestinationDistribution extends SpatialDistribution {
 				// Must drop either onto the board or onto a cube.
 				if (destination.position().z() > 0) {
 					Shape supportingShape = layout.shape(p.add(0, 0, -1));
-					if (supportingShape.type() != Types.Cube) {
+					if (supportingShape != null
+							&& supportingShape.type() != Types.Cube) {
 						continue;
 					}
 				}

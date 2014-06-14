@@ -246,7 +246,7 @@ public class Planner {
 
 		// Match source shape?
 		if (!dropEntityReference
-				&& entity.equals(context.sourceShape().toLosr())) {
+				&& entityMatchesShape(entity, context.sourceShape())) {
 			dropEntityReference = true;
 		}
 
@@ -299,6 +299,30 @@ public class Planner {
 		return new DropInstruction(position);
 	}
 
+	private static boolean entityMatchesShape(Entity entity, Shape shape) {
+
+		// No shape?
+		if (shape == null) {
+			return false;
+		}
+
+		// Attributes.
+		if (entity.cardinal() != null || entity.indicators() != null
+				|| entity.spatialRelation() != null) {
+			return false;
+		}
+
+		// Type.
+		if (entity.type() != shape.type()) {
+			return false;
+		}
+
+		// Colors.
+		Items<Colors> colors = entity.colors();
+		return colors == null
+				|| (colors.count() == 1 && colors.get(0) == shape.color());
+	}
+
 	private SpatialDistribution distributionOfDestination(
 			PlannerContext context, Destination destination) {
 
@@ -335,7 +359,7 @@ public class Planner {
 		ObservableDistribution distribution = null;
 		Types type = entity.type();
 		if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
-			type = context.referenceType(entity.referenceId());
+			type = context.referenceType(type, entity.referenceId());
 		}
 		if (type == Types.Reference) {
 			distribution = context.get(entity.referenceId());
@@ -349,8 +373,9 @@ public class Planner {
 		// Group?
 		if (type == Types.CubeGroup || type == Types.PrismGroup) {
 			if (betweenEntity) {
-				distribution = distributionOfBetweenEntity(entity);
-			} else {
+				distribution = distributionOfBetweenEntity(type.single(),
+						entity.colors());
+			} else if (type == Types.CubeGroup) {
 				type = Types.Stack;
 			}
 		}
@@ -384,26 +409,15 @@ public class Planner {
 		return distribution;
 	}
 
-	private ObservableDistribution distributionOfBetweenEntity(Entity entity) {
-
-		// Type.
-		Types type = entity.type();
-		if (type == Types.CubeGroup) {
-			type = Types.Cube;
-		} else if (type == Types.PrismGroup) {
-			type = Types.Prism;
-		} else {
-			throw new RoboticException("%s is not supported as group.", type);
-		}
+	private ObservableDistribution distributionOfBetweenEntity(Types type,
+			Items<Colors> colors) {
 
 		// Colors.
-		Items<Colors> colors = entity.colors();
 		if (colors == null) {
-			throw new RoboticException("Colors not specified for %s.", entity);
+			throw new RoboticException("Colors not specified.");
 		}
 		if (colors.count() > 2) {
-			throw new RoboticException(
-					"More than two colors specified for %s.", entity);
+			throw new RoboticException("More than two colors specified.");
 		}
 		Colors color1 = colors.get(0);
 		Colors color2 = colors.count() == 2 ? colors.get(1) : color1;

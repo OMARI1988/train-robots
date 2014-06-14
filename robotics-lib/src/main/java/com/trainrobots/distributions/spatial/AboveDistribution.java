@@ -36,10 +36,7 @@ public class AboveDistribution extends SpatialDistribution {
 	public double weight(Observable observable) {
 
 		// Observable.
-		Position p1 = null;
-		if (observable instanceof Shape || observable instanceof Stack) {
-			p1 = observable.referencePoint();
-		}
+		Position p1 = observable.referencePoint();
 
 		// Landmarks.
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {

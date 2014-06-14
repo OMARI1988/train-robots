@@ -10,6 +10,7 @@ package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.observables.Observable;
+import com.trainrobots.observables.ShapePair;
 import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
@@ -22,8 +23,17 @@ public class IndividualDistribution extends ObservableDistribution {
 
 			// Shape.
 			if (observable instanceof Shape) {
-				Position p = observable.referencePoint();
-				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
+				if (individual(observable.referencePoint())) {
+					add(hypothesis);
+				}
+				continue;
+			}
+
+			// Shape pair.
+			if (observable instanceof ShapePair) {
+				ShapePair shapePair = (ShapePair) observable;
+				if (individual(shapePair.shape1().referencePoint())
+						&& individual(shapePair.shape2().referencePoint())) {
 					add(hypothesis);
 				}
 				continue;
@@ -34,5 +44,9 @@ public class IndividualDistribution extends ObservableDistribution {
 					observable);
 		}
 		normalize();
+	}
+
+	private boolean individual(Position p) {
+		return p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null;
 	}
 }

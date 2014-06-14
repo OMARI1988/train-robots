@@ -10,25 +10,11 @@ package com.trainrobots.losr;
 
 import java.util.TreeMap;
 
+import com.trainrobots.RoboticException;
+
 public enum Types {
 
-	Listener,
-	Reference,
-	TypeReference,
-	TypeReferenceGroup,
-	Cube,
-	CubeGroup,
-	Prism,
-	PrismGroup,
-	Stack,
-	Tile,
-	Edge,
-	Corner,
-	Region,
-	Board,
-	Robot,
-	Position,
-	Gripper;
+	Listener, Reference, TypeReference, TypeReferenceGroup, Cube, CubeGroup, Prism, PrismGroup, Stack, Tile, Edge, Corner, Region, Board, Robot, Position, Gripper;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
@@ -55,6 +41,26 @@ public enum Types {
 			return "prism-group";
 		}
 		return name().toString().toLowerCase();
+	}
+
+	public Types single() {
+		switch (this) {
+		case CubeGroup:
+			return Types.Cube;
+		case PrismGroup:
+			return Types.Prism;
+		}
+		throw new RoboticException("Can't convert %s to a single type.", this);
+	}
+
+	public Types group() {
+		switch (this) {
+		case Cube:
+			return Types.CubeGroup;
+		case Prism:
+			return Types.PrismGroup;
+		}
+		throw new RoboticException("Can't convert %s to a group type.", this);
 	}
 
 	static {

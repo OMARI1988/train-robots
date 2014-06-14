@@ -47,7 +47,12 @@ public class BetweenObservableDistribution extends ObservableDistribution {
 					int dz = p1.z() - p2.z();
 					if (dz == 0
 							&& ((dx == 0 && (dy == -2 || dy == 2)) || (dy == 0 && (dx == -2 || dx == 2)))) {
-						add(new ShapePair(shape1, shape2), 1);
+						Shape s1 = layout.shape(p1.add(0, 0, 1));
+						Shape s2 = layout.shape(p2.add(0, 0, 1));
+
+						// Clear?
+						double weight = s1 == null && s2 == null ? 1 : 0.5;
+						add(new ShapePair(shape1, shape2), weight);
 					}
 				}
 			}

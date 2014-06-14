@@ -62,12 +62,16 @@ public class PlannerContext {
 		return result;
 	}
 
-	public Types referenceType(int referenceId) {
+	public Types referenceType(Types type, int referenceId) {
 		Losr reference = reference(referenceId);
 		if (!(reference instanceof Entity)) {
 			throw new RoboticException("Expected an entity reference.");
 		}
-		return ((Entity) reference).type();
+		Types referenceType = ((Entity) reference).type();
+		if (type == Types.TypeReferenceGroup) {
+			referenceType = referenceType.group();
+		}
+		return referenceType;
 	}
 
 	public Event previousEvent() {

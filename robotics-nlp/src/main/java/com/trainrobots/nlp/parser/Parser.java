@@ -43,6 +43,7 @@ public class Parser {
 	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
 	private final boolean verbose;
+	private boolean strict;
 
 	public Parser(Layout layout, Grammar grammar, Items<Losr> items) {
 		this(layout, grammar, null, items, null, false);
@@ -68,9 +69,10 @@ public class Parser {
 		return parse(true);
 	}
 
-	public Losr parse(boolean singleResult) {
+	public Losr parse(boolean strict) {
 
 		// Parse.
+		this.strict = strict;
 		List<Node> trees = shiftReduce();
 		if (trees.size() == 0) {
 			throw new RoboticException("No parse trees.");
@@ -113,7 +115,7 @@ public class Parser {
 
 		// Ranked?
 		if (best != null) {
-			if (!singleResult || !duplicate) {
+			if (!strict || !duplicate) {
 				return best.losr();
 			}
 		}
@@ -354,12 +356,15 @@ public class Parser {
 					|| entity.type() == Types.Region) {
 				return true;
 			}
-			Items<Observable> groundings = planner.ground(null, entity).best();
-			if (groundings.count() == 0) {
-				if (verbose) {
-					System.out.println("No groundings: " + node);
+			if (strict) {
+				Items<Observable> groundings = planner.ground(null, entity)
+						.best();
+				if (groundings.count() == 0) {
+					if (verbose) {
+						System.out.println("No groundings: " + node);
+					}
+					return false;
 				}
-				return false;
 			}
 			return true;
 		} catch (Exception exception) {
