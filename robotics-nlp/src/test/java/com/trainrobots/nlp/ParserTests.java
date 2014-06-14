@@ -78,7 +78,7 @@ public class ParserTests {
 					Items<Terminal> terminals = tagger.terminals(command);
 					Parser parser = new Parser(layout, grammar, lexicon,
 							(Items) terminals, command.tokens(), false);
-					Losr losr = parser.parse(false);
+					Losr losr = parser.parse();
 
 					// Validate.
 					Planner planner = new Planner(layout);
@@ -116,7 +116,7 @@ public class ParserTests {
 					Items<Terminal> terminals = tagger.terminals(command);
 					Parser parser = new Parser(after, grammar, lexicon,
 							(Items) terminals, command.tokens(), false);
-					Losr losr = parser.parse(false);
+					Losr losr = parser.parse();
 
 					// Validate.
 					Planner planner = new Planner(after);
@@ -152,8 +152,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(3740));
-		assertThat(total, is(4003));
+		assertThat(valid, is(4118));
+		assertThat(total, is(4324));
 	}
 
 	private boolean parse(int id) {

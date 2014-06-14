@@ -578,7 +578,7 @@ public class Editor {
 		// Parse.
 		Losr losr = null;
 		try {
-			losr = parser.parse(false);
+			losr = parser.parse();
 		} catch (Exception exception) {
 		}
 

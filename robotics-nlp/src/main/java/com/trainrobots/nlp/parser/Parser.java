@@ -43,7 +43,7 @@ public class Parser {
 	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
 	private final boolean verbose;
-	private boolean strict;
+	private final boolean strict;
 
 	public Parser(Layout layout, Grammar grammar, Items<Losr> items) {
 		this(layout, grammar, null, items, null, false);
@@ -58,6 +58,7 @@ public class Parser {
 		this.queue = new Queue(items);
 		this.tokens = tokens;
 		this.verbose = verbose;
+		this.strict = false;
 
 		if (verbose) {
 			System.out.println("INITIAL");
@@ -66,13 +67,8 @@ public class Parser {
 	}
 
 	public Losr parse() {
-		return parse(true);
-	}
-
-	public Losr parse(boolean strict) {
 
 		// Parse.
-		this.strict = strict;
 		List<Node> trees = shiftReduce();
 		if (trees.size() == 0) {
 			throw new RoboticException("No parse trees.");
