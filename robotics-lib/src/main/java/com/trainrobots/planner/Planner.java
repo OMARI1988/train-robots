@@ -12,6 +12,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.distributions.observable.BackDistribution;
+import com.trainrobots.distributions.observable.BetweenObservableDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
 import com.trainrobots.distributions.observable.FrontDistribution;
@@ -33,7 +34,7 @@ import com.trainrobots.instructions.MoveInstruction;
 import com.trainrobots.instructions.TakeInstruction;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Cardinal;
-import com.trainrobots.losr.Color;
+import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
@@ -316,11 +317,12 @@ public class Planner {
 			Entity entity) {
 
 		// Cardinality.
+		boolean betweenEntity = context.betweenEntity() == entity;
 		if (entity.cardinal() != null) {
 			if (entity.cardinal().value() != 1) {
 
 				// between ... two ...
-				if (context.entityOfBetween() && entity.cardinal().value() == 2) {
+				if (betweenEntity && entity.cardinal().value() == 2) {
 				} else {
 					throw new RoboticException(
 							"Non-singular cardinality is not supported: %s.",
@@ -329,8 +331,8 @@ public class Planner {
 			}
 		}
 
-		// Type.
-		ObservableDistribution distribution;
+		// Reference?
+		ObservableDistribution distribution = null;
 		Types type = entity.type();
 		if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
 			type = context.referenceType(entity.referenceId());
@@ -343,7 +345,18 @@ public class Planner {
 			}
 			return distribution;
 		}
-		distribution = new TypeDistribution(context, layout, type);
+
+		// Cube group?
+		if (type == Types.CubeGroup) {
+			if (betweenEntity) {
+				distribution = distributionOfBetweenEntity(entity);
+			} else {
+				type = Types.Stack;
+			}
+		}
+		if (distribution == null) {
+			distribution = new TypeDistribution(context, type);
+		}
 
 		// Indicators.
 		Items<Indicator> indicators = entity.indicators();
@@ -353,7 +366,7 @@ public class Planner {
 		}
 
 		// Colors.
-		Items<Color> colors = entity.colors();
+		Items<Colors> colors = entity.colors();
 		if (colors != null) {
 			distribution = new ColorDistribution(distribution, colors);
 		}
@@ -367,6 +380,24 @@ public class Planner {
 		}
 		context.add(entity, distribution);
 		return distribution;
+	}
+
+	private ObservableDistribution distributionOfBetweenEntity(Entity entity) {
+
+		// Colors.
+		Items<Colors> colors = entity.colors();
+		if (colors == null) {
+			throw new RoboticException("Colors not specified for %s.", entity);
+		}
+		if (colors.count() > 2) {
+			throw new RoboticException(
+					"More than two colors specified for %s.", entity);
+		}
+		Colors color1 = colors.get(0);
+		Colors color2 = colors.count() == 2 ? colors.get(1) : null;
+
+		// Distribution.
+		return new BetweenObservableDistribution(layout, color1, color2);
 	}
 
 	private ObservableDistribution distributionOfIndicators(
@@ -426,7 +457,7 @@ public class Planner {
 
 			// Nearest.
 			if (indicator == Indicators.Nearest) {
-				TypeDistribution robot = new TypeDistribution(context, layout,
+				TypeDistribution robot = new TypeDistribution(context,
 						Types.Robot);
 				SpatialDistribution nearestRobot = SpatialDistribution.of(
 						Relations.Nearest, robot);
@@ -450,10 +481,10 @@ public class Planner {
 
 		// Entity.
 		Entity entity = spatialRelation.entity();
-		context.entityOfBetween(relation == Relations.Between);
+		context.betweenEntity(relation == Relations.Between ? entity : null);
 		ObservableDistribution landmarkDistribution = entity != null ? distributionOfEntity(
 				context, entity) : null;
-		context.entityOfBetween(false);
+		context.betweenEntity(null);
 
 		// Measure.
 		Measure measure = spatialRelation.measure();
@@ -475,7 +506,7 @@ public class Planner {
 
 		// Colors.
 		Entity entity = measure.entity();
-		if (entity.colors() != null) {
+		if (entity.colorAttributes() != null) {
 			throw new RoboticException(
 					"Measure entity colors are not supported.");
 		}
@@ -532,8 +563,8 @@ public class Planner {
 
 		// Normalized entity.
 		return new Entity(entity.id(), entity.referenceId(), entity.cardinal(),
-				entity.indicators(), entity.colors(), entity.typeAttribute(),
-				spatialRelation);
+				entity.indicators(), entity.colorAttributes(),
+				entity.typeAttribute(), spatialRelation);
 	}
 
 	private PlannerContext context(Losr root) {

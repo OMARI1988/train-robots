@@ -18,13 +18,12 @@ import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Robot;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
-import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Shape;
 
 public class TypeDistribution extends ObservableDistribution {
 
-	public TypeDistribution(PlannerContext context, Layout layout, Types type) {
-		super(layout);
+	public TypeDistribution(PlannerContext context, Types type) {
+		super(context.simulator().layout());
 
 		// Shape.
 		if (type == Types.Cube || type == Types.Prism) {
@@ -90,7 +89,7 @@ public class TypeDistribution extends ObservableDistribution {
 		}
 
 		// Stack.
-		if (type == Types.Stack || type == Types.CubeGroup) {
+		if (type == Types.Stack) {
 			for (Stack stack : context.observables().stacks()) {
 				add(stack, 1);
 			}

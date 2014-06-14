@@ -130,8 +130,32 @@ public class Entity extends Losr {
 		return indicators;
 	}
 
-	public Items<Color> colors() {
+	public Items<Color> colorAttributes() {
 		return colors;
+	}
+
+	public Items<Colors> colors() {
+		
+		// No colors?
+		if (colors == null) {
+			return null;
+		}
+
+		// Single color?
+		int size = colors.count();
+		if (size == 1) {
+			return new SingleItem(colors.get(0).color());
+		}
+
+		// Get unique colors.
+		ItemsList<Colors> result = new ItemsList<>();
+		for (int i = 0; i < size; i++) {
+			Colors color = colors.get(i).color();
+			if (!result.contains(color)) {
+				result.add(color);
+			}
+		}
+		return result;
 	}
 
 	public Type typeAttribute() {

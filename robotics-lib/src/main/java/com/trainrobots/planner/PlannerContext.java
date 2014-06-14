@@ -29,7 +29,7 @@ public class PlannerContext {
 	private final Losr root;
 	private Event previousEvent;
 	private Shape sourceShape;
-	private boolean entityOfBetween;
+	private Entity betweenEntity;
 
 	public PlannerContext(Observables observables, Simulator simulator,
 			Losr root) {
@@ -86,12 +86,12 @@ public class PlannerContext {
 		this.sourceShape = sourceShape;
 	}
 
-	public boolean entityOfBetween() {
-		return entityOfBetween;
+	public Entity betweenEntity() {
+		return betweenEntity;
 	}
 
-	public void entityOfBetween(boolean entityOfBetween) {
-		this.entityOfBetween = entityOfBetween;
+	public void betweenEntity(Entity betweenEntity) {
+		this.betweenEntity = betweenEntity;
 	}
 
 	public void add(Entity entity, ObservableDistribution distribution) {
