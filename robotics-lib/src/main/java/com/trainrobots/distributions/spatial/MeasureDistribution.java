@@ -12,10 +12,7 @@ import com.trainrobots.RoboticException;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.losr.Relations;
-import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.ObservablePosition;
-import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Position;
@@ -59,38 +56,18 @@ public class MeasureDistribution extends SpatialDistribution {
 	private DestinationHypothesis destination(PlannerContext context,
 			Observable landmark, double weight) {
 
-		// No landmark?
-		Position position;
+		// Use source shape if landmark not specified.
 		if (landmark == null) {
 			Shape sourceShape = context.sourceShape();
 			if (context.sourceShape() == null) {
 				throw new RoboticException("Source shape not specified.");
 			}
-			position = sourceShape.position();
+			landmark = sourceShape;
 		}
 
-		// Shape.
-		else if (landmark instanceof Shape) {
-			position = ((Shape) landmark).position();
-		}
-
-		// Stack.
-		else if (landmark instanceof Stack) {
-			position = ((Stack) landmark).base().position();
-		}
-
-		// Corner.
-		else if (landmark instanceof Corner) {
-			position = ((Corner) landmark).position();
-		}
-
-		// Active position.
-		else if (landmark == ObservablePosition.Active) {
-			position = layout.gripper().position();
-		}
-
-		// Not supported.
-		else {
+		// Position.
+		Position position = landmark.referencePoint();
+		if (position == null) {
 			throw new RoboticException(
 					"Measures with landmark %s are not supported.", landmark);
 		}

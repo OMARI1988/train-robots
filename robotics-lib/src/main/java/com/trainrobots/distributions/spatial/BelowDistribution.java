@@ -11,8 +11,8 @@ package com.trainrobots.distributions.spatial;
 import com.trainrobots.RoboticException;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
+import com.trainrobots.observables.ActivePosition;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Gripper;
@@ -31,32 +31,21 @@ public class BelowDistribution extends SpatialDistribution {
 	@Override
 	public double weight(Observable observable) {
 
-		// Observable.
-		Position p1 = null;
-		if (observable instanceof Shape) {
-			p1 = ((Shape) observable).position();
-		} else if (observable instanceof Stack) {
-			p1 = ((Stack) observable).base().position();
+		// Shape/stack.
+		if (!(observable instanceof Shape || observable instanceof Stack)) {
+			return 0;
 		}
+		Position p1 = observable.referencePoint();
 
 		// Landmarks.
 		for (ObservableHypothesis hypothesis : landmarkDistribution) {
 			Observable landmark = hypothesis.observable();
 			double weight = hypothesis.weight();
 
-			// Active position.
-			if (landmark == ObservablePosition.Active && p1 != null) {
-				Position p2 = layout.gripper().position();
-				if (p1.x() == p2.x() && p1.y() == p2.y()) {
-					return weight;
-				}
-				continue;
-			}
-
-			// Gripper.
-			if (landmark instanceof Gripper) {
-				Gripper gripper = (Gripper) landmark;
-				Position p2 = gripper.position();
+			// Gripper / active position.
+			if (landmark instanceof Gripper
+					|| landmark instanceof ActivePosition) {
+				Position p2 = landmark.referencePoint();
 				if (p1.x() == p2.x() && p1.y() == p2.y()) {
 					return weight;
 				}
@@ -78,18 +67,13 @@ public class BelowDistribution extends SpatialDistribution {
 			Observable landmark = hypothesis.observable();
 			double weight = hypothesis.weight();
 
-			// Active position.
-			if (landmark == ObservablePosition.Active) {
-				destinations.add(new DestinationHypothesis((context.simulator()
-						.dropPosition(layout.gripper().position())), null,
-						weight));
-			}
-
-			// Gripper.
-			else if (landmark instanceof Gripper) {
-				Gripper gripper = (Gripper) landmark;
-				destinations.add(new DestinationHypothesis((context.simulator()
-						.dropPosition(gripper.position())), null, weight));
+			// Gripper / active position.
+			if (landmark instanceof Gripper
+					|| landmark instanceof ActivePosition) {
+				destinations
+						.add(new DestinationHypothesis((context.simulator()
+								.dropPosition(landmark.referencePoint())),
+								null, weight));
 			}
 
 			// Not supported.

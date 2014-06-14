@@ -9,8 +9,13 @@
 package com.trainrobots.observables;
 
 import com.trainrobots.losr.Losr;
+import com.trainrobots.scenes.Position;
 
 public abstract class Observable {
+
+	public Position referencePoint() {
+		return null;
+	}
 
 	public abstract Losr toLosr();
 

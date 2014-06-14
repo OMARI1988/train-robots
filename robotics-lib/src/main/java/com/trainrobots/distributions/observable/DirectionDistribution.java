@@ -24,17 +24,9 @@ public abstract class DirectionDistribution extends ObservableDistribution {
 			Observable observable = hypothesis.observable();
 			double weight = hypothesis.weight();
 
-			// Shape.
-			if (observable instanceof Shape) {
-				Shape shape = (Shape) observable;
-				add(observable, weight * weight(shape.position()));
-				continue;
-			}
-
-			// Stack.
-			if (observable instanceof Stack) {
-				Stack stack = (Stack) observable;
-				add(observable, weight * weight(stack.base().position()));
+			// Observable.
+			if (observable instanceof Shape || observable instanceof Stack) {
+				add(observable, weight * weight(observable.referencePoint()));
 				continue;
 			}
 

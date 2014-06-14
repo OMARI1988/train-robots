@@ -32,10 +32,8 @@ public class BetweenDistribution extends SpatialDistribution {
 
 		// Observable.
 		Position p1 = null;
-		if (observable instanceof Shape) {
-			p1 = ((Shape) observable).position();
-		} else if (observable instanceof Stack) {
-			p1 = ((Stack) observable).base().position();
+		if (observable instanceof Shape || observable instanceof Stack) {
+			p1 = observable.referencePoint();
 		}
 
 		// Landmarks.

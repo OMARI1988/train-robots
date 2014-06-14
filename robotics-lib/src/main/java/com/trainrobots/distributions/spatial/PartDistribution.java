@@ -11,11 +11,11 @@ package com.trainrobots.distributions.spatial;
 import com.trainrobots.RoboticException;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
+import com.trainrobots.observables.ActivePosition;
 import com.trainrobots.observables.Board;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.ObservablePosition;
 import com.trainrobots.observables.Region;
 import com.trainrobots.scenes.Gripper;
 
@@ -40,7 +40,7 @@ public class PartDistribution extends SpatialDistribution {
 			}
 
 			// Active position of gripper.
-			if (observable == ObservablePosition.Active
+			if (observable instanceof ActivePosition
 					&& landmark instanceof Gripper) {
 				return hypothesis.weight();
 			}

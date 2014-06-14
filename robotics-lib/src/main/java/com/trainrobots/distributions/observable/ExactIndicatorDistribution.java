@@ -10,6 +10,7 @@ package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.losr.Indicators;
+import com.trainrobots.observables.ActivePosition;
 import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
@@ -55,9 +56,9 @@ public class ExactIndicatorDistribution extends ObservableDistribution {
 			}
 
 			// Position.
-			if (observable instanceof ObservablePosition
+			if (observable == ObservablePosition.Unspecified
 					&& indicator == Indicators.Active) {
-				add(new ObservableHypothesis(ObservablePosition.Active,
+				add(new ObservableHypothesis(new ActivePosition(layout),
 						hypothesis.weight()));
 				continue;
 			}

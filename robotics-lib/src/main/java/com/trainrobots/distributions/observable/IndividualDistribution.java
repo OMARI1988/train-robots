@@ -22,8 +22,7 @@ public class IndividualDistribution extends ObservableDistribution {
 
 			// Shape.
 			if (observable instanceof Shape) {
-				Shape shape = (Shape) observable;
-				Position p = shape.position();
+				Position p = observable.referencePoint();
 				if (p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null) {
 					add(hypothesis);
 				}

@@ -19,6 +19,7 @@ import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Types;
+import com.trainrobots.scenes.Position;
 import com.trainrobots.scenes.Shape;
 
 public class Stack extends Observable {
@@ -35,12 +36,9 @@ public class Stack extends Observable {
 		shapes.add(shape);
 	}
 
-	public Shape top() {
-		return shapes.get(shapes.size() - 1);
-	}
-
-	public Shape base() {
-		return shapes.get(0);
+	@Override
+	public Position referencePoint() {
+		return shapes.get(shapes.size() - 1).position();
 	}
 
 	public double has(Items<Colors> colors) {

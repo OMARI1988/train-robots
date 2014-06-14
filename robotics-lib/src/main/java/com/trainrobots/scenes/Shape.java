@@ -39,6 +39,11 @@ public class Shape extends Observable {
 	}
 
 	@Override
+	public Position referencePoint() {
+		return position;
+	}
+
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Shape) {
 			Shape shape = (Shape) object;

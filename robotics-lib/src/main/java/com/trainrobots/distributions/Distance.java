@@ -8,14 +8,11 @@
 
 package com.trainrobots.distributions;
 
-import com.trainrobots.observables.Corner;
 import com.trainrobots.observables.Edge;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.Region;
 import com.trainrobots.observables.Robot;
-import com.trainrobots.observables.Stack;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Shape;
 
 public class Distance {
 
@@ -36,27 +33,13 @@ public class Distance {
 			Observable observable2) {
 
 		// Left.
-		Position p1 = null;
-		if (observable1 instanceof Shape) {
-			p1 = ((Shape) observable1).position();
-		} else if (observable1 instanceof Stack) {
-			p1 = ((Stack) observable1).base().position();
-		} else if (observable1 instanceof Corner) {
-			p1 = ((Corner) observable1).position();
-		}
+		Position p1 = observable1.referencePoint();
 		if (p1 == null) {
 			return null;
 		}
 
 		// Right.
-		Position p2 = null;
-		if (observable2 instanceof Shape) {
-			p2 = ((Shape) observable2).position();
-		} else if (observable2 instanceof Stack) {
-			p2 = ((Stack) observable2).base().position();
-		} else if (observable2 instanceof Corner) {
-			p2 = ((Corner) observable2).position();
-		}
+		Position p2 = observable2.referencePoint();
 		if (p2 != null) {
 			return distance(p1.x(), p1.y(), p2.x(), p2.y());
 		}

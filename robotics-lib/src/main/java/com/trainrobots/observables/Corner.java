@@ -50,7 +50,8 @@ public class Corner extends Observable {
 		return leftOrRight;
 	}
 
-	public Position position() {
+	@Override
+	public Position referencePoint() {
 		return position;
 	}
 

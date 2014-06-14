@@ -36,6 +36,11 @@ public class Gripper extends Observable {
 		}
 	}
 
+	@Override
+	public Position referencePoint() {
+		return position;
+	}
+
 	public boolean open() {
 		return open;
 	}

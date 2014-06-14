@@ -33,22 +33,12 @@ public class AdjacentDistribution extends SpatialDistribution {
 			double weight = hypothesis.weight();
 
 			// Shape/stack.
-			Position p1 = null;
-			if (observable instanceof Shape) {
-				p1 = ((Shape) observable).position();
-			} else if (observable instanceof Stack) {
-				p1 = ((Stack) observable).base().position();
-			}
-			if (p1 != null) {
+			if (observable instanceof Shape || observable instanceof Stack) {
+				Position p1 = observable.referencePoint();
 
 				// Shape/stack.
-				Position p2 = null;
-				if (landmark instanceof Shape) {
-					p2 = ((Shape) landmark).position();
-				} else if (landmark instanceof Stack) {
-					p2 = ((Stack) landmark).base().position();
-				}
-				if (p2 != null) {
+				if (landmark instanceof Shape || landmark instanceof Stack) {
+					Position p2 = landmark.referencePoint();
 					int dx = p2.x() - p1.x();
 					int dy = p2.y() - p1.y();
 					if (dx == 0 && (dy == 1 || dy == -1)) {

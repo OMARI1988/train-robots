@@ -13,10 +13,8 @@ import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.observables.Observable;
-import com.trainrobots.observables.Stack;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Position;
-import com.trainrobots.scenes.Shape;
 
 public abstract class OffsetDistribution extends SpatialDistribution {
 
@@ -41,34 +39,21 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 			double weight = hypothesis.weight();
 
 			// Shape/stack.
-			Position p1 = null;
-			if (observable instanceof Shape) {
-				p1 = ((Shape) observable).position();
-			} else if (observable instanceof Stack) {
-				p1 = ((Stack) observable).base().position();
-			}
-			if (p1 != null) {
-
-				// Shape/stack.
-				Position p2 = null;
-				if (landmark instanceof Shape) {
-					p2 = ((Shape) landmark).position();
-				} else if (landmark instanceof Stack) {
-					p2 = ((Stack) landmark).base().position();
-				}
-				if (p2 != null) {
-					int dx = p1.x() - p2.x();
-					int dy = p1.y() - p2.y();
-					if (dx == this.dx && dy == this.dy) {
-						return weight;
-					}
-					continue;
+			Position p1 = observable.referencePoint();
+			Position p2 = landmark.referencePoint();
+			if (p1 != null && p2 != null) {
+				int dx = p1.x() - p2.x();
+				int dy = p1.y() - p2.y();
+				if (dx == this.dx && dy == this.dy) {
+					return weight;
 				}
 			}
 
 			// Not supported.
-			throw new RoboticException("%s %s %s is not supported.",
-					observable, relation, landmark);
+			else {
+				throw new RoboticException("%s %s %s is not supported.",
+						observable, relation, landmark);
+			}
 		}
 		return 0;
 	}
@@ -81,19 +66,18 @@ public abstract class OffsetDistribution extends SpatialDistribution {
 			double weight = hypothesis.weight();
 
 			// Shape/stack.
-			Position p = null;
-			if (landmark instanceof Shape) {
-				p = ((Shape) landmark).position();
-			} else if (landmark instanceof Stack) {
-				p = ((Stack) landmark).base().position();
+			Position p = landmark.referencePoint();
+			if (p != null) {
+				destinations.add(new DestinationHypothesis(context.simulator()
+						.dropPosition(p.add(dx, dy, 0)), landmark, weight));
 			}
-			if (p == null) {
+
+			// Not supported.
+			else {
 				throw new RoboticException(
 						"%s destination is not supported with landmark %s.",
 						relation, landmark);
 			}
-			destinations.add(new DestinationHypothesis(context.simulator()
-					.dropPosition(p.add(dx, dy, 0)), landmark, weight));
 		}
 		destinations.normalize();
 		return destinations;

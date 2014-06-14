@@ -9,26 +9,15 @@
 package com.trainrobots.observables;
 
 import com.trainrobots.losr.Entity;
-import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Types;
 
 public class ObservablePosition extends Observable {
 
-	public static final ObservablePosition Active = new ObservablePosition(
-			Indicators.Active);
-	public static final ObservablePosition Unspecified = new ObservablePosition(
-			null);
-
-	private final Indicators indicator;
-
-	private ObservablePosition(Indicators indicator) {
-		this.indicator = indicator;
-	}
+	public static final ObservablePosition Unspecified = new ObservablePosition();
 
 	@Override
 	public Losr toLosr() {
-		return indicator == null ? new Entity(Types.Position) : new Entity(
-				indicator, Types.Position);
+		return new Entity(Types.Position);
 	}
 }
