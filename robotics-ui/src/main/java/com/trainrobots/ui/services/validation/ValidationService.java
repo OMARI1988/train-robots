@@ -113,7 +113,6 @@ public class ValidationService {
 			text.append(size == 1 ? "error" : "errors");
 			text.append(").");
 		}
-		System.out.println("*********** [" + text + "] ***********");
 		windowService.error(text.toString());
 	}
 }
