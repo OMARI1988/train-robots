@@ -11,6 +11,7 @@ package com.trainrobots.nlp;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
@@ -26,10 +27,10 @@ import com.trainrobots.treebank.Command;
 
 public class LexiconTests {
 
-	private final FrequencyTable table = new FrequencyTable();
-
 	@Test
+	@Ignore
 	public void shouldDisplayMeasures() {
+		FrequencyTable table = new FrequencyTable();
 		for (Command command : TestContext.treebank().commands()) {
 			if (command.losr() != null) {
 				command.losr().visit(

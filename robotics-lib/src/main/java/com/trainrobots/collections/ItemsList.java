@@ -16,6 +16,14 @@ public class ItemsList<T> extends ArrayList<T> implements Items<T> {
 	public ItemsList() {
 	}
 
+	public ItemsList(Items<T> items) {
+		super(items.count());
+		int size = items.count();
+		for (int i = 0; i < size; i++) {
+			add(items.get(i));
+		}
+	}
+
 	@Override
 	public int count() {
 		return size();

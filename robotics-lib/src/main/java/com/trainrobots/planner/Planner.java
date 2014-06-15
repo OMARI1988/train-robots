@@ -11,6 +11,7 @@ package com.trainrobots.planner;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.collections.ItemsList;
 import com.trainrobots.distributions.observable.ActiveDistribution;
 import com.trainrobots.distributions.observable.BackDistribution;
 import com.trainrobots.distributions.observable.BetweenObservableDistribution;
@@ -42,7 +43,6 @@ import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
-import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Measure;
@@ -381,7 +381,7 @@ public class Planner {
 		}
 
 		// Indicators.
-		Items<Indicator> indicators = entity.indicators();
+		Items<Indicators> indicators = entity.indicators();
 		if (indicators != null) {
 			distribution = distributionOfIndicators(context, type, indicators,
 					distribution);
@@ -424,10 +424,9 @@ public class Planner {
 	}
 
 	private ObservableDistribution distributionOfIndicators(
-			PlannerContext context, Types type, Items<Indicator> indicators,
+			PlannerContext context, Types type, Items<Indicators> indicators,
 			ObservableDistribution distribution) {
-		for (Indicator item : indicators) {
-			Indicators indicator = item.indicator();
+		for (Indicators indicator : indicators) {
 
 			// Rightmost/leftmost.
 			if (indicator == Indicators.Rightmost) {
@@ -532,7 +531,7 @@ public class Planner {
 
 		// Colors.
 		Entity entity = measure.entity();
-		if (entity.colorAttributes() != null) {
+		if (entity.colors() != null) {
 			throw new RoboticException(
 					"Measure entity colors are not supported.");
 		}
@@ -588,9 +587,13 @@ public class Planner {
 		}
 
 		// Normalized entity.
-		return new Entity(entity.id(), entity.referenceId(), entity.cardinal(),
-				entity.indicators(), entity.colorAttributes(),
-				entity.typeAttribute(), spatialRelation);
+		if (entity.spatialRelation() != null) {
+			throw new RoboticException(
+					"Entity spatial relation already specified.");
+		}
+		ItemsList<Losr> items = new ItemsList<>(entity);
+		items.add(spatialRelation);
+		return new Entity(entity.id(), entity.referenceId(), items);
 	}
 
 	private PlannerContext context(Losr root) {

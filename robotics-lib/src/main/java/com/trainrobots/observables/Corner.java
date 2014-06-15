@@ -57,8 +57,7 @@ public class Corner extends Observable {
 
 	@Override
 	public Losr toLosr() {
-		return new Entity(0, 0, null, new ItemsArray<Indicator>(new Indicator(
-				frontOrBack), new Indicator(leftOrRight)), null, new Type(
-				Types.Corner), null);
+		return new Entity(0, 0, new ItemsArray(new Indicator(frontOrBack),
+				new Indicator(leftOrRight), new Type(Types.Corner)));
 	}
 }
