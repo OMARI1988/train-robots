@@ -44,6 +44,7 @@ import com.trainrobots.losr.Destination;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicators;
+import com.trainrobots.losr.Location;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Measure;
 import com.trainrobots.losr.Relation;
@@ -323,15 +324,8 @@ public class Planner {
 	private SpatialDistribution distributionOfDestination(
 			PlannerContext context, Destination destination) {
 
-		// Normalize.
-		SpatialRelation spatialRelation = destination.spatialRelation();
-		if (destination.entity() != null) {
-			spatialRelation = new SpatialRelation(
-					new Relation(Relations.Above), destination.entity());
-		}
-
-		// Distribution.
-		return distributionOfSpatialRelation(context, spatialRelation);
+		return distributionOfSpatialRelation(context,
+				normalizeLocation(destination));
 	}
 
 	private ObservableDistribution distributionOfEntity(PlannerContext context,
@@ -576,15 +570,7 @@ public class Planner {
 		}
 
 		// Spatial relation.
-		SpatialRelation spatialRelation = source.spatialRelation();
-		if (spatialRelation == null) {
-			Entity sourceEntity = source.entity();
-			if (sourceEntity == null) {
-				throw new RoboticException("Source entity not specified.");
-			}
-			spatialRelation = new SpatialRelation(
-					new Relation(Relations.Above), sourceEntity);
-		}
+		SpatialRelation spatialRelation = normalizeLocation(source);
 
 		// Normalized entity.
 		if (entity.spatialRelation() != null) {
@@ -594,6 +580,25 @@ public class Planner {
 		ItemsList<Losr> items = new ItemsList<>(entity);
 		items.add(spatialRelation);
 		return new Entity(entity.id(), entity.referenceId(), items);
+	}
+
+	private static SpatialRelation normalizeLocation(Location location) {
+
+		// Spatial relation.
+		Losr item = location.item();
+		if (item instanceof SpatialRelation) {
+			return (SpatialRelation) item;
+		}
+
+		// Entity.
+		if (item instanceof Entity) {
+			return new SpatialRelation(new Relation(Relations.Above),
+					(Entity) item);
+		}
+
+		// Not supported.
+		throw new RoboticException("The %s item %s is not supported.",
+				location.name(), item);
 	}
 
 	private PlannerContext context(Losr root) {

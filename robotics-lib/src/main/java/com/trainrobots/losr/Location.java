@@ -16,83 +16,55 @@ import com.trainrobots.collections.Items;
 public abstract class Location extends Losr {
 
 	private final Marker marker;
-	private final Entity entity;
-	private final SpatialRelation spatialRelation;
+	private final Losr item;
 
 	protected Location(int id, int referenceId, Items<Losr> items) {
 		super(id, referenceId);
 
-		// Items.
-		Marker marker = null;
-		Entity entity = null;
-		SpatialRelation spatialRelation = null;
-		for (Losr item : items) {
+		// Item.
+		int size = items.count();
+		if (size == 1) {
+			marker = null;
+			item = items.get(0);
+		}
 
-			// Marker.
-			if (item instanceof Marker && marker == null) {
-				marker = (Marker) item;
-				continue;
+		// Marker and item.
+		else if (size == 2) {
+			if (!(items.get(0) instanceof Marker)) {
+				throw new RoboticException("%s is not a valid %s marker.",
+						items.get(0), name());
 			}
+			marker = (Marker) items.get(0);
+			item = items.get(1);
+		}
 
-			// Spatial relation.
-			if (item instanceof SpatialRelation && spatialRelation == null) {
-				spatialRelation = (SpatialRelation) item;
-				continue;
-			}
+		// Invalid.
+		else {
+			throw new RoboticException("Invalid %s items.", name());
+		}
 
-			// Entity.
-			if (item instanceof Entity && entity == null) {
-				entity = (Entity) item;
-				continue;
-			}
-
-			// Invalid.
+		// Verify item.
+		if (!(item instanceof Entity) && !(item instanceof SpatialRelation)
+				&& (!(item instanceof MeasureRelation))) {
 			throw new RoboticException("Invalid %s item: %s.", name(), item);
 		}
-
-		// Location.
-		if (entity == null && spatialRelation == null) {
-			throw new RoboticException(
-					"Either a spatial relation or an entity must be specified in a %s.",
-					name());
-		}
-		if (entity != null && spatialRelation != null) {
-			throw new RoboticException(
-					"A spatial relation and entity can not be specified together in a %s.",
-					name());
-		}
-		if (entity != null && marker == null) {
-			throw new RoboticException(
-					"An entity can not be specified without a marker in a %s.",
-					name());
-		}
-		this.marker = marker;
-		this.entity = entity;
-		this.spatialRelation = spatialRelation;
 	}
 
 	public Marker marker() {
 		return marker;
 	}
 
-	public Entity entity() {
-		return entity;
-	}
-
-	public SpatialRelation spatialRelation() {
-		return spatialRelation;
+	public Losr item() {
+		return item;
 	}
 
 	@Override
 	public boolean equals(Losr losr) {
 		if (losr instanceof Location) {
 			Location location = (Location) losr;
-			return location.id == id
-					&& location.referenceId == referenceId
+			return location.id == id && location.referenceId == referenceId
 					&& Objects.equals(location.marker, marker)
-					&& Objects.equals(location.entity, entity)
-					&& Objects
-							.equals(location.spatialRelation, spatialRelation);
+					&& location.item.equals(item);
 		}
 		return false;
 	}
@@ -109,7 +81,7 @@ public abstract class Location extends Losr {
 			return marker;
 		}
 		if (index == count) {
-			return entity != null ? entity : spatialRelation;
+			return item;
 		}
 		throw new IndexOutOfBoundsException();
 	}
