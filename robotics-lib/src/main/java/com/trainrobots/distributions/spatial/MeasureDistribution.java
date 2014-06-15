@@ -20,14 +20,14 @@ import com.trainrobots.scenes.Shape;
 
 public class MeasureDistribution extends SpatialDistribution {
 
-	private final int tileCount;
+	private final int cardinal;
 	private final Indicators indicator;
 	private final ObservableDistribution landmarkDistribution;
 
-	public MeasureDistribution(Layout layout, int tileCount,
+	public MeasureDistribution(Layout layout, int cardinal,
 			Indicators indicator, ObservableDistribution landmarkDistribution) {
 		super(layout);
-		this.tileCount = tileCount;
+		this.cardinal = cardinal;
 		this.indicator = indicator;
 		this.landmarkDistribution = landmarkDistribution;
 	}
@@ -75,16 +75,16 @@ public class MeasureDistribution extends SpatialDistribution {
 		// Offset.
 		switch (indicator) {
 		case Left:
-			position = position.add(0, tileCount, 0);
+			position = position.add(0, cardinal, 0);
 			break;
 		case Right:
-			position = position.add(0, -tileCount, 0);
+			position = position.add(0, -cardinal, 0);
 			break;
 		case Forward:
-			position = position.add(tileCount, 0, 0);
+			position = position.add(cardinal, 0, 0);
 			break;
 		case Backward:
-			position = position.add(-tileCount, 0, 0);
+			position = position.add(-cardinal, 0, 0);
 			break;
 		default:
 			throw new RoboticException(

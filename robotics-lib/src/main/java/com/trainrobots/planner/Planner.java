@@ -589,6 +589,11 @@ public class Planner {
 					throw new RoboticException("Conflicting %s.", landmark);
 				}
 				indicator = landmark.indicators().get(0);
+				if (indicator == Indicators.Front) {
+					indicator = Indicators.Forward;
+				} else if (indicator == Indicators.Back) {
+					indicator = Indicators.Backward;
+				}
 			}
 
 			// Landmark.
@@ -649,7 +654,11 @@ public class Planner {
 		}
 
 		// Type.
-		if (entity.type() != Types.Tile) {
+		if (entity.type() == Types.Tile
+				|| (entity.type() == Types.Column && (indicator == Indicators.Left || indicator == Indicators.Right))
+				|| (entity.type() == Types.Row && (indicator == Indicators.Forward || indicator == Indicators.Backward))) {
+			// Valid.
+		} else {
 			throw new RoboticException(
 					"The measure entity type '%s' is not supported.",
 					entity.type());
@@ -661,10 +670,9 @@ public class Planner {
 			throw new RoboticException(
 					"Measure entity cardinality was not specified.");
 		}
-		int tileCount = cardinal.value();
 
 		// Distribution.
-		return new MeasureDistribution(layout, tileCount, indicator,
+		return new MeasureDistribution(layout, cardinal.value(), indicator,
 				landmarkDistribution);
 	}
 

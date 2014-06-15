@@ -90,21 +90,24 @@ public class ParserTests {
 					Items<Terminal> tokens = command.tokens();
 					int end = losr.span().end();
 					int expected = tokens.count();
-
-					StringBuilder text = new StringBuilder();
-					for (int i = 0; i < end; i++) {
-						text.append(' ');
-						text.append(tokens.get(i).context().text());
+					if (expected - end > 1) {
+						continue;
 					}
-					if (end < expected) {
-						text.append(" [");
-						for (int i = end; i < expected; i++) {
-							text.append(' ');
-							text.append(tokens.get(i).context().text());
-						}
-						text.append(" ]");
-					}
-					System.out.println(command.id() + " |" + text);
+					System.out.println(command.id());
+					// StringBuilder text = new StringBuilder();
+					// for (int i = 0; i < end; i++) {
+					// text.append(' ');
+					// text.append(tokens.get(i).context().text());
+					// }
+					// if (end < expected) {
+					// text.append(" [");
+					// for (int i = end; i < expected; i++) {
+					// text.append(' ');
+					// text.append(tokens.get(i).context().text());
+					// }
+					// text.append(" ]");
+					// }
+					// System.out.println(command.id() + " |" + text);
 
 				} catch (Exception exception) {
 				}

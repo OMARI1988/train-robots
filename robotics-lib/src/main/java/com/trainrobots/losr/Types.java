@@ -30,7 +30,9 @@ public enum Types {
 	Board,
 	Robot,
 	Position,
-	Gripper;
+	Gripper,
+	Row,
+	Column;
 
 	private static final TreeMap<String, Types> types = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
