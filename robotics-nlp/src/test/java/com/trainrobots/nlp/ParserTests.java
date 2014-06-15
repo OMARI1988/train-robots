@@ -59,11 +59,13 @@ public class ParserTests {
 		ignoreList.add(3111);
 		ignoreList.add(4211);
 		ignoreList.add(4637);
+		ignoreList.add(6552);
 		ignoreList.add(7677);
 		ignoreList.add(8460);
 		ignoreList.add(8915);
 		ignoreList.add(9305);
 		ignoreList.add(9415);
+		ignoreList.add(11365);
 		ignoreList.add(16012);
 		ignoreList.add(17864);
 		ignoreList.add(21444);
@@ -79,8 +81,11 @@ public class ParserTests {
 					ParserContext context = new ParserContext(command);
 					context.matchExpectedInstruction(true);
 					Parser parser = new Parser(context, grammar, lexicon, false);
-					parser.parse((Items) tagger.terminals(command));
-					System.out.println(command.id());
+					Losr losr = parser.parse((Items) tagger.terminals(command));
+					int end = losr.span().end();
+					if (end == command.tokens().count()) {
+						System.out.println(command.id());
+					}
 				} catch (Exception exception) {
 				}
 			}
@@ -106,8 +111,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4246));
-		assertThat(total, is(4358));
+		assertThat(valid, is(4295));
+		assertThat(total, is(4407));
 	}
 
 	private boolean parse(int id) {

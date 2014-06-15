@@ -91,7 +91,15 @@ public class Entity extends Losr {
 
 		// Reference with spatial-relation?
 		if (type.type() == Types.Reference && spatialRelation != null) {
-			throw new RoboticException("Reference with spatial entity.");
+			throw new RoboticException("Reference with spatial-relation.");
+		}
+
+		// Region with spatial-relation?
+		if (type.type() == Types.Region && spatialRelation != null) {
+			if (spatialRelation.relation() != Relations.Part
+					|| spatialRelation.entity().type() != Types.Board) {
+				throw new RoboticException("Region with spatial-relation.");
+			}
 		}
 	}
 
