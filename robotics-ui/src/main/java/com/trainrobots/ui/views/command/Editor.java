@@ -41,8 +41,8 @@ import com.trainrobots.nlp.losr.Ellipsis;
 import com.trainrobots.nlp.losr.EllipticalContext;
 import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.parser.ParserContext;
 import com.trainrobots.planner.Planner;
-import com.trainrobots.scenes.Layout;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.ui.services.treebank.TreebankService;
 import com.trainrobots.ui.services.window.WindowService;
@@ -572,35 +572,29 @@ public class Editor {
 
 		// Context.
 		Command command = partialTree.command();
-		Items<Terminal> tokens = command.tokens();
-		Layout layout = command.scene().before();
 		Lexicon lexicon = treebankService.lexicon();
 		Grammar grammar = treebankService.grammar();
+		ParserContext context = new ParserContext(command);
+		context.matchExpectedInstruction(true);
 
 		// Partial tree?
 		Parser parser;
 		if (items.count() > 0) {
-			parser = new Parser(layout, grammar, items, tokens, false);
+			parser = new Parser(context, grammar, false);
 		} else {
-
-			// Tag.
-			Items<Terminal> terminals;
 			try {
-				terminals = treebankService.tagger().sequence(tokens)
-						.terminals(lexicon);
+				items = (Items) treebankService.tagger()
+						.sequence(command.tokens()).terminals(lexicon);
 			} catch (Exception exception) {
 				return;
 			}
-
-			// Parser.
-			parser = new Parser(layout, grammar, lexicon, (Items) terminals,
-					tokens, false);
+			parser = new Parser(context, grammar, lexicon, false);
 		}
 
 		// Parse.
 		Losr losr = null;
 		try {
-			losr = parser.parse();
+			losr = parser.parse(items);
 		} catch (Exception exception) {
 		}
 

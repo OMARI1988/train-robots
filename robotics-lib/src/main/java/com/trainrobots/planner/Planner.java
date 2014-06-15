@@ -598,11 +598,7 @@ public class Planner {
 		}
 
 		// Spatial relation.
-		if (spatialRelation != null) {
-			if (indicator != null) {
-				throw new RoboticException("Conflicting %s.",
-						spatialRelation.relation());
-			}
+		if (spatialRelation != null && indicator == null) {
 			switch (spatialRelation.relation()) {
 			case Left:
 				indicator = Indicators.Left;

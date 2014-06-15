@@ -8,7 +8,9 @@
 
 package com.trainrobots.nlp.parser;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.instructions.Instruction;
 import com.trainrobots.losr.Actions;
 import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
@@ -19,17 +21,36 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
 import com.trainrobots.nlp.validation.rules.MarkerRule;
 import com.trainrobots.planner.Planner;
+import com.trainrobots.scenes.Layout;
+import com.trainrobots.treebank.Command;
 
-public class ParserFilter {
+public class ParserContext {
 
 	private final AboveOrWithinRule aboveOrWithinRule = new AboveOrWithinRule();
 	private final MarkerRule markerRule = new MarkerRule();
 	private final Planner planner;
 	private final Items<Terminal> tokens;
+	private final Command command;
+	private boolean matchExpectedInstruction;
 
-	public ParserFilter(Planner planner, Items<Terminal> tokens) {
-		this.planner = planner;
+	public ParserContext(Command command) {
+		this.planner = new Planner(command.scene().before());
+		this.tokens = command.tokens();
+		this.command = command;
+	}
+
+	public ParserContext(Layout layout, Items<Terminal> tokens) {
+		this.planner = new Planner(layout);
 		this.tokens = tokens;
+		this.command = null;
+	}
+
+	public void matchExpectedInstruction(boolean matchExpectedInstruction) {
+		this.matchExpectedInstruction = matchExpectedInstruction;
+	}
+
+	public Items<Terminal> tokens() {
+		return tokens;
 	}
 
 	public void validatePartial(Losr losr) {
@@ -45,7 +66,13 @@ public class ParserFilter {
 	}
 
 	public void validateResult(Losr losr) {
-		planner.instruction(losr);
+		Instruction instruction = planner.instruction(losr);
+		if (matchExpectedInstruction) {
+			if (!instruction.equals(command.scene().instruction())) {
+				throw new RoboticException(
+						"Failed to match expected instruction.");
+			}
+		}
 		aboveOrWithinRule.validate(losr);
 	}
 

@@ -20,16 +20,13 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.collections.Items;
-import com.trainrobots.instructions.Instruction;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.parser.Parser;
+import com.trainrobots.nlp.parser.ParserContext;
 import com.trainrobots.nlp.tagger.Tagger;
-import com.trainrobots.planner.Planner;
-import com.trainrobots.scenes.Layout;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
@@ -50,21 +47,6 @@ public class ParserTests {
 	@Ignore
 	public void shouldParseCommand() {
 		assertTrue(parse(27033, true));
-	}
-
-	@Test
-	@Ignore
-	public void shouldParsePartialTree() {
-		Command command = TestContext.treebank().command(16818);
-		PartialTree partialTree = new PartialTree(command);
-		partialTree.remove(command.losr().get(2).get(0));
-		for (Losr item : partialTree.items()) {
-			System.out.println(item);
-		}
-		Grammar grammar = new Grammar(TestContext.treebank());
-		Parser parser = new Parser(command.scene().before(), grammar,
-				partialTree.items(), command.tokens(), true);
-		parser.parse();
 	}
 
 	@Test
@@ -94,69 +76,19 @@ public class ParserTests {
 		for (Command command : TestContext.treebank().commands()) {
 			if (!ignoreList.contains(command.id()) && command.losr() == null) {
 				try {
-
-					// Parse.
-					Layout layout = command.scene().before();
-					Items<Terminal> terminals = tagger.terminals(command);
-					Parser parser = new Parser(layout, grammar, lexicon,
-							(Items) terminals, command.tokens(), false);
-					Losr losr = parser.parse();
-
-					// Validate.
-					Planner planner = new Planner(layout);
-					if (!planner.instruction(losr).equals(
-							command.scene().instruction())) {
-						continue;
-					}
+					ParserContext context = new ParserContext(command);
+					context.matchExpectedInstruction(true);
+					Parser parser = new Parser(context, grammar, lexicon, false);
+					parser.parse((Items) tagger.terminals(command));
+					System.out.println(command.id());
 				} catch (Exception exception) {
-					continue;
-				}
-				System.out.println(command.id());
-			}
-		}
-	}
-
-	@Test
-	@Ignore
-	public void shouldFindImageConfusion() {
-		int i = 0;
-		for (Command command : TestContext.treebank().commands()) {
-			if (command.losr() == null) {
-				try {
-
-					// Expected.
-					Layout before = command.scene().before();
-					Layout after = command.scene().after();
-					Instruction expected;
-					try {
-						expected = Instruction.instruction(after, before);
-					} catch (Exception exception) {
-						continue;
-					}
-
-					// Parse.
-					Items<Terminal> terminals = tagger.terminals(command);
-					Parser parser = new Parser(after, grammar, lexicon,
-							(Items) terminals, command.tokens(), false);
-					Losr losr = parser.parse();
-
-					// Validate.
-					Planner planner = new Planner(after);
-					if (!planner.instruction(losr).equals(expected)) {
-						continue;
-					}
-				} catch (Exception exception) {
-					continue;
-				}
-				if (command.comment() == null) {
-					System.out.println(++i + " | " + command.id());
 				}
 			}
 		}
 	}
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void shouldParseTreebank() {
 
 		// Parse.
@@ -174,7 +106,7 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4225));
+		assertThat(valid, is(4230));
 		assertThat(total, is(4358));
 	}
 
@@ -191,9 +123,10 @@ public class ParserTests {
 		Losr losr;
 		try {
 			Items<Terminal> terminals = tagger.terminals(command);
-			Parser parser = new Parser(command.scene().before(), grammar,
-					lexicon, (Items) terminals, command.tokens(), verbose);
-			losr = parser.parse();
+			ParserContext context = new ParserContext(command);
+			context.matchExpectedInstruction(true);
+			Parser parser = new Parser(context, grammar, lexicon, verbose);
+			losr = parser.parse((Items) terminals);
 		} catch (Exception exception) {
 			System.out.println(command.id() + ": " + exception.getMessage()
 					+ " // " + command.tokens().count() + " tokens");

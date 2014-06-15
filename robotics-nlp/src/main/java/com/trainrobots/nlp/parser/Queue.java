@@ -20,7 +20,7 @@ public class Queue {
 	private final List<Node> items = new ArrayList<Node>();
 	private int position;
 
-	public Queue(Items<Losr> items) {
+	public void add(Items<Losr> items) {
 		for (Losr item : items) {
 			this.items.add(new Node(item));
 		}

@@ -28,34 +28,28 @@ import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.grammar.ProductionRule;
 import com.trainrobots.nlp.lexicon.LexicalEntry;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.planner.Planner;
-import com.trainrobots.scenes.Layout;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
-	private final Queue queue;
-	private final Grammar grammar;
-	private final Lexicon lexicon;
-	private final Items<Terminal> tokens;
+	private final Queue queue = new Queue();
 	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
-	private final ParserFilter filter;
+	private final ParserContext context;
+	private final Grammar grammar;
+	private final Lexicon lexicon;
 	private final boolean verbose;
 
-	public Parser(Layout layout, Grammar grammar, Items<Losr> items,
-			Items<Terminal> tokens, boolean verbose) {
-		this(layout, grammar, null, items, tokens, verbose);
+	public Parser(ParserContext context, Grammar grammar, boolean verbose) {
+		this(context, grammar, null, verbose);
 	}
 
-	public Parser(Layout layout, Grammar grammar, Lexicon lexicon,
-			Items<Losr> items, Items<Terminal> tokens, boolean verbose) {
+	public Parser(ParserContext context, Grammar grammar, Lexicon lexicon,
+			boolean verbose) {
 
+		this.context = context;
 		this.grammar = grammar;
 		this.lexicon = lexicon;
-		this.queue = new Queue(items);
-		this.tokens = tokens;
-		this.filter = new ParserFilter(new Planner(layout), tokens);
 		this.verbose = verbose;
 
 		if (verbose) {
@@ -64,7 +58,10 @@ public class Parser {
 		}
 	}
 
-	public Losr parse() {
+	public Losr parse(Items<Losr> items) {
+
+		// Items.
+		queue.add(items);
 
 		// Parse.
 		List<Node> trees = shiftReduce();
@@ -79,7 +76,7 @@ public class Parser {
 			new AnaphoraResolver().resolve(candidate.losr());
 			Losr losr = candidate.losr();
 			try {
-				filter.validateResult(losr);
+				context.validateResult(losr);
 				valid.add(candidate);
 				if (verbose) {
 					System.out.println("Valid: " + candidate.losr());
@@ -95,7 +92,7 @@ public class Parser {
 		// Rank.
 		Candidate best = null;
 		for (Candidate candidate : valid) {
-			if (best == null || filter.better(candidate, best)) {
+			if (best == null || context.better(candidate, best)) {
 				best = candidate;
 			}
 		}
@@ -189,11 +186,11 @@ public class Parser {
 
 		// Terminal.
 		Terminal terminal = (Terminal) losr;
-		TextContext context = terminal.context();
-		String key = key(tokens, context);
+		TextContext textContext = terminal.context();
+		String key = key(context.tokens(), textContext);
 		Items<LexicalEntry> entries = lexicon.entries(null, key);
 		if (entries == null || entries.count() == 0) {
-			throw new RoboticException("Not in lexicon: '" + tokens + "' as "
+			throw new RoboticException("Not in lexicon: '" + key + "' as "
 					+ node);
 		}
 
@@ -201,7 +198,8 @@ public class Parser {
 		Node[] nodes = new Node[entries.count()];
 		for (int i = 0; i < entries.count(); i++) {
 			LexicalEntry entry = entries.get(i);
-			Node mappedNode = new Node(entry.terminal().withContext(context));
+			Node mappedNode = new Node(entry.terminal()
+					.withContext(textContext));
 			mappedNode.weight(entry.weight());
 			nodes[i] = mappedNode;
 		}
@@ -283,7 +281,7 @@ public class Parser {
 		Losr losr;
 		try {
 			losr = LosrFactory.build(0, 0, rule.lhs(), new ItemsArray(items));
-			filter.validatePartial(losr);
+			context.validatePartial(losr);
 		} catch (Exception exception) {
 			return;
 		}
