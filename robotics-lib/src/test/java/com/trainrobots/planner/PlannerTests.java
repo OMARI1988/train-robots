@@ -25,23 +25,16 @@ public class PlannerTests {
 	@Test
 	@Ignore
 	public void shouldFindMeasures() {
-		class Count {
-			int i = 0;
-		}
-		Count c = new Count();
 		for (Command command : TestContext.treebank().commands()) {
 			if (command.losr() != null) {
-				command.losr().visit(
-						x -> {
-							if (x instanceof SpatialRelation) {
-								SpatialRelation sp = (SpatialRelation) x;
-								if (sp.measure() != null) {
-									System.out.println(++c.i + " | "
-											+ command.id() + " | "
-											+ command.text());
-								}
-							}
-						});
+				command.losr().visit(x -> {
+					if (x instanceof SpatialRelation) {
+						SpatialRelation sp = (SpatialRelation) x;
+						if (sp.measure() != null) {
+							System.out.println(command.id());
+						}
+					}
+				});
 			}
 		}
 	}
@@ -65,7 +58,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(280);
+		Command command = TestContext.treebank().command(2305);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.

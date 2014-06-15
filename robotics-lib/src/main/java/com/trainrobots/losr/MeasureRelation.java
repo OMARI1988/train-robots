@@ -13,28 +13,56 @@ import com.trainrobots.collections.Items;
 
 public class MeasureRelation extends Losr {
 
-	private final Measure measure;
-	private final Losr item;
+	private final Items<Losr> items;
 
 	public MeasureRelation(int id, int referenceId, Items<Losr> items) {
 		super(id, referenceId);
+		this.items = items;
 
 		// Measure.
-		if (items.count() != 2) {
-			throw new RoboticException("Invalid measure-relation items.");
-		}
 		if (!(items.get(0) instanceof Measure)) {
 			throw new RoboticException("%s is not a valid measure.",
 					items.get(0));
 		}
-		measure = (Measure) items.get(0);
 
-		// Item.
-		item = items.get(1);
-		if (!(item instanceof Destination)) {
+		// Items.
+		int size = items.count();
+		Indicator indicator = null;
+		Source source = null;
+		Destination destination = null;
+		SpatialRelation spatialRelation = null;
+		for (int i = 1; i < size; i++) {
+			Losr item = items.get(i);
+
+			// Indicator.
+			if (item instanceof Indicator && indicator == null) {
+				indicator = (Indicator) item;
+				continue;
+			}
+
+			// Source.
+			if (item instanceof Source && source == null) {
+				source = (Source) item;
+				continue;
+			}
+
+			// Destination.
+			if (item instanceof Destination && destination == null) {
+				destination = (Destination) item;
+				continue;
+			}
+
+			// Spatial relation.
+			if (item instanceof SpatialRelation && spatialRelation == null) {
+				spatialRelation = (SpatialRelation) item;
+				continue;
+			}
+
+			// Invalid.
 			throw new RoboticException("Invalid measure-relation item: %s.",
 					item);
 		}
+
 	}
 
 	@Override
@@ -43,11 +71,7 @@ public class MeasureRelation extends Losr {
 	}
 
 	public Measure measure() {
-		return measure;
-	}
-
-	public Losr item() {
-		return item;
+		return (Measure) items.get(0);
 	}
 
 	@Override
@@ -56,25 +80,18 @@ public class MeasureRelation extends Losr {
 			MeasureRelation measureRelation = (MeasureRelation) losr;
 			return measureRelation.id == id
 					&& measureRelation.referenceId == referenceId
-					&& measureRelation.measure.equals(measure)
-					&& measureRelation.item.equals(item);
+					&& Items.equals(measureRelation.items, items);
 		}
 		return false;
 	}
 
 	@Override
 	public int count() {
-		return 2;
+		return items.count();
 	}
 
 	@Override
 	public Losr get(int index) {
-		if (index == 0) {
-			return measure;
-		}
-		if (index == 1) {
-			return item;
-		}
-		throw new IndexOutOfBoundsException();
+		return items.get(index);
 	}
 }
