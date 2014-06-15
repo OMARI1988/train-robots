@@ -15,8 +15,14 @@ import com.trainrobots.collections.Items;
 
 public abstract class Location extends Losr {
 
-	private final Marker marker;
-	private final Losr item;
+	protected final Marker marker;
+	protected final Losr item;
+
+	protected Location(Marker marker, Losr item) {
+		super(0, 0);
+		this.marker = marker;
+		this.item = item;
+	}
 
 	protected Location(int id, int referenceId, Items<Losr> items) {
 		super(id, referenceId);

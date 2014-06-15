@@ -46,6 +46,11 @@ public class Color extends Terminal {
 	}
 
 	@Override
+	public Color clone() {
+		return new Color(context, color);
+	}
+
+	@Override
 	public Color withContext(TextContext context) {
 		return new Color(context, color);
 	}

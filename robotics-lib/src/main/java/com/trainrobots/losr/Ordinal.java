@@ -41,6 +41,11 @@ public class Ordinal extends Terminal {
 	}
 
 	@Override
+	public Ordinal clone() {
+		return new Ordinal(context, value);
+	}
+
+	@Override
 	public Ordinal withContext(TextContext context) {
 		return new Ordinal(context, value);
 	}

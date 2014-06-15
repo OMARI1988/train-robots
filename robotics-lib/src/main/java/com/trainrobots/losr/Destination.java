@@ -26,8 +26,18 @@ public class Destination extends Location {
 		super(id, referenceId, items);
 	}
 
+	private Destination(Marker marker, Losr item) {
+		super(marker, item);
+	}
+
 	@Override
 	public String name() {
 		return "destination";
+	}
+
+	@Override
+	public Destination clone() {
+		return new Destination(marker != null ? marker.clone() : null,
+				item.clone());
 	}
 }

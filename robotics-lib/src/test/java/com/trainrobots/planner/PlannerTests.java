@@ -16,28 +16,10 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.instructions.Instruction;
-import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 
 public class PlannerTests {
-
-	@Test
-	@Ignore
-	public void shouldFindMeasures() {
-		for (Command command : TestContext.treebank().commands()) {
-			if (command.losr() != null) {
-				command.losr().visit(x -> {
-					if (x instanceof SpatialRelation) {
-						SpatialRelation sp = (SpatialRelation) x;
-						if (sp.measure() != null) {
-							System.out.println(command.id());
-						}
-					}
-				});
-			}
-		}
-	}
 
 	@Test
 	@Ignore
@@ -58,7 +40,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(2305);
+		Command command = TestContext.treebank().command(15859);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -99,7 +81,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4363));
-		assertThat(total, is(4363));
+		assertThat(valid, is(4361));
+		assertThat(total, is(4361));
 	}
 }

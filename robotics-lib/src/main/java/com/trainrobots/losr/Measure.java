@@ -47,6 +47,11 @@ public class Measure extends Losr {
 	}
 
 	@Override
+	public Measure clone() {
+		return new Measure(entity.clone());
+	}
+
+	@Override
 	public int count() {
 		return 1;
 	}

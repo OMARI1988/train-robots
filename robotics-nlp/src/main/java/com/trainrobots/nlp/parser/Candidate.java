@@ -16,7 +16,12 @@ public class Candidate {
 	private double weight = 1;
 
 	public Candidate(Node node) {
-		losr = node.losr();
+		try {
+			losr = node.losr().clone();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			throw exception;
+		}
 		normalize(node);
 	}
 

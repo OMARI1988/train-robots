@@ -15,20 +15,14 @@ import com.trainrobots.collections.Items;
 
 public class SpatialRelation extends Losr {
 
-	private final Measure measure;
 	private final Relation relation;
 	private final Entity entity;
 
 	public SpatialRelation(Relations relation, Types type) {
-		this(null, new Relation(relation), new Entity(type));
+		this(new Relation(relation), new Entity(type));
 	}
 
 	public SpatialRelation(Relation relation, Entity entity) {
-		this(null, relation, entity);
-	}
-
-	public SpatialRelation(Measure measure, Relation relation, Entity entity) {
-		this.measure = measure;
 		this.relation = relation;
 		this.entity = entity;
 	}
@@ -37,16 +31,9 @@ public class SpatialRelation extends Losr {
 		super(id, referenceId);
 
 		// Items.
-		Measure measure = null;
 		Relation relation = null;
 		Entity entity = null;
 		for (Losr item : items) {
-
-			// Measure.
-			if (item instanceof Measure && measure == null) {
-				measure = (Measure) item;
-				continue;
-			}
 
 			// Relation.
 			if (item instanceof Relation && relation == null) {
@@ -65,17 +52,15 @@ public class SpatialRelation extends Losr {
 					item);
 		}
 
-		// Event.
+		// Spatial relation.
 		if (relation == null) {
 			throw new RoboticException("Relation not specified.");
 		}
-		this.measure = measure;
+		if (entity == null) {
+			throw new RoboticException("Entity not specified.");
+		}
 		this.relation = relation;
 		this.entity = entity;
-	}
-
-	public Measure measure() {
-		return measure;
 	}
 
 	public Relation relationAttribute() {
@@ -101,7 +86,6 @@ public class SpatialRelation extends Losr {
 			SpatialRelation spatialRelation = (SpatialRelation) losr;
 			return spatialRelation.id == id
 					&& spatialRelation.referenceId == referenceId
-					&& Objects.equals(spatialRelation.measure, measure)
 					&& spatialRelation.relation.equals(relation)
 					&& Objects.equals(spatialRelation.entity, entity);
 		}
@@ -109,27 +93,22 @@ public class SpatialRelation extends Losr {
 	}
 
 	@Override
+	public SpatialRelation clone() {
+		return new SpatialRelation(relation.clone(),
+				entity != null ? entity.clone() : null);
+	}
+
+	@Override
 	public int count() {
-		int count = 1;
-		if (measure != null) {
-			count++;
-		}
-		if (entity != null) {
-			count++;
-		}
-		return count;
+		return 2;
 	}
 
 	@Override
 	public Losr get(int index) {
-		int count = 0;
-		if (measure != null && index == count++) {
-			return measure;
-		}
-		if (index == count++) {
+		if (index == 0) {
 			return relation;
 		}
-		if (entity != null && index == count) {
+		if (index == 1) {
 			return entity;
 		}
 		throw new IndexOutOfBoundsException();

@@ -45,6 +45,11 @@ public class Cardinal extends Terminal {
 	}
 
 	@Override
+	public Cardinal clone() {
+		return new Cardinal(context, value);
+	}
+
+	@Override
 	public Cardinal withContext(TextContext context) {
 		return new Cardinal(context, value);
 	}

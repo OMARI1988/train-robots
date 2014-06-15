@@ -28,7 +28,7 @@ import com.trainrobots.nlp.grammar.ProductionRule;
 import com.trainrobots.nlp.lexicon.LexicalEntry;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
-import com.trainrobots.observables.Observable;
+import com.trainrobots.nlp.validation.rules.MarkerRule;
 import com.trainrobots.planner.Planner;
 import com.trainrobots.scenes.Layout;
 
@@ -43,10 +43,10 @@ public class Parser {
 	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
 	private final boolean verbose;
-	private final boolean strict;
 
-	public Parser(Layout layout, Grammar grammar, Items<Losr> items) {
-		this(layout, grammar, null, items, null, false);
+	public Parser(Layout layout, Grammar grammar, Items<Losr> items,
+			Items<Terminal> tokens, boolean verbose) {
+		this(layout, grammar, null, items, tokens, verbose);
 	}
 
 	public Parser(Layout layout, Grammar grammar, Lexicon lexicon,
@@ -58,7 +58,6 @@ public class Parser {
 		this.queue = new Queue(items);
 		this.tokens = tokens;
 		this.verbose = verbose;
-		this.strict = false;
 
 		if (verbose) {
 			System.out.println("INITIAL");
@@ -82,48 +81,46 @@ public class Parser {
 			new AnaphoraResolver().resolve(candidate.losr());
 			if (validateResult(candidate.losr())) {
 				valid.add(candidate);
+				if (verbose) {
+					System.out.println("Valid: " + candidate.losr());
+				}
 			} else {
 				invalid.add(candidate);
+				if (verbose) {
+					System.out.println("Invalid: " + candidate.losr());
+				}
 			}
 		}
 		if (valid.size() == 0) {
-			if (verbose) {
-				for (Candidate candidate : invalid) {
-					System.out.println("Not valid: " + candidate.losr());
-				}
-			}
-			throw new RoboticException("All candidates were invalid.");
-		}
-		if (valid.size() == 1) {
-			return valid.get(0).losr();
+			throw new RoboticException("%d candidates were invalid.",
+					trees.size());
 		}
 
 		// Rank.
 		Candidate best = null;
-		boolean duplicate = false;
 		for (Candidate candidate : valid) {
-			if (best == null || candidate.weight() > best.weight()) {
+			if (best == null || better(candidate, best)) {
 				best = candidate;
-			} else if (candidate.weight() == best.weight()) {
-				duplicate = true;
 			}
 		}
-
-		// Ranked?
-		if (best != null) {
-			if (!strict || !duplicate) {
-				return best.losr();
-			}
-		}
-
-		// Duplicates?
+		Losr result = best.losr();
 		if (verbose) {
-			for (Candidate candidate : valid) {
-				System.out.println("Validated duplicate (P="
-						+ candidate.weight() + "): " + candidate.losr());
-			}
+			System.out.println("Best: " + result);
 		}
-		throw new RoboticException("Validated duplicates.");
+		return result;
+	}
+
+	private boolean better(Candidate candidate1, Candidate candidate2) {
+
+		// Span.
+		TextContext span1 = candidate1.losr().span();
+		TextContext span2 = candidate2.losr().span();
+		if (span1.end() > span2.end()) {
+			return true;
+		}
+
+		// Weight.
+		return candidate1.weight() > candidate2.weight();
 	}
 
 	private List<Node> shiftReduce() {
@@ -139,17 +136,9 @@ public class Parser {
 
 		// Results.
 		List<Node> results = new ArrayList<Node>();
-		for (GssVertex vertex : frontier) {
+		for (GssVertex vertex : gss.vertices()) {
 			if (vertex.parents().size() == 0) {
-				Node result = vertex.node();
-				if (verbose) {
-					if (results.size() == 0) {
-						System.out.println();
-						System.out.println("RESULTS");
-					}
-					System.out.println(result);
-				}
-				results.add(result);
+				results.add(vertex.node());
 			}
 		}
 		return results;
@@ -210,7 +199,7 @@ public class Parser {
 
 		// Parsing partial input?
 		Losr losr = node.losr();
-		if (tokens == null) {
+		if (lexicon == null) {
 			createFrontier(new Node[] { node });
 			return;
 		}
@@ -328,6 +317,7 @@ public class Parser {
 		try {
 			planner.instruction(losr);
 			new AboveOrWithinRule().validate(losr);
+			new MarkerRule().validate(losr, tokens);
 			return true;
 		} catch (Exception exception) {
 			return false;
@@ -341,26 +331,10 @@ public class Parser {
 			Entity entity = (Entity) node.losr();
 			new AboveOrWithinRule().validate(entity);
 
-			// Groundings.
+			// Reference with spatial-relation?
 			if (entity.type() == Types.Reference
 					&& entity.spatialRelation() != null) {
 				return false;
-			}
-			if (entity.type() == Types.Tile || entity.type() == Types.Reference
-					|| entity.type() == Types.TypeReference
-					|| entity.type() == Types.TypeReferenceGroup
-					|| entity.type() == Types.Region) {
-				return true;
-			}
-			if (strict) {
-				Items<Observable> groundings = planner.ground(null, entity)
-						.best();
-				if (groundings.count() == 0) {
-					if (verbose) {
-						System.out.println("No groundings: " + node);
-					}
-					return false;
-				}
 			}
 			return true;
 		} catch (Exception exception) {

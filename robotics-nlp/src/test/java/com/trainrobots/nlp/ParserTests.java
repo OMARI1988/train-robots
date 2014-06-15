@@ -25,6 +25,7 @@ import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
+import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.planner.Planner;
@@ -48,7 +49,21 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParseCommand() {
-		assertTrue(parse(13534, true));
+		assertTrue(parse(18968, true));
+	}
+
+	@Test
+	public void shouldParsePartialTree() {
+		Command command = TestContext.treebank().command(16818);
+		PartialTree partialTree = new PartialTree(command);
+		partialTree.remove(command.losr().get(2).get(0));
+		for (Losr item : partialTree.items()) {
+			System.out.println(item);
+		}
+		Grammar grammar = new Grammar(TestContext.treebank());
+		Parser parser = new Parser(command.scene().before(), grammar,
+				partialTree.items(), command.tokens(), true);
+		parser.parse();
 	}
 
 	@Test
@@ -158,8 +173,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4022));
-		assertThat(total, is(4351));
+		assertThat(valid, is(3942));
+		assertThat(total, is(4362));
 	}
 
 	private boolean parse(int id) {

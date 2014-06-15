@@ -41,6 +41,11 @@ public class Text extends Terminal {
 	}
 
 	@Override
+	public Text clone() {
+		return new Text(context, text);
+	}
+
+	@Override
 	public Text withContext(TextContext context) {
 		return new Text(context, text);
 	}

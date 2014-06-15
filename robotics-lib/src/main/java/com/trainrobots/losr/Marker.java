@@ -33,6 +33,11 @@ public class Marker extends Terminal {
 	}
 
 	@Override
+	public Marker clone() {
+		return new Marker(context);
+	}
+
+	@Override
 	public Marker withContext(TextContext context) {
 		return new Marker(context);
 	}

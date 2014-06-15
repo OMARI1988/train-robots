@@ -11,7 +11,7 @@ package com.trainrobots.distributions.spatial;
 import com.trainrobots.RoboticException;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.ObservableHypothesis;
-import com.trainrobots.losr.Relations;
+import com.trainrobots.losr.Indicators;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.planner.PlannerContext;
 import com.trainrobots.scenes.Layout;
@@ -21,14 +21,14 @@ import com.trainrobots.scenes.Shape;
 public class MeasureDistribution extends SpatialDistribution {
 
 	private final int tileCount;
-	private final Relations relation;
+	private final Indicators indicator;
 	private final ObservableDistribution landmarkDistribution;
 
 	public MeasureDistribution(Layout layout, int tileCount,
-			Relations relation, ObservableDistribution landmarkDistribution) {
+			Indicators indicator, ObservableDistribution landmarkDistribution) {
 		super(layout);
 		this.tileCount = tileCount;
-		this.relation = relation;
+		this.indicator = indicator;
 		this.landmarkDistribution = landmarkDistribution;
 	}
 
@@ -73,7 +73,7 @@ public class MeasureDistribution extends SpatialDistribution {
 		}
 
 		// Offset.
-		switch (relation) {
+		switch (indicator) {
 		case Left:
 			position = position.add(0, tileCount, 0);
 			break;
@@ -88,7 +88,7 @@ public class MeasureDistribution extends SpatialDistribution {
 			break;
 		default:
 			throw new RoboticException(
-					"The measure relation '%s' is not supported.", relation);
+					"The measure indicator '%s' is not supported.", indicator);
 		}
 		position = context.simulator().dropPosition(position);
 		return new DestinationHypothesis(position, null, weight);

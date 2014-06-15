@@ -37,7 +37,12 @@ public class Ellipsis extends Terminal {
 	}
 
 	@Override
-	public Terminal withContext(TextContext context) {
+	public Ellipsis clone() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public Ellipsis withContext(TextContext context) {
 		throw new NotImplementedException();
 	}
 }

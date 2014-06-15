@@ -54,6 +54,16 @@ public class Sequence extends Losr {
 	}
 
 	@Override
+	public Sequence clone() {
+		int size = events.length;
+		Event[] list = new Event[size];
+		for (int i = 0; i < size; i++) {
+			list[i] = events[i].clone();
+		}
+		return new Sequence(list);
+	}
+
+	@Override
 	public int count() {
 		return events.length;
 	}

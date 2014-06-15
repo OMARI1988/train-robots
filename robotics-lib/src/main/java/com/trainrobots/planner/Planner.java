@@ -527,13 +527,6 @@ public class Planner {
 				context, entity) : null;
 		context.parentRelation(null);
 
-		// Measure.
-		Measure measure = spatialRelation.measure();
-		if (measure != null) {
-			return distributionOfMeasure(measure, relation,
-					landmarkDistribution);
-		}
-
 		// Distribution.
 		if (landmarkDistribution == null) {
 			throw new RoboticException(
@@ -566,8 +559,16 @@ public class Planner {
 		Entity entity = null;
 		ObservableDistribution landmarkDistribution = null;
 		if (location != null) {
-			entity = (Entity) location.item();
-		} else if (spatialRelation != null) {
+			Losr item = location.item();
+			if (item instanceof Entity) {
+				entity = (Entity) item;
+			} else if (item instanceof SpatialRelation) {
+				spatialRelation = (SpatialRelation) item;
+			} else {
+				throw new RoboticException("%s is not supported.", item);
+			}
+		}
+		if (spatialRelation != null) {
 			entity = spatialRelation.entity();
 		}
 		if (entity != null) {
@@ -588,35 +589,35 @@ public class Planner {
 		}
 
 		// Relation.
-		Relations relation;
-		if (indicator != null) {
-			switch (indicator) {
-			case Left:
-				relation = Relations.Left;
-				break;
-			case Right:
-				relation = Relations.Right;
-				break;
-			case Forward:
-				relation = Relations.Forward;
-				break;
-			case Backward:
-				relation = Relations.Backward;
-				break;
-			default:
-				throw new RoboticException(
-						"Failed to map indicator '%s' to relation.");
+		if (indicator == null) {
+			if (spatialRelation != null) {
+				switch (spatialRelation.relation()) {
+				case Left:
+					indicator = Indicators.Left;
+					break;
+				case Right:
+					indicator = Indicators.Right;
+					break;
+				case Front:
+					indicator = Indicators.Forward;
+					break;
+				case Back:
+					indicator = Indicators.Backward;
+					break;
+				default:
+					throw new RoboticException(
+							"Failed to map relation '%s' to indicator.",
+							spatialRelation.relation());
+				}
+			} else {
+				throw new RoboticException("Relation not specified.");
 			}
-		} else if (spatialRelation != null) {
-			relation = spatialRelation.relation();
-		} else {
-			throw new RoboticException("Relation not specified.");
 		}
-		return distributionOfMeasure(measure, relation, landmarkDistribution);
+		return distributionOfMeasure(measure, indicator, landmarkDistribution);
 	}
 
 	private SpatialDistribution distributionOfMeasure(Measure measure,
-			Relations relation, ObservableDistribution landmarkDistribution) {
+			Indicators indicator, ObservableDistribution landmarkDistribution) {
 
 		// Colors.
 		Entity entity = measure.entity();
@@ -653,7 +654,7 @@ public class Planner {
 		int tileCount = cardinal.value();
 
 		// Distribution.
-		return new MeasureDistribution(layout, tileCount, relation,
+		return new MeasureDistribution(layout, tileCount, indicator,
 				landmarkDistribution);
 	}
 

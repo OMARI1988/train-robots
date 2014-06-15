@@ -170,6 +170,16 @@ public class Entity extends Losr {
 	}
 
 	@Override
+	public Entity clone() {
+		int size = items.count();
+		Items[] list = new Items[size];
+		for (int i = 0; i < size; i++) {
+			list[i] = items.get(i).clone();
+		}
+		return new Entity(id, referenceId, new ItemsArray(list));
+	}
+
+	@Override
 	public int count() {
 		return items.count();
 	}

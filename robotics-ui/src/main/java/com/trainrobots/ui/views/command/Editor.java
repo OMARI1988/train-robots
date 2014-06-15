@@ -580,7 +580,7 @@ public class Editor {
 		// Partial tree?
 		Parser parser;
 		if (items.count() > 0) {
-			parser = new Parser(layout, grammar, items);
+			parser = new Parser(layout, grammar, items, tokens, false);
 		} else {
 
 			// Tag.

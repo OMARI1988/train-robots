@@ -21,25 +21,26 @@ public class Event extends Losr {
 	private final Destination destination;
 
 	public Event(Actions action, Types type) {
-		this(new Action(action), new Entity(type), null);
+		this(new Action(action), new Entity(type), null, null);
 	}
 
 	public Event(int id, Actions action, Types type) {
-		this(new Action(action), new Entity(type), null);
+		this(new Action(action), new Entity(type), null, null);
 	}
 
 	public Event(Actions action, Types type, Destination destination) {
-		this(new Action(action), new Entity(type), destination);
+		this(new Action(action), new Entity(type), null, destination);
 	}
 
 	public Event(Action action, Entity entity) {
-		this(action, entity, null);
+		this(action, entity, null, null);
 	}
 
-	public Event(Action action, Entity entity, Destination destination) {
+	public Event(Action action, Entity entity, Source source,
+			Destination destination) {
 		this.action = action;
 		this.entity = entity;
-		this.source = null;
+		this.source = source;
 		this.destination = destination;
 	}
 
@@ -127,6 +128,13 @@ public class Event extends Losr {
 					&& Objects.equals(event.destination, destination);
 		}
 		return false;
+	}
+
+	@Override
+	public Event clone() {
+		return new Event(action.clone(), entity.clone(),
+				source != null ? source.clone() : null,
+				destination != null ? destination.clone() : null);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
 import com.trainrobots.nlp.validation.rules.CommentRule;
 import com.trainrobots.nlp.validation.rules.CurrentPositionRule;
 import com.trainrobots.nlp.validation.rules.EllipsisRule;
+import com.trainrobots.nlp.validation.rules.MarkerRule;
 import com.trainrobots.nlp.validation.rules.PlannerRule;
 import com.trainrobots.nlp.validation.rules.ProjectivityRule;
 import com.trainrobots.nlp.validation.rules.ReferenceRule;
@@ -36,6 +37,7 @@ public class Validator {
 		rules.add(new EllipsisRule());
 		rules.add(new ProjectivityRule());
 		rules.add(new CommentRule());
+		rules.add(new MarkerRule());
 	}
 
 	public ValidationResults validate(Treebank treebank) {

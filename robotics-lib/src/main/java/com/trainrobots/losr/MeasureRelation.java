@@ -10,6 +10,7 @@ package com.trainrobots.losr;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsArray;
 
 public class MeasureRelation extends Losr {
 
@@ -83,6 +84,16 @@ public class MeasureRelation extends Losr {
 					&& Items.equals(measureRelation.items, items);
 		}
 		return false;
+	}
+
+	@Override
+	public MeasureRelation clone() {
+		int size = items.count();
+		Items[] list = new Items[size];
+		for (int i = 0; i < size; i++) {
+			list[i] = items.get(i).clone();
+		}
+		return new MeasureRelation(id, referenceId, new ItemsArray(list));
 	}
 
 	@Override

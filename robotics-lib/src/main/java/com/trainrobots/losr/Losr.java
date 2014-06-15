@@ -52,6 +52,8 @@ public abstract class Losr implements Items<Losr> {
 
 	public abstract boolean equals(Losr losr);
 
+	public abstract Losr clone();
+
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();

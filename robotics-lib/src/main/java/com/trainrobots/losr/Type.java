@@ -43,6 +43,11 @@ public class Type extends Terminal {
 		}
 		return false;
 	}
+	
+	@Override
+	public Type clone() {
+		return new Type(context, type);
+	}
 
 	@Override
 	public Type withContext(TextContext context) {

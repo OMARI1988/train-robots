@@ -46,6 +46,11 @@ public class Action extends Terminal {
 	}
 
 	@Override
+	public Action clone() {
+		return new Action(context, action);
+	}
+
+	@Override
 	public Action withContext(TextContext context) {
 		return new Action(context, action);
 	}

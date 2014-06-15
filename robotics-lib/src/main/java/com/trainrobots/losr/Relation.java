@@ -46,6 +46,11 @@ public class Relation extends Terminal {
 	}
 
 	@Override
+	public Relation clone() {
+		return new Relation(context, relation);
+	}
+
+	@Override
 	public Relation withContext(TextContext context) {
 		return new Relation(context, relation);
 	}

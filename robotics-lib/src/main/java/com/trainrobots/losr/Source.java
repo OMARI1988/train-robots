@@ -26,8 +26,17 @@ public class Source extends Location {
 		super(id, referenceId, items);
 	}
 
+	private Source(Marker marker, Losr item) {
+		super(marker, item);
+	}
+
 	@Override
 	public String name() {
 		return "source";
+	}
+
+	@Override
+	public Source clone() {
+		return new Source(marker != null ? marker.clone() : null, item.clone());
 	}
 }
