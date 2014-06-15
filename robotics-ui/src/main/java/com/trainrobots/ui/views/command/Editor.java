@@ -26,6 +26,7 @@ import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Marker;
+import com.trainrobots.losr.MeasureRelation;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Source;
@@ -447,6 +448,9 @@ public class Editor {
 		}
 		if (type == Source.class) {
 			return (T) new Source(0, 0, items);
+		}
+		if (type == MeasureRelation.class) {
+			return (T) new MeasureRelation(0, 0, items);
 		}
 		throw new RoboticException("Can't create %s from non-terminals.",
 				type.getSimpleName());

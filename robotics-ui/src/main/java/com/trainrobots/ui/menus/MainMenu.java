@@ -19,6 +19,7 @@ import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Marker;
+import com.trainrobots.losr.MeasureRelation;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Source;
 import com.trainrobots.losr.SpatialRelation;
@@ -63,6 +64,8 @@ public class MainMenu extends JMenuBar {
 						add("Event", "ctrl V", Event.class);
 						add("Indicator", "ctrl I", Indicator.class);
 						add("Marker", "ctrl M", Marker.class);
+						add("Measure Relation", "ctrl alt M",
+								MeasureRelation.class);
 						add("Relation", "ctrl R", Relation.class);
 						add("Source", "ctrl alt S", Source.class);
 						add("Spatial Relation", "ctrl P", SpatialRelation.class);

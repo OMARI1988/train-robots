@@ -16,6 +16,7 @@ import com.trainrobots.losr.Entity;
 import com.trainrobots.losr.Event;
 import com.trainrobots.losr.Indicator;
 import com.trainrobots.losr.Losr;
+import com.trainrobots.losr.MeasureRelation;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.losr.Type;
@@ -97,6 +98,9 @@ public class Header extends Text {
 		if (losr instanceof SpatialRelation) {
 			color = theme.spatialRelation();
 			text = "sp-relation";
+		} else if (losr instanceof MeasureRelation) {
+			color = theme.spatialRelation();
+			text = "m-relation";
 		} else if (losr instanceof Entity) {
 			color = theme.entity();
 		} else if (losr instanceof Event) {
