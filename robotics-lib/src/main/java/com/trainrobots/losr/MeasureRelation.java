@@ -20,20 +20,21 @@ public class MeasureRelation extends Losr {
 		super(id, referenceId);
 		this.items = items;
 
-		// Measure.
-		if (!(items.get(0) instanceof Measure)) {
-			throw new RoboticException("%s is not a valid measure.",
-					items.get(0));
-		}
-
 		// Items.
 		int size = items.count();
+		Measure measure = null;
 		Indicator indicator = null;
 		Source source = null;
 		Destination destination = null;
 		SpatialRelation spatialRelation = null;
-		for (int i = 1; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			Losr item = items.get(i);
+
+			// Measure.
+			if (item instanceof Measure && measure == null) {
+				measure = (Measure) item;
+				continue;
+			}
 
 			// Indicator.
 			if (item instanceof Indicator && indicator == null) {
@@ -64,6 +65,10 @@ public class MeasureRelation extends Losr {
 					item);
 		}
 
+		// Measure.
+		if (measure == null) {
+			throw new RoboticException("Measure not specified.");
+		}
 	}
 
 	@Override
@@ -72,7 +77,14 @@ public class MeasureRelation extends Losr {
 	}
 
 	public Measure measure() {
-		return (Measure) items.get(0);
+		int size = items.count();
+		for (int i = 0; i < size; i++) {
+			Losr item = items.get(i);
+			if (item instanceof Measure) {
+				return ((Measure) item);
+			}
+		}
+		return null;
 	}
 
 	@Override

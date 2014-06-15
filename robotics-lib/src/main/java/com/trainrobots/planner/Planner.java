@@ -546,14 +546,16 @@ public class Planner {
 			PlannerContext context, MeasureRelation measureRelation) {
 
 		// Measure.
-		Measure measure = measureRelation.measure();
+		Measure measure = null;
 		Indicators indicator = null;
 		Location location = null;
 		SpatialRelation spatialRelation = null;
 		int size = measureRelation.count();
-		for (int i = 1; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			Losr item = measureRelation.get(i);
-			if (item instanceof Indicator) {
+			if (item instanceof Measure) {
+				measure = (Measure) item;
+			} else if (item instanceof Indicator) {
 				indicator = ((Indicator) item).indicator();
 			} else if (item instanceof Location) {
 				location = (Location) item;
