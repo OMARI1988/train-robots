@@ -47,7 +47,7 @@ public class MarkerRule implements ValidationRule {
 									"Invalid source marker '%s'.", key);
 						}
 					} else {
-						if (!key.equals("to") && !key.equals("onto")) {
+						if (!key.equals("to")) {
 							throw new RoboticException(
 									"Invalid destination marker '%s'.", key);
 						}

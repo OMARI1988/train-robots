@@ -97,8 +97,8 @@ public class Lexicon {
 
 		// Entries.
 		Items<LexicalEntry> entries = lexicon.get(key);
-		if (entries == null) {
-			return null;
+		if (entries == null || type == null) {
+			return entries;
 		}
 
 		// Match type.

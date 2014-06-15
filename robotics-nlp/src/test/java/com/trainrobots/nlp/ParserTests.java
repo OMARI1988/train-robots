@@ -174,7 +174,7 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4215));
+		assertThat(valid, is(4225));
 		assertThat(total, is(4358));
 	}
 

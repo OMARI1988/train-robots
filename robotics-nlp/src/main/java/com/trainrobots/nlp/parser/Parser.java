@@ -191,7 +191,7 @@ public class Parser {
 		Terminal terminal = (Terminal) losr;
 		TextContext context = terminal.context();
 		String key = key(tokens, context);
-		Items<LexicalEntry> entries = lexicon.entries(terminal.getClass(), key);
+		Items<LexicalEntry> entries = lexicon.entries(null, key);
 		if (entries == null || entries.count() == 0) {
 			throw new RoboticException("Not in lexicon: '" + tokens + "' as "
 					+ node);
