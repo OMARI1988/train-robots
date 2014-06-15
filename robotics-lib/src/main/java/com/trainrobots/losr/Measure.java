@@ -25,6 +25,9 @@ public class Measure extends Losr {
 			throw new RoboticException("Invalid measure children.");
 		}
 		this.entity = (Entity) items.get(0);
+		if (this.entity.cardinal() == null) {
+			throw new RoboticException("Measure without cardinality.");
+		}
 	}
 
 	public Entity entity() {

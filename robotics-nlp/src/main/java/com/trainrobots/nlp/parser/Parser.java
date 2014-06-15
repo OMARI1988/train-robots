@@ -16,32 +16,31 @@ import java.util.List;
 
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.losr.Entity;
+import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
+import com.trainrobots.losr.factory.LosrFactory;
 import com.trainrobots.nlp.grammar.EllipsisRule;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.grammar.ProductionRule;
 import com.trainrobots.nlp.lexicon.LexicalEntry;
 import com.trainrobots.nlp.lexicon.Lexicon;
-import com.trainrobots.nlp.validation.rules.AboveOrWithinRule;
-import com.trainrobots.nlp.validation.rules.MarkerRule;
 import com.trainrobots.planner.Planner;
 import com.trainrobots.scenes.Layout;
 
 public class Parser {
 
 	private final Gss gss = new Gss();
-	private final Planner planner;
 	private final Queue queue;
 	private final Grammar grammar;
 	private final Lexicon lexicon;
 	private final Items<Terminal> tokens;
 	private final List<GssVertex> frontier = new ArrayList<GssVertex>();
 	private final LinkedList<GssVertex> reductionQueue = new LinkedList<GssVertex>();
+	private final ParserFilter filter;
 	private final boolean verbose;
 
 	public Parser(Layout layout, Grammar grammar, Items<Losr> items,
@@ -52,11 +51,11 @@ public class Parser {
 	public Parser(Layout layout, Grammar grammar, Lexicon lexicon,
 			Items<Losr> items, Items<Terminal> tokens, boolean verbose) {
 
-		this.planner = new Planner(layout);
 		this.grammar = grammar;
 		this.lexicon = lexicon;
 		this.queue = new Queue(items);
 		this.tokens = tokens;
+		this.filter = new ParserFilter(new Planner(layout), tokens);
 		this.verbose = verbose;
 
 		if (verbose) {
@@ -75,20 +74,17 @@ public class Parser {
 
 		// Validate.
 		List<Candidate> valid = new ArrayList<Candidate>();
-		List<Candidate> invalid = new ArrayList<Candidate>();
 		for (Node tree : trees) {
 			Candidate candidate = new Candidate(tree);
 			new AnaphoraResolver().resolve(candidate.losr());
-			if (validateResult(candidate.losr())) {
+			Losr losr = candidate.losr();
+			try {
+				filter.validateResult(losr);
 				valid.add(candidate);
 				if (verbose) {
 					System.out.println("Valid: " + candidate.losr());
 				}
-			} else {
-				invalid.add(candidate);
-				if (verbose) {
-					System.out.println("Invalid: " + candidate.losr());
-				}
+			} catch (Exception exception) {
 			}
 		}
 		if (valid.size() == 0) {
@@ -99,7 +95,7 @@ public class Parser {
 		// Rank.
 		Candidate best = null;
 		for (Candidate candidate : valid) {
-			if (best == null || better(candidate, best)) {
+			if (best == null || filter.better(candidate, best)) {
 				best = candidate;
 			}
 		}
@@ -108,19 +104,6 @@ public class Parser {
 			System.out.println("Best: " + result);
 		}
 		return result;
-	}
-
-	private boolean better(Candidate candidate1, Candidate candidate2) {
-
-		// Span.
-		TextContext span1 = candidate1.losr().span();
-		TextContext span2 = candidate2.losr().span();
-		if (span1.end() > span2.end()) {
-			return true;
-		}
-
-		// Weight.
-		return candidate1.weight() > candidate2.weight();
 	}
 
 	private List<Node> shiftReduce() {
@@ -292,13 +275,21 @@ public class Parser {
 		// Reduce.
 		int size = rule.count();
 		Node[] children = new Node[size];
+		Losr[] items = new Losr[size];
 		for (int i = 0; i < size; i++) {
 			children[i] = path.get(size - 1 - i).node();
+			items[i] = children[i].losr();
 		}
-		Node node = new Node(rule.lhs(), children);
-		if (node.losr().name().equals("entity") && !validateEntity(node)) {
+		Losr losr;
+		try {
+			losr = LosrFactory.build(0, 0, rule.lhs(), new ItemsArray(items));
+			filter.validatePartial(losr);
+		} catch (Exception exception) {
 			return;
 		}
+
+		// Node.
+		Node node = new Node(losr, children);
 		GssVertex reduction = gss.add(node);
 		if (verbose) {
 			System.out.println();
@@ -314,39 +305,6 @@ public class Parser {
 		frontier.add(reduction);
 		if (verbose) {
 			printState();
-		}
-	}
-
-	private boolean validateResult(Losr losr) {
-		try {
-			planner.instruction(losr);
-			new AboveOrWithinRule().validate(losr);
-			new MarkerRule().validate(losr, tokens);
-			return true;
-		} catch (Exception exception) {
-			return false;
-		}
-	}
-
-	private boolean validateEntity(Node node) {
-		try {
-
-			// Above/within.
-			Entity entity = (Entity) node.losr();
-			new AboveOrWithinRule().validate(entity);
-
-			// Reference with spatial-relation?
-			if (entity.type() == Types.Reference
-					&& entity.spatialRelation() != null) {
-				return false;
-			}
-			return true;
-		} catch (Exception exception) {
-			if (verbose) {
-				System.out.println("Excluding: " + node);
-				exception.printStackTrace(System.out);
-			}
-			return false;
 		}
 	}
 

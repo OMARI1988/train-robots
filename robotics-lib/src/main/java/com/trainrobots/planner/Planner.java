@@ -329,8 +329,15 @@ public class Planner {
 		// Entity.
 		Losr item = destination.item();
 		if (item instanceof Entity) {
+			Entity entity = (Entity) item;
+
+			// Region?
+			if (entity.type() == Types.Region) {
+				return new MeasureDistribution(layout, 1, entity.indicators()
+						.get(0), null);
+			}
 			return distributionOfSpatialRelation(context, new SpatialRelation(
-					new Relation(Relations.Above), (Entity) item));
+					new Relation(Relations.Above), entity));
 		}
 
 		// Spatial relation.

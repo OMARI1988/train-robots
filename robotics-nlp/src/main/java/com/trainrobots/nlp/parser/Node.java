@@ -8,9 +8,7 @@
 
 package com.trainrobots.nlp.parser;
 
-import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.losr.Losr;
-import com.trainrobots.losr.factory.LosrFactory;
 
 public class Node {
 
@@ -19,16 +17,11 @@ public class Node {
 	private Double weight;
 
 	public Node(Losr losr) {
-		this.losr = losr;
-		this.children = null;
+		this(losr, null);
 	}
 
-	public Node(String tag, Node[] children) {
-		Losr[] items = new Losr[children.length];
-		for (int i = 0; i < items.length; i++) {
-			items[i] = children[i].losr;
-		}
-		losr = LosrFactory.build(0, 0, tag, new ItemsArray(items));
+	public Node(Losr losr, Node[] children) {
+		this.losr = losr;
 		this.children = children;
 	}
 

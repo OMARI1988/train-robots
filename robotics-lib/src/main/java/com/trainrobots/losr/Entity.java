@@ -88,6 +88,11 @@ public class Entity extends Losr {
 		if (type == null) {
 			throw new RoboticException("Entity type not specified.");
 		}
+
+		// Reference with spatial-relation?
+		if (type.type() == Types.Reference && spatialRelation != null) {
+			throw new RoboticException("Reference with spatial entity.");
+		}
 	}
 
 	public Cardinal cardinal() {

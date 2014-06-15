@@ -40,7 +40,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(15859);
+		Command command = TestContext.treebank().command(27085);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.

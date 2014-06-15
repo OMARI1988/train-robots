@@ -39,7 +39,7 @@ public class AboveOrWithinRule implements ValidationRule {
 		});
 	}
 
-	private void validate(Losr root, SpatialRelation spatialRelation) {
+	public void validate(Losr root, SpatialRelation spatialRelation) {
 		Relations relation = spatialRelation.relation();
 		if (relation == Relations.Above || relation == Relations.Within) {
 
@@ -47,6 +47,9 @@ public class AboveOrWithinRule implements ValidationRule {
 			if (type == Types.TypeReference || type == Types.TypeReferenceGroup) {
 				Losr resolved = root.find(spatialRelation.entity()
 						.referenceId());
+				if (resolved == null) {
+					return;
+				}
 				type = ((Entity) resolved).type();
 			}
 
