@@ -59,6 +59,7 @@ public class ParserTests {
 		ignoreList.add(3111);
 		ignoreList.add(4211);
 		ignoreList.add(4637);
+		ignoreList.add(6431);
 		ignoreList.add(6552);
 		ignoreList.add(7677);
 		ignoreList.add(8460);
@@ -78,14 +79,33 @@ public class ParserTests {
 		for (Command command : TestContext.treebank().commands()) {
 			if (!ignoreList.contains(command.id()) && command.losr() == null) {
 				try {
+
+					// Parse.
 					ParserContext context = new ParserContext(command);
 					context.matchExpectedInstruction(true);
 					Parser parser = new Parser(context, grammar, lexicon, false);
 					Losr losr = parser.parse((Items) tagger.terminals(command));
+
+					// Format.
+					Items<Terminal> tokens = command.tokens();
 					int end = losr.span().end();
-					if (end == command.tokens().count()) {
-						System.out.println(command.id());
+					int expected = tokens.count();
+
+					StringBuilder text = new StringBuilder();
+					for (int i = 0; i < end; i++) {
+						text.append(' ');
+						text.append(tokens.get(i).context().text());
 					}
+					if (end < expected) {
+						text.append(" [");
+						for (int i = end; i < expected; i++) {
+							text.append(' ');
+							text.append(tokens.get(i).context().text());
+						}
+						text.append(" ]");
+					}
+					System.out.println(command.id() + " |" + text);
+
 				} catch (Exception exception) {
 				}
 			}
@@ -111,8 +131,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4295));
-		assertThat(total, is(4407));
+		assertThat(valid, is(4417));
+		assertThat(total, is(4526));
 	}
 
 	private boolean parse(int id) {
