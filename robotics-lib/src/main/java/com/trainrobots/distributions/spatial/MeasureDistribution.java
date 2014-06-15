@@ -88,7 +88,7 @@ public class MeasureDistribution extends SpatialDistribution {
 			break;
 		default:
 			throw new RoboticException(
-					"The measure relation '%s' is not supported.");
+					"The measure relation '%s' is not supported.", relation);
 		}
 		position = context.simulator().dropPosition(position);
 		return new DestinationHypothesis(position, null, weight);

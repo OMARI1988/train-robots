@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.trainrobots.TestContext;
 import com.trainrobots.instructions.Instruction;
-import com.trainrobots.losr.Terminal;
+import com.trainrobots.losr.SpatialRelation;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.treebank.Command;
 
@@ -24,23 +24,24 @@ public class PlannerTests {
 
 	@Test
 	@Ignore
-	public void shouldFindExamples() {
-		int i = 0;
-		String[] list = { "further", "furthest", "farther", "farthest" };
+	public void shouldFindMeasures() {
+		class Count {
+			int i = 0;
+		}
+		Count c = new Count();
 		for (Command command : TestContext.treebank().commands()) {
-			if (command.losr() != null || command.scene().instruction() == null) {
-				continue;
-			}
-			if ("ignore: image confusion".equals(command.comment())) {
-				continue;
-			}
-			for (Terminal token : command.tokens()) {
-				for (String item : list) {
-					if (token.context().text().equalsIgnoreCase(item)) {
-						System.out.println(++i + " | " + command.id() + " | "
-								+ command.text());
-					}
-				}
+			if (command.losr() != null) {
+				command.losr().visit(
+						x -> {
+							if (x instanceof SpatialRelation) {
+								SpatialRelation sp = (SpatialRelation) x;
+								if (sp.measure() != null) {
+									System.out.println(++c.i + " | "
+											+ command.id() + " | "
+											+ command.text());
+								}
+							}
+						});
 			}
 		}
 	}
@@ -105,7 +106,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4360));
-		assertThat(total, is(4360));
+		assertThat(valid, is(4363));
+		assertThat(total, is(4363));
 	}
 }
