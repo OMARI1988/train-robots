@@ -49,7 +49,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParseCommand() {
-		assertTrue(parse(17980, true));
+		assertTrue(parse(27085, true));
 	}
 
 	@Test
@@ -174,8 +174,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4026));
-		assertThat(total, is(4360));
+		assertThat(valid, is(4191));
+		assertThat(total, is(4358));
 	}
 
 	private boolean parse(int id) {

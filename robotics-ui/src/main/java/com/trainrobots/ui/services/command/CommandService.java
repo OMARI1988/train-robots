@@ -33,6 +33,7 @@ public class CommandService {
 	private final Random random = new Random();
 
 	private Command command;
+	private Losr resetCopy;
 	private boolean boundingBoxes;
 	private Theme theme = Themes.Detail;
 
@@ -58,6 +59,9 @@ public class CommandService {
 		if (command == this.command) {
 			return;
 		}
+
+		// Save a copy for resets.
+		resetCopy = command.losr() != null ? command.losr() : null;
 
 		// Status bar.
 		this.command = command;
@@ -141,13 +145,18 @@ public class CommandService {
 	public void tag() {
 		execute(v -> v.editor().tag());
 	}
-	
+
 	public void parse() {
 		execute(v -> v.editor().parse());
 	}
 
 	public void clear() {
 		command.losr(null);
+		execute(v -> v.bindTo(command));
+	}
+
+	public void reset() {
+		command.losr(resetCopy);
 		execute(v -> v.bindTo(command));
 	}
 

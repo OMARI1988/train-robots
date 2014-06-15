@@ -158,8 +158,8 @@ public class Parser {
 		}
 
 		// Add.
-		Node[] nodes = { new Node(new Type(Types.Reference)),
-				new Node(new Type(Types.Region)) };
+		Node[] nodes = { new Node(new Type(Types.Region)),
+				new Node(new Type(Types.Reference)) };
 		createFrontier(nodes, false);
 		return true;
 	}
