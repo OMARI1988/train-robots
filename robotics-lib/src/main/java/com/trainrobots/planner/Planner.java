@@ -555,63 +555,70 @@ public class Planner {
 			}
 		}
 
-		// Entity.
-		Entity entity = null;
+		// Landmark.
+		Entity landmark = null;
 		ObservableDistribution landmarkDistribution = null;
 		if (location != null) {
 			Losr item = location.item();
 			if (item instanceof Entity) {
-				entity = (Entity) item;
+				landmark = (Entity) item;
 			} else if (item instanceof SpatialRelation) {
+				if (spatialRelation != null) {
+					throw new RoboticException("Conflicting %s.", landmark);
+				}
 				spatialRelation = (SpatialRelation) item;
 			} else {
 				throw new RoboticException("%s is not supported.", item);
 			}
 		}
 		if (spatialRelation != null) {
-			entity = spatialRelation.entity();
+			landmark = spatialRelation.entity();
 		}
-		if (entity != null) {
+		if (landmark != null) {
 
 			// Region.
-			if (entity.type() == Types.Region) {
+			if (landmark.type() == Types.Region) {
 				if (indicator != null) {
-					throw new RoboticException("Conflicting indicator '%s'.",
-							entity);
+					throw new RoboticException("Conflicting %s.", landmark);
 				}
-				indicator = entity.indicators().get(0);
+				indicator = landmark.indicators().get(0);
 			}
 
 			// Landmark.
 			else {
-				landmarkDistribution = distributionOfEntity(context, entity);
+				landmarkDistribution = distributionOfEntity(context, landmark);
 			}
 		}
 
-		// Relation.
-		if (indicator == null) {
-			if (spatialRelation != null) {
-				switch (spatialRelation.relation()) {
-				case Left:
-					indicator = Indicators.Left;
-					break;
-				case Right:
-					indicator = Indicators.Right;
-					break;
-				case Front:
-					indicator = Indicators.Forward;
-					break;
-				case Back:
-					indicator = Indicators.Backward;
-					break;
-				default:
-					throw new RoboticException(
-							"Failed to map relation '%s' to indicator.",
-							spatialRelation.relation());
-				}
-			} else {
-				throw new RoboticException("Relation not specified.");
+		// Spatial relation.
+		if (spatialRelation != null) {
+			if (indicator != null) {
+				throw new RoboticException("Conflicting %s.",
+						spatialRelation.relation());
 			}
+			switch (spatialRelation.relation()) {
+			case Left:
+				indicator = Indicators.Left;
+				break;
+			case Right:
+				indicator = Indicators.Right;
+				break;
+			case Front:
+				indicator = Indicators.Forward;
+				break;
+			case Back:
+				indicator = Indicators.Backward;
+				break;
+			default:
+				throw new RoboticException(
+						"Failed to map relation '%s' to indicator.",
+						spatialRelation.relation());
+			}
+		}
+
+		// Indicator.
+		if (indicator == null) {
+			throw new RoboticException("Indicator not specified.");
 		}
 		return distributionOfMeasure(measure, indicator, landmarkDistribution);
 	}
