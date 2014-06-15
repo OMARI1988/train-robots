@@ -46,6 +46,21 @@ public class PlannerTests {
 	}
 
 	@Test
+	@Ignore
+	public void shouldFindUnreviewedCommands() {
+		int i = 0;
+		for (Command command : TestContext.treebank().commands()) {
+			if (command.losr() != null || command.scene().instruction() == null) {
+				continue;
+			}
+			if (command.comment() == null) {
+				System.out.println(++i + " | " + command.id() + " | "
+						+ command.text());
+			}
+		}
+	}
+
+	@Test
 	public void shouldGetInstruction() {
 
 		// Planner.
@@ -90,7 +105,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4351));
-		assertThat(total, is(4351));
+		assertThat(valid, is(4364));
+		assertThat(total, is(4364));
 	}
 }

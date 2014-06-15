@@ -11,6 +11,7 @@ package com.trainrobots.nlp;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.TestContext;
@@ -21,6 +22,7 @@ import com.trainrobots.nlp.validation.Validator;
 public class ValidationTests {
 
 	@Test
+	@Ignore
 	public void shouldValidateTreebank() {
 		Validator validator = new Validator();
 		ValidationResults results = validator.validate(TestContext.treebank());
