@@ -160,7 +160,7 @@ public class Parser {
 		// Add.
 		Node[] nodes = { new Node(new Type(Types.Reference)),
 				new Node(new Type(Types.Region)) };
-		createFrontier(nodes);
+		createFrontier(nodes, false);
 		return true;
 	}
 
@@ -200,7 +200,7 @@ public class Parser {
 		// Parsing partial input?
 		Losr losr = node.losr();
 		if (lexicon == null) {
-			createFrontier(new Node[] { node });
+			createFrontier(new Node[] { node }, true);
 			return;
 		}
 
@@ -222,14 +222,16 @@ public class Parser {
 			mappedNode.weight(entry.weight());
 			nodes[i] = mappedNode;
 		}
-		createFrontier(nodes);
+		createFrontier(nodes, true);
 	}
 
-	private void createFrontier(Node[] nodes) {
+	private void createFrontier(Node[] nodes, boolean clearPrevious) {
 
-		// Clear.
+		// Clear previous?
 		GssVertex[] parents = frontier.toArray(new GssVertex[0]);
-		frontier.clear();
+		if (clearPrevious) {
+			frontier.clear();
+		}
 
 		// Add nodes to new frontier, setting parents to the previous frontier.
 		for (int i = 0; i < nodes.length; i++) {
@@ -300,7 +302,9 @@ public class Parser {
 		GssVertex reduction = gss.add(node);
 		if (verbose) {
 			System.out.println();
+			System.out.println("RULE = " + rule);
 			System.out.println("REDUCE = " + reduction);
+			System.out.println("SPAN = " + reduction.node().losr().span());
 		}
 		GssVertex last = path.get(path.size() - 1);
 		for (GssVertex parent : last.parents()) {

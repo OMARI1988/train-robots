@@ -44,4 +44,16 @@ public class ProductionRule {
 	public void frequency(int frequency) {
 		this.frequency = frequency;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		text.append(lhs);
+		text.append(" ->");
+		for (int i = 0; i < rhs.length; i++) {
+			text.append(' ');
+			text.append(rhs[i]);
+		}
+		return text.toString();
+	}
 }

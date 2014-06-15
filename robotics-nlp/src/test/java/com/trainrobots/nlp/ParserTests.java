@@ -49,10 +49,11 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParseCommand() {
-		assertTrue(parse(18968, true));
+		assertTrue(parse(17980, true));
 	}
 
 	@Test
+	@Ignore
 	public void shouldParsePartialTree() {
 		Command command = TestContext.treebank().command(16818);
 		PartialTree partialTree = new PartialTree(command);
@@ -173,8 +174,8 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(3942));
-		assertThat(total, is(4362));
+		assertThat(valid, is(4026));
+		assertThat(total, is(4360));
 	}
 
 	private boolean parse(int id) {
@@ -194,7 +195,8 @@ public class ParserTests {
 					lexicon, (Items) terminals, command.tokens(), verbose);
 			losr = parser.parse();
 		} catch (Exception exception) {
-			System.out.println(command.id() + ": " + exception.getMessage());
+			System.out.println(command.id() + ": " + exception.getMessage()
+					+ " // " + command.tokens().count() + " tokens");
 			return false;
 		}
 
@@ -210,7 +212,8 @@ public class ParserTests {
 			System.out.println("Expected : " + command.losr());
 			System.out.println("Parsed   : " + losr);
 		}
-		System.out.println(command.id() + ": Single tree mismatched.");
+		System.out.println(command.id() + ": Single tree mismatched. // "
+				+ command.tokens().count() + " tokens");
 		return false;
 	}
 }
