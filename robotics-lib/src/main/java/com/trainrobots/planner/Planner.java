@@ -47,6 +47,7 @@ import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Location;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Measure;
+import com.trainrobots.losr.MeasureRelation;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
 import com.trainrobots.losr.Sequence;
@@ -324,8 +325,28 @@ public class Planner {
 	private SpatialDistribution distributionOfDestination(
 			PlannerContext context, Destination destination) {
 
-		return distributionOfSpatialRelation(context,
-				normalizeLocation(destination));
+		// Entity.
+		Losr item = destination.item();
+		if (item instanceof Entity) {
+			return distributionOfSpatialRelation(context, new SpatialRelation(
+					new Relation(Relations.Above), (Entity) item));
+		}
+
+		// Spatial relation.
+		if (item instanceof SpatialRelation) {
+			return distributionOfSpatialRelation(context,
+					(SpatialRelation) item);
+		}
+
+		// Measure relation.
+		if (item instanceof MeasureRelation) {
+			return distributionOfMeasureRelation(context,
+					(MeasureRelation) item);
+		}
+
+		// Not supported.
+		throw new RoboticException("The destination item %s is not supported.",
+				item);
 	}
 
 	private ObservableDistribution distributionOfEntity(PlannerContext context,
@@ -508,7 +529,7 @@ public class Planner {
 		// Measure.
 		Measure measure = spatialRelation.measure();
 		if (measure != null) {
-			return distributionOfmeasure(measure, relation,
+			return distributionOfMeasure(measure, relation,
 					landmarkDistribution);
 		}
 
@@ -520,7 +541,43 @@ public class Planner {
 		return SpatialDistribution.of(relation, landmarkDistribution);
 	}
 
-	private SpatialDistribution distributionOfmeasure(Measure measure,
+	private SpatialDistribution distributionOfMeasureRelation(
+			PlannerContext context, MeasureRelation measureRelation) {
+
+		// Measure.
+		Measure measure = measureRelation.measure();
+
+		// Entity.
+		Destination destination = (Destination) measureRelation.item();
+		Entity entity = (Entity) destination.item();
+		if (entity.type() != Types.Region) {
+			throw new RoboticException("The destination %s is not supported.",
+					entity);
+		}
+
+		// Relation.
+		Relations relation;
+		switch (entity.indicators().get(0)) {
+		case Left:
+			relation = Relations.Left;
+			break;
+		case Right:
+			relation = Relations.Right;
+			break;
+		case Forward:
+			relation = Relations.Forward;
+			break;
+		case Backward:
+			relation = Relations.Backward;
+			break;
+		default:
+			throw new RoboticException(
+					"Failed to map indicator '%s' to relation.");
+		}
+		return distributionOfMeasure(measure, relation, null);
+	}
+
+	private SpatialDistribution distributionOfMeasure(Measure measure,
 			Relations relation, ObservableDistribution landmarkDistribution) {
 
 		// Colors.
@@ -584,16 +641,16 @@ public class Planner {
 
 	private static SpatialRelation normalizeLocation(Location location) {
 
-		// Spatial relation.
-		Losr item = location.item();
-		if (item instanceof SpatialRelation) {
-			return (SpatialRelation) item;
-		}
-
 		// Entity.
+		Losr item = location.item();
 		if (item instanceof Entity) {
 			return new SpatialRelation(new Relation(Relations.Above),
 					(Entity) item);
+		}
+
+		// Spatial relation.
+		if (item instanceof SpatialRelation) {
+			return (SpatialRelation) item;
 		}
 
 		// Not supported.

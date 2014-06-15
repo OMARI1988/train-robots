@@ -194,39 +194,43 @@ public class Editor {
 			return;
 		}
 
-		// LOSR.
+		// ID
 		Losr losr = detail.header().losr();
+		if (detail instanceof IdDetail) {
+			popup.show(detail, losr, (Object[]) numbers, losr.id());
+			return;
+		}
+		if (detail instanceof ReferenceIdDetail) {
+			popup.show(detail, losr, (Object[]) numbers, losr.referenceId());
+			return;
+		}
 
+		// LOSR.
 		if (losr instanceof Action) {
 			popup.show(detail, losr, (Object[]) Actions.values(),
 					((Action) losr).action());
 			return;
 		}
-
 		if (losr instanceof Color) {
 			popup.show(detail, losr, (Object[]) Colors.values(),
 					((Color) losr).color());
 			return;
 		}
-
 		if (losr instanceof Type) {
 			popup.show(detail, losr, (Object[]) Types.values(),
 					((Type) losr).type());
 			return;
 		}
-
 		if (losr instanceof Relation) {
 			popup.show(detail, losr, (Object[]) Relations.values(),
 					((Relation) losr).relation());
 			return;
 		}
-
 		if (losr instanceof Indicator) {
 			popup.show(detail, losr, (Object[]) Indicators.values(),
 					((Indicator) losr).indicator());
 			return;
 		}
-
 		if (losr instanceof Cardinal) {
 			popup.show(detail, losr, (Object[]) numbers,
 					((Cardinal) losr).value());
@@ -234,7 +238,21 @@ public class Editor {
 		}
 	}
 
-	public void acceptChange(Losr losr, Object value) {
+	public void acceptChange(Text text, Losr losr, Object value) {
+
+		if (text instanceof IdDetail) {
+			IdDetail detail = (IdDetail) text;
+			detail.header().losr().id((Integer) value);
+			view.redrawTree();
+			return;
+		}
+
+		if (text instanceof ReferenceIdDetail) {
+			ReferenceIdDetail detail = (ReferenceIdDetail) text;
+			detail.header().losr().referenceId((Integer) value);
+			view.redrawTree();
+			return;
+		}
 
 		if (losr instanceof Action) {
 			Action action = (Action) losr;

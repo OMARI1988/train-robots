@@ -26,6 +26,7 @@ import com.trainrobots.losr.Indicators;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Marker;
 import com.trainrobots.losr.Measure;
+import com.trainrobots.losr.MeasureRelation;
 import com.trainrobots.losr.Ordinal;
 import com.trainrobots.losr.Relation;
 import com.trainrobots.losr.Relations;
@@ -63,11 +64,12 @@ public class LosrFactory {
 		// Non-terminals.
 		nonTerminal("entity", Entity::new);
 		nonTerminal("event", Event::new);
-		nonTerminal("spatial-relation", SpatialRelation::new);
-		nonTerminal("destination", Destination::new);
 		nonTerminal("source", Source::new);
+		nonTerminal("destination", Destination::new);
 		nonTerminal("sequence", Sequence::new);
 		nonTerminal("measure", Measure::new);
+		nonTerminal("spatial-relation", SpatialRelation::new);
+		nonTerminal("measure-relation", MeasureRelation::new);
 	}
 
 	public static Losr build(TextContext context, String name, String content) {

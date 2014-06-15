@@ -155,7 +155,7 @@ public class CommandView extends PaneView implements CommandAware {
 					closePopup();
 				} else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					closePopup();
-					CommandView.this.editor.acceptChange(losr,
+					CommandView.this.editor.acceptChange(text, losr,
 							((JComboBox) event.getComponent())
 									.getSelectedItem());
 				} else {
@@ -169,7 +169,7 @@ public class CommandView extends PaneView implements CommandAware {
 			public void itemStateChanged(ItemEvent event) {
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 					closePopup();
-					editor.acceptChange(losr, event.getItem());
+					editor.acceptChange(text, losr, event.getItem());
 				}
 			}
 		});
