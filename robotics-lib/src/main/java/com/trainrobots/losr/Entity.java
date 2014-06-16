@@ -50,10 +50,16 @@ public class Entity extends Losr {
 		Cardinal cardinal = null;
 		Type type = null;
 		SpatialRelation spatialRelation = null;
-		for (Losr item : items) {
+		int size = items.count();
+		for (int i = 0; i < size; i++) {
+			Losr item = items.get(i);
 
 			// Cardinal.
 			if (item instanceof Cardinal && cardinal == null) {
+				if (i != 0) {
+					throw new RoboticException(
+							"Expectec cardinality at start of entity.");
+				}
 				cardinal = (Cardinal) item;
 				continue;
 			}
@@ -89,12 +95,12 @@ public class Entity extends Losr {
 			throw new RoboticException("Entity type not specified.");
 		}
 
-		// Reference with spatial-relation?
-		if (type.type() == Types.Reference && spatialRelation != null) {
-			throw new RoboticException("Reference with spatial-relation.");
+		// Validate reference.
+		if (type.type() == Types.Reference && items.count() != 1) {
+			throw new RoboticException("Invalid reference.");
 		}
 
-		// Region with spatial-relation?
+		// Validate region.
 		if (type.type() == Types.Region && spatialRelation != null) {
 			if (spatialRelation.relation() != Relations.Part
 					|| spatialRelation.entity().type() != Types.Board) {

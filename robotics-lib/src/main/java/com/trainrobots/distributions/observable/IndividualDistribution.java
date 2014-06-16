@@ -9,6 +9,7 @@
 package com.trainrobots.distributions.observable;
 
 import com.trainrobots.RoboticException;
+import com.trainrobots.losr.Types;
 import com.trainrobots.observables.Observable;
 import com.trainrobots.observables.ShapePair;
 import com.trainrobots.scenes.Position;
@@ -47,6 +48,10 @@ public class IndividualDistribution extends ObservableDistribution {
 	}
 
 	private boolean individual(Position p) {
-		return p.z() == 0 && layout.shape(p.add(0, 0, 1)) == null;
+		if (p.z() != 0) {
+			return false;
+		}
+		Shape shape = layout.shape(p.add(0, 0, 1));
+		return shape == null || shape.type() == Types.Prism;
 	}
 }

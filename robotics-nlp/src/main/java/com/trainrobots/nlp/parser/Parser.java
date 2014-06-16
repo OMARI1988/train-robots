@@ -82,6 +82,13 @@ public class Parser {
 					System.out.println("Valid: " + candidate.losr());
 				}
 			} catch (Exception exception) {
+				if (verbose) {
+					if (losr.span().end() == context.tokens().count()) {
+						System.out.print("* ");
+					}
+					System.out.println(exception.getMessage() + " // "
+							+ candidate.losr());
+				}
 			}
 		}
 		if (valid.size() == 0) {
@@ -101,6 +108,10 @@ public class Parser {
 			System.out.println("Best: " + result);
 		}
 		return result;
+	}
+
+	public int vertextCount() {
+		return gss.vertices().size();
 	}
 
 	private List<Node> shiftReduce() {

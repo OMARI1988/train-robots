@@ -8,6 +8,8 @@
 
 package com.trainrobots.planner;
 
+import static com.trainrobots.distributions.Distance.distance;
+
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
@@ -176,13 +178,14 @@ public class Planner {
 				distributionOfDestination(context, event.destination()));
 		Items<Position> destinations = spatialDistribution
 				.destinations(context).best();
+		Position source = context.sourceShape().position();
+		destinations = minimizeDistance(source, destinations);
 		if (destinations.count() != 1) {
 			throw new RoboticException(
 					"Expected a single destination for a move action (%s).",
 					count(destinations.count()));
 		}
-		return new MoveInstruction(context.sourceShape().position(),
-				destinations.get(0));
+		return new MoveInstruction(source, destinations.get(0));
 	}
 
 	private TakeInstruction translateTake(PlannerContext context, Event event) {
@@ -201,6 +204,7 @@ public class Planner {
 
 		// Single observable.
 		Items<Observable> best = distribution.best();
+		best = minimizeObservables(layout.gripper().position(), best);
 		if (best.count() != 1) {
 			throw new RoboticException(
 					"Expected a single observable for a take action (%s).",
@@ -222,32 +226,32 @@ public class Planner {
 		}
 
 		// Entity reference?
+		Position sourcePosition = null;
 		Entity entity = event.entity();
 		Types type = entity.type();
-		boolean dropEntityReference = false;
 		if (type == Types.Reference) {
 			if (context.previousEvent() != null) {
 				Event previousEvent = (Event) context.previousEvent();
 				if (previousEvent.action() == Actions.Take
 						&& previousEvent.entity().id() == entity.referenceId()) {
-					dropEntityReference = true;
+					sourcePosition = context.sourceShape().position();
 				}
 			}
-			if (!dropEntityReference) {
+			if (sourcePosition == null) {
 				throw new RoboticException(
 						"Failed to resolve drop entity reference to previous take action.");
 			}
 		}
 
 		// Match source shape?
-		if (!dropEntityReference
+		if (sourcePosition == null
 				&& entityMatchesShape(entity, context.sourceShape())) {
-			dropEntityReference = true;
+			sourcePosition = context.sourceShape().position();
 		}
 
 		// Source.
 		Gripper gripper = layout.gripper();
-		if (!dropEntityReference) {
+		if (sourcePosition == null) {
 
 			// Droppable.
 			ObservableDistribution entityDistribution = distributionOfEntity(
@@ -278,6 +282,7 @@ public class Planner {
 				throw new RoboticException(
 						"Specified shape does not match gripper shape for a drop action.");
 			}
+			sourcePosition = shape.position();
 		}
 
 		// Destination.
@@ -287,6 +292,7 @@ public class Planner {
 					distributionOfDestination(context, event.destination()));
 			Items<Position> destinations = spatialDistribution.destinations(
 					context).best();
+			destinations = minimizeDistance(sourcePosition, destinations);
 			if (destinations.count() != 1) {
 				throw new RoboticException(
 						"Expected a single destination for a drop action (%s).",
@@ -451,11 +457,13 @@ public class Planner {
 			ObservableDistribution distribution) {
 		for (Indicators indicator : indicators) {
 
-			// Rightmost/leftmost.
+			// Most.
 			if (indicator == Indicators.Rightmost) {
 				indicator = Indicators.Right;
 			} else if (indicator == Indicators.Leftmost) {
 				indicator = Indicators.Left;
+			} else if (indicator == Indicators.Frontmost) {
+				indicator = Indicators.Front;
 			}
 
 			// Exact.
@@ -606,24 +614,31 @@ public class Planner {
 		}
 
 		// Spatial relation.
-		if (spatialRelation != null && indicator == null) {
-			switch (spatialRelation.relation()) {
-			case Left:
-				indicator = Indicators.Left;
-				break;
-			case Right:
-				indicator = Indicators.Right;
-				break;
-			case Front:
-				indicator = Indicators.Forward;
-				break;
-			case Back:
-				indicator = Indicators.Backward;
-				break;
-			default:
-				throw new RoboticException(
-						"Failed to map relation '%s' to indicator.",
-						spatialRelation.relation());
+		if (spatialRelation != null) {
+			Relations relation = spatialRelation.relation();
+			if (indicator == null) {
+				switch (relation) {
+				case Left:
+					indicator = Indicators.Left;
+					break;
+				case Right:
+					indicator = Indicators.Right;
+					break;
+				case Front:
+					indicator = Indicators.Forward;
+					break;
+				case Back:
+					indicator = Indicators.Backward;
+					break;
+				default:
+					throw new RoboticException(
+							"Failed to map relation '%s' to indicator.",
+							relation);
+				}
+			} else if (relation != Relations.Within
+					&& relation != Relations.Nearest) {
+				throw new RoboticException("Conflicting spatial-relation %s.",
+						relation);
 			}
 		}
 
@@ -716,6 +731,58 @@ public class Planner {
 		// Not supported.
 		throw new RoboticException("The %s item %s is not supported.",
 				location.name(), item);
+	}
+
+	private static Items<Position> minimizeDistance(Position landmark,
+			Items<Position> positions) {
+
+		// Zero or one positions?
+		int size = positions.count();
+		if (size <= 1) {
+			return positions;
+		}
+
+		// Minimize distance from landmark.
+		ItemsList<Position> result = new ItemsList<>();
+		double best = Double.MAX_VALUE;
+		for (int i = 0; i < size; i++) {
+			Position position = positions.get(i);
+			double distance = distance(landmark, position);
+			if (distance < best) {
+				best = distance;
+				result.clear();
+			}
+			if (distance == best) {
+				result.add(position);
+			}
+		}
+		return result;
+	}
+
+	private static Items<Observable> minimizeObservables(Position landmark,
+			Items<Observable> observables) {
+
+		// Zero or one observables?
+		int size = observables.count();
+		if (size <= 1) {
+			return observables;
+		}
+
+		// Minimize distance from landmark.
+		ItemsList<Observable> result = new ItemsList<>();
+		double best = Double.MAX_VALUE;
+		for (int i = 0; i < size; i++) {
+			Observable observable = observables.get(i);
+			double distance = distance(landmark, observable.referencePoint());
+			if (distance < best) {
+				best = distance;
+				result.clear();
+			}
+			if (distance == best) {
+				result.add(observable);
+			}
+		}
+		return result;
 	}
 
 	private PlannerContext context(Losr root) {

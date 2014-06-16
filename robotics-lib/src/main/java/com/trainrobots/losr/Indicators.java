@@ -17,6 +17,7 @@ public enum Indicators {
 	Right,
 	Rightmost,
 	Front,
+	Frontmost,
 	Forward,
 	Back,
 	Backward,

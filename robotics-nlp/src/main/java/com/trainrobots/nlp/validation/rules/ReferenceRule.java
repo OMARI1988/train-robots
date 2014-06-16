@@ -21,34 +21,36 @@ public class ReferenceRule implements ValidationRule {
 
 	@Override
 	public void validate(Command command) {
-
-		boolean[] ids = new boolean[5];
-		boolean[] referenceIds = new boolean[5];
-
 		Losr losr = command.losr();
 		if (losr != null) {
-			losr.visit(x -> {
-				if (x.id() != 0) {
-					if (x.id() > 5) {
-						throw new RoboticException("Invald ID: %d", x.id());
-					}
-					if (ids[x.id() - 1]) {
-						throw new RoboticException("Duplicate ID: %d", x.id());
-					}
-					ids[x.id() - 1] = true;
+			validate(losr);
+		}
+	}
+
+	public void validate(Losr losr) {
+		boolean[] ids = new boolean[5];
+		boolean[] referenceIds = new boolean[5];
+		losr.visit(x -> {
+			if (x.id() != 0) {
+				if (x.id() > 5) {
+					throw new RoboticException("Invald ID: %d", x.id());
 				}
-				if (x.referenceId() != 0) {
-					referenceIds[x.referenceId() - 1] = true;
+				if (ids[x.id() - 1]) {
+					throw new RoboticException("Duplicate ID: %d", x.id());
 				}
-			});
-			for (int i = 0; i < ids.length; i++) {
-				if (ids[i]) {
-					if (i > 0 && !ids[i - 1]) {
-						throw new RoboticException("Unexpected ID: %d", i + 1);
-					}
-					if (!referenceIds[i]) {
-						throw new RoboticException("Unreferenced ID: %d", i + 1);
-					}
+				ids[x.id() - 1] = true;
+			}
+			if (x.referenceId() != 0) {
+				referenceIds[x.referenceId() - 1] = true;
+			}
+		});
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i]) {
+				if (i > 0 && !ids[i - 1]) {
+					throw new RoboticException("Unexpected ID: %d", i + 1);
+				}
+				if (!referenceIds[i]) {
+					throw new RoboticException("Unreferenced ID: %d", i + 1);
 				}
 			}
 		}

@@ -35,6 +35,7 @@ public class ParserTests {
 	private final Lexicon lexicon;
 	private final Grammar grammar;
 	private final Tagger tagger;
+	private int vertexCount;
 
 	public ParserTests() {
 		Treebank treebank = TestContext.treebank();
@@ -46,7 +47,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParseCommand() {
-		assertTrue(parse(27033, true));
+		assertTrue(parse(26156, true));
 	}
 
 	@Test
@@ -55,9 +56,12 @@ public class ParserTests {
 
 		Set<Integer> ignoreList = new HashSet<>();
 		ignoreList.add(99);
+		ignoreList.add(730);
 		ignoreList.add(2547);
+		ignoreList.add(2613);
 		ignoreList.add(3111);
 		ignoreList.add(4211);
+		ignoreList.add(4399);
 		ignoreList.add(4637);
 		ignoreList.add(6431);
 		ignoreList.add(6552);
@@ -69,7 +73,9 @@ public class ParserTests {
 		ignoreList.add(11365);
 		ignoreList.add(16012);
 		ignoreList.add(17864);
+		ignoreList.add(19749);
 		ignoreList.add(21444);
+		ignoreList.add(21527);
 		ignoreList.add(21912);
 		ignoreList.add(23568);
 		ignoreList.add(24003);
@@ -86,28 +92,29 @@ public class ParserTests {
 					Parser parser = new Parser(context, grammar, lexicon, false);
 					Losr losr = parser.parse((Items) tagger.terminals(command));
 
-					// Format.
+					// Match?
 					Items<Terminal> tokens = command.tokens();
 					int end = losr.span().end();
 					int expected = tokens.count();
 					if (expected - end > 1) {
 						continue;
 					}
-					System.out.println(command.id());
-					// StringBuilder text = new StringBuilder();
-					// for (int i = 0; i < end; i++) {
-					// text.append(' ');
-					// text.append(tokens.get(i).context().text());
-					// }
-					// if (end < expected) {
-					// text.append(" [");
-					// for (int i = end; i < expected; i++) {
-					// text.append(' ');
-					// text.append(tokens.get(i).context().text());
-					// }
-					// text.append(" ]");
-					// }
-					// System.out.println(command.id() + " |" + text);
+
+					// Format command.
+					StringBuilder text = new StringBuilder();
+					for (int i = 0; i < end; i++) {
+						text.append(' ');
+						text.append(tokens.get(i).context().text());
+					}
+					if (end < expected) {
+						text.append(" [");
+						for (int i = end; i < expected; i++) {
+							text.append(' ');
+							text.append(tokens.get(i).context().text());
+						}
+						text.append(" ]");
+					}
+					System.out.println(command.id() + " |" + text);
 
 				} catch (Exception exception) {
 				}
@@ -134,8 +141,10 @@ public class ParserTests {
 		// Diagnostics.
 		System.out.println(String.format("Parsed: %d / %d = %.2f %%", valid,
 				total, 100.0 * valid / total));
-		assertThat(valid, is(4417));
-		assertThat(total, is(4526));
+		System.out.println("Vertex count = " + vertexCount);
+		assertThat(valid, is(4702));
+		assertThat(total, is(4850));
+		assertThat(vertexCount, is(507470));
 	}
 
 	private boolean parse(int id) {
@@ -144,16 +153,16 @@ public class ParserTests {
 
 	private boolean parse(int id, boolean verbose) {
 
-		// Command.
+		// Context.
 		Command command = TestContext.treebank().command(id);
+		Items<Terminal> terminals = tagger.terminals(command);
+		ParserContext context = new ParserContext(command);
+		context.matchExpectedInstruction(true);
+		Parser parser = new Parser(context, grammar, lexicon, verbose);
 
 		// Parse.
 		Losr losr;
 		try {
-			Items<Terminal> terminals = tagger.terminals(command);
-			ParserContext context = new ParserContext(command);
-			context.matchExpectedInstruction(true);
-			Parser parser = new Parser(context, grammar, lexicon, verbose);
 			losr = parser.parse((Items) terminals);
 		} catch (Exception exception) {
 			System.out.println(command.id() + ": " + exception.getMessage()
@@ -163,6 +172,7 @@ public class ParserTests {
 
 		// Match?
 		if (losr.equals(command.losr())) {
+			vertexCount += parser.vertextCount();
 			return true;
 		}
 

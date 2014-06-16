@@ -29,6 +29,10 @@ public class Distance {
 		return distance != null ? 1 / (value + 1) : null;
 	}
 
+	public static double distance(Position p1, Position p2) {
+		return distance(p1.x(), p1.y(), p2.x(), p2.y());
+	}
+
 	private static Double distance(Observable observable1,
 			Observable observable2) {
 

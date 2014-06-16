@@ -66,6 +66,7 @@ public class ParserContext {
 	}
 
 	public void validateResult(Losr losr) {
+		aboveOrWithinRule.validate(losr);
 		Instruction instruction = planner.instruction(losr);
 		if (matchExpectedInstruction) {
 			if (!instruction.equals(command.scene().instruction())) {
@@ -73,7 +74,6 @@ public class ParserContext {
 						"Failed to match expected instruction.");
 			}
 		}
-		aboveOrWithinRule.validate(losr);
 	}
 
 	public boolean better(Candidate candidate1, Candidate candidate2) {

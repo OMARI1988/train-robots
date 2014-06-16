@@ -8,6 +8,7 @@
 
 package com.trainrobots.losr;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 
 public class Sequence extends Losr {
@@ -20,10 +21,22 @@ public class Sequence extends Losr {
 
 	public Sequence(int id, int referenceId, Items<Losr> items) {
 		super(id, referenceId);
+
+		// Events.
 		int size = items.count();
 		events = new Event[size];
 		for (int i = 0; i < size; i++) {
 			events[i] = (Event) items.get(i);
+		}
+
+		// Validate.
+		if (events.length != 2) {
+			throw new RoboticException("Expected two events.");
+		}
+		if (events[0].action() != Actions.Take
+				|| events[1].action() != Actions.Drop) {
+			throw new RoboticException(
+					"Expected a take event followed by a drop event.");
 		}
 	}
 

@@ -191,9 +191,9 @@ public class LosrParserTests {
 	@Test
 	public void shouldParseSequence() {
 		assertThat(
-				Losr.parse("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: take) (entity: (type: prism))))"),
+				Losr.parse("(sequence: (event: (action: take) (entity: (type: cube))) (event: (action: drop) (entity: (type: prism))))"),
 				is(new Sequence(new Event(Actions.Take, Types.Cube), new Event(
-						Actions.Take, Types.Prism))));
+						Actions.Drop, Types.Prism))));
 	}
 
 	@Test

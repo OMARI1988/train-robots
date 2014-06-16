@@ -30,20 +30,18 @@ public class PlannerTests {
 				continue;
 			}
 			if (command.comment() == null) {
-				if (command.text().contains("row")
-						|| command.text().contains("column")) {
-					System.out.println(++i + " | " + command.id() + " | "
-							+ command.text());
-				}
+				System.out.println(++i + " | " + command.id() + " | "
+						+ command.text());
 			}
 		}
 	}
 
 	@Test
+	@Ignore
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(19767);
+		Command command = TestContext.treebank().command(4851);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -84,7 +82,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4685));
-		assertThat(total, is(4685));
+		assertThat(valid, is(4850));
+		assertThat(total, is(4850));
 	}
 }
