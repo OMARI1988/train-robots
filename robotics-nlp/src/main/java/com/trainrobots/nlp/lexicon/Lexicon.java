@@ -11,12 +11,13 @@ package com.trainrobots.nlp.lexicon;
 import static com.trainrobots.nlp.lexicon.LexicalKey.key;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 
 import com.trainrobots.Log;
 import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsList;
 import com.trainrobots.collections.MultiMap;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
@@ -24,7 +25,7 @@ import com.trainrobots.losr.TextContext;
 import com.trainrobots.treebank.Command;
 import com.trainrobots.treebank.Treebank;
 
-public class Lexicon {
+public class Lexicon implements Iterable<Entry<String, Items<LexicalEntry>>> {
 
 	private final MultiMap<String, LexicalEntry> lexicon = new MultiMap<>();
 
@@ -39,11 +40,28 @@ public class Lexicon {
 			if (losr == null) {
 				continue;
 			}
+			Items<Terminal> tokens = command.tokens();
+			int size = tokens.count();
+			boolean[] used = new boolean[size];
 			losr.visit(x -> {
 				if (x instanceof Terminal) {
-					add(command.tokens(), (Terminal) x);
+					Terminal terminal = (Terminal) x;
+					TextContext context = terminal.context();
+					if (context != null) {
+						int start = context.start();
+						int end = context.end();
+						for (int i = start; i <= end; i++) {
+							used[i - 1] = true;
+						}
+						add(tokens, context, terminal);
+					}
 				}
 			});
+			for (int i = 0; i < size; i++) {
+				if (!used[i]) {
+					add(tokens, tokens.get(i).context(), null);
+				}
+			}
 		}
 
 		// Calculate.
@@ -55,7 +73,8 @@ public class Lexicon {
 			int size = entries.count();
 			for (int i = 0; i < size; i++) {
 				LexicalEntry entry = entries.get(i);
-				Class type = entry.terminal().getClass();
+				Terminal terminal = entry.terminal();
+				Class type = terminal != null ? terminal.getClass() : null;
 				Double count = sumByType.get(type);
 				sumByType.put(type, count == null ? entry.count() : count
 						+ entry.count());
@@ -64,10 +83,16 @@ public class Lexicon {
 			// Calculate p-values.
 			for (int i = 0; i < size; i++) {
 				LexicalEntry entry = entries.get(i);
-				entry.weight(entry.count()
-						/ sumByType.get(entry.terminal().getClass()));
+				Terminal terminal = entry.terminal();
+				Class type = terminal != null ? terminal.getClass() : null;
+				entry.weight(entry.count() / sumByType.get(type));
 			}
 		}
+	}
+
+	@Override
+	public Iterator<Entry<String, Items<LexicalEntry>>> iterator() {
+		return lexicon.iterator();
 	}
 
 	public <T extends Terminal> T terminal(Class<T> type, String key,
@@ -82,9 +107,11 @@ public class Lexicon {
 		// Most frequent entry.
 		LexicalEntry entry = null;
 		for (LexicalEntry candidate : entries) {
-			if ((type == null || candidate.terminal().getClass() == type)
-					&& (entry == null || candidate.count() > entry.count())) {
-				entry = candidate;
+			if (candidate.terminal() != null) {
+				if ((type == null || candidate.terminal().getClass() == type)
+						&& (entry == null || candidate.count() > entry.count())) {
+					entry = candidate;
+				}
 			}
 		}
 
@@ -92,51 +119,29 @@ public class Lexicon {
 		return entry != null ? (T) entry.terminal().withContext(context) : null;
 	}
 
-	public <T extends Terminal> Items<LexicalEntry> entries(Class<T> type,
-			String key) {
-
-		// Entries.
-		Items<LexicalEntry> entries = lexicon.get(key);
-		if (entries == null || type == null) {
-			return entries;
-		}
-
-		// Match type.
-		ItemsList<LexicalEntry> results = new ItemsList<>();
-		int size = entries.count();
-		for (int i = 0; i < size; i++) {
-			LexicalEntry entry = entries.get(i);
-			if (entry.terminal().getClass() == type) {
-				results.add(entry);
-			}
-		}
-		return results;
+	public Items<LexicalEntry> entries(String key) {
+		return lexicon.get(key);
 	}
 
-	private void add(Items<Terminal> tokens, Terminal terminal) {
+	private void add(Items<Terminal> tokens, TextContext context,
+			Terminal terminal) {
 
-		// Context.
-		TextContext context = terminal.context();
-		if (context == null) {
-			return;
-		}
-
-		// Key.
-		String key = key(tokens, context);
-
-		// Entry.
-		Items<LexicalEntry> entries = lexicon.get(key);
+		// Existing entry?
 		LexicalEntry entry = null;
+		String key = key(tokens, context);
+		Items<LexicalEntry> entries = lexicon.get(key);
 		if (entries != null) {
 			int size = entries.count();
 			for (int i = 0; i < size; i++) {
 				LexicalEntry candidate = entries.get(i);
-				if (candidate.terminal().equals(terminal)) {
+				if (Objects.equals(candidate.terminal(), terminal)) {
 					entry = candidate;
 					break;
 				}
 			}
 		}
+
+		// Create a new entry or increment existing count.
 		if (entry == null) {
 			lexicon.add(key, new LexicalEntry(terminal));
 		} else {

@@ -47,7 +47,7 @@ public class ParserTests {
 	@Test
 	@Ignore
 	public void shouldParseCommand() {
-		assertTrue(parse(26156, true));
+		assertTrue(parse(27085, true));
 	}
 
 	@Test

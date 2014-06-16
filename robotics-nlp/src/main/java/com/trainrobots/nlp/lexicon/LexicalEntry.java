@@ -39,4 +39,13 @@ public class LexicalEntry {
 	public void weight(double weight) {
 		this.weight = weight;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder text = new StringBuilder();
+		text.append(terminal != null ? terminal.toString() : "stop word");
+		text.append(" x ");
+		text.append(count);
+		return text.toString();
+	}
 }

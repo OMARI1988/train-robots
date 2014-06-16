@@ -17,6 +17,8 @@ import java.util.List;
 import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
 import com.trainrobots.collections.ItemsArray;
+import com.trainrobots.collections.ItemsList;
+import com.trainrobots.collections.SingleItem;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.losr.TextContext;
@@ -149,9 +151,8 @@ public class Parser {
 		}
 
 		// Add.
-		Node[] nodes = { new Node(new Type(Types.Region)),
-				new Node(new Type(Types.Reference)) };
-		createFrontier(nodes, false);
+		createFrontier(new ItemsArray(new Node(new Type(Types.Region)),
+				new Node(new Type(Types.Reference))), false);
 		return true;
 	}
 
@@ -191,7 +192,7 @@ public class Parser {
 		// Parsing partial input?
 		Losr losr = node.losr();
 		if (lexicon == null) {
-			createFrontier(new Node[] { node }, true);
+			createFrontier(new SingleItem(node), true);
 			return;
 		}
 
@@ -199,25 +200,30 @@ public class Parser {
 		Terminal terminal = (Terminal) losr;
 		TextContext textContext = terminal.context();
 		String key = key(context.tokens(), textContext);
-		Items<LexicalEntry> entries = lexicon.entries(null, key);
+		Items<LexicalEntry> entries = lexicon.entries(key);
+
+		// Not in lexicon?
 		if (entries == null || entries.count() == 0) {
-			throw new RoboticException("Not in lexicon: '" + key + "' as "
-					+ node);
+			return;
 		}
 
 		// Add.
-		Node[] nodes = new Node[entries.count()];
+		ItemsList<Node> nodes = new ItemsList<>();
 		for (int i = 0; i < entries.count(); i++) {
 			LexicalEntry entry = entries.get(i);
-			Node mappedNode = new Node(entry.terminal()
-					.withContext(textContext));
-			mappedNode.weight(entry.weight());
-			nodes[i] = mappedNode;
+			if (entry.terminal() != null) {
+				Node mappedNode = new Node(entry.terminal().withContext(
+						textContext));
+				mappedNode.weight(entry.weight());
+				nodes.add(mappedNode);
+			}
 		}
-		createFrontier(nodes, true);
+		if (nodes.count() > 0) {
+			createFrontier(nodes, true);
+		}
 	}
 
-	private void createFrontier(Node[] nodes, boolean clearPrevious) {
+	private void createFrontier(Items<Node> nodes, boolean clearPrevious) {
 
 		// Clear previous?
 		GssVertex[] parents = frontier.toArray(new GssVertex[0]);
@@ -226,8 +232,9 @@ public class Parser {
 		}
 
 		// Add nodes to new frontier, setting parents to the previous frontier.
-		for (int i = 0; i < nodes.length; i++) {
-			GssVertex vertex = gss.add(nodes[i]);
+		int size = nodes.count();
+		for (int i = 0; i < size; i++) {
+			GssVertex vertex = gss.add(nodes.get(i));
 			for (GssVertex parent : parents) {
 				vertex.parents().add(parent);
 			}
