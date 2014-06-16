@@ -18,6 +18,7 @@ import com.trainrobots.distributions.observable.BetweenObservableDistribution;
 import com.trainrobots.distributions.observable.CenterDistribution;
 import com.trainrobots.distributions.observable.ColorDistribution;
 import com.trainrobots.distributions.observable.DroppableDistribution;
+import com.trainrobots.distributions.observable.ExactIndicatorDistribution;
 import com.trainrobots.distributions.observable.FrontDistribution;
 import com.trainrobots.distributions.observable.HighestDistribution;
 import com.trainrobots.distributions.observable.IndividualDistribution;
@@ -26,7 +27,6 @@ import com.trainrobots.distributions.observable.LowestDistribution;
 import com.trainrobots.distributions.observable.ObservableDistribution;
 import com.trainrobots.distributions.observable.PickableDistribution;
 import com.trainrobots.distributions.observable.RelativeDistribution;
-import com.trainrobots.distributions.observable.ExactIndicatorDistribution;
 import com.trainrobots.distributions.observable.RightDistribution;
 import com.trainrobots.distributions.observable.TypeDistribution;
 import com.trainrobots.distributions.spatial.DestinationDistribution;
@@ -585,8 +585,9 @@ public class Planner {
 		}
 		if (landmark != null) {
 
-			// Region.
-			if (landmark.type() == Types.Region) {
+			// Edge/region.
+			if (landmark.type() == Types.Edge
+					|| landmark.type() == Types.Region) {
 				if (indicator != null) {
 					throw new RoboticException("Conflicting %s.", landmark);
 				}

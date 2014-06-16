@@ -30,11 +30,11 @@ public class PlannerTests {
 				continue;
 			}
 			if (command.comment() == null) {
-				// if (command.text().contains("columns left")
-				// || command.text().contains("columns right")) {
-				System.out.println(++i + " | " + command.id() + " | "
-						+ command.text());
-				// }
+				if (command.text().contains("row")
+						|| command.text().contains("column")) {
+					System.out.println(++i + " | " + command.id() + " | "
+							+ command.text());
+				}
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(26731);
+		Command command = TestContext.treebank().command(19767);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -84,7 +84,7 @@ public class PlannerTests {
 			System.out.println(String.format("Instructions: %d / %d = %.2f %%",
 					valid, total, 100.0 * valid / total));
 		}
-		assertThat(valid, is(4645));
-		assertThat(total, is(4645));
+		assertThat(valid, is(4685));
+		assertThat(total, is(4685));
 	}
 }
