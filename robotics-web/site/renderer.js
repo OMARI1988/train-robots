@@ -214,6 +214,7 @@ function render(svg) {
 		renderer.cube(0, 0, 0, 3);
 		renderer.prism(0, 0, 1, 2);
 		renderer.cube(1, 0, 0, 3);
+		renderer.cube(4, 6, 5, 3);
 
 	} catch (exception) {
 		alert(exception.message);
