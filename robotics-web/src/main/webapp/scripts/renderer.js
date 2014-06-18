@@ -177,68 +177,31 @@ var renderer = {
 	}
 };
 
-function render(svg) {
+function render(svg, instructions) {
 	try {
 
 		// Board.
 		renderer.svg = svg;
 		renderer.board();
-		renderer.highlight(4, 6);
 
-		// Shapes.
-		renderer.cube(0, 7, 0, 4);
-		renderer.cube(1, 7, 0, 4);
-		renderer.cube(4, 7, 0, 6);
-		renderer.cube(4, 7, 1, 6);
-		renderer.cube(5, 7, 0, 6);
-		renderer.cube(5, 7, 1, 6);
-		renderer.cube(0, 6, 0, 4);
-		renderer.cube(1, 6, 0, 4);
-		renderer.cube(4, 6, 0, 6);
-		renderer.cube(4, 6, 1, 6);
-		renderer.cube(5, 6, 0, 6);
-		renderer.cube(5, 6, 1, 6);
-		renderer.cube(7, 5, 0, 7);
-		renderer.cube(7, 5, 1, 2);
-		renderer.cube(7, 5, 2, 7);
-		renderer.cube(7, 5, 3, 2);
-		renderer.cube(7, 5, 4, 7);
-		renderer.cube(7, 5, 5, 2);
-		renderer.prism(7, 5, 6, 7);
-		renderer.cube(4, 4, 0, 0);
-		renderer.cube(5, 4, 0, 0);
-		renderer.cube(0, 3, 0, 3);
-		renderer.cube(0, 3, 1, 2);
-		renderer.cube(1, 3, 0, 3);
-		renderer.cube(1, 3, 1, 2);
-		renderer.cube(2, 3, 0, 2);
-		renderer.cube(2, 3, 1, 2);
-		renderer.cube(3, 3, 0, 2);
-		renderer.cube(3, 3, 1, 2);
-		renderer.cube(4, 3, 0, 0);
-		renderer.cube(4, 3, 1, 2);
-		renderer.cube(5, 3, 0, 0);
-		renderer.cube(5, 3, 1, 2);
-		renderer.cube(0, 2, 0, 3);
-		renderer.cube(0, 2, 1, 2);
-		renderer.cube(1, 2, 0, 3);
-		renderer.cube(1, 2, 1, 2);
-		renderer.cube(2, 2, 0, 2);
-		renderer.cube(2, 2, 1, 2);
-		renderer.cube(3, 2, 0, 2);
-		renderer.cube(3, 2, 1, 2);
-		renderer.cube(4, 2, 0, 0);
-		renderer.cube(4, 2, 1, 2);
-		renderer.cube(5, 2, 0, 0);
-		renderer.cube(5, 2, 1, 2);
-		renderer.cube(0, 1, 0, 3);
-		renderer.cube(1, 1, 0, 3);
-		renderer.cube(0, 0, 0, 3);
-		renderer.prism(0, 0, 1, 2);
-		renderer.cube(1, 0, 0, 3);
-		renderer.cube(4, 6, 5, 3);
-		renderer.gripper(4, 6, 5);
-
+		// Instructions.
+		for (var i = 0; i < instructions.length; i++) {
+			var t = instructions[i];
+			switch (t[0]) {
+			case 1:
+				renderer.highlight(t[1], t[2])
+				break;
+			case 2:
+				renderer.cube(t[1], t[2], t[3], t[4]);
+				break;
+			case 3:
+				renderer.prism(t[1], t[2], t[3], t[4]);
+				break;
+			case 4:
+				renderer.gripper(t[1], t[2], t[3]);
+				break;
+			}
+		}
 	} catch (exception) {
 		alert(exception.message);
 	}
