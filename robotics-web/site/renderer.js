@@ -1,4 +1,5 @@
 svgNS = "http://www.w3.org/2000/svg";
+xlinkNS = "http://www.w3.org/1999/xlink";
 tileW = 7;
 tileH = 4;
 ox = 4;
@@ -19,6 +20,17 @@ faces = [ [ "rgb(51, 133, 255)", "rgb(25, 66, 128)", "rgb(46, 119, 230)" ], // b
 
 var renderer = {
 
+	highlight : function(x, y) {
+
+		var tx = ox + (x + y) * tileW;
+		var ty = oy + (x - y) * tileH;
+		var ex = 0.2;
+		var ey = 0.2;
+
+		this.fill("white", "M", tx - ex, ty, "l", tileW + ex, tileH + ey, "l",
+				tileW + ex, -tileH - ey, "l", -tileW - ex, -tileH - ey);
+	},
+
 	board : function() {
 
 		var tiles = 8;
@@ -26,15 +38,14 @@ var renderer = {
 		var boardH = tileH * tiles;
 
 		// Board sides edges.
-		var colors = faces[6];
-		this.fill(colors[0], "M", ox + boardW, oy + boardH, "l", boardW,
-				-boardH, "v", 3, "l", -boardW, boardH);
-		this.fill(colors[1], "M", ox, oy, "l", boardW, boardH, "v", 3, "l",
-				-boardW, -boardH);
+		this.fill("white", "M", ox + boardW, oy + boardH, "l", boardW, -boardH,
+				"v", 3, "l", -boardW, boardH);
+		this.fill("rgb(120, 120, 120)", "M", ox, oy, "l", boardW, boardH, "v",
+				3, "l", -boardW, -boardH);
 
 		// Top face of board.
-		this.fill(colors[2], "M", ox, oy, "l", boardW, boardH, "l", boardW,
-				-boardH, "l", -boardW, -boardH);
+		this.fill("rgb(200, 200, 200)", "M", ox, oy, "l", boardW, boardH, "l",
+				boardW, -boardH, "l", -boardW, -boardH);
 
 		// Grid lines.
 		var dx = 0;
@@ -61,7 +72,17 @@ var renderer = {
 	},
 
 	shapeY : function(x, y, z) {
-		return oy + (x - y) * tileH - (z * 1.95) * fh;
+		return oy + (x - y) * tileH - 2 * z * fh;
+	},
+
+	gripper : function(x, y, z) {
+		var e = document.createElementNS(svgNS, "image");
+		e.setAttributeNS(xlinkNS, "href", "gripper.svg");
+		e.setAttribute("x", this.shapeX(x - 0.06, y + 0.18));
+		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 63.4);
+		e.setAttribute("width", 8.8);
+		e.setAttribute("height", 63.4);
+		this.svg.appendChild(e);
 	},
 
 	cube : function(x, y, z, color) {
@@ -162,6 +183,7 @@ function render(svg) {
 		// Board.
 		renderer.svg = svg;
 		renderer.board();
+		renderer.highlight(4, 6);
 
 		// Shapes.
 		renderer.cube(0, 7, 0, 4);
@@ -215,6 +237,7 @@ function render(svg) {
 		renderer.prism(0, 0, 1, 2);
 		renderer.cube(1, 0, 0, 3);
 		renderer.cube(4, 6, 5, 3);
+		renderer.gripper(4, 6, 5);
 
 	} catch (exception) {
 		alert(exception.message);
