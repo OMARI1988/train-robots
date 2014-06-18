@@ -19,11 +19,6 @@ faces = [ [ "rgb(51, 133, 255)", "rgb(25, 66, 128)", "rgb(46, 119, 230)" ], // b
 
 var renderer = {
 
-	initiate : function(svg) {
-		this.svg = svg;
-		this.svg.setAttribute("viewBox", "0, 0, 120, 120");
-	},
-
 	board : function() {
 
 		var tiles = 8;
@@ -165,7 +160,7 @@ function render(svg) {
 	try {
 
 		// Board.
-		renderer.initiate(svg);
+		renderer.svg = svg;
 		renderer.board();
 
 		// Shapes.
