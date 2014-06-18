@@ -6,6 +6,15 @@
 
 	<display-name>robotics-web</display-name>
 
+	<listener>
+		<listener-class>com.trainrobots.web.ContextListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>treebank-path</param-name>
+		<param-value>.data/treebank.zip</param-value>
+	</context-param>
+
 	<welcome-file-list>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
