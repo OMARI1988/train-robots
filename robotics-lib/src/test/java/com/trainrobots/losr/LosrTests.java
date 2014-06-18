@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.collections.Items;
 
 public class LosrTests {
@@ -22,7 +22,7 @@ public class LosrTests {
 	public void shouldCalculateSpans() {
 
 		// Event.
-		Event event = (Event) TestContext.treebank().command(18977).losr();
+		Event event = (Event) Context.treebank().command(18977).losr();
 
 		// Spans.
 		assertThat(event.span(), is(new TextContext(1, 12)));
@@ -34,7 +34,7 @@ public class LosrTests {
 	public void shouldGetPath1() {
 
 		// Path.
-		Event event = (Event) TestContext.treebank().command(18977).losr();
+		Event event = (Event) Context.treebank().command(18977).losr();
 		Items<Losr> path = event.path(event);
 
 		// Verify.
@@ -46,7 +46,7 @@ public class LosrTests {
 	public void shouldGetPath2() {
 
 		// Path.
-		Event event = (Event) TestContext.treebank().command(18977).losr();
+		Event event = (Event) Context.treebank().command(18977).losr();
 		Relation relation = (Relation) event.get(1).get(2).get(0);
 		Items<Losr> path = event.path(relation);
 

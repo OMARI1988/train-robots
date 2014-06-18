@@ -17,7 +17,7 @@ import java.io.InputStream;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.io.XmlReader;
 import com.trainrobots.io.ZipReader;
 import com.trainrobots.losr.Losr;
@@ -30,7 +30,7 @@ public class TreebankTests {
 	public void shouldWriteLosr() throws IOException {
 
 		// Test.
-		Commands commands = TestContext.treebank().commands();
+		Commands commands = Context.treebank().commands();
 		try (ZipReader zip = new ZipReader("../.data/treebank.zip")) {
 			try (InputStream stream = zip.open("losr.xml")) {
 				test(commands, stream);

@@ -18,7 +18,7 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
@@ -38,7 +38,7 @@ public class ParserTests {
 	private int vertexCount;
 
 	public ParserTests() {
-		Treebank treebank = TestContext.treebank();
+		Treebank treebank = Context.treebank();
 		lexicon = new Lexicon(treebank);
 		grammar = new Grammar(treebank);
 		tagger = new Tagger(treebank, lexicon);
@@ -82,7 +82,7 @@ public class ParserTests {
 		ignoreList.add(24292);
 		ignoreList.add(24528);
 
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			if (!ignoreList.contains(command.id()) && command.losr() == null) {
 				try {
 
@@ -129,7 +129,7 @@ public class ParserTests {
 		// Parse.
 		int valid = 0;
 		int total = 0;
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			if (command.losr() != null) {
 				if (parse(command.id())) {
 					valid++;
@@ -154,7 +154,7 @@ public class ParserTests {
 	private boolean parse(int id, boolean verbose) {
 
 		// Context.
-		Command command = TestContext.treebank().command(id);
+		Command command = Context.treebank().command(id);
 		Items<Terminal> terminals = tagger.terminals(command);
 		ParserContext context = new ParserContext(command);
 		context.matchExpectedInstruction(true);

@@ -16,7 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.trainrobots.RoboticException;
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Terminal;
 import com.trainrobots.nlp.lexicon.Lexicon;
@@ -32,7 +32,7 @@ public class TaggerTests {
 	public void shouldTagTreebank() {
 
 		// Lexicon.
-		Treebank treebank = TestContext.treebank();
+		Treebank treebank = Context.treebank();
 		Lexicon lexicon = new Lexicon(treebank);
 
 		// Tagger.
@@ -60,7 +60,7 @@ public class TaggerTests {
 			List<Command> trainList = new ArrayList<Command>();
 			List<Command> testList = new ArrayList<Command>();
 			int i = 0;
-			for (Command command : TestContext.treebank().commands()) {
+			for (Command command : Context.treebank().commands()) {
 				if (command.losr() == null) {
 					continue;
 				}

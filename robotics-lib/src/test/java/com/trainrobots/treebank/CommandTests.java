@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.scenes.Scene;
 
 public class CommandTests {
@@ -22,7 +22,7 @@ public class CommandTests {
 	public void shouldReadCommands() {
 
 		// Commands.
-		Commands commands = TestContext.treebank().commands();
+		Commands commands = Context.treebank().commands();
 		assertThat(commands.count(), is(8970));
 
 		// Command 25495.
@@ -34,7 +34,7 @@ public class CommandTests {
 				is("Lift up the red cube and place on top of the \"3 green cube\" stacked tower."));
 
 		// Scene 879.
-		Treebank treebank = TestContext.treebank();
+		Treebank treebank = Context.treebank();
 		Scene scene = treebank.scene(879);
 		assertThat(treebank.commands(scene).count(), is(16));
 	}

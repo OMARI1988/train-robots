@@ -13,14 +13,14 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 
 public class SceneTests {
 
 	@Test
 	public void shouldReadScenes() {
 		int i = 0;
-		for (Scene scene : TestContext.treebank().scenes()) {
+		for (Scene scene : Context.treebank().scenes()) {
 			assertThat(scene.id(), is(++i));
 		}
 		assertThat(i, is(1000));

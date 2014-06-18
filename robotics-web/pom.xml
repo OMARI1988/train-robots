@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>robotics-web</groupId>
+	<artifactId>robotics-web</artifactId>
+	<packaging>war</packaging>
+	<version>1.0.0</version>
+	<name>Train Robots Web</name>
+	<url>http://maven.apache.org</url>
+	<parent>
+		<groupId>robotics</groupId>
+		<artifactId>robotics</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>robotics-lib</groupId>
+			<artifactId>robotics-lib</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>robotics-nlp</groupId>
+			<artifactId>robotics-nlp</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>robotics-web</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<path>/</path>
+					<url>http://localhost:8080/manager/text</url>
+					<username>dev-manager</username>
+					<password>dev</password>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -14,7 +14,7 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.nlp.losr.StopWords;
 import com.trainrobots.treebank.Command;
 
@@ -41,7 +41,7 @@ public class StopWordTests {
 	@Ignore
 	public void shouldFindStopWords() {
 		FrequencyTable table = new FrequencyTable();
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			if (command.losr() != null) {
 				StopWords.visit(command, x -> {
 					String text = x.context().text().toLowerCase();

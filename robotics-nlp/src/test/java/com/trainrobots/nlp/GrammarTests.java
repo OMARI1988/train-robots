@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Colors;
@@ -28,7 +28,7 @@ public class GrammarTests {
 	public void shouldGetNonTerminals() {
 
 		// Grammar.
-		Grammar grammar = new Grammar(TestContext.treebank());
+		Grammar grammar = new Grammar(Context.treebank());
 
 		// Entity.
 		Entity entity = (Entity) grammar.nonTerminal(new ItemsArray(new Color(

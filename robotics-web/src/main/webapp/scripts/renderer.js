@@ -77,7 +77,7 @@ var renderer = {
 
 	gripper : function(x, y, z) {
 		var e = document.createElementNS(svgNS, "image");
-		e.setAttributeNS(xlinkNS, "href", "gripper.svg");
+		e.setAttributeNS(xlinkNS, "href", "images/gripper.svg");
 		e.setAttribute("x", this.shapeX(x - 0.06, y + 0.18));
 		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 63.4);
 		e.setAttribute("width", 8.8);

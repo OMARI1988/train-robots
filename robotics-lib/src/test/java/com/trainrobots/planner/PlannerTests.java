@@ -17,7 +17,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.scenes.Layout;
@@ -42,7 +42,7 @@ public class PlannerTests {
 		values.put(Colors.White, 6);
 		values.put(Colors.Gray, 7);
 
-		Layout layout = TestContext.treebank().scene(51).after();
+		Layout layout = Context.treebank().scene(51).after();
 		for (int y = 7; y >= 0; y--) {
 			for (int x = 0; x < 8; x++) {
 				for (int z = 0; z < 8; z++) {
@@ -64,7 +64,7 @@ public class PlannerTests {
 	@Ignore
 	public void shouldFindUnreviewedCommands() {
 		int i = 0;
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			if (command.losr() != null || command.scene().instruction() == null) {
 				continue;
 			}
@@ -80,7 +80,7 @@ public class PlannerTests {
 	public void shouldGetInstruction() {
 
 		// Planner.
-		Command command = TestContext.treebank().command(4851);
+		Command command = Context.treebank().command(4851);
 		Planner planner = new Planner(command.scene().before());
 
 		// Instruction.
@@ -94,7 +94,7 @@ public class PlannerTests {
 		// Translate.
 		int valid = 0;
 		int total = 0;
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			if (command.losr() != null) {
 				Scene scene = command.scene();
 				Instruction expected = scene.instruction();

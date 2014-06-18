@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Cardinal;
 import com.trainrobots.losr.Ordinal;
@@ -151,7 +151,7 @@ public class TokenizerTests {
 	@Test
 	public void shouldTokenizeTreebank() {
 		int wordCount = 0;
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			Items<Terminal> tokens = new Tokenizer(command.text()).tokens();
 			for (Terminal token : tokens) {
 				if (token instanceof Text || token instanceof Cardinal

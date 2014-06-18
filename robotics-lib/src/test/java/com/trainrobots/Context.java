@@ -10,11 +10,11 @@ package com.trainrobots;
 
 import com.trainrobots.treebank.Treebank;
 
-public class TestContext {
+public class Context {
 
 	private static Treebank treebank;
 
-	private TestContext() {
+	private Context() {
 	}
 
 	public static Treebank treebank() {

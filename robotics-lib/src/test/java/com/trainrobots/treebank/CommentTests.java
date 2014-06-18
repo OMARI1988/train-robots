@@ -11,14 +11,14 @@ package com.trainrobots.treebank;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 
 public class CommentTests {
 
 	@Test
 	@Ignore
 	public void shouldShowComments() {
-		for (Command command : TestContext.treebank().commands()) {
+		for (Command command : Context.treebank().commands()) {
 			String filter = "near";
 			if (command.comment() != null
 					&& (filter == null || command.comment().equals(filter))) {

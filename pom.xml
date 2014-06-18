@@ -24,5 +24,6 @@
 		<module>robotics-lib</module>
 		<module>robotics-nlp</module>
 		<module>robotics-ui</module>
+		<module>robotics-web</module>
 	</modules>
 </project>

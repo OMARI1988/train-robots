@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.TestContext;
+import com.trainrobots.Context;
 import com.trainrobots.nlp.validation.ValidationResult;
 import com.trainrobots.nlp.validation.ValidationResults;
 import com.trainrobots.nlp.validation.Validator;
@@ -23,7 +23,7 @@ public class ValidationTests {
 	@Test
 	public void shouldValidateTreebank() {
 		Validator validator = new Validator();
-		ValidationResults results = validator.validate(TestContext.treebank());
+		ValidationResults results = validator.validate(Context.treebank());
 		for (ValidationResult result : results) {
 			System.out.println(result.command().id() + " " + result.message());
 		}
