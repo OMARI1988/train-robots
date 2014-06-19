@@ -10,7 +10,6 @@ package com.trainrobots.web.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Random;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,20 +18,29 @@ import javax.servlet.http.HttpSession;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
-import com.trainrobots.scenes.Scene;
-import com.trainrobots.scenes.Scenes;
-import com.trainrobots.web.Application;
+import com.trainrobots.web.ChatState;
 import com.trainrobots.web.InstructionWriter;
 
 public class ChatServlet extends HttpServlet {
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
 		// Request.
 		String message = request.getParameter("message");
 		Log.info("Received: %s", message);
+
+		// Handle
+		try {
+			handleRequest(request, response);
+		} catch (Exception exception) {
+			Log.error("Failed to handle request.", exception);
+			throw exception;
+		}
+	}
+
+	private void handleRequest(HttpServletRequest request,
+			HttpServletResponse response) {
 
 		// Simulate latency during testing.
 		try {
@@ -41,24 +49,34 @@ public class ChatServlet extends HttpServlet {
 			throw new RoboticException(exception);
 		}
 
-		// Session.
+		// Request.
 		HttpSession session = request.getSession();
-		Application application = Application.get(session.getServletContext());
-
-		// Scene.
-		Scenes scenes = application.treebank().scenes();
-		Scene scene = scenes.get(new Random().nextInt(scenes.count()));
+		ChatState state = ChatState.get(session);
+		String message = request.getParameter("message");
 
 		// Result.
-		String result = "OK";
-		String instructions = new InstructionWriter(scene.before()).write();
+		String result;
+		try {
+			result = handleMessage(state, message);
+		} catch (Exception exception) {
+			Log.error("Failed to handle message.", exception);
+			result = exception.getMessage();
+		}
 
-		// Response.
-		PrintWriter out = response.getWriter();
-		out.write("{\"response\": \"");
-		out.write(result);
-		out.write("\", \"instructions\": ");
-		out.write(instructions);
-		out.write("}");
+		// Output.
+		try {
+			PrintWriter out = response.getWriter();
+			out.write("{\"response\": \"");
+			out.write(result);
+			out.write("\", \"instructions\": ");
+			out.write(new InstructionWriter(state.layout()).write());
+			out.write("}");
+		} catch (IOException exception) {
+			throw new RoboticException(exception);
+		}
+	}
+
+	private String handleMessage(ChatState state, String message) {
+		return "OK, I will " + message;
 	}
 }

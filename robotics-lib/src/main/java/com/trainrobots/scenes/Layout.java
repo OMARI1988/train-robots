@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.trainrobots.collections.Items;
+import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 
 public class Layout {
@@ -52,6 +53,11 @@ public class Layout {
 
 	public Items<Shape> shapes() {
 		return shapes;
+	}
+
+	public Layout clone() {
+		return new Layout(id, gripper.position(), gripper.open(),
+				new ItemsArray(shapes.toArray()));
 	}
 
 	public void listener(LayoutListener listener) {

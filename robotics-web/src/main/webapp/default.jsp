@@ -3,7 +3,7 @@
 <jsp:useBean id="bean" scope="page"
 	class="com.trainrobots.web.pages.DefaultPage" />
 <%
-	bean.initiate(application);
+	bean.initiate(application, session);
 %>
 <html>
 <head>

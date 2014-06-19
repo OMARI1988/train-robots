@@ -11,28 +11,33 @@ package com.trainrobots.web.pages;
 import java.util.Random;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
+import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.Scenes;
 import com.trainrobots.web.Application;
+import com.trainrobots.web.ChatState;
 import com.trainrobots.web.InstructionWriter;
 
 public class DefaultPage {
 
-	private Application application;
-	private Scene scene;
+	private ChatState state;
 
-	public void initiate(ServletContext context) {
-		this.application = Application.get(context);
-		Scenes scenes = application.treebank().scenes();
-		scene = scenes.get(new Random().nextInt(scenes.count()));
-	}
+	public void initiate(ServletContext context, HttpSession session) {
 
-	public Scene scene() {
-		return scene;
+		// New session?
+		state = ChatState.get(session);
+		if (state == null) {
+			Application application = Application.get(context);
+			Scenes scenes = application.treebank().scenes();
+			Scene scene = scenes.get(new Random().nextInt(scenes.count()));
+			Layout layout = scene.before().clone();
+			session.setAttribute("chat-state", state = new ChatState(layout));
+		}
 	}
 
 	public String instructions() {
-		return new InstructionWriter(scene.before()).write();
+		return new InstructionWriter(state.layout()).write();
 	}
 }
