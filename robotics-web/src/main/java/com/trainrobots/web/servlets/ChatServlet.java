@@ -10,13 +10,19 @@ package com.trainrobots.web.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
+import com.trainrobots.scenes.Scene;
+import com.trainrobots.scenes.Scenes;
+import com.trainrobots.web.Application;
+import com.trainrobots.web.InstructionWriter;
 
 public class ChatServlet extends HttpServlet {
 
@@ -35,8 +41,24 @@ public class ChatServlet extends HttpServlet {
 			throw new RoboticException(exception);
 		}
 
+		// Session.
+		HttpSession session = request.getSession();
+		Application application = Application.get(session.getServletContext());
+
+		// Scene.
+		Scenes scenes = application.treebank().scenes();
+		Scene scene = scenes.get(new Random().nextInt(scenes.count()));
+
+		// Result.
+		String result = "OK";
+		String instructions = new InstructionWriter(scene.before()).write();
+
 		// Response.
 		PrintWriter out = response.getWriter();
-		out.write("{\"response\": \"aaa\", \"instructions\": \"bbb\"}");
+		out.write("{\"response\": \"");
+		out.write(result);
+		out.write("\", \"instructions\": ");
+		out.write(instructions);
+		out.write("}");
 	}
 }

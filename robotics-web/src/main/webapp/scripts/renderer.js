@@ -75,16 +75,6 @@ var renderer = {
 		return oy + (x - y) * tileH - 2 * z * fh;
 	},
 
-	gripper : function(x, y, z) {
-		var e = document.createElementNS(svgNS, "image");
-		e.setAttributeNS(xlinkNS, "href", "images/gripper.svg");
-		e.setAttribute("x", this.shapeX(x - 0.06, y + 0.18));
-		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 92);
-		e.setAttribute("width", 8.8000002);
-		e.setAttribute("height", 94.614926);
-		this.svg.appendChild(e);
-	},
-
 	cube : function(x, y, z, color) {
 
 		// Color.
@@ -168,23 +158,45 @@ var renderer = {
 		});
 	},
 
+	gripper : function(x, y, z) {
+		var e = document.createElementNS(svgNS, "image");
+		e.setAttributeNS(xlinkNS, "href", "images/gripper.svg");
+		e.setAttribute("x", this.shapeX(x - 0.06, y + 0.18));
+		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 92);
+		e.setAttribute("width", 8.8000002);
+		e.setAttribute("height", 94.614926);
+		this.container.appendChild(e);
+	},
+
 	element : function(name, attrs) {
 		var e = document.createElementNS(svgNS, name);
 		for ( var attr in attrs) {
 			e.setAttribute(attr, attrs[attr]);
 		}
-		this.svg.appendChild(e);
+		this.container.appendChild(e);
 	}
 };
 
 function render(instructions) {
 	try {
 
-		// Board.
-		renderer.svg = document.getElementById("scene");
-		renderer.board();
+		// SVG.
+		var svg = document.getElementById("scene");
+		var newBoard = svg.children.length == 1;
 
-		// Instructions.
+		// Board.
+		if (newBoard) {
+			var g1 = document.createElementNS(svgNS, "g");
+			g1.id = "board";
+			renderer.container = g1;
+			renderer.board();
+			svg.appendChild(g1);
+		}
+
+		// Shapes.
+		var g2 = document.createElementNS(svgNS, "g");
+		g2.id = "shapes";
+		renderer.container = g2;
 		for (var i = 0; i < instructions.length; i++) {
 			var t = instructions[i];
 			switch (t[0]) {
@@ -201,6 +213,11 @@ function render(instructions) {
 				renderer.gripper(t[1], t[2], t[3]);
 				break;
 			}
+		}
+		if (newBoard) {
+			svg.appendChild(g2);
+		} else {
+			svg.replaceChild(g2, svg.children[2]);
 		}
 	} catch (exception) {
 		alert(exception.message);

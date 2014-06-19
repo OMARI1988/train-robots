@@ -9,8 +9,8 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Train Robots</title>
-<script type="text/javascript" src="scripts/chat.js"></script>
 <script type="text/javascript" src="scripts/renderer.js"></script>
+<script type="text/javascript" src="scripts/chat.js"></script>
 <style type="text/css">
 body {
 	background: rgb(33, 33, 33);

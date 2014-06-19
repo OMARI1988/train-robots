@@ -13,12 +13,13 @@ function write(name, message) {
 
 function handleResponse(responseText) {
 	try {
-		
+
 		// Parse the response.
-		var response = JSON.parse(responseText);
+		var responseData = JSON.parse(responseText);
 
 		// Write response.
-		write("robot", response.response + " | " + response.instructions);
+		write("robot", responseData.response);
+		render(responseData.instructions);
 
 		// UI elements.
 		var inputBox = document.getElementById("inputBox");

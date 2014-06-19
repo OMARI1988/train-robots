@@ -12,7 +12,6 @@ import java.util.Random;
 
 import javax.servlet.ServletContext;
 
-import com.trainrobots.scenes.Layout;
 import com.trainrobots.scenes.Scene;
 import com.trainrobots.scenes.Scenes;
 import com.trainrobots.web.Application;
@@ -34,7 +33,6 @@ public class DefaultPage {
 	}
 
 	public String instructions() {
-		Layout layout = scene.before();
-		return new InstructionWriter(layout).write();
+		return new InstructionWriter(scene.before()).write();
 	}
 }
