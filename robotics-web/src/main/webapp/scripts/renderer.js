@@ -3,18 +3,18 @@ xlinkNS = "http://www.w3.org/1999/xlink";
 tileW = 7;
 tileH = 4;
 ox = 4;
-oy = 72;
+oy = 84;
 fw = 5.25;
 fh = 3;
 thinLine = 0.2;
 thickLine = 0.4;
 
 faces = [ [ "rgb(51, 133, 255)", "rgb(25, 66, 128)", "rgb(46, 119, 230)" ], // blue
-[ "cyan", "cyan", "cyan" ], // cyan
+[ "rgb(0, 255, 255)", "rgb(0, 150, 150)", "rgb(0, 219, 219)" ], // cyan
 [ "rgb(255, 0, 0)", "rgb(150, 0, 0)", "rgb(219, 0, 0)" ], // red
 [ "rgb(255, 255, 0)", "rgb(150, 150, 0)", "rgb(219, 219, 0)" ], // yellow
 [ "rgb(0, 255, 41)", "rgb(0, 128, 20)", "rgb(0, 230, 37)" ], // green
-[ "magenta", "magenta", "magenta" ], // magenta
+[ "rgb(255, 0, 255)", "rgb(150, 0, 150)", "rgb(219, 0, 219)" ], // magenta
 [ "rgb(255, 255, 255)", "rgb(150, 150, 150)", "rgb(219, 219, 219)" ], // white
 [ "rgb(138, 138, 138)", "rgb(75, 75, 75)", "rgb(109, 109, 109)" ] ]; // gray
 
