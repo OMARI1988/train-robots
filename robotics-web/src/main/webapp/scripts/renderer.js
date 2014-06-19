@@ -9,7 +9,7 @@ fh = 3;
 thinLine = 0.2;
 thickLine = 0.4;
 
-faces = [ [ "rgb(51, 133, 255)", "rgb(25, 66, 128)", "rgb(46, 119, 230)" ], // blue
+faces = [ [ "rgb(79, 149, 255)", "rgb(25, 66, 128)", "rgb(46, 119, 230)" ], // blue
 [ "rgb(0, 255, 255)", "rgb(0, 150, 150)", "rgb(0, 219, 219)" ], // cyan
 [ "rgb(255, 0, 0)", "rgb(150, 0, 0)", "rgb(219, 0, 0)" ], // red
 [ "rgb(255, 255, 0)", "rgb(150, 150, 0)", "rgb(219, 219, 0)" ], // yellow
@@ -79,9 +79,9 @@ var renderer = {
 		var e = document.createElementNS(svgNS, "image");
 		e.setAttributeNS(xlinkNS, "href", "images/gripper.svg");
 		e.setAttribute("x", this.shapeX(x - 0.06, y + 0.18));
-		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 63.4);
-		e.setAttribute("width", 8.8);
-		e.setAttribute("height", 63.4);
+		e.setAttribute("y", this.shapeY(x - 0.06, y + 0.18, z) - 92);
+		e.setAttribute("width", 8.8000002);
+		e.setAttribute("height", 94.614926);
 		this.svg.appendChild(e);
 	},
 
@@ -129,7 +129,7 @@ var renderer = {
 				fh * 2);
 
 		// Y-direction.
-		this.fill(colors[2], "M", sx + fw, sy + fh, "v", -fh * 3, "l", -fw,
+		this.fill(colors[1], "M", sx + fw, sy + fh, "v", -fh * 3, "l", -fw,
 				fh * 2);
 
 		// Thin line.
@@ -177,11 +177,11 @@ var renderer = {
 	}
 };
 
-function render(svg, instructions) {
+function render(instructions) {
 	try {
 
 		// Board.
-		renderer.svg = svg;
+		renderer.svg = document.getElementById("scene");
 		renderer.board();
 
 		// Instructions.
