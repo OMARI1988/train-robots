@@ -11,6 +11,7 @@ package com.trainrobots.web.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpSession;
 
 import com.trainrobots.Log;
 import com.trainrobots.RoboticException;
+import com.trainrobots.nlp.agent.Agent;
+import com.trainrobots.web.Application;
 import com.trainrobots.web.ChatState;
 import com.trainrobots.web.InstructionWriter;
 
@@ -30,7 +33,7 @@ public class ChatServlet extends HttpServlet {
 		String message = request.getParameter("message");
 		Log.info("Received: %s", message);
 
-		// Handle
+		// Handle.
 		try {
 			handleRequest(request, response);
 		} catch (Exception exception) {
@@ -49,15 +52,21 @@ public class ChatServlet extends HttpServlet {
 			throw new RoboticException(exception);
 		}
 
-		// Request.
+		// Session.
 		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
+
+		// Agent.
+		Agent agent = Application.get(context).agent();
+
+		// Request.
 		ChatState state = ChatState.get(session);
 		String message = request.getParameter("message");
 
 		// Result.
 		String result;
 		try {
-			result = handleMessage(state, message);
+			result = agent.process(state.layout(), message);
 		} catch (Exception exception) {
 			Log.error("Failed to handle message.", exception);
 			result = exception.getMessage();
@@ -74,9 +83,5 @@ public class ChatServlet extends HttpServlet {
 		} catch (IOException exception) {
 			throw new RoboticException(exception);
 		}
-	}
-
-	private String handleMessage(ChatState state, String message) {
-		return "OK, I will " + message;
 	}
 }

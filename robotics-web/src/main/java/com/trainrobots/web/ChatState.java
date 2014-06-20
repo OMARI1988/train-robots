@@ -14,21 +14,17 @@ import com.trainrobots.scenes.Layout;
 
 public class ChatState {
 
-	private Layout layout;
+	private final Layout layout;
 
 	public ChatState(Layout layout) {
 		this.layout = layout;
-	}
-
-	public static ChatState get(HttpSession session) {
-		return (ChatState) session.getAttribute("chat-state");
 	}
 
 	public Layout layout() {
 		return layout;
 	}
 
-	public void layout(Layout layout) {
-		this.layout = layout;
+	public static ChatState get(HttpSession session) {
+		return (ChatState) session.getAttribute("chat-state");
 	}
 }

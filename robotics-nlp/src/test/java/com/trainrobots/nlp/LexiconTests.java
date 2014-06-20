@@ -13,7 +13,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Context;
 import com.trainrobots.losr.Color;
 import com.trainrobots.losr.Colors;
 import com.trainrobots.losr.Relation;
@@ -26,7 +25,7 @@ public class LexiconTests {
 	public void shouldGetTerminals() {
 
 		// Lexicon.
-		Lexicon lexicon = new Lexicon(Context.treebank());
+		Lexicon lexicon = NlpContext.lexicon();
 
 		// Relation.
 		Relation relation = lexicon.terminal(Relation.class, "on top of", null);

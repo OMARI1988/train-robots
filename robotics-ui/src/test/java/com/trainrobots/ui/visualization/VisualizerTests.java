@@ -14,7 +14,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Context;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Type;
 import com.trainrobots.losr.Types;
@@ -22,6 +21,7 @@ import com.trainrobots.nlp.losr.Ellipsis;
 import com.trainrobots.nlp.losr.EllipticalContext;
 import com.trainrobots.nlp.losr.PartialTree;
 import com.trainrobots.treebank.Command;
+import com.trainrobots.ui.UiContext;
 import com.trainrobots.ui.visualization.themes.Themes;
 import com.trainrobots.ui.visualization.writers.PngWriter;
 import com.trainrobots.ui.visualization.writers.SvgWriter;
@@ -32,7 +32,7 @@ public class VisualizerTests {
 	public void shouldRenderSvg() {
 
 		// Render.
-		Command command = Context.treebank().command(22473);
+		Command command = UiContext.treebank().command(22473);
 		byte[] data = new SvgWriter(command).renderToArray();
 
 		// Verify.
@@ -43,7 +43,7 @@ public class VisualizerTests {
 	public void shouldRenderSvgWithEllipsis() {
 
 		// Render.
-		Command command = Context.treebank().command(13013);
+		Command command = UiContext.treebank().command(13013);
 		byte[] data = new SvgWriter(command).renderToArray();
 
 		// Verify.
@@ -54,7 +54,7 @@ public class VisualizerTests {
 	public void shouldRenderPng() {
 
 		// Render.
-		Command command = Context.treebank().command(22473);
+		Command command = UiContext.treebank().command(22473);
 		byte[] data = new PngWriter(command).renderToArray();
 
 		// Verify.
@@ -65,7 +65,7 @@ public class VisualizerTests {
 	public void shouldRenderDarkPng() {
 
 		// Render.
-		Command command = Context.treebank().command(22473);
+		Command command = UiContext.treebank().command(22473);
 		byte[] data = new PngWriter(command, Themes.Dark).renderToArray();
 
 		// Verify.
@@ -76,7 +76,7 @@ public class VisualizerTests {
 	public void shouldRenderEllipsis() {
 
 		// Render.
-		Command command = Context.treebank().command(13013);
+		Command command = UiContext.treebank().command(13013);
 		byte[] data = new PngWriter(command).renderToArray();
 
 		// Verify.
@@ -87,7 +87,7 @@ public class VisualizerTests {
 	public void shouldRenderPartialTree() {
 
 		// Render.
-		Command command = Context.treebank().command(16549);
+		Command command = UiContext.treebank().command(16549);
 		PartialTree partialTree = new PartialTree(command.tokens());
 		partialTree.add(Losr.parse("(color: white (token: 3))"));
 		byte[] data = new PngWriter(partialTree, Themes.Detail).renderToArray();
@@ -100,7 +100,7 @@ public class VisualizerTests {
 	public void shouldRenderPartialEllipsis1() {
 
 		// Render.
-		Command command = Context.treebank().command(4674);
+		Command command = UiContext.treebank().command(4674);
 		PartialTree partialTree = new PartialTree(command.tokens());
 		partialTree.add(new Ellipsis(6));
 		partialTree.add(Losr.parse("(color: green (token: 11))"));
@@ -116,7 +116,7 @@ public class VisualizerTests {
 	public void shouldRenderPartialEllipsis2() {
 
 		// Render.
-		Command command = Context.treebank().command(4674);
+		Command command = UiContext.treebank().command(4674);
 		PartialTree partialTree = new PartialTree(command.tokens());
 		partialTree.add(Losr.parse("(action: take (token: 1))"));
 		partialTree.add(Losr.parse("(color: blue (token: 3))"));
@@ -136,7 +136,7 @@ public class VisualizerTests {
 	public void shouldRenderPartialEllipsis3() {
 
 		// Render.
-		Command command = Context.treebank().command(4674);
+		Command command = UiContext.treebank().command(4674);
 		PartialTree partialTree = new PartialTree(command.tokens());
 		partialTree.add(Losr.parse("(action: take (token: 1))"));
 		partialTree.add(Losr.parse("(color: blue (token: 3))"));

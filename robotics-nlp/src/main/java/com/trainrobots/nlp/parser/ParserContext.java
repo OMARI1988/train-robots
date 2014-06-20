@@ -53,6 +53,10 @@ public class ParserContext {
 		return tokens;
 	}
 
+	public Planner planner() {
+		return planner;
+	}
+
 	public void validatePartial(Losr losr) {
 		if (losr instanceof Entity) {
 			Entity e = (Entity) losr;

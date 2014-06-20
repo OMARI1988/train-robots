@@ -11,15 +11,15 @@ package com.trainrobots.scenes;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.trainrobots.RoboticException;
 import com.trainrobots.collections.Items;
-import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 
 public class Layout {
 
 	private final int id;
 	private final Gripper gripper;
-	private final Items<Shape> shapes;
+	private final ItemsList<Shape> shapes;
 	private final Map<Position, Shape> shapesByPosition = new HashMap<>();
 	LayoutListener listener;
 
@@ -30,7 +30,7 @@ public class Layout {
 	}
 
 	public Layout(int id, Position gripperPosition, boolean gripperOpen,
-			Items<Shape> shapes) {
+			ItemsList<Shape> shapes) {
 		this.id = id;
 		this.gripper = new Gripper(this, gripperPosition, gripperOpen);
 		this.shapes = shapes;
@@ -57,10 +57,22 @@ public class Layout {
 
 	public Layout clone() {
 		return new Layout(id, gripper.position(), gripper.open(),
-				new ItemsArray(shapes.toArray()));
+				new ItemsList(shapes));
 	}
 
 	public void listener(LayoutListener listener) {
 		this.listener = listener;
+	}
+
+	public void add(Shape shape) {
+		shapes.add(shape);
+		shapesByPosition.put(shape.position(), shape);
+	}
+
+	public void remove(Shape shape) {
+		if (!shapes.remove(shape)) {
+			throw new RoboticException("Failed to remove shape.");
+		}
+		shapesByPosition.remove(shape.position());
 	}
 }

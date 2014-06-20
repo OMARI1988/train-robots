@@ -14,8 +14,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Context;
 import com.trainrobots.scenes.Layout;
+import com.trainrobots.ui.UiContext;
 import com.trainrobots.ui.renderer.scene.LayoutElement;
 
 public class RendererTests {
@@ -24,7 +24,7 @@ public class RendererTests {
 	public void shouldRenderPng() {
 
 		// Render.
-		Layout layout = Context.treebank().layout(251);
+		Layout layout = UiContext.treebank().layout(251);
 		Buffer buffer = new Buffer(new LayoutElement(layout), 325, 350);
 		byte[] data = buffer.renderToArray();
 		buffer.close();

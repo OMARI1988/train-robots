@@ -57,4 +57,8 @@ public class Shape extends Observable {
 	public Losr toLosr() {
 		return new Entity(color, type);
 	}
+
+	public Shape withPosition(Position position) {
+		return new Shape(type, color, position);
+	}
 }

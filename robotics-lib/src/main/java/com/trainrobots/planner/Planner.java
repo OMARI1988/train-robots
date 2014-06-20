@@ -81,6 +81,10 @@ public class Planner {
 		this.simulator = simulator;
 	}
 
+	public Simulator simulator() {
+		return simulator;
+	}
+
 	public Instruction instruction(Losr losr) {
 		return translateItem(context(losr), losr);
 	}

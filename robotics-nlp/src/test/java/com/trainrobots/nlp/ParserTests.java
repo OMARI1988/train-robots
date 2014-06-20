@@ -18,7 +18,6 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.trainrobots.Context;
 import com.trainrobots.collections.Items;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
@@ -28,21 +27,10 @@ import com.trainrobots.nlp.parser.Parser;
 import com.trainrobots.nlp.parser.ParserContext;
 import com.trainrobots.nlp.tagger.Tagger;
 import com.trainrobots.treebank.Command;
-import com.trainrobots.treebank.Treebank;
 
 public class ParserTests {
 
-	private final Lexicon lexicon;
-	private final Grammar grammar;
-	private final Tagger tagger;
 	private int vertexCount;
-
-	public ParserTests() {
-		Treebank treebank = Context.treebank();
-		lexicon = new Lexicon(treebank);
-		grammar = new Grammar(treebank);
-		tagger = new Tagger(treebank, lexicon);
-	}
 
 	@Test
 	@Ignore
@@ -82,9 +70,14 @@ public class ParserTests {
 		ignoreList.add(24292);
 		ignoreList.add(24528);
 
-		for (Command command : Context.treebank().commands()) {
+		for (Command command : NlpContext.treebank().commands()) {
 			if (!ignoreList.contains(command.id()) && command.losr() == null) {
 				try {
+
+					// Context.
+					Grammar grammar = NlpContext.grammar();
+					Lexicon lexicon = NlpContext.lexicon();
+					Tagger tagger = NlpContext.tagger();
 
 					// Parse.
 					ParserContext context = new ParserContext(command);
@@ -129,7 +122,7 @@ public class ParserTests {
 		// Parse.
 		int valid = 0;
 		int total = 0;
-		for (Command command : Context.treebank().commands()) {
+		for (Command command : NlpContext.treebank().commands()) {
 			if (command.losr() != null) {
 				if (parse(command.id())) {
 					valid++;
@@ -154,7 +147,10 @@ public class ParserTests {
 	private boolean parse(int id, boolean verbose) {
 
 		// Context.
-		Command command = Context.treebank().command(id);
+		Grammar grammar = NlpContext.grammar();
+		Lexicon lexicon = NlpContext.lexicon();
+		Tagger tagger = NlpContext.tagger();
+		Command command = NlpContext.treebank().command(id);
 		Items<Terminal> terminals = tagger.terminals(command);
 		ParserContext context = new ParserContext(command);
 		context.matchExpectedInstruction(true);

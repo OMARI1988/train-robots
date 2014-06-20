@@ -10,7 +10,6 @@ package com.trainrobots.scenes;
 
 import org.xml.sax.Attributes;
 
-import com.trainrobots.collections.ItemsArray;
 import com.trainrobots.collections.ItemsList;
 import com.trainrobots.io.XmlReader;
 import com.trainrobots.losr.Colors;
@@ -55,7 +54,7 @@ public class LayoutReader extends XmlReader {
 		switch (name) {
 		case "layout":
 			layouts.add(new Layout(layoutId, gripperPosition, gripperOpen,
-					new ItemsArray(shapes.toArray())));
+					new ItemsList(shapes)));
 			break;
 		}
 	}

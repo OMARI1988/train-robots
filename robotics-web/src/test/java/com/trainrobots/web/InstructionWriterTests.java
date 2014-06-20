@@ -13,7 +13,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.trainrobots.Context;
 import com.trainrobots.scenes.Layout;
 
 public class InstructionWriterTests {
@@ -22,7 +21,7 @@ public class InstructionWriterTests {
 	public void shouldWriteInstructions() {
 
 		// Write.
-		Layout layout = Context.treebank().scene(51).after();
+		Layout layout = WebContext.treebank().scene(51).after();
 		InstructionWriter writer = new InstructionWriter(layout);
 		String actual = writer.write();
 
