@@ -13,6 +13,8 @@ import com.trainrobots.collections.Items;
 import com.trainrobots.instructions.Instruction;
 import com.trainrobots.losr.Losr;
 import com.trainrobots.losr.Terminal;
+import com.trainrobots.nlp.dialog.DialogFilter;
+import com.trainrobots.nlp.dialog.FilterResult;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.parser.Parser;
@@ -24,11 +26,14 @@ import com.trainrobots.tokenizer.Tokenizer;
 
 public class Agent {
 
+	private final DialogFilter filter;
 	private final Grammar grammar;
 	private final Lexicon lexicon;
 	private final Tagger tagger;
 
-	public Agent(Grammar grammar, Lexicon lexicon, Tagger tagger) {
+	public Agent(DialogFilter filter, Grammar grammar, Lexicon lexicon,
+			Tagger tagger) {
+		this.filter = filter;
 		this.grammar = grammar;
 		this.lexicon = lexicon;
 		this.tagger = tagger;
@@ -36,8 +41,24 @@ public class Agent {
 
 	public String process(Layout layout, String message) {
 		try {
-			execute(layout, message);
+
+			// Tokens.
+			Items<Terminal> tokens = new Tokenizer(message).tokens();
+
+			// Filter.
+			FilterResult result = filter.filter(tokens);
+			if (result != null) {
+				if (result.response() != null) {
+					return result.response();
+				} else {
+					tokens = result.reduction();
+				}
+			}
+
+			// Execute.
+			execute(layout, tokens);
 			return "OK";
+
 		} catch (Exception exception) {
 			Log.error("Agent processing failed.", exception);
 			String error = exception.getMessage();
@@ -48,11 +69,10 @@ public class Agent {
 		}
 	}
 
-	private void execute(Layout layout, String message) {
+	private void execute(Layout layout, Items<Terminal> tokens) {
 
-		// Tokens.
-		Items<Terminal> tokens = new Tokenizer(message).tokens();
-		Items<Terminal> terminals = tagger.sequence(message).terminals(lexicon);
+		// Tags.
+		Items<Terminal> terminals = tagger.sequence(tokens).terminals(lexicon);
 
 		// Parse.
 		ParserContext context = new ParserContext(layout, tokens);

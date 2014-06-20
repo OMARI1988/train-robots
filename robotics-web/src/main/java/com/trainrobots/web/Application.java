@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 
 import com.trainrobots.Log;
 import com.trainrobots.nlp.agent.Agent;
+import com.trainrobots.nlp.dialog.DialogFilter;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tagger.Tagger;
@@ -36,7 +37,8 @@ public class Application {
 		Grammar grammar = new Grammar(treebank);
 		Lexicon lexicon = new Lexicon(treebank);
 		Tagger tagger = new Tagger(treebank, lexicon);
-		agent = new Agent(grammar, lexicon, tagger);
+		DialogFilter filter = new DialogFilter();
+		agent = new Agent(filter, grammar, lexicon, tagger);
 
 		// Register with context.
 		context.setAttribute("application", this);

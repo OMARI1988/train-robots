@@ -10,6 +10,7 @@ package com.trainrobots.nlp;
 
 import com.trainrobots.Log;
 import com.trainrobots.nlp.agent.Agent;
+import com.trainrobots.nlp.dialog.DialogFilter;
 import com.trainrobots.nlp.grammar.Grammar;
 import com.trainrobots.nlp.lexicon.Lexicon;
 import com.trainrobots.nlp.tagger.Tagger;
@@ -21,6 +22,7 @@ public class NlpContext {
 	private static final Grammar grammar;
 	private static final Lexicon lexicon;
 	private static final Tagger tagger;
+	private static final DialogFilter filter;
 	private static final Agent agent;
 
 	private NlpContext() {
@@ -32,7 +34,8 @@ public class NlpContext {
 		grammar = new Grammar(treebank);
 		lexicon = new Lexicon(treebank);
 		tagger = new Tagger(treebank, lexicon);
-		agent = new Agent(grammar, lexicon, tagger);
+		filter = new DialogFilter();
+		agent = new Agent(filter, grammar, lexicon, tagger);
 	}
 
 	public static Treebank treebank() {
@@ -49,6 +52,10 @@ public class NlpContext {
 
 	public static Tagger tagger() {
 		return tagger;
+	}
+
+	public static DialogFilter filter() {
+		return filter;
 	}
 
 	public static Agent agent() {
